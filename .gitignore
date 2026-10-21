@@ -1,0 +1,41 @@
+# Python / sistemas locales
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.coverage.*
+.venv/
+.env
+.env.*
+!.env.example
+
+# Terraform (conservar únicamente código, ejemplos y locks de proveedores)
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/tfplan
+**/plan.out
+**/crash.log
+**/crash.*.log
+**/*.tfvars
+**/*.tfvars.json
+!**/*.tfvars.example
+!**/*.tfvars.json.example
+
+# Credenciales y artefactos locales sensibles
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+*_credentials.json
+**/evidencia_privada/
+**/evidencias_sin_sanear/
+
+# Separación de la validación operativa real: nunca versionar archivos fuente, metadatos privados ni evidencias sin sanear
+**/documentos_reales/
+**/fuentes_operativas/
+**/datos_confidenciales/
+**/evidencias_operativas_privadas/
+**/resultados_confidenciales/
