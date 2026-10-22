@@ -21,6 +21,7 @@ REFERENCIAS_PERMITIDAS = {
     "contenido",
     "clasificacion",
     "extraccion",
+    "fragmentos",
 }
 
 

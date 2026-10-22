@@ -7,7 +7,7 @@ versiones ni el estado del trámite.
 """
 
 import logging
-from typing import Literal
+from typing import Any, Literal
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from atlas.dominio.enumeraciones import ClaseSugerencia, EstadoTrabajo, MotivoSinFuente
 from atlas.persistencia.modelos import (
     Archivo,
+    Fragmento,
     ReferenciaFuente,
     TrabajoProcesamiento,
     ValorSugerido,
@@ -55,6 +56,7 @@ def persistir(
     intento: int,
     clasificacion: Clasificacion,
     extraccion: Extraccion,
+    indexacion: dict[str, Any],
 ) -> Resultado:
     trabajo = sesion.get(TrabajoProcesamiento, trabajo_id, with_for_update=True)
     if trabajo is None:
@@ -109,6 +111,27 @@ def persistir(
                 modelo=extraccion.uso.modelo,
                 version_instrucciones=extraccion.version_instrucciones,
                 version_esquema=extraccion.version_esquema,
+            )
+        )
+    for fragmento in indexacion["fragmentos"]:
+        # El fragmento conserva su localizador (§5.3.4); se asocia con el documento y la
+        # versión a través del archivo una vez incorporado.
+        fuente = ReferenciaFuente(
+            **comunes,
+            pagina=fragmento["pagina"],
+            seccion=(fragmento["seccion"] or fragmento["localizador"])[:255],
+        )
+        sesion.add(fuente)
+        sesion.flush()
+        sesion.add(
+            Fragmento(
+                **comunes,
+                fuente_id=fuente.id,
+                contenido=fragmento["texto"],
+                embedding=fragmento["embedding"],
+                orden=fragmento["orden"],
+                modelo_embeddings=indexacion["modelo_embeddings"],
+                version_segmentacion=indexacion["version_segmentacion"],
             )
         )
     trabajo.estado = EstadoTrabajo.COMPLETADO

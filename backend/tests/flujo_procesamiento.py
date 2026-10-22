@@ -7,7 +7,7 @@ from typing import Any
 from sqlalchemy import Engine, text
 
 from atlas.procesamiento import esquemas, etapas
-from tests.procesamiento_fijo import ModeloFijo, textract_fijo
+from tests.procesamiento_fijo import EmbeddingsFijos, ModeloFijo, textract_fijo
 
 LIMITES = etapas.LimitesProcesamiento(
     max_tokens_clasificacion=256, max_tokens_extraccion=2048, caracteres_maximos=400_000
@@ -20,6 +20,7 @@ CLAVES_DE_SALIDA = {
     "contenido",
     "clasificacion",
     "extraccion",
+    "fragmentos",
     "resultado",
     "registrado",
 }
@@ -69,7 +70,11 @@ def salida_sin_contenido(salida: dict[str, Any]) -> None:
 
 
 def recorrer(
-    aplicacion: Any, trabajo_id: int, modelo: ModeloFijo, analizador: AnalizadorFijo | None = None
+    aplicacion: Any,
+    trabajo_id: int,
+    modelo: ModeloFijo,
+    analizador: AnalizadorFijo | None = None,
+    embeddings: EmbeddingsFijos | None = None,
 ) -> list[dict[str, Any]]:
     """Ejecuta las etapas en el orden de la máquina de estados."""
     almacen = aplicacion.state.almacen
@@ -110,13 +115,24 @@ def recorrer(
             intento=1,
         )
     )
+    extraccion = salidas[-1]["extraccion"]
+    salidas.append(
+        etapas.indexar(
+            almacen,
+            embeddings or EmbeddingsFijos(),
+            contenido=contenido,
+            trabajo_id=trabajo_id,
+            intento=1,
+        )
+    )
     salidas.append(
         en_sesion(
             aplicacion,
             etapas.persistir,
             almacen=almacen,
             clasificacion=clasificacion,
-            extraccion=salidas[-1]["extraccion"],
+            extraccion=extraccion,
+            fragmentos=salidas[-1]["fragmentos"],
             trabajo_id=trabajo_id,
             intento=1,
         )

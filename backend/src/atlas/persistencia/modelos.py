@@ -16,6 +16,7 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     Enum,
+    Float,
     ForeignKey,
     ForeignKeyConstraint,
     Identity,
@@ -27,6 +28,7 @@ from sqlalchemy import (
     Uuid,
     text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from atlas.dominio.enumeraciones import (
@@ -36,6 +38,7 @@ from atlas.dominio.enumeraciones import (
     EstadoTramite,
     EstadoUsuario,
     FormatoArchivo,
+    MotivoAbstencion,
     MotivoSinFuente,
     ResultadoAuditoria,
     Rol,
@@ -44,6 +47,7 @@ from atlas.dominio.enumeraciones import (
     TipoValidacion,
 )
 from atlas.persistencia.base import Base
+from atlas.persistencia.vector import Vector
 
 
 def catalogo(enumeracion: type[StrEnum], longitud: int) -> Enum:
@@ -343,3 +347,80 @@ class ValidacionHumana(Base):
     validado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
     )
+
+
+DIMENSIONES_EMBEDDING = 1024  # Cohere Embed Multilingual v3 (tesis §5.4.1, RC-P07.3)
+
+
+class Fragmento(Base):
+    """Figura 5.4: fragmento indexado de un archivo, con su localizador y su vector."""
+
+    __tablename__ = "fragmento"
+    __table_args__ = (
+        UniqueConstraint("trabajo_id", "intento", "orden"),
+        CheckConstraint("btrim(contenido) <> ''", name="contenido_no_vacio"),
+        CheckConstraint("orden > 0", name="orden_positivo"),
+    )
+
+    id: Mapped[int] = _id()
+    archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, index=True)
+    fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
+    contenido: Mapped[str] = mapped_column(Text, nullable=False)
+    embedding: Mapped[list[float]] = mapped_column(Vector(DIMENSIONES_EMBEDDING), nullable=False)
+    trabajo_id: Mapped[int] = mapped_column(ForeignKey("trabajo_procesamiento.id"), nullable=False)
+    intento: Mapped[int] = mapped_column(Integer, nullable=False)
+    orden: Mapped[int] = mapped_column(Integer, nullable=False)
+    modelo_embeddings: Mapped[str] = mapped_column(String(120), nullable=False)
+    version_segmentacion: Mapped[str] = mapped_column(String(40), nullable=False)
+    creado_en: Mapped[datetime] = _instante()
+
+
+class ConsultaAsistida(Base):
+    """Técnica (+): registro de cada consulta asistida (§5.2, §5.3.4, DO-2026-10-22-RAG P2)."""
+
+    __tablename__ = "consulta_asistida"
+    __table_args__ = (
+        CheckConstraint(
+            "suficiente = (respuesta IS NOT NULL) AND suficiente = (motivo_abstencion IS NULL)",
+            name="respuesta_o_abstencion",
+        ),
+        CheckConstraint("btrim(pregunta) <> ''", name="pregunta_no_vacia"),
+    )
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False, index=True)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    pregunta: Mapped[str] = mapped_column(Text, nullable=False)
+    suficiente: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    respuesta: Mapped[str | None] = mapped_column(Text)
+    afirmaciones: Mapped[list[dict[str, object]]] = mapped_column(
+        JSONB, nullable=False, server_default=text("'[]'::jsonb")
+    )
+    motivo_abstencion: Mapped[MotivoAbstencion | None] = mapped_column(
+        catalogo(MotivoAbstencion, 30)
+    )
+    modelo_generacion: Mapped[str | None] = mapped_column(String(120))
+    version_instrucciones: Mapped[str | None] = mapped_column(String(40))
+    modelo_embeddings: Mapped[str] = mapped_column(String(120), nullable=False)
+    tokens_entrada: Mapped[int | None] = mapped_column(Integer)
+    tokens_salida: Mapped[int | None] = mapped_column(Integer)
+    duracion_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class ConsultaFragmento(Base):
+    """Técnica (+): fragmentos recuperados para una consulta y si fueron citados."""
+
+    __tablename__ = "consulta_fragmento"
+    __table_args__ = (
+        UniqueConstraint("consulta_id", "fragmento_id"),
+        CheckConstraint("posicion > 0", name="posicion_positiva"),
+    )
+
+    consulta_id: Mapped[int] = mapped_column(ForeignKey("consulta_asistida.id"), primary_key=True)
+    posicion: Mapped[int] = mapped_column(Integer, primary_key=True)
+    fragmento_id: Mapped[int] = mapped_column(ForeignKey("fragmento.id"), nullable=False)
+    distancia: Mapped[float] = mapped_column(Float, nullable=False)
+    citado: Mapped[bool] = mapped_column(Boolean, nullable=False)

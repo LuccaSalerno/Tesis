@@ -5,6 +5,7 @@ El documento va como mensaje de usuario; las instrucciones, como mensaje de sist
 Los errores se traducen a códigos técnicos: nunca se propaga el texto de la respuesta.
 """
 
+import json
 from typing import Any, Final
 
 from botocore.exceptions import BotoCoreError, ClientError, ParamValidationError
@@ -78,3 +79,53 @@ class ModeloBedrockConverse:
             tokens_entrada=int(uso.get("inputTokens", 0)),
             tokens_salida=int(uso.get("outputTokens", 0)),
         )
+
+
+DIMENSIONES: Final = 1024
+LOTE_MAXIMO: Final = 96  # textos por invocación admitidos por Cohere Embed v3
+
+
+class EmbeddingsCohereBedrock:
+    """Cohere Embed Multilingual v3 vía `InvokeModel` (RC-P07.3).
+
+    `search_document` para los fragmentos y `search_query` para las consultas; sin
+    truncado: un texto demasiado largo es un error, no se recorta en silencio.
+    """
+
+    def __init__(self, cliente: Any, modelo: str) -> None:
+        self._cliente = cliente
+        self.identificador = modelo
+
+    def embeber(self, textos: list[str], tipo: str) -> list[list[float]]:
+        vectores: list[list[float]] = []
+        for inicio in range(0, len(textos), LOTE_MAXIMO):
+            lote = textos[inicio : inicio + LOTE_MAXIMO]
+            cuerpo = json.dumps({"texts": lote, "input_type": tipo, "truncate": "NONE"})
+            try:
+                respuesta = self._cliente.invoke_model(
+                    modelId=self.identificador,
+                    body=cuerpo,
+                    contentType="application/json",
+                    accept="application/json",
+                )
+                datos = json.loads(respuesta["body"].read())
+            except ClientError as error:
+                codigo = error.response.get("Error", {}).get("Code", "")
+                if codigo in _TRANSITORIOS:
+                    raise ErrorTransitorio(f"embeddings_{codigo}") from None
+                raise ErrorPermanente(f"embeddings_{codigo or 'error'}") from None
+            except ParamValidationError:
+                raise ErrorPermanente("embeddings_parametros_invalidos") from None
+            except BotoCoreError:
+                raise ErrorTransitorio("embeddings_conexion") from None
+            except ValueError:
+                raise ErrorPermanente("embeddings_respuesta_invalida") from None
+            obtenidos = datos.get("embeddings") if isinstance(datos, dict) else None
+            if (
+                not isinstance(obtenidos, list)
+                or len(obtenidos) != len(lote)
+                or any(len(v) != DIMENSIONES for v in obtenidos)
+            ):
+                raise ErrorPermanente("embeddings_respuesta_invalida")
+            vectores.extend([float(x) for x in v] for v in obtenidos)
+        return vectores

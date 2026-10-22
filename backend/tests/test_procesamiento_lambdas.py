@@ -100,6 +100,7 @@ def test_dt_proc_lambda_de_persistencia_revierte_ante_error(entorno: Contexto) -
                 "intento": 1,
                 "clasificacion": f"resultados/{trabajo_id}/1/no-existe.json",
                 "extraccion": f"resultados/{trabajo_id}/1/no-existe.json",
+                "fragmentos": f"resultados/{trabajo_id}/1/no-existe.json",
             },
             None,
         )

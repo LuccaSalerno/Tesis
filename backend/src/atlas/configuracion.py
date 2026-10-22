@@ -73,6 +73,10 @@ class Configuracion(BaseSettings):
     procesamiento_max_tokens_clasificacion: int = 256
     procesamiento_max_tokens_extraccion: int = 2048
     procesamiento_caracteres_maximos: int = 400_000
+    # Consulta asistida (hito 1.6, DO-2026-10-22-RAG, RC-P07.3).
+    bedrock_modelo_embeddings: str = "cohere.embed-multilingual-v3"
+    consulta_fragmentos_recuperados: int = 5
+    consulta_max_tokens: int = 1024
 
     def validar_servicios_aws(self) -> None:
         if not self.s3_bucket_documentos or not self.sfn_maquina_procesamiento_arn:

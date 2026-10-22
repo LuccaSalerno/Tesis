@@ -137,3 +137,76 @@ def extraccion_c_v1_docx() -> dict[str, Any]:
         "monto_total": dato("ARS 1.250.000,00", "Monto total | ARS 1.250.000,00"),
         "moneda": dato("ARS", "Moneda | ARS - pesos argentinos"),
     }
+
+
+@dataclass
+class EmbeddingsFijos:
+    """Vectores deterministas y léxicos (P1): bolsa de palabras proyectada en 1024
+    dimensiones y normalizada. Textos con palabras en común quedan cerca; no simula la
+    calidad semántica de Cohere, que se mide solo con el servicio real."""
+
+    identificador: str = "cohere.embed-multilingual-v3"
+    llamadas: list[tuple[str, int]] = field(default_factory=list)
+
+    def embeber(self, textos: list[str], tipo: str) -> list[list[float]]:
+        import hashlib
+        import math
+        import re
+
+        self.llamadas.append((tipo, len(textos)))
+        vectores = []
+        for texto in textos:
+            vector = [0.0] * 1024
+            for palabra in re.findall(r"\w{3,}", texto.casefold()):
+                vector[int(hashlib.sha256(palabra.encode()).hexdigest(), 16) % 1024] += 1.0
+            norma = math.sqrt(sum(v * v for v in vector)) or 1.0
+            vectores.append(
+                [v / norma if norma else 0.0 for v in vector]
+                if any(vector)
+                else [1.0] + [0.0] * 1023
+            )
+        return vectores
+
+
+@dataclass
+class ModeloConsultaFijo:
+    """Respuesta fija de la consulta asistida (P1): cita el fragmento recuperado cuyo texto
+    contiene `buscar`. Permite verificar el recorrido sin juzgar la calidad del modelo."""
+
+    buscar: str | None = None
+    afirmacion: str = "El contrato está vigente hasta el 28/02/2027."
+    suficiente: bool = True
+    etiquetas_extra: tuple[str, ...] = ()
+    entrada_cruda: Any = None
+    identificador: str = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+    invocaciones: list[dict[str, Any]] = field(default_factory=list)
+
+    def invocar_herramienta(
+        self, *, instrucciones: str, contenido: str, herramienta: dict[str, Any], max_tokens: int
+    ) -> Any:
+        import re
+
+        from atlas.procesamiento.modelo import RespuestaHerramienta
+
+        self.invocaciones.append({"instrucciones": instrucciones, "contenido": contenido})
+        if self.entrada_cruda is not None:
+            entrada = self.entrada_cruda
+        else:
+            etiquetas = [
+                e
+                for e, texto in re.findall(
+                    r'<fragmento id="(F\d+)"[^>]*>\n(.*?)\n</fragmento>', contenido, re.S
+                )
+                if self.buscar and self.buscar in texto
+            ][:1]
+            entrada = {
+                "suficiente": self.suficiente,
+                "afirmaciones": (
+                    [{"texto": self.afirmacion, "fragmentos": [*etiquetas, *self.etiquetas_extra]}]
+                    if self.suficiente
+                    else []
+                ),
+            }
+        return RespuestaHerramienta(
+            entrada=entrada, modelo=self.identificador, tokens_entrada=900, tokens_salida=40
+        )

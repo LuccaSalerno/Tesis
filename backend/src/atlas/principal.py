@@ -10,14 +10,16 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
 from atlas import __version__
-from atlas.api import cuentas, salud, tramites
+from atlas.api import consultas, cuentas, salud, tramites
 from atlas.api.middleware import MiddlewareSolicitudes
 from atlas.autenticacion.verificador import VerificadorJwt
 from atlas.configuracion import Configuracion, obtener_configuracion
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.aws import AlmacenS3, OrquestadorStepFunctions, crear_cliente
+from atlas.integraciones.bedrock import EmbeddingsCohereBedrock, ModeloBedrockConverse
 from atlas.integraciones.puertos import ErrorIntegracion
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
+from atlas.procesamiento.errores import ErrorEtapa
 from atlas.registro import configurar_registro
 from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
 
@@ -53,6 +55,17 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     )
     aplicacion.state.vigencia_url_carga_s = configuracion_efectiva.carga_vigencia_url_s
     aplicacion.state.vigencia_carga_pendiente_s = configuracion_efectiva.carga_vigencia_pendiente_s
+    bedrock = crear_cliente(configuracion_efectiva, "bedrock-runtime")
+    aplicacion.state.embeddings = EmbeddingsCohereBedrock(
+        bedrock, configuracion_efectiva.bedrock_modelo_embeddings
+    )
+    aplicacion.state.modelo_generativo = ModeloBedrockConverse(
+        bedrock, configuracion_efectiva.bedrock_perfil_generativo
+    )
+    aplicacion.state.consulta_fragmentos_recuperados = (
+        configuracion_efectiva.consulta_fragmentos_recuperados
+    )
+    aplicacion.state.consulta_max_tokens = configuracion_efectiva.consulta_max_tokens
     aplicacion.state.motor = crear_motor(configuracion_efectiva)
     aplicacion.state.fabrica_sesiones = crear_fabrica_sesiones(aplicacion.state.motor)
     aplicacion.dependency_overrides[obtener_configuracion] = lambda: configuracion_efectiva
@@ -61,9 +74,11 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.add_exception_handler(ErrorDominio, _responder_dominio)
     aplicacion.add_exception_handler(ArchivoRechazado, tramites.responder_archivo_rechazado)
     aplicacion.add_exception_handler(ErrorIntegracion, _responder_integracion)
+    aplicacion.add_exception_handler(ErrorEtapa, _responder_integracion)
     aplicacion.include_router(salud.enrutador)
     aplicacion.include_router(cuentas.enrutador)
     aplicacion.include_router(tramites.enrutador)
+    aplicacion.include_router(consultas.enrutador)
     return aplicacion
 
 
@@ -90,7 +105,7 @@ async def _responder_dominio(_: Request, error: Exception) -> JSONResponse:
 
 async def _responder_integracion(_: Request, error: Exception) -> JSONResponse:
     """Un servicio externo falló antes de producir efectos: se puede reintentar."""
-    if not isinstance(error, ErrorIntegracion):
+    if not isinstance(error, ErrorIntegracion | ErrorEtapa):
         raise error
     return JSONResponse(
         {"detalle": "Servicio no disponible momentáneamente. Reintentá en unos minutos."},

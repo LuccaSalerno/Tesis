@@ -111,6 +111,14 @@ class TipoValidacion(StrEnum):
     SIN_SUGERENCIA = "sin_sugerencia"  # el dato no tenía sugerencia
 
 
+class MotivoAbstencion(StrEnum):
+    """Por qué una consulta asistida no responde (RF-13, DO-2026-10-22-RAG, P3)."""
+
+    EVIDENCIA_INSUFICIENTE = "evidencia_insuficiente"  # lo indicó el modelo
+    SIN_CITAS_VALIDAS = "sin_citas_validas"  # ninguna afirmación citó fragmentos recuperados
+    SIN_FRAGMENTOS = "sin_fragmentos"  # no hay documentación autorizada indexada
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 

@@ -496,6 +496,16 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **P4:** el valor validado se exige en formato canónico, porque alimenta las reglas R1 a R4: fecha `AAAA-MM-DD`, importe decimal con dos cifras, CUIT `##-########-#` y moneda ISO 4217 de tres letras. Un dígito verificador de CUIT inválido produce una **advertencia**, no un rechazo.
 5. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-22-RAG — Consulta asistida con recuperación autorizada (hito 1.6)
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** RF-13, RN-04, §5.3.4, RC-P06.2, RC-P07.3.
+
+1. **P1:** las consultas recuperan solo fragmentos de las **versiones vigentes** de documentos incorporados del trámite. El alcance lo determina el backend a partir de los permisos y no puede ampliarse desde el cliente. Las versiones históricas quedan para una decisión posterior.
+2. **P2:** cada consulta se **conserva en la base** con la pregunta, la respuesta o la abstención, los fragmentos recuperados y citados, el modelo de generación, la versión de las instrucciones y el modelo de embeddings. Sin borrado. Nunca se escribe en los registros técnicos.
+3. **P3:** la **abstención la decide el modelo**. El backend descarta las afirmaciones sin una cita válida a los fragmentos recuperados y, si no queda ninguna, la respuesta se convierte en abstención. **Sin umbral de similitud** hasta definirlo con el corpus de ajuste.
+4. **P4:** los embeddings se generan en el **procesamiento**, en la etapa `Indexar` (§5.3.1).
+5. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

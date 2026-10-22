@@ -371,6 +371,48 @@
         "extraccion.$": "$.Payload.extraccion"
       },
       "ResultPath": "$.extraccion",
+      "Next": "Indexar"
+    },
+    "Indexar": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "indexar",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "contenido.$": "$.resultados.contenido"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "fragmentos.$": "$.Payload.fragmentos"
+      },
+      "ResultPath": "$.indexacion",
       "Next": "Persistir"
     },
     "Persistir": {
@@ -383,7 +425,8 @@
           "trabajo_id.$": "$.trabajo_id",
           "intento.$": "$.intento",
           "clasificacion.$": "$.clasificacion.clasificacion",
-          "extraccion.$": "$.extraccion.extraccion"
+          "extraccion.$": "$.extraccion.extraccion",
+          "fragmentos.$": "$.indexacion.fragmentos"
         }
       },
       "Retry": [

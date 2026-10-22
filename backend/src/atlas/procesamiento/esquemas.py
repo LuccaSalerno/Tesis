@@ -74,6 +74,8 @@ CAMPOS: Final[dict[TipoDocumental, tuple[Campo, ...]]] = {
 
 VERSION_INSTRUCCIONES_CLASIFICACION: Final = "clasificacion-v1"
 VERSION_INSTRUCCIONES_EXTRACCION: Final = "extraccion-v1"
+VERSION_INSTRUCCIONES_CONSULTA: Final = "consulta-v1"
+HERRAMIENTA_CONSULTA: Final = "registrar_respuesta"
 VERSION_ESQUEMA_CLASIFICACION: Final = "esquema-clasificacion-v1"
 HERRAMIENTA_CLASIFICACION: Final = "registrar_clasificacion"
 HERRAMIENTA_EXTRACCION: Final = "registrar_campos"
@@ -87,6 +89,9 @@ HUELLAS_INSTRUCCIONES: Final = {
     ),
     VERSION_INSTRUCCIONES_EXTRACCION: (
         "bbfbc7a8d3ac4012f0005ee03d180617a0705eaf36a6fdc6d3fef452f52c65a2"
+    ),
+    VERSION_INSTRUCCIONES_CONSULTA: (
+        "ea3a8f83129b87f8967d6f783e7b7e36412ac8b81856c70385df4f9dab437cd6"
     ),
 }
 
@@ -137,6 +142,38 @@ def herramienta_extraccion(tipo: TipoDocumental) -> dict[str, Any]:
             "type": "object",
             "properties": {c.nombre: dato for c in campos},
             "required": [c.nombre for c in campos],
+            "additionalProperties": False,
+        },
+    }
+
+
+def herramienta_consulta() -> dict[str, Any]:
+    """RF-13: la respuesta son afirmaciones, cada una con los fragmentos que la respaldan."""
+    return {
+        "name": HERRAMIENTA_CONSULTA,
+        "description": "Registra si los fragmentos alcanzan y las afirmaciones con sus citas.",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "suficiente": {"type": "boolean"},
+                "afirmaciones": {
+                    "type": "array",
+                    "maxItems": 10,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "texto": {"type": "string", "maxLength": 1000},
+                            "fragmentos": {
+                                "type": "array",
+                                "items": {"type": "string", "pattern": "^F[0-9]+$"},
+                            },
+                        },
+                        "required": ["texto", "fragmentos"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            "required": ["suficiente", "afirmaciones"],
             "additionalProperties": False,
         },
     }

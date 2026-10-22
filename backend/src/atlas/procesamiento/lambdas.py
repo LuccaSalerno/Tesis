@@ -16,7 +16,7 @@ from typing import Any, Final
 
 from atlas.configuracion import obtener_configuracion
 from atlas.integraciones.aws import AlmacenS3, crear_cliente
-from atlas.integraciones.bedrock import ModeloBedrockConverse
+from atlas.integraciones.bedrock import EmbeddingsCohereBedrock, ModeloBedrockConverse
 from atlas.integraciones.textract import AnalizadorTextract
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
 from atlas.procesamiento import etapas
@@ -35,6 +35,7 @@ CLAVES_EVENTO: Final = frozenset(
         "contenido",
         "clasificacion",
         "extraccion",
+        "fragmentos",
         "error",
         "causa",
     }
@@ -49,6 +50,7 @@ ETAPAS_PROCESAMIENTO: Final = frozenset(
         "normalizar_docx",
         "clasificar",
         "extraer",
+        "indexar",
     }
 )
 ETAPAS_PERSISTENCIA: Final = frozenset({"preparar", "persistir", "registrar_fallo"})
@@ -65,6 +67,9 @@ def _dependencias() -> dict[str, Any]:
         "analizador": AnalizadorTextract(crear_cliente(configuracion, "textract"), bucket),
         "modelo": ModeloBedrockConverse(
             crear_cliente(configuracion, "bedrock-runtime"), configuracion.bedrock_perfil_generativo
+        ),
+        "embeddings": EmbeddingsCohereBedrock(
+            crear_cliente(configuracion, "bedrock-runtime"), configuracion.bedrock_modelo_embeddings
         ),
         "limites": etapas.LimitesProcesamiento(
             max_tokens_clasificacion=configuracion.procesamiento_max_tokens_clasificacion,
@@ -132,6 +137,7 @@ def manejar_procesamiento(evento: dict[str, Any], _contexto: Any) -> Any:
                 d["almacen"], d["modelo"], d["limites"], **p
             ),
             "extraer": lambda **p: etapas.extraer(d["almacen"], d["modelo"], d["limites"], **p),
+            "indexar": lambda **p: etapas.indexar(d["almacen"], d["embeddings"], **p),
         },
     )
 

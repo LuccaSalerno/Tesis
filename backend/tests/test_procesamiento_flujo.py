@@ -135,7 +135,7 @@ def test_p3_resultados_intermedios_en_s3_por_trabajo_e_intento(entorno: Any) -> 
     }
     assert claves == {
         f"resultados/{trabajo_id}/1/{n}"
-        for n in ("contenido.json", "clasificacion.json", "extraccion.json")
+        for n in ("contenido.json", "clasificacion.json", "extraccion.json", "fragmentos.json")
     }
 
 
@@ -151,8 +151,10 @@ def test_rc_p08_6_persistencia_idempotente_y_descarte_de_intentos_obsoletos(
     trabajo_id = trabajo_de(ctx.motor, archivo["id"])
     salidas = recorrer(aplicacion, trabajo_id, modelo_contrato(extraccion_c_v1_docx()))
     referencias = {
-        "clasificacion": salidas[-3]["clasificacion"],
-        "extraccion": salidas[-2]["extraccion"],
+        clave: salida[clave]
+        for salida in salidas
+        for clave in ("clasificacion", "extraccion", "fragmentos")
+        if clave in salida
     }
     almacen = aplicacion.state.almacen
 

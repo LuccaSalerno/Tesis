@@ -6,7 +6,7 @@ resultados documentales se leen y escriben en `resultados/{trabajo}/{intento}/`
 """
 
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Any, Final
 
 from sqlalchemy.orm import Session
@@ -16,8 +16,10 @@ from atlas.integraciones.puertos import AlmacenDocumental, ErrorIntegracion
 from atlas.integraciones.textract import AnalizadorTextract
 from atlas.procesamiento import analisis
 from atlas.procesamiento.contenido import ContenidoNormalizado, desde_docx, desde_textract
+from atlas.procesamiento.embeddings import ModeloEmbeddings
 from atlas.procesamiento.errores import ErrorTransitorio
 from atlas.procesamiento.modelo import ModeloGenerativo
+from atlas.procesamiento.segmentacion import VERSION_SEGMENTACION, segmentar
 from atlas.servicios import resultados
 
 _JSON: Final = "application/json"
@@ -139,12 +141,36 @@ def extraer(
     return {"extraccion": clave}
 
 
+def indexar(
+    almacen: AlmacenDocumental,
+    embeddings: ModeloEmbeddings,
+    *,
+    contenido: str,
+    trabajo_id: int,
+    intento: int,
+) -> dict[str, Any]:
+    """§5.3.1, DO-2026-10-22-RAG (P4): fragmentos y sus vectores para la consulta asistida."""
+    fragmentos = segmentar(ContenidoNormalizado.desde_json(_leer(almacen, contenido)))
+    vectores = embeddings.embeber([f.texto for f in fragmentos], "search_document")
+    datos = {
+        "modelo_embeddings": embeddings.identificador,
+        "version_segmentacion": VERSION_SEGMENTACION,
+        "fragmentos": [
+            {**asdict(f), "embedding": v} for f, v in zip(fragmentos, vectores, strict=True)
+        ],
+    }
+    clave = clave_resultado(trabajo_id, intento, "fragmentos.json")
+    _escribir(almacen, clave, json.dumps(datos).encode())
+    return {"fragmentos": clave}
+
+
 def persistir(
     sesion: Session,
     almacen: AlmacenDocumental,
     *,
     clasificacion: str,
     extraccion: str,
+    fragmentos: str,
     trabajo_id: int,
     intento: int,
 ) -> dict[str, Any]:
@@ -154,6 +180,7 @@ def persistir(
         intento=intento,
         clasificacion=analisis.clasificacion_desde_dict(json.loads(_leer(almacen, clasificacion))),
         extraccion=analisis.extraccion_desde_dict(json.loads(_leer(almacen, extraccion))),
+        indexacion=json.loads(_leer(almacen, fragmentos)),
     )
     return {"resultado": estado}
 
