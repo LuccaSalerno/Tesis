@@ -217,6 +217,8 @@ docs/evaluacion/corpus_e90/Modelos_Publicos_Candidatos.md
 docs/evaluacion/corpus_e90/Propuesta_Construccion_Aislada.md
 docs/evaluacion/corpus_e90/Revision_ARG_A.json
 docs/evaluacion/corpus_e90/Revision_Independiente.md
+docs/evaluacion/corpus_e90/Revision_Tecnica_Agente_2026-10-22.json
+docs/evaluacion/corpus_e90/Revision_Tecnica_Agente_2026-10-22.md
 docs/evaluacion/corpus_e90/Revision_Visual_Preliminar.json
 docs/evaluacion/corpus_e90/Verificacion_Candidatos.json
 docs/evaluacion/corpus_e90/Verificacion_Manual_CUIT_ARCA_2026-10-22.md

@@ -6,6 +6,8 @@ Fecha de preparación: 22/10/2026. Rama `codex/corpus-e90`, estado de datos del 
 
 La revisión de documentos/oráculos y la resolución de discrepancias antes de congelar están previstas en el procedimiento del plan (paso 5), IA-D y RC-P06.2. IA-M12 fija criterios/oráculos antes de medir. La **calificación independiente de respuestas de IA** corresponde a IA-M06 y se hará después de ejecutar; no confundirla con esta revisión previa.
 
+**Actualización de revisión técnica (22/10/2026):** el agente revisó los 65 documentos, sus 104 páginas, campos, fuentes y consultas. [Informe y hallazgos](Revision_Tecnica_Agente_2026-10-22.md): integridad estructural verificada, **sin visto bueno todavía para congelar/medir** por discrepancias semánticas y riesgos metodológicos pendientes. Es autorrevisión técnica; no completa la revisión de los autores.
+
 ## Orden recomendado y archivos que hay que abrir
 
 | Paso | Documento/archivo | Qué revisar |
