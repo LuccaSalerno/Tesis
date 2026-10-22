@@ -86,6 +86,22 @@ Las pruebas marcadas `integracion` usan la base real `atlas_tests` y fallan (no 
 no está disponible. Solo corren con `ATLAS_ENTORNO=tests` sobre una base `*_tests`.
 Las de `tests/` en la raíz (herramientas del corpus) se ejecutan con `python -m pytest tests`.
 
+## Ensayo de CI limpio (antes de cada commit de hito)
+
+Reproduce la CI en contenedores descartables, con el árbol de trabajo actual (incluidos los
+archivos nuevos sin commitear) y dependencias instaladas desde cero. Desde la raíz del repositorio:
+
+```
+backend/herramientas_ci/ensayo_ci_limpio.sh
+```
+
+Tarda unos 5 minutos. No usa la base local ni modifica el índice de git, y al terminar borra
+los contenedores y la copia.
+
+No se corren dos `pytest` en paralelo contra la base local `atlas_tests`: comparten la base y
+se producen fallas falsas. El ensayo limpio usa su propia base, así que puede correr junto a una
+ejecución local.
+
 ## Registro
 
 Los registros son JSON con un código de evento fijo y metadatos de una lista cerrada

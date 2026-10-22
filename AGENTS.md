@@ -94,11 +94,11 @@ Convenciones:
 
 ## 6. Cómo trabajar cada tarea
 
-1. **Ubicá la tarea** en `docs/plan/Plan_Implementacion_por_Etapas.md` y en los requisitos que cubre.
+1. **Ubicá la tarea** en `docs/plan/Plan_Implementacion_por_Etapas.md` y en los requisitos que cubre. Para saber dónde quedó el trabajo, leé `docs/plan/Estado_Implementacion.md`.
 2. **Leé** los RF, RN y RNF involucrados y las decisiones técnicas relacionadas.
-3. **Proponé un plan corto** antes de escribir código si la tarea toca infraestructura, el modelo de datos o más de un módulo.
+3. **Proponé un plan corto** antes de escribir código si la tarea toca infraestructura, el modelo de datos o más de un módulo. Para un hito del plan: diseño con decisiones numeradas (P1…Pn, cada una con opción recomendada y alternativa), modelo físico, rutas y pruebas. **Esperá la aprobación** y registrala después como `DO-AAAA-MM-DD-<TEMA>` en el documento de decisiones técnicas.
 4. **Implementá en incrementos chicos**, con sus pruebas en el mismo cambio.
-5. **Ejecutá las pruebas** que correspondan. No declares una tarea terminada con pruebas fallando o sin pruebas.
+5. **Ejecutá las pruebas** que correspondan. No declares una tarea terminada con pruebas fallando o sin pruebas. Antes de commitear un hito, corré el ensayo de CI limpio (`backend/herramientas_ci/ensayo_ci_limpio.sh`, ver `backend/README.md`): lint, mypy, pruebas y cobertura de al menos 90 % **por módulo**.
 6. **Registrá las diferencias con la tesis** en `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, en el mismo cambio que las introduce. Incluye todo lo que la implementación:
    - **agrega**: columnas, tablas, estados, rutas, componentes;
    - **precisa**: valores, límites, formatos, criterios;
@@ -107,7 +107,8 @@ Convenciones:
    - **hace distinto en local o en la CI** que en AWS.
 
    También lo que la tesis da por existente y todavía no está implementado. Cada entrada indica la sección de la tesis, qué se implementó, la decisión que la respalda y una acción sugerida. Registrar no autoriza contradecir RF, RN o RNF: eso se consulta antes (§2.3).
-7. **Informá** con este formato:
+7. **Actualizá `docs/plan/Estado_Implementacion.md`** al cerrar un hito: estado, commit, decisiones, próximo paso y preguntas abiertas. Es el punto de partida para retomar el trabajo sin el historial de la conversación.
+8. **Informá** con este formato:
 
 ```
 Tarea: <hito del plan>
@@ -131,6 +132,7 @@ Una tarea está terminada cuando:
 - no registra contenido documental en logs;
 - las decisiones delegadas están documentadas;
 - las diferencias con la tesis están registradas en `docs/tesis/Registro_Diferencias_con_la_Tesis.md`;
+- `docs/plan/Estado_Implementacion.md` refleja el nuevo estado;
 - el informe de §6 está completo.
 
 **Una verificación de los contratos de aceptación solo puede marcarse como `Cumple` si se ejecutó contra su oráculo y se conservó la evidencia.** Que el código exista no la cumple.
