@@ -114,7 +114,12 @@ def test_rf_01_cuenta_propia(cliente: TestClient, motor_aplicacion: Engine) -> N
     usuario_id, sub = crear_cuenta(motor_aplicacion, REVISOR, autorizacion_cierre=True)
     respuesta = cliente.get("/usuarios/yo", headers=portador(sub))
     assert respuesta.status_code == 200
-    assert respuesta.json() == {"id": usuario_id, "roles": [REVISOR], "autorizacion_cierre": True}
+    assert respuesta.json() == {
+        "id": usuario_id,
+        "roles": [REVISOR],
+        "autorizacion_cierre": True,
+        "nombre_visible": None,
+    }
 
 
 # --- RF-02, RNF-01: matriz de autorización de las operaciones de cuentas -----------
@@ -189,6 +194,7 @@ def test_rf_25_alta_por_sub_sin_roles_ni_acceso_y_auditada(
         "estado": "habilitada",
         "roles": [],
         "autorizacion_cierre": False,
+        "nombre_visible": None,
     }
     (evento,) = eventos(motor_aplicacion, cuenta["id"])
     assert evento["accion"] == "cuenta_alta"
@@ -369,9 +375,11 @@ def test_hito_1_2_tres_usuarios_ficticios_por_api(
         "id": responsable["id"],
         "roles": [RESPONSABLE],
         "autorizacion_cierre": False,
+        "nombre_visible": None,
     }
     assert perfiles["sub-revisor"] == {
         "id": revisor["id"],
         "roles": [REVISOR],
         "autorizacion_cierre": True,
+        "nombre_visible": None,
     }

@@ -57,7 +57,7 @@ variable "nombre_bucket_documentos" {
 }
 
 variable "origenes_cors" {
-  description = "Orígenes web autorizados a cargar con URL prefirmada (vacío: sin frontend)"
+  description = "Orígenes de la aplicación web autorizados a cargar (PUT) y leer (GET) con URL prefirmada; p. ej. http://localhost:4173 (DO-2026-10-22-WEB F7)"
   type        = list(string)
   default     = []
 }

@@ -4,6 +4,19 @@
 resource "aws_apigatewayv2_api" "principal" {
   name          = "${local.prefijo}-api"
   protocol_type = "HTTP"
+
+  # La aplicación web corre en la máquina del presentador (F7). API Gateway responde las
+  # verificaciones previas de CORS sin pasar por el autorizador.
+  dynamic "cors_configuration" {
+    for_each = length(var.origenes_web) > 0 ? [1] : []
+    content {
+      allow_origins  = var.origenes_web
+      allow_methods  = ["GET", "POST", "PUT", "DELETE"]
+      allow_headers  = ["authorization", "content-type"]
+      expose_headers = ["x-solicitud-id", "retry-after"]
+      max_age        = 300
+    }
+  }
 }
 
 resource "aws_apigatewayv2_authorizer" "cognito" {

@@ -97,14 +97,15 @@ def sugerir(sesion: Session, tramite: Tramite) -> Sugerencia:
 
 
 def datos_faltantes(sesion: Session, tramite_id: int) -> list[int]:
-    """Documentos cuya versión vigente no tiene validados la clasificación y todos los campos
-    del esquema de su tipo (RC-P04)."""
+    """Documentos cuya versión vigente no tiene validada la clasificación o algún campo del
+    esquema de su tipo sin resolver (RC-P04, DO-2026-10-22-WEB F10)."""
     faltantes: list[int] = []
     for documento in sesion.scalars(
         select(Documento).where(Documento.tramite_id == tramite_id).order_by(Documento.id)
     ):
         validado = reglas.estado_validado(sesion, documento)
-        if validado.tipo is None or set(validado.campos) != {
+        # DO-2026-10-22-WEB F10: cada campo resuelto por una persona, con valor o ausente.
+        if validado.tipo is None or set(validado.campos) | set(validado.ausentes) != {
             c.nombre for c in esquemas.CAMPOS[validado.tipo]
         }:
             faltantes.append(documento.id)

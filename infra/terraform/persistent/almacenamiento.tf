@@ -98,9 +98,10 @@ resource "aws_s3_bucket_cors_configuration" "documentos" {
   count  = length(var.origenes_cors) > 0 ? 1 : 0
   bucket = aws_s3_bucket.documentos.id
   cors_rule {
-    allowed_methods = ["PUT"]
+    allowed_methods = ["PUT", "GET"]
     allowed_origins = var.origenes_cors
-    allowed_headers = ["content-type"]
+    allowed_headers = ["content-type", "range"]
+    expose_headers  = ["content-length", "content-range", "accept-ranges"]
     max_age_seconds = 300
   }
 }

@@ -80,6 +80,10 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    ```
    Las demás cuentas las da de alta la semilla por la API.
 
+   **Aplicación web (DO-2026-10-22-WEB F7):** corre en la máquina del presentador
+   (`frontend/README.md`, sección «Demo»). Su origen (`http://localhost:4173`) va en
+   `origenes_cors` (`persistent`) y en `origenes_web` (`demo`) antes de aplicar esas raíces.
+
 7. **Pasar a `active`** solo con cuentas ficticias (la demo todavía no se abre):
    ```bash
    BUCKET=$(terraform -chdir=infra/terraform/persistent output -raw bucket_documentos)

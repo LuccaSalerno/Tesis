@@ -2,3 +2,4 @@ cuenta_id                = "000000000000"
 bucket_estado            = "atlas-estado-terraform-<sufijo-unico>"
 nombre_bucket_artefactos = "atlas-demo-artefactos-<sesion>-<sufijo-unico>"
 version_codigo           = "<commit corto desplegado>"
+origenes_web             = ["http://localhost:4173"]

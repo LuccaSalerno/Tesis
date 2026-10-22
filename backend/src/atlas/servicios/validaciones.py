@@ -24,6 +24,7 @@ from atlas.dominio.enumeraciones import (
     ClaseSugerencia,
     DisparadorRegla,
     EstadoTramite,
+    MotivoAusencia,
     TipoDocumental,
     TipoValidacion,
 )
@@ -111,7 +112,11 @@ def consultar(sesion: Session, tramite: Tramite, documento_id: int) -> Validacio
         CAMPO_CLASIFICACION,
         sugerencias.get((ClaseSugerencia.CLASIFICACION, CAMPO_CLASIFICACION)),
     )
-    tipo = TipoDocumental(clasificacion.vigente.valor_validado) if clasificacion.vigente else None
+    tipo = (
+        TipoDocumental(clasificacion.vigente.valor_validado or "")
+        if clasificacion.vigente
+        else None
+    )
     campos: list[EstadoDato] = []
     nombres: set[str] = set()
     if tipo is not None:
@@ -154,23 +159,31 @@ def registrar(
     documento_id: int,
     usuario_id: int,
     campo: str,
-    valor_validado: str,
+    valor_validado: str | None,
     valor_sugerido_id: int | None,
     reemplaza_a_id: int | None,
     fuente: FuenteIndicada | None,
+    ausente: MotivoAusencia | None = None,
     solicitud_id: uuid.UUID | None = None,
 ) -> ValidacionRegistrada:
-    """Registra una confirmación, una corrección o un valor sin sugerencia.
+    """Registra una confirmación, una corrección, un valor sin sugerencia o una ausencia.
 
-    El trámite llega bloqueado por el llamador (PD-05.2).
+    Una ausencia (DO-2026-10-22-WEB F10) declara que el campo no consta en la versión o no
+    aplica: no lleva valor ni fuente y puede descartar la sugerencia. Nunca se inventa un
+    valor. El trámite llega bloqueado por el llamador (PD-05.2).
     """
     if tramite.estado not in ESTADOS_QUE_ADMITEN:
         raise Conflicto("El estado del trámite no admite validar datos")
+    if (ausente is None) == (valor_validado is None):
+        raise ErrorDominio("Indicá un valor validado o declaralo ausente, no ambas cosas")
     actual = consultar(sesion, tramite, documento_id)
     clase = ClaseSugerencia.CLASIFICACION if campo == CAMPO_CLASIFICACION else ClaseSugerencia.CAMPO
 
     advertencias: list[str] = []
+    valor: str | None = None
     if clase is ClaseSugerencia.CLASIFICACION:
+        if valor_validado is None:
+            raise ErrorDominio("La clasificación no admite ausencia: validá un tipo documental")
         try:
             valor = TipoDocumental(valor_validado.strip()).value
         except ValueError as error:
@@ -184,7 +197,8 @@ def registrar(
         )
         if definicion is None:
             raise ErrorDominio("El campo no pertenece al esquema del tipo validado")
-        valor, advertencias = formatos.canonico(valor_validado, definicion.clase)
+        if valor_validado is not None:
+            valor, advertencias = formatos.canonico(valor_validado, definicion.clase)
         dato = next(d for d in actual.campos if d.campo == campo)
 
     vigente_id = dato.vigente.id if dato.vigente else None
@@ -194,7 +208,11 @@ def registrar(
     sugerencia, fuente_sugerida = dato.sugerencia if dato.sugerencia else (None, None)
     if valor_sugerido_id is not None and (sugerencia is None or sugerencia.id != valor_sugerido_id):
         raise ErrorDominio("La sugerencia indicada no corresponde a este dato")
-    if valor_sugerido_id is None:
+    if ausente is not None:
+        tipo = TipoValidacion.AUSENTE
+        if fuente is not None:
+            raise ErrorDominio("Una ausencia no lleva fuente")
+    elif valor_sugerido_id is None:
         tipo = TipoValidacion.SIN_SUGERENCIA
     elif sugerencia is not None and valor == sugerencia.valor:
         tipo = TipoValidacion.CONFIRMACION
@@ -214,7 +232,7 @@ def registrar(
         )
         sesion.add(referencia)
         sesion.flush()
-    elif tipo is not TipoValidacion.SIN_SUGERENCIA:
+    elif tipo not in (TipoValidacion.SIN_SUGERENCIA, TipoValidacion.AUSENTE):
         referencia = fuente_sugerida
 
     validacion = ValidacionHumana(
@@ -227,6 +245,7 @@ def registrar(
         fuente_id=referencia.id if referencia is not None else None,
         valor_validado=valor,
         tipo=tipo,
+        motivo_ausencia=ausente,
     )
     try:
         with sesion.begin_nested():
@@ -239,7 +258,7 @@ def registrar(
         ) from error
 
     if clase is ClaseSugerencia.CLASIFICACION:
-        actual.documento.tipo = TipoDocumental(valor)  # P3 del modelo: tipo validado (RN-02)
+        actual.documento.tipo = TipoDocumental(valor or "")  # P3 del modelo (RN-02)
         sesion.flush()
 
     registrar_evento_auditoria(
@@ -279,4 +298,5 @@ def _accion(clase: ClaseSugerencia, tipo: TipoValidacion) -> AccionAuditoria:
         TipoValidacion.CONFIRMACION: AccionAuditoria.CAMPO_CONFIRMADO,
         TipoValidacion.CORRECCION: AccionAuditoria.CAMPO_CORREGIDO,
         TipoValidacion.SIN_SUGERENCIA: AccionAuditoria.CAMPO_REGISTRADO,
+        TipoValidacion.AUSENTE: AccionAuditoria.CAMPO_DECLARADO_AUSENTE,
     }[tipo]

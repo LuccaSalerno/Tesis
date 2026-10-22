@@ -44,6 +44,7 @@ from atlas.dominio.enumeraciones import (
     EstadoVinculo,
     FormatoArchivo,
     MotivoAbstencion,
+    MotivoAusencia,
     MotivoSinFuente,
     OrigenVinculo,
     ResultadoAuditoria,
@@ -98,6 +99,7 @@ class Usuario(Base):
     autorizacion_cierre: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false")
     )
+    nombre_visible: Mapped[str | None] = mapped_column(String(120))  # 0010 (F5)
     creado_en: Mapped[datetime] = _instante()
     actualizado_en: Mapped[datetime] = _instante()
 
@@ -353,8 +355,10 @@ class ValidacionHumana(Base):
     )
     validador_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
     fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
-    valor_validado: Mapped[str] = mapped_column(Text, nullable=False)
+    # Nulo solo en `ausente` (0010, DO-2026-10-22-WEB F10).
+    valor_validado: Mapped[str | None] = mapped_column(Text)
     tipo: Mapped[TipoValidacion] = mapped_column(catalogo(TipoValidacion, 20), nullable=False)
+    motivo_ausencia: Mapped[MotivoAusencia | None] = mapped_column(catalogo(MotivoAusencia, 20))
     validado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
     )

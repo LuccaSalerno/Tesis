@@ -1,14 +1,15 @@
 """Cuentas de usuario y roles (RF-25, RC-P03.2). Rutas y esquemas: RC-P01-003.
 
-Todas las operaciones, salvo `GET /usuarios/yo`, requieren el rol de
-administrador operativo (Tabla 3.II). La supresión (RF-25) requiere la Lambda de
+Todas las operaciones, salvo `GET /usuarios/yo` y `GET /usuarios/directorio`, requieren
+el rol de administrador operativo (Tabla 3.II). El directorio expone solo id y nombre
+visible, para mostrar quién actuó (DO-2026-10-22-WEB F5). La supresión (RF-25) requiere la Lambda de
 operaciones de Cognito (§5.4.2) y todavía no está implementada.
 """
 
 import uuid
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -35,6 +36,7 @@ class CuentaRespuesta(BaseModel):
     estado: EstadoUsuario
     roles: list[Rol]
     autorizacion_cierre: bool
+    nombre_visible: str | None
 
     @classmethod
     def desde(cls, cuenta: cuentas.Cuenta) -> "CuentaRespuesta":
@@ -44,6 +46,7 @@ class CuentaRespuesta(BaseModel):
             estado=cuenta.estado,
             roles=sorted(cuenta.roles),
             autorizacion_cierre=cuenta.autorizacion_cierre,
+            nombre_visible=cuenta.nombre_visible,
         )
 
 
@@ -51,10 +54,24 @@ class YoRespuesta(BaseModel):
     id: int
     roles: list[Rol]
     autorizacion_cierre: bool
+    nombre_visible: str | None
+
+
+NombreVisible = Annotated[str, Field(min_length=1, max_length=120, pattern=r"\S")]
 
 
 class AltaCuenta(BaseModel):
     identificador_externo: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
+    nombre_visible: NombreVisible | None = None
+
+
+class CambioNombre(BaseModel):
+    nombre_visible: NombreVisible | None
+
+
+class EntradaDirectorio(BaseModel):
+    id: int
+    nombre_visible: str | None
 
 
 class CambioEstado(BaseModel):
@@ -67,11 +84,27 @@ class CambioAutorizacionCierre(BaseModel):
 
 @enrutador.get("/yo", response_model=YoRespuesta)
 def consultar_cuenta_propia(
-    usuario: Annotated[UsuarioActual, Depends(obtener_usuario_actual)],
+    usuario: Annotated[UsuarioActual, Depends(obtener_usuario_actual)], sesion: Sesion
 ) -> YoRespuesta:
     return YoRespuesta(
-        id=usuario.id, roles=sorted(usuario.roles), autorizacion_cierre=usuario.autorizacion_cierre
+        id=usuario.id,
+        roles=sorted(usuario.roles),
+        autorizacion_cierre=usuario.autorizacion_cierre,
+        nombre_visible=cuentas.consultar(sesion, usuario.id).nombre_visible,
     )
+
+
+@enrutador.get("/directorio", response_model=list[EntradaDirectorio])
+def consultar_directorio(
+    _: Annotated[UsuarioActual, Depends(obtener_usuario_actual)],
+    sesion: Sesion,
+    ids: Annotated[list[int], Query(max_length=100)],
+) -> list[EntradaDirectorio]:
+    """Nombre visible de las cuentas pedidas; las inexistentes se omiten."""
+    return [
+        EntradaDirectorio(id=i, nombre_visible=n)
+        for i, n in sorted(cuentas.directorio(sesion, ids).items())
+    ]
 
 
 @enrutador.get("", response_model=list[CuentaRespuesta])
@@ -87,6 +120,7 @@ def dar_de_alta_cuenta(
         sesion,
         actor_id=admin.id,
         identificador_externo=alta.identificador_externo,
+        nombre_visible=alta.nombre_visible,
         solicitud_id=solicitud_id,
     )
     return CuentaRespuesta.desde(cuenta)
@@ -161,3 +195,23 @@ def cambiar_autorizacion_cierre(
         solicitud_id=solicitud_id,
     )
     return CuentaRespuesta.desde(cuenta)
+
+
+@enrutador.put("/{usuario_id}/nombre", response_model=CuentaRespuesta)
+def cambiar_nombre(
+    usuario_id: int,
+    cambio: CambioNombre,
+    admin: Administrador,
+    sesion: Sesion,
+    solicitud_id: SolicitudId,
+) -> CuentaRespuesta:
+    """DO-2026-10-22-WEB F5: nombre que muestra la interfaz; sin efectos de permisos."""
+    return CuentaRespuesta.desde(
+        cuentas.cambiar_nombre(
+            sesion,
+            actor_id=admin.id,
+            usuario_id=usuario_id,
+            nombre_visible=cambio.nombre_visible,
+            solicitud_id=solicitud_id,
+        )
+    )

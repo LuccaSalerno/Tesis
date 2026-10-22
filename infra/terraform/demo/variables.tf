@@ -64,6 +64,12 @@ variable "modelo_embeddings" {
   default = "cohere.embed-multilingual-v3"
 }
 
+variable "origenes_web" {
+  description = "Orígenes de la aplicación web (CORS de API Gateway), p. ej. http://localhost:4173; vacío: sin CORS (DO-2026-10-22-WEB F7)"
+  type        = list(string)
+  default     = []
+}
+
 variable "limite_rafaga_api" {
   description = "Límite de ráfaga de API Gateway: acota el consumo accidental"
   type        = number

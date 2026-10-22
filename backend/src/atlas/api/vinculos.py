@@ -29,6 +29,7 @@ from atlas.dominio.enumeraciones import (
     ResultadoRegla,
     Rol,
     TipoDocumental,
+    TipoValidacion,
     TipoVinculo,
 )
 from atlas.dominio.fuentes import FuenteIndicada
@@ -260,7 +261,8 @@ class ValorComparadoRespuesta(BaseModel):
 
     papel: TipoDocumental
     campo: str
-    valor_validado: str
+    valor_validado: str | None = Field(description="Nulo si una persona lo declaró ausente")
+    tipo: TipoValidacion
     validacion_id: int
     version_id: int
 
@@ -306,6 +308,7 @@ class EjecucionRespuesta(BaseModel):
                     papel=v.papel,
                     campo=v.validacion.campo,
                     valor_validado=v.validacion.valor_validado,
+                    tipo=v.validacion.tipo,
                     validacion_id=v.validacion.id,
                     version_id=v.validacion.version_id,
                 )

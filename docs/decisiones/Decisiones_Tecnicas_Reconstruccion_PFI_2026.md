@@ -558,6 +558,25 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 14. **P14 — Oráculo:** el seed usa `oraculo_PD07_preliminar.json`, marcado como preliminar; no acredita EVD-01.
 15. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-22-WEB — Aplicación web, fuentes documentales y resolución de DIF-67, DIF-84 y DIF-21
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** §3.2–3.4, §5.5, §6.2, HU-04, RF-10 a RF-13, RF-21, RF-22, Tabla 3.II, Tabla 3.VI, PD-03, PD-07, RC-P04, DO-2026-10-22-TAR, DO-2026-10-22-OPS. **Principio:** la interfaz permite usar y demostrar lo que funciona; no muestra capacidades inexistentes (RF-06, RF-23, RN-14 y RF-24 quedan fuera hasta implementarse).
+
+1. **F1 — Orden:** base → trámite, historial y evidencia (D, lectura) → tareas y decisión (D) → carga y validación con visor (A) → vínculos y controles (C) → consulta asistida (B) → administración.
+2. **F2 — Stack:** React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui (Radix, `class-variance-authority`, `clsx`, `tailwind-merge`), `lucide-react`, React Router 7, TanStack Query 5, `openapi-typescript` (desarrollo) y `openapi-fetch`, Zod, `react-pdf`; Vitest, Testing Library, jsdom y Playwright. Sin React Hook Form, gestores de estado ni analítica. Versiones exactas con al menos dos semanas.
+3. **F3 — Autenticación en el navegador:** Cognito `InitiateAuth` (`USER_PASSWORD_AUTH`) por `fetch`, sin SDK; token de acceso en memoria y de refresco en `sessionStorage`. En local, se pega un token emitido con `token_local`.
+4. **F4 — Fuente documental:** `GET /tramites/{t}/versiones/{v}/archivo` devuelve una URL prefirmada de lectura de 5 minutos, con las mismas reglas de acceso que el resto de las consultas (P8 de DO-2026-10-22-TAR). CORS GET en el bucket documental. Los DOCX se presentan con su localizador estructural, sin visor.
+5. **F5 — Nombres:** columna `nombre_visible` en `usuario`, cargada por el administrador, y `GET /usuarios/directorio?ids=` para cualquier cuenta habilitada (solo id y nombre).
+6. **F6 — Historial de consultas:** `GET /tramites/{t}/consultas` devuelve las consultas propias de quien consulta.
+7. **F7 — Publicación para la demo:** la aplicación corre en la máquina del presentador contra API Gateway; CORS en API Gateway y en el bucket por Terraform, aplicado por el operador. S3 + CloudFront queda para después, con aprobación y costo.
+8. **F8 — Semilla según PD-07:** C-v1 + O-v1 + F-v2; la revisión legal aprueba y la aprobación final observa con motivo (trámite Observado). Un segundo trámite con C-v1 procesado e incorporado, en Borrador, para el recorrido en vivo.
+9. **F9 — Procesamiento simulado:** herramienta solo para desarrollo y pruebas E2E con respuestas fijas, rotulada como simulación y rechazada en demo. No se usa como evidencia ni en la defensa.
+10. **F10 — DIF-67:** nuevo tipo de validación `ausente`, sin valor, con motivo `no_consta` o `no_aplica`, actor, fecha, versión y, si existía, la sugerencia descartada. La confirmación del flujo (P4 de DO-2026-10-22-TAR) exige cada campo del esquema **resuelto por una persona**: con valor validado o declarado ausente. En R1–R4, un campo ausente produce falta de datos con esa explicación.
+11. **F11 — DIF-84:** oráculo v2 con los nombres de RC-P04 para los cinco documentos y regeneración de O y F con un número documental estable entre versiones, sin cambiar fechas, importes, CUIT ni resultados de reglas. Tarea del equipo (Etapa 0.8); hasta entonces la semilla usa la referencia impresa como número.
+12. **F12 — DIF-21:** se cierra como «No requiere cambio». RF-21 audita acciones significativas del ciclo del trámite; los rechazos 401 y 403 permanecen en los registros técnicos (código, solicitud, usuario, sin contenido) y se cubren con pruebas negativas.
+13. **F13 — CI:** job de frontend sin AWS (lint, tipos, pruebas y build).
+14. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

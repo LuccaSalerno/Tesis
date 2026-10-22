@@ -66,7 +66,7 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
         api = ClienteApi("http://testserver", tokens, transporte_de(cliente))
 
         def procesar(_: ClienteApi, __: int, archivos: list[int]) -> None:
-            # Todo se procesa con el contrato fijo: O-v1 y F-v1 quedan sugeridos como
+            # Todo se procesa con el contrato fijo: O-v1 y F-v2 quedan sugeridos como
             # contrato y la semilla los corrige al tipo del oráculo.
             for archivo in archivos:
                 recorrer(
@@ -97,20 +97,21 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
         entorno["api"], _manifiesto(), ORACULO, entorno["procesar"]
     ).ejecutar()
     assert manifiesto.resultado == "completado"
-    completo, en_vivo = manifiesto.tramites["completo"], manifiesto.tramites["en_vivo"]
-    assert completo["estado"] == "aprobado" and len(completo["decisiones"]) == 2
-    assert en_vivo["estado"] == "pendiente_validacion"
-    assert completo["controles"] == {
+    observado, en_vivo = manifiesto.tramites["observado"], manifiesto.tramites["en_vivo"]
+    assert observado["estado"] == "observado" and len(observado["decisiones"]) == 2
+    assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"C-v1"}
+    # PD-07, conjunto C-v1 + O-v1 + F-v2: solo R3 advierte.
+    assert observado["controles"] == {
         "R1": "cumplimiento",
         "R2": "cumplimiento",
         "R3": "advertencia",
-        "R4": "advertencia",
+        "R4": "cumplimiento",
     }
-    validaciones = completo["validaciones"]
+    validaciones = observado["validaciones"]
     assert validaciones["C-v1"]["tipo_documental"] == "confirmacion"
     assert validaciones["O-v1"]["tipo_documental"] == "correccion"
     assert validaciones["C-v1"]["cuit_contraparte"] == "confirmacion"
-    assert validaciones["F-v1"]["numero"] == "sin_sugerencia"
+    assert validaciones["F-v2"]["numero"] == "sin_sugerencia"
     assert set(manifiesto.cuentas) == set(sembrar_demo.ROLES)
     assert "token" not in json.dumps(manifiesto.__dict__).lower()
 
@@ -119,8 +120,10 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert len(evidencias) == 2
     indice = json.loads((tmp_path / "indice.json").read_text())
     assert indice["sesion"] == "e90-pruebas"
-    primera = json.loads((tmp_path / evidencias[0]).read_text())
+    primera, segunda = (json.loads((tmp_path / n).read_text()) for n in sorted(evidencias))
     assert primera["decision"]["tipo"] == "aprobacion"
+    assert segunda["decision"]["tipo"] == "observacion"
+    assert segunda["decision"]["motivo"] == sembrar_demo.MOTIVO_OBSERVACION
     assert {c["codigo_regla"][:2] for c in primera["controles"]} == {"R1", "R2", "R3", "R4"}
 
 
@@ -135,8 +138,8 @@ def test_p11_no_siembra_fuera_de_active() -> None:
 
 def test_pd_07_la_semilla_rechaza_un_corpus_alterado() -> None:
     alterado = json.loads(json.dumps(ORACULO))
-    alterado["archivos_pdf"]["F-v1_Factura.pdf"]["sha256"] = "0" * 64
-    with pytest.raises(RuntimeError, match=r"F-v1_Factura\.pdf"):
+    alterado["archivos_pdf"]["F-v2_Factura.pdf"]["sha256"] = "0" * 64
+    with pytest.raises(RuntimeError, match=r"F-v2_Factura\.pdf"):
         sembrar_demo.verificar_corpus(alterado)
 
 
@@ -320,3 +323,59 @@ def test_p8_se_niega_fuera_de_la_demo_y_con_el_estado_remoto(
     bucket = _bucket(s3, etiquetas)
     assert vaciar_bucket_versionado.main(["--bucket", bucket], s3=s3) == 1
     assert len(s3.list_object_versions(Bucket=bucket)["Versions"]) == 2
+
+
+# --- Semilla local de desarrollo (WEB F8, F9) --------------------------------------------
+
+
+@pytest.mark.integracion
+def test_f9_semilla_local_con_procesamiento_simulado(
+    base_migrada: Configuracion, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from atlas.herramientas import sembrar_local
+
+    aplicacion = crear_aplicacion(base_migrada)
+    with TestClient(aplicacion) as cliente:
+        manifiesto, tokens = sembrar_local.sembrar(
+            base_migrada, "http://testserver", CLAVES_PRUEBA, transporte_de(cliente)
+        )
+    aplicacion.state.motor.dispose()
+    assert manifiesto.resultado == "completado"
+    assert "SIMULADO" in manifiesto.oraculo
+    assert set(tokens) == set(sembrar_demo.ROLES)
+    observado = manifiesto.tramites["observado"]
+    # Con la simulación del oráculo, la IA «acierta»: todo se confirma y queda rotulado.
+    assert observado["validaciones"]["O-v1"]["tipo_documental"] == "confirmacion"
+    assert observado["controles"]["R3"] == "advertencia"
+    monkeypatch.setattr(
+        sembrar_local, "obtener_configuracion", lambda: configuracion_sin_base(entorno="demo")
+    )
+    assert sembrar_local.main([]) == 1
+
+
+@pytest.mark.integracion
+def test_f9_semilla_local_usa_o_crea_el_administrador(base_reiniciada: Configuracion) -> None:
+    from atlas.herramientas import sembrar_local
+
+    assert sembrar_local.sub_administrador(base_reiniciada) == sembrar_local.SUBS["administrador"]
+    # Con un administrador ya creado, la semilla actúa con esa misma identidad.
+    assert sembrar_local.sub_administrador(base_reiniciada) == sembrar_local.SUBS["administrador"]
+
+
+def test_f9_main_de_la_semilla_local_guarda_el_manifiesto(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from atlas.herramientas import sembrar_local
+
+    generadas = sembrar_local.claves_locales(tmp_path / "nuevas")
+    assert sembrar_local.claves_locales(tmp_path / "nuevas").jwks() == generadas.jwks()
+    monkeypatch.setattr(sembrar_local, "obtener_configuracion", configuracion_sin_base)
+    monkeypatch.setattr(sembrar_local, "RAIZ_REPOSITORIO", tmp_path)
+    monkeypatch.setattr(sembrar_local, "claves_locales", lambda _: CLAVES_PRUEBA)
+    monkeypatch.setattr(
+        sembrar_local, "sembrar", lambda *_: (_manifiesto(), {"responsable": "token-local"})
+    )
+    assert sembrar_local.main(["--claves", str(tmp_path / "claves")]) == 0
+    salida = capsys.readouterr().out
+    assert "Semilla LOCAL (simulada)" in salida and "[responsable]" in salida
+    assert list((tmp_path / "operaciones" / "sesiones").glob("*/manifiesto_seed.json"))

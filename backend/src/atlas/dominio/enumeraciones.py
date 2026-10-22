@@ -109,6 +109,14 @@ class TipoValidacion(StrEnum):
     CONFIRMACION = "confirmacion"  # aceptó la sugerencia tal cual
     CORRECCION = "correccion"  # registró un valor distinto del sugerido
     SIN_SUGERENCIA = "sin_sugerencia"  # el dato no tenía sugerencia
+    AUSENTE = "ausente"  # una persona declara que no consta o no aplica (DO-2026-10-22-WEB F10)
+
+
+class MotivoAusencia(StrEnum):
+    """Por qué un campo del esquema no tiene valor en la versión (DO-2026-10-22-WEB F10)."""
+
+    NO_CONSTA = "no_consta"  # el dato no figura en el documento
+    NO_APLICA = "no_aplica"  # el dato no corresponde a este caso documental
 
 
 class MotivoAbstencion(StrEnum):
@@ -212,6 +220,7 @@ class AccionAuditoria(StrEnum):
     CAMPO_CONFIRMADO = "campo_confirmado"
     CAMPO_CORREGIDO = "campo_corregido"
     CAMPO_REGISTRADO = "campo_registrado"
+    CAMPO_DECLARADO_AUSENTE = "campo_declarado_ausente"
     VINCULO_CREADO = "vinculo_creado"
     VINCULO_SUGERIDO = "vinculo_sugerido"
     VINCULO_CONFIRMADO = "vinculo_confirmado"
@@ -234,3 +243,4 @@ class AccionAuditoria(StrEnum):
     TRAMITE_OBSERVADO = "tramite_observado"
     TRAMITE_SUBSANADO = "tramite_subsanado"
     CICLO_DESPLAZADO = "ciclo_desplazado"
+    CUENTA_NOMBRE_CAMBIADO = "cuenta_nombre_cambiado"

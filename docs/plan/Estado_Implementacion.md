@@ -2,7 +2,7 @@
 
 **Propósito:** que cualquier persona o agente pueda retomar el trabajo sin el historial de conversaciones. Se actualiza en el mismo commit que cierra cada hito (AGENTS.md §6). El plan está en `Plan_Implementacion_por_Etapas.md`; este documento solo registra dónde estamos.
 
-**Actualización:** 22/10/2026, después del hito 1.0 preparado en local (la Etapa 1 queda completa en local; nada se desplegó).
+**Actualización:** 22/10/2026, después de la aplicación web (DO-2026-10-22-WEB). La Etapa 1 queda completa en local; nada se desplegó.
 **Rama de trabajo:** `fundacion/local-backend` (no se hace merge a `main` sin revisión del equipo).
 **Último commit con CI en verde en GitHub:** `2bb4dff` (hito 1.0; 677 pruebas aprobadas, 4 omitidas, cobertura total 98 % y los 73 módulos ≥ 90 %).
 **Hito 1.0, ensayo de CI limpio local:** 677 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 73 módulos ≥ 90 %; incluye la inicialización privilegiada contra el superusuario efímero de PostgreSQL.
@@ -14,6 +14,7 @@
 |---|---|---|---|---|
 | Fundación local | Hecho | `b6df546`, `43cef95` | RC-P02, PD-04 (núcleo, migraciones 0001–0002) | — |
 | 1.0 Preparación del despliegue manual | Hecho, solo local (Terraform validado sin AWS) | commit del hito 1.0 (`RC-P10…`) | DO-2026-10-22-OPS | — |
+| Aplicación web (A a D) | Hecho, solo local (E2E contra el stack local) | commit de la aplicación web | DO-2026-10-22-WEB | **A a D** en la interfaz |
 | 1.1 Primer ciclo en AWS | **Pendiente del equipo** (presupuesto, cotización oficial, ejecución manual) | — | DO-2026-10-21, DO-2026-10-21-E90A | — |
 | 1.2 Autenticación, roles y cuentas | Hecho, solo local | `32b00af` | DT-AUT-01, DT-AUT-02 | — |
 | 1.3 Trámite, carga e incorporación | Hecho, solo local | `a954137`, `6cc7afa` | DT-AWS-01, DO-2026-10-22-CARGAS | — |
@@ -50,27 +51,29 @@
 - **Documentación:** procedimiento concreto en `infra/terraform/README.md` y cotización por sesión en `docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md` (≈ USD 0,21/h de base, sin oficializar).
 - Diferencias nuevas: DIF-77 a DIF-86.
 
+## Aplicación web: qué quedó (DO-2026-10-22-WEB)
+
+- `frontend/`: React y TypeScript con el contrato generado del OpenAPI real.
+- Áreas del trámite: Resumen, Documentos y datos (validación con el PDF y la fuente resaltada), Vínculos y controles, Consulta, Revisión e Historial.
+- Bandeja y decisión del revisor; **Evidencia de la decisión** (ficha, cadena, versiones, datos validados, controles con sus entradas resaltadas y eventos); administración (plantillas, asignación y nombres).
+- Backend nuevo: URL de lectura del original (F4), nombres visibles y directorio (F5), historial de consultas (F6) y validación `ausente` (F10, migración 0010).
+- Semilla según EVD-B (F8). Procesamiento simulado y semilla local solo para desarrollo (F9).
+- CORS en Terraform para la aplicación local del presentador (F7). Job de frontend en la CI (F13).
+- DIF-21 cerrada como «No requiere cambio» (F12); DIF-67 resuelta con `ausente`; DIF-84 pasa al equipo (F11). Diferencias nuevas: DIF-87 a DIF-94.
+- **Verificación:** pruebas de componentes y dos recorridos E2E (evidencia de la decisión observada y validación con fuente) contra el stack local con procesamiento simulado. **No probado contra AWS** (Cognito, API Gateway, IA real).
+
 ## Próximo paso
 
-**1.1 (equipo, manual):**
-1. Descargar el paquete de certificados de RDS (`infra/certificados/README.md`).
-2. Cotizar en Pricing Calculator, incluidos Textract `AnalyzeDocument` y Bedrock, y aprobar el presupuesto.
-3. Ejecutar `infra/terraform/README.md` pasos A.1 a A.9 con planes revisados.
-4. Verificar A, B-E90, IAM, V-DB, V-MT y E, y retirar con el paso B.
+**1.1 (equipo, manual):** certificados de RDS, cotización oficial, presupuesto y `infra/terraform/README.md` (pasos A y B), ahora con `origenes_web` y `origenes_cors` para la aplicación local del presentador.
 
-Agente, cuando el equipo lo decida:
-- **interfaz web** para los puntos de demo;
-- **Etapa 2:** RF-06, que habilita EVD-A y EVD-B.
+**F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Antes de implementar se propone el diseño y se espera la aprobación.
+Agente, cuando el equipo lo decida: Etapa 2 (RF-06, que habilita EVD-A y EVD-B y la versión nueva en la interfaz).
 
 ## Preguntas abiertas al equipo
 
-- **DIF-21:** ¿RF-21 exige auditar los intentos rechazados (401 y 403)? Hoy quedan solo en los registros técnicos.
-- **DIF-67:** confirmar el flujo exige todos los campos del esquema validados. Si un campo no consta en el documento, ¿cómo se registra «no consta»? Hoy bloquea la confirmación.
-- **Interfaz web para la demo** (ver «Próximo paso»).
-- **DIF-84:** el oráculo PD-07 no trae número ni razón social de la orden y la factura; la semilla los toma del generador del corpus. ¿Se agregan al oráculo al congelarlo?
-- **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con 86 entradas pendientes de revisión por los autores.
+- **DIF-84 (F11):** regenerar O y F con número estable y publicar el oráculo v2.
+- **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con 94 entradas pendientes de revisión por los autores.
 
 ## Dónde está cada cosa
 

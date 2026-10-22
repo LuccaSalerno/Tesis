@@ -61,6 +61,23 @@ class AlmacenS3:
             raise ErrorIntegracion("s3_url_no_generada") from error
         return url
 
+    def url_lectura(self, clave: str, vigencia_s: int, nombre: str) -> str:
+        # El nombre solo va como sugerencia de descarga; se limpia de comillas.
+        limpio = nombre.replace('"', "").replace("\\", "")
+        try:
+            url: str = self._cliente.generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": self._bucket,
+                    "Key": clave,
+                    "ResponseContentDisposition": f'inline; filename="{limpio}"',
+                },
+                ExpiresIn=vigencia_s,
+            )
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_url_no_generada") from error
+        return url
+
     def metadatos(self, clave: str) -> MetadatosObjeto | None:
         try:
             respuesta = self._cliente.head_object(Bucket=self._bucket, Key=clave)

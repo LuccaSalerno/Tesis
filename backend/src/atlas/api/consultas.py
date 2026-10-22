@@ -6,8 +6,9 @@ asignada (Tabla 3.II); para este, el alcance son las versiones vigentes de sus c
 solicitud solo trae la pregunta.
 """
 
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Request, status
 from pydantic import BaseModel, Field
@@ -50,6 +51,7 @@ class AfirmacionRespuesta(BaseModel):
 
 class ConsultaRespuesta(BaseModel):
     id: int
+    pregunta: str
     suficiente: bool
     respuesta: str | None
     afirmaciones: list[AfirmacionRespuesta]
@@ -59,6 +61,61 @@ class ConsultaRespuesta(BaseModel):
     version_instrucciones: str | None
     modelo_embeddings: str
     creado_en: datetime
+
+
+def _referencia(f: consultas.FragmentoRecuperado) -> Referencia:
+    return Referencia(
+        fragmento_id=f.fragmento_id,
+        documento_id=f.documento_id,
+        documento_nombre=f.documento_nombre,
+        version_id=f.version_id,
+        version_numero=f.version_numero,
+        pagina=f.pagina,
+        seccion=f.seccion,
+        contenido=f.contenido,
+    )
+
+
+def _respuesta(
+    consulta: Any, afirmaciones: Iterable[consultas.Afirmacion], recuperados: int
+) -> ConsultaRespuesta:
+    return ConsultaRespuesta(
+        id=consulta.id,
+        pregunta=consulta.pregunta,
+        suficiente=consulta.suficiente,
+        respuesta=consulta.respuesta,
+        afirmaciones=[
+            AfirmacionRespuesta(texto=a.texto, referencias=[_referencia(f) for f in a.referencias])
+            for a in afirmaciones
+        ],
+        motivo_abstencion=consulta.motivo_abstencion,
+        fragmentos_recuperados=recuperados,
+        modelo_generacion=consulta.modelo_generacion,
+        version_instrucciones=consulta.version_instrucciones,
+        modelo_embeddings=consulta.modelo_embeddings,
+        creado_en=consulta.creado_en,
+    )
+
+
+def _acceso(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramites.Acceso:
+    # Tabla 3.II: responsable del trámite o revisor/aprobador con tarea asignada.
+    if not ({Rol.RESPONSABLE_TRAMITE, Rol.REVISOR_APROBADOR} & usuario.roles):
+        raise NoPermitido("Operación no permitida")
+    return tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
+
+
+@enrutador.get("/{tramite_id}/consultas", response_model=list[ConsultaRespuesta])
+def listar_consultas(
+    tramite_id: int, usuario: Autenticado, sesion: Sesion
+) -> list[ConsultaRespuesta]:
+    """Historial de las consultas propias en el trámite (DO-2026-10-22-WEB F6)."""
+    acceso = _acceso(sesion, tramite_id, usuario)
+    return [
+        _respuesta(r.consulta, r.afirmaciones, r.recuperados)
+        for r in consultas.historial(sesion, acceso.tramite.id, usuario.id)
+    ]
 
 
 @enrutador.post(
@@ -73,12 +130,7 @@ def consultar(
     sesion: Sesion,
     request: Request,
 ) -> ConsultaRespuesta:
-    # Tabla 3.II: responsable del trámite o revisor/aprobador con tarea asignada.
-    if not ({Rol.RESPONSABLE_TRAMITE, Rol.REVISOR_APROBADOR} & usuario.roles):
-        raise NoPermitido("Operación no permitida")
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = _acceso(sesion, tramite_id, usuario)
     resultado = consultas.consultar(
         sesion,
         tramite=acceso.tramite,
@@ -92,33 +144,4 @@ def consultar(
     )
     consulta = resultado.consulta
     sesion.refresh(consulta)
-    return ConsultaRespuesta(
-        id=consulta.id,
-        suficiente=consulta.suficiente,
-        respuesta=consulta.respuesta,
-        afirmaciones=[
-            AfirmacionRespuesta(
-                texto=a.texto,
-                referencias=[
-                    Referencia(
-                        fragmento_id=f.fragmento_id,
-                        documento_id=f.documento_id,
-                        documento_nombre=f.documento_nombre,
-                        version_id=f.version_id,
-                        version_numero=f.version_numero,
-                        pagina=f.pagina,
-                        seccion=f.seccion,
-                        contenido=f.contenido,
-                    )
-                    for f in a.referencias
-                ],
-            )
-            for a in resultado.afirmaciones
-        ],
-        motivo_abstencion=consulta.motivo_abstencion,
-        fragmentos_recuperados=len(resultado.recuperados),
-        modelo_generacion=consulta.modelo_generacion,
-        version_instrucciones=consulta.version_instrucciones,
-        modelo_embeddings=consulta.modelo_embeddings,
-        creado_en=consulta.creado_en,
-    )
+    return _respuesta(consulta, resultado.afirmaciones, len(resultado.recuperados))

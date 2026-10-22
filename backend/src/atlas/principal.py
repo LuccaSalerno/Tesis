@@ -5,6 +5,8 @@ El registro de acceso de uvicorn se desactiva porque incluye la ruta concreta y
 la consulta; el middleware propio registra solo la plantilla de la ruta.
 """
 
+from typing import Any
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
@@ -92,13 +94,21 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.add_exception_handler(ArchivoRechazado, tramites.responder_archivo_rechazado)
     aplicacion.add_exception_handler(ErrorIntegracion, _responder_integracion)
     aplicacion.add_exception_handler(ErrorEtapa, _responder_integracion)
-    aplicacion.include_router(salud.enrutador)
-    aplicacion.include_router(cuentas.enrutador)
-    aplicacion.include_router(tramites.enrutador)
-    aplicacion.include_router(consultas.enrutador)
-    aplicacion.include_router(vinculos.enrutador)
-    aplicacion.include_router(revision.enrutador)
+    _incluir_rutas(aplicacion)
     return aplicacion
+
+
+def _incluir_rutas(aplicacion: FastAPI) -> None:
+    for modulo in (salud, cuentas, tramites, consultas, vinculos, revision):
+        aplicacion.include_router(modulo.enrutador)
+
+
+def esquema_openapi() -> dict[str, Any]:
+    """Contrato OpenAPI de la API, sin configuración ni servicios: lo usa la aplicación web
+    para generar sus tipos (DO-2026-10-22-WEB F2)."""
+    aplicacion = FastAPI(title="ATLAS", version=__version__)
+    _incluir_rutas(aplicacion)
+    return aplicacion.openapi()
 
 
 async def _responder_http(_: Request, error: Exception) -> JSONResponse:

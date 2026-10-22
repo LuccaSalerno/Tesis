@@ -33,6 +33,7 @@ from atlas.dominio.enumeraciones import (
     EstadoCiclo,
     EstadoTarea,
     EstadoTramite,
+    MotivoAusencia,
     ResultadoAuditoria,
     Rol,
     TipoActor,
@@ -640,8 +641,9 @@ class ValidacionEvidencia(BaseModel):
     valor_sugerido: str | None
     valor_sugerido_id: int | None
     localizador_sugerido: Localizador | None
-    valor_validado: str
+    valor_validado: str | None
     tipo: TipoValidacion
+    motivo_ausencia: MotivoAusencia | None
     validador_id: int
     validado_en: datetime
     reemplaza_a_id: int | None
@@ -697,6 +699,7 @@ def consultar_evidencia(
                 localizador_sugerido=_localizador(v.fuente_sugerencia),
                 valor_validado=v.validacion.valor_validado,
                 tipo=v.validacion.tipo,
+                motivo_ausencia=v.validacion.motivo_ausencia,
                 validador_id=v.validacion.validador_id,
                 validado_en=v.validacion.validado_en,
                 reemplaza_a_id=v.validacion.reemplaza_a_id,

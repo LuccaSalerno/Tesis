@@ -1,0 +1,50 @@
+/** Alias de los esquemas del contrato OpenAPI generado (DO-2026-10-22-WEB F2). */
+import type { components } from "./esquema";
+
+type S = components["schemas"];
+
+export type EstadoTramite = S["EstadoTramite"];
+export type EstadoTarea = S["EstadoTarea"];
+export type EstadoCiclo = S["EstadoCiclo"];
+export type EstadoTrabajo = S["EstadoTrabajo"];
+export type EstadoVinculo = S["EstadoVinculo"];
+export type ResultadoRegla = S["ResultadoRegla"];
+export type TipoValidacion = S["TipoValidacion"];
+export type TipoDocumental = S["TipoDocumental"];
+export type MotivoAusencia = S["MotivoAusencia"];
+export type MotivoAbstencion = S["MotivoAbstencion"];
+export type MotivoSinFuente = S["MotivoSinFuente"];
+export type TipoDecision = S["TipoDecision"];
+export type Rol = S["Rol"];
+
+export type Tramite = S["TramiteRespuesta"];
+export type TramiteDetalle = S["TramiteDetalle"];
+export type Documento = S["DocumentoRespuesta"];
+export type Archivo = S["ArchivoRespuesta"];
+export type Sugerencias = S["SugerenciasRespuesta"];
+export type Sugerencia = S["SugerenciaRespuesta"];
+export type Localizador = S["Localizador"];
+export type Validaciones = S["ValidacionesRespuesta"];
+export type DatoValidacion = S["DatoValidacion"];
+export type Validacion = S["ValidacionRespuesta"];
+export type Vinculos = S["VinculosRespuesta"];
+export type Vinculo = S["VinculoRespuesta"];
+export type Controles = S["ControlesRespuesta"];
+export type Control = S["ControlRespuesta"];
+export type Ejecucion = S["EjecucionRespuesta"];
+export type Consulta = S["ConsultaRespuesta"];
+export type Ciclo = S["CicloRespuesta"];
+export type TareaListada = S["TareaListada"];
+export type TareaDetalle = S["TareaDetalle"];
+export type TareaResumen = S["TareaResumen"];
+export type Decision = S["DecisionRespuesta"];
+export type Evidencia = S["EvidenciaRespuesta"];
+export type ValidacionEvidencia = S["ValidacionEvidencia"];
+export type Hito = S["HitoRespuesta"];
+export type Evento = S["EventoRespuesta"];
+export type FlujoSugerido = S["FlujoSugeridoRespuesta"];
+export type Plantilla = S["PlantillaRespuesta"];
+export type Cuenta = S["CuentaRespuesta"];
+export type Yo = S["YoRespuesta"];
+export type Salud = S["RespuestaSalud"];
+export type ArchivoVersion = S["ArchivoVersionRespuesta"];

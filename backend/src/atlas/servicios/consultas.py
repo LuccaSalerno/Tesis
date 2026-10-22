@@ -14,7 +14,7 @@ import time
 from dataclasses import dataclass
 from typing import Any
 
-from sqlalchemy import text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from atlas.dominio.enumeraciones import MotivoAbstencion
@@ -234,3 +234,82 @@ def consultar(
     return Resultado(
         consulta=consulta, afirmaciones=tuple(afirmaciones), recuperados=tuple(recuperados)
     )
+
+
+# --- Historial propio (DO-2026-10-22-WEB F6) --------------------------------------------
+
+_CITADOS = text(
+    """
+    SELECT f.id, f.contenido, d.id AS documento_id, d.nombre AS documento_nombre,
+           v.id AS version_id, v.numero AS version_numero, rf.pagina, rf.seccion
+    FROM atlas.fragmento f
+    JOIN atlas.version_documental v ON v.archivo_id = f.archivo_id
+    JOIN atlas.documento d ON d.id = v.documento_id AND d.tramite_id = :tramite
+    LEFT JOIN atlas.referencia_fuente rf ON rf.id = f.fuente_id
+    WHERE f.id = ANY(CAST(:ids AS bigint[]))
+    """
+)
+
+
+def _citas(afirmacion: dict[str, object]) -> list[int]:
+    ids = afirmacion.get("fragmentos")
+    return [int(i) for i in ids] if isinstance(ids, list) else []
+
+
+@dataclass(frozen=True)
+class ConsultaRegistrada:
+    consulta: ConsultaAsistida
+    afirmaciones: tuple[Afirmacion, ...]
+    recuperados: int
+
+
+def historial(sesion: Session, tramite_id: int, usuario_id: int) -> list[ConsultaRegistrada]:
+    """Consultas propias del trámite, de la más reciente a la más antigua, con las citas
+    reconstruidas desde los fragmentos guardados (DO-2026-10-22-RAG P2)."""
+    consultas = list(
+        sesion.scalars(
+            select(ConsultaAsistida)
+            .where(
+                ConsultaAsistida.tramite_id == tramite_id,
+                ConsultaAsistida.usuario_id == usuario_id,
+            )
+            .order_by(ConsultaAsistida.id.desc())
+        )
+    )
+    ids = sorted({i for c in consultas for a in c.afirmaciones for i in _citas(a)})
+    fragmentos = {
+        fila["id"]: FragmentoRecuperado(
+            etiqueta="",
+            fragmento_id=fila["id"],
+            contenido=fila["contenido"],
+            distancia=0.0,
+            documento_id=fila["documento_id"],
+            documento_nombre=fila["documento_nombre"],
+            version_id=fila["version_id"],
+            version_numero=fila["version_numero"],
+            pagina=fila["pagina"],
+            seccion=fila["seccion"],
+        )
+        for fila in sesion.execute(_CITADOS, {"tramite": tramite_id, "ids": ids}).mappings()
+    }
+    recuperados = dict(
+        sesion.execute(
+            select(ConsultaFragmento.consulta_id, func.count())
+            .where(ConsultaFragmento.consulta_id.in_([c.id for c in consultas]))
+            .group_by(ConsultaFragmento.consulta_id)
+        ).all()
+    )
+    return [
+        ConsultaRegistrada(
+            consulta=c,
+            afirmaciones=tuple(
+                Afirmacion(
+                    str(a["texto"]),
+                    tuple(fragmentos[i] for i in _citas(a) if i in fragmentos),
+                )
+                for a in c.afirmaciones
+            ),
+            recuperados=int(recuperados.get(c.id, 0)),
+        )
+        for c in consultas
+    ]

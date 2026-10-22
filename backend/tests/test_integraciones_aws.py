@@ -110,6 +110,10 @@ def test_dt_aws_01_preparar_aws_local_es_idempotente_y_solo_local(
     monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: configuracion)
     assert preparar_aws_local.main() == 0
     assert preparar_aws_local.main() == 0
+    reglas = crear_cliente(configuracion, "s3").get_bucket_cors(
+        Bucket=configuracion.s3_bucket_documentos
+    )["CORSRules"]
+    assert set(reglas[0]["AllowedMethods"]) == {"PUT", "GET"}  # aplicación web local (WEB F7)
     sin_endpoint = configuracion.model_copy(update={"aws_endpoint_url": None})
     monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: sin_endpoint)
     assert preparar_aws_local.main() == 1

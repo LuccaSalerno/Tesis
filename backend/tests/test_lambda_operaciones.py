@@ -12,6 +12,7 @@ from typing import Any
 
 import psycopg
 import pytest
+from alembic.script import ScriptDirectory
 from psycopg import sql
 
 from atlas.configuracion import Configuracion, ErrorConfiguracion
@@ -151,10 +152,11 @@ def test_v_db_inicializacion_real_en_postgresql_16() -> None:
 
 @pytest.mark.integracion
 def test_rc_p10_15_estado_y_migracion_idempotente(base_migrada: Configuracion) -> None:
+    cabeza = ScriptDirectory.from_config(ops.configuracion_alembic(base_migrada)).get_current_head()
     estado = ops.estado_migraciones(base_migrada)
-    assert estado["al_dia"] is True and estado["revision_actual"] == "0009"
+    assert estado["al_dia"] is True and estado["revision_actual"] == cabeza
     resultado = ops.migrar(base_migrada)
-    assert resultado["revision_anterior"] == resultado["revision_actual"] == "0009"
+    assert resultado["revision_anterior"] == resultado["revision_actual"] == cabeza
 
 
 @pytest.mark.integracion

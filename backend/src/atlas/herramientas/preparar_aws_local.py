@@ -14,6 +14,7 @@ from atlas.integraciones.aws import crear_cliente
 from atlas.integraciones.ciclo_vida_s3 import aplicar_ciclo_vida
 
 _ROL_FICTICIO = "arn:aws:iam::123456789012:role/atlas-procesamiento-local"
+ORIGENES_WEB_LOCALES = ("http://localhost:5173", "http://localhost:4173")
 
 
 def main(argumentos: list[str] | None = None) -> int:
@@ -36,6 +37,21 @@ def main(argumentos: list[str] | None = None) -> int:
     # Como en AWS (RC-P10): bucket versionado y regla de respaldo para cargas temporales.
     s3.put_bucket_versioning(Bucket=bucket, VersioningConfiguration={"Status": "Enabled"})
     aplicar_ciclo_vida(s3, bucket or "")
+    # La aplicación web local carga y lee con URL prefirmada desde el navegador (WEB F7).
+    s3.put_bucket_cors(
+        Bucket=bucket,
+        CORSConfiguration={
+            "CORSRules": [
+                {
+                    "AllowedOrigins": list(ORIGENES_WEB_LOCALES),
+                    "AllowedMethods": ["PUT", "GET"],
+                    "AllowedHeaders": ["content-type", "range"],
+                    "ExposeHeaders": ["content-length", "content-range", "accept-ranges"],
+                    "MaxAgeSeconds": 300,
+                }
+            ]
+        },
+    )
 
     sfn = crear_cliente(configuracion, "stepfunctions")
     arn = configuracion.sfn_maquina_procesamiento_arn or ""

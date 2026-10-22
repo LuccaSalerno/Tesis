@@ -8,7 +8,7 @@ inexistente.
 """
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request, Response, status
@@ -31,6 +31,7 @@ from atlas.dominio.enumeraciones import (
     EstadoTrabajo,
     EstadoTramite,
     FormatoArchivo,
+    MotivoAusencia,
     MotivoSinFuente,
     Rol,
     TipoDocumental,
@@ -469,7 +470,11 @@ class FuenteEntrada(BaseModel):
 
 class NuevaValidacion(BaseModel):
     campo: Annotated[str, Field(min_length=1, max_length=60)]
-    valor_validado: Annotated[str, Field(min_length=1, max_length=500)]
+    valor_validado: Annotated[str, Field(min_length=1, max_length=500)] | None = None
+    ausente: MotivoAusencia | None = Field(
+        default=None,
+        description="En lugar de un valor: el campo no consta en el documento o no aplica",
+    )
     valor_sugerido_id: int | None = None
     reemplaza_a_id: int | None = Field(
         default=None, description="Validación vigente del dato que se reemplaza, si la hay"
@@ -483,8 +488,9 @@ class ValidacionRespuesta(BaseModel):
     id: int
     version_id: int
     campo: str
-    valor_validado: str
+    valor_validado: str | None
     tipo: TipoValidacion
+    motivo_ausencia: MotivoAusencia | None
     valor_sugerido_id: int | None
     reemplaza_a_id: int | None
     validador_id: int
@@ -501,6 +507,7 @@ class ValidacionRespuesta(BaseModel):
             campo=validacion.campo,
             valor_validado=validacion.valor_validado,
             tipo=validacion.tipo,
+            motivo_ausencia=validacion.motivo_ausencia,
             valor_sugerido_id=validacion.valor_sugerido_id,
             reemplaza_a_id=validacion.reemplaza_a_id,
             validador_id=validacion.validador_id,
@@ -593,9 +600,52 @@ def registrar_validacion(
         valor_sugerido_id=nueva.valor_sugerido_id,
         reemplaza_a_id=nueva.reemplaza_a_id,
         fuente=FuenteIndicada(**nueva.fuente.model_dump()) if nueva.fuente else None,
+        ausente=nueva.ausente,
         solicitud_id=solicitud_id,
     )
     return ValidacionRegistradaRespuesta(
         **ValidacionRespuesta.desde(registrada.validacion, registrada.fuente).model_dump(),
         advertencias=registrada.advertencias,
+    )
+
+
+# --- Archivo original de una versión (HU-04, DO-2026-10-22-WEB F4) ---------------------
+
+
+VIGENCIA_URL_LECTURA_S = 300
+
+
+class ArchivoVersionRespuesta(BaseModel):
+    version_id: int
+    documento_id: int
+    nombre: str
+    formato: FormatoArchivo
+    url: str = Field(description="URL prefirmada de lectura; vence a los 5 minutos")
+    expira_en: datetime
+
+
+@enrutador.get(
+    "/{tramite_id}/versiones/{version_id}/archivo", response_model=ArchivoVersionRespuesta
+)
+def consultar_archivo_de_version(
+    tramite_id: int, version_id: int, usuario: Autenticado, sesion: Sesion, almacen: Almacen
+) -> ArchivoVersionRespuesta:
+    """URL de lectura breve del original, con las mismas reglas de acceso que las demás
+    consultas: el responsable, o el revisor para las versiones de sus ciclos (P8)."""
+    acceso = _consulta(sesion, tramite_id, usuario)
+    fila = sesion.execute(
+        select(VersionDocumental, Archivo)
+        .join(Archivo, Archivo.id == VersionDocumental.archivo_id)
+        .where(VersionDocumental.id == version_id, Archivo.tramite_id == acceso.tramite.id)
+    ).first()
+    if fila is None or not acceso.permite(version_id):
+        raise NoEncontrado("La versión no existe en este trámite")
+    version, archivo = fila
+    return ArchivoVersionRespuesta(
+        version_id=version.id,
+        documento_id=version.documento_id,
+        nombre=archivo.nombre,
+        formato=archivo.formato,
+        url=almacen.url_lectura(archivo.clave_objeto, VIGENCIA_URL_LECTURA_S, archivo.nombre),
+        expira_en=datetime.now(UTC) + timedelta(seconds=VIGENCIA_URL_LECTURA_S),
     )

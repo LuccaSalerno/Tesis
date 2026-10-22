@@ -23,6 +23,7 @@ from atlas.dominio.enumeraciones import (
     EstadoVinculo,
     ResultadoRegla,
     TipoDocumental,
+    TipoValidacion,
 )
 from atlas.persistencia.modelos import (
     Documento,
@@ -42,12 +43,14 @@ SIN_VINCULO = "No hay documentos vinculados con los tipos que compara la regla."
 
 @dataclass(frozen=True)
 class EstadoValidado:
-    """Lo validado de la versión vigente de un documento: tipo y campos de su esquema."""
+    """Lo validado de la versión vigente de un documento: tipo y campos de su esquema, con
+    valor (`campos`) o declarados ausentes por una persona (`ausentes`, DO-2026-10-22-WEB)."""
 
     documento: Documento
     version: VersionDocumental
     tipo: TipoDocumental | None
     campos: dict[str, ValidacionHumana]
+    ausentes: dict[str, ValidacionHumana]
 
 
 def estado_validado(sesion: Session, documento: Documento) -> EstadoValidado:
@@ -58,12 +61,20 @@ def estado_validado(sesion: Session, documento: Documento) -> EstadoValidado:
     reemplazadas = {v.reemplaza_a_id for v in validaciones}
     vigentes = [v for v in validaciones if v.id not in reemplazadas]
     clasificacion = next((v for v in vigentes if v.clase == ClaseSugerencia.CLASIFICACION), None)
-    tipo = None if clasificacion is None else TipoDocumental(clasificacion.valor_validado)
+    tipo = (
+        None
+        if clasificacion is None
+        else TipoDocumental(clasificacion.valor_validado or "")  # la clasificación nunca es ausente
+    )
     esquema = set() if tipo is None else {c.nombre for c in esquemas.CAMPOS[tipo]}
-    campos = {
-        v.campo: v for v in vigentes if v.clase == ClaseSugerencia.CAMPO and v.campo in esquema
-    }
-    return EstadoValidado(documento=documento, version=version, tipo=tipo, campos=campos)
+    del_esquema = [v for v in vigentes if v.clase == ClaseSugerencia.CAMPO and v.campo in esquema]
+    return EstadoValidado(
+        documento=documento,
+        version=version,
+        tipo=tipo,
+        campos={v.campo: v for v in del_esquema if v.tipo != TipoValidacion.AUSENTE},
+        ausentes={v.campo: v for v in del_esquema if v.tipo == TipoValidacion.AUSENTE},
+    )
 
 
 def _estados(sesion: Session, vinculo: VinculoDocumental) -> tuple[EstadoValidado, EstadoValidado]:
@@ -135,16 +146,26 @@ def ejecutar(
                 tipo: {c: por_tipo[tipo].campos[c] for c in campos if c in por_tipo[tipo].campos}
                 for tipo, campos in regla.campos.items()
             }
+            # Una ausencia declarada también es una entrada: la explicación la cita (V3).
+            declaradas = {
+                tipo: {
+                    c: por_tipo[tipo].ausentes[c] for c in campos if c in por_tipo[tipo].ausentes
+                }
+                for tipo, campos in regla.campos.items()
+            }
             versiones = {por_tipo[tipo].version.id for tipo in regla.tipos}
-            entradas = {v.id for campos in usadas.values() for v in campos.values()}
+            entradas = {
+                v.id for grupo in (usadas, declaradas) for c in grupo.values() for v in c.values()
+            }
             ultima = _ultima(sesion, vinculo.id, regla)
             if ultima is not None and _insumos(sesion, ultima.id) == (versiones, entradas):
                 continue  # mismas entradas: la ejecución vigente ya refleja este estado
             evaluacion = regla.evaluar(
                 {
-                    tipo: {c: v.valor_validado for c, v in campos.items()}
+                    tipo: {c: v.valor_validado or "" for c, v in campos.items()}
                     for tipo, campos in usadas.items()
-                }
+                },
+                {tipo: frozenset(campos) for tipo, campos in declaradas.items()},
             )
             ejecucion = EjecucionRegla(
                 tramite_id=tramite_id,

@@ -8,11 +8,15 @@ Uso (operador, con la API en `active` y solo cuentas ficticias):
         --cliente-cognito <id> --usuarios admin=… responsable=… revisor=… aprobador=… \\
         --manifiesto operaciones/sesiones/<sesion>/manifiesto_seed.json
 
-Deja dos trámites con C-v1, O-v1 y F-v1 del corpus PD-07:
+Deja dos trámites con el escenario EVD-B de PD-07 (DO-2026-10-22-WEB F8):
 
-1. **completo** (puntos de demo A a D): documentos procesados, validados contra el oráculo,
-   vinculados, flujo confirmado y las dos tareas aprobadas por sus revisores.
-2. **en vivo**: documentos procesados e incorporados, enviado a validación y sin validar.
+1. **observado** (puntos de demo A a D): C-v1, O-v1 y F-v2 procesados, validados contra el
+   oráculo y vinculados (R3 advierte que la orden está fuera de la vigencia); flujo
+   confirmado; la revisión legal aprueba y la aprobación final observa con motivo.
+2. **en vivo**: C-v1 procesado e incorporado, en Borrador, para recorrer A a D en vivo
+   (validar, consultar, incorporar O-v1 y F-v2, decidir).
+
+Los pasos siguientes de la historia (O-v2, nuevo ciclo, firma) dependen de RF-06 y RF-23.
 
 Cada dato se valida como lo haría una persona: si la sugerencia coincide con el oráculo se
 confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Nada se
@@ -41,9 +45,24 @@ ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 ARCHIVOS: Final = {
     "C-v1": "C-v1_Contrato_Mantenimiento_ATLAS.pdf",
     "O-v1": "O-v1_Orden_Compra.pdf",
-    "F-v1": "F-v1_Factura.pdf",
+    "F-v2": "F-v2_Factura.pdf",
 }
-NOMBRES: Final = {"C-v1": "Contrato C-v1", "O-v1": "Orden de compra O-v1", "F-v1": "Factura F-v1"}
+NOMBRES: Final = {
+    "C-v1": "Contrato de mantenimiento",
+    "O-v1": "Orden de compra",
+    "F-v2": "Factura",
+}
+# Personas ficticias del escenario (las de los mockups de §3.4 y §5.5).
+NOMBRES_VISIBLES: Final = {
+    "administrador": "Administración ATLAS",
+    "responsable": "Laura Méndez",
+    "revisor": "Martín Ríos",
+    "aprobador": "Sofía Herrera",
+}
+MOTIVO_OBSERVACION: Final = (
+    "La fecha de emisión de la orden de compra (15/03/2027) está fuera de la vigencia del"
+    " contrato (01/03/2026 a 28/02/2027). Corregir la orden antes de aprobar."
+)
 
 # El oráculo preliminar no trae todos los campos de RC-P04. Estos salen literalmente de la
 # fuente reproducible del corpus (herramientas/generar_corpus.py: tabla «Referencia» y
@@ -53,7 +72,7 @@ RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
 
 def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
     """Tipo validado y valores esperados por documento, con los nombres del esquema."""
-    c, o, f = (oraculo["documentos"][k] for k in ("C-v1", "O-v1", "F-v1"))
+    c, o, f = (oraculo["documentos"][k] for k in ("C-v1", "O-v1", "F-v2"))
     return {
         "C-v1": {
             "tipo_documental": "contrato",
@@ -79,9 +98,9 @@ def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
             "importe_total": o["total"],
             "moneda": o["moneda"],
         },
-        "F-v1": {
+        "F-v2": {
             "tipo_documental": "factura",
-            "numero": "F-v1",
+            "numero": "F-v2",
             "fecha_emision": f["fecha_emision"],
             "emisor": RAZON_SOCIAL_PROVEEDOR,
             "cuit_emisor": f["cuit_emisor"],
@@ -151,6 +170,11 @@ class Sembrador:
         de alta por su `sub` de Cognito, con roles mínimos (RF-25, RC-P03)."""
         yo = self.api.get("/usuarios/yo", "administrador")
         self.m.cuentas["administrador"] = yo["id"]
+        self.api.put(
+            f"/usuarios/{yo['id']}/nombre",
+            "administrador",
+            {"nombre_visible": NOMBRES_VISIBLES["administrador"]},
+        )
         existentes = {
             c["identificador_externo"]: c for c in self.api.get("/usuarios", "administrador")
         }
@@ -163,6 +187,11 @@ class Sembrador:
             sub = sub_del_token(self.api.tokens[clave])
             cuenta = existentes.get(sub) or self.api.post(
                 "/usuarios", "administrador", {"identificador_externo": sub}
+            )
+            self.api.put(
+                f"/usuarios/{cuenta['id']}/nombre",
+                "administrador",
+                {"nombre_visible": NOMBRES_VISIBLES[clave]},
             )
             self.api.put(f"/usuarios/{cuenta['id']}/roles/{rol}", "administrador")
             if clave == "aprobador":
@@ -196,11 +225,14 @@ class Sembrador:
 
     # --- Documentos -----------------------------------------------------------------
 
-    def cargar_documentos(self, clave: str, titulo: str) -> dict[str, Any]:
+    def cargar_documentos(
+        self, clave: str, titulo: str, codigos: tuple[str, ...]
+    ) -> dict[str, Any]:
         tramite = self.api.post("/tramites", "responsable", {"titulo": titulo})
         registro: dict[str, Any] = {"id": tramite["id"], "documentos": {}, "archivos": {}}
         self.m.tramites[clave] = registro
-        for codigo, archivo in ARCHIVOS.items():
+        for codigo in codigos:
+            archivo = ARCHIVOS[codigo]
             datos = (CORPUS / archivo).read_bytes()
             carga = self.api.post(
                 f"/tramites/{tramite['id']}/cargas",
@@ -265,7 +297,7 @@ class Sembrador:
         """RF-15: confirma el vínculo sugerido; si no lo hay, lo crea (RF-14)."""
         tramite_id, docs = registro["id"], registro["documentos"]
         registro["vinculos"] = []
-        for origen, destino in (("O-v1", "C-v1"), ("F-v1", "O-v1")):
+        for origen, destino in (("O-v1", "C-v1"), ("F-v2", "O-v1")):
             par = {docs[origen], docs[destino]}
             sugeridos = self.api.get(f"/tramites/{tramite_id}/vinculos", "responsable")["sugeridos"]
             sugerido = next(
@@ -308,10 +340,16 @@ class Sembrador:
             },
         )
         registro["ciclo"] = ciclo["id"]
-        registro["decisiones"] = []
-        for tarea, rol in zip(ciclo["tareas"], ("revisor", "aprobador"), strict=True):
-            decision = self.api.post(f"/tareas/{tarea['id']}/decision", rol, {"tipo": "aprobacion"})
-            registro["decisiones"].append(decision["id"])
+        legal, final = ciclo["tareas"]
+        aprobacion = self.api.post(
+            f"/tareas/{legal['id']}/decision", "revisor", {"tipo": "aprobacion"}
+        )
+        observacion = self.api.post(
+            f"/tareas/{final['id']}/decision",
+            "aprobador",
+            {"tipo": "observacion", "motivo": MOTIVO_OBSERVACION},
+        )
+        registro["decisiones"] = [aprobacion["id"], observacion["id"]]
         registro["estado"] = self.api.get(f"/tramites/{tramite_id}", "responsable")["estado"]
 
     # --- Recorrido completo ---------------------------------------------------------
@@ -322,12 +360,15 @@ class Sembrador:
             raise RuntimeError("La API no está en active: no se siembra")
         self.preparar_cuentas()
         self.crear_plantilla()
-        completo = self.cargar_documentos("completo", "Contrato de mantenimiento ATLAS (demo)")
-        self.validar(completo)
-        self.vincular(completo)
-        self.revisar(completo)
-        en_vivo = self.cargar_documentos("en_vivo", "Contrato de mantenimiento ATLAS (en vivo)")
-        self.api.post(f"/tramites/{en_vivo['id']}/envio-a-validacion", "responsable")
+        observado = self.cargar_documentos(
+            "observado", "Servicio de mantenimiento de laboratorio", ("C-v1", "O-v1", "F-v2")
+        )
+        self.validar(observado)
+        self.vincular(observado)
+        self.revisar(observado)
+        en_vivo = self.cargar_documentos(
+            "en_vivo", "Servicio de mantenimiento de laboratorio (en vivo)", ("C-v1",)
+        )
         en_vivo["estado"] = self.api.get(f"/tramites/{en_vivo['id']}", "responsable")["estado"]
         self.m.resultado = "completado"
         self.m.terminado_en = datetime.now(UTC).isoformat()

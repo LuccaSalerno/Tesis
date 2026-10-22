@@ -92,6 +92,13 @@ aprobados. Procedimiento completo: [infra/terraform/README.md](../infra/terrafor
 - Herramientas del operador: `sembrar_demo`, `exportar_evidencia` y `vaciar_bucket_versionado`
   (en `atlas.herramientas`).
 
+## Aplicación web y desarrollo local (DO-2026-10-22-WEB)
+
+- `python -m atlas.herramientas.exportar_openapi ../frontend/openapi.json`: contrato para el frontend.
+- `python -m atlas.herramientas.sembrar_local`: semilla PD-07 contra la API local con el
+  **procesamiento simulado** (`procesar_simulado`); imprime un token por rol. Solo desarrollo.
+- Detalle en [frontend/README.md](../frontend/README.md).
+
 ## Verificaciones
 
 ```

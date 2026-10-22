@@ -27,6 +27,7 @@ class Cuenta:
     estado: EstadoUsuario
     roles: frozenset[Rol]
     autorizacion_cierre: bool
+    nombre_visible: str | None = None
 
 
 def _roles(sesion: Session, usuario_id: int) -> frozenset[Rol]:
@@ -41,6 +42,7 @@ def _cuenta(sesion: Session, usuario: Usuario) -> Cuenta:
         estado=EstadoUsuario(usuario.estado),
         roles=_roles(sesion, usuario.id),
         autorizacion_cierre=usuario.autorizacion_cierre,
+        nombre_visible=usuario.nombre_visible,
     )
 
 
@@ -76,9 +78,14 @@ def dar_de_alta(
     *,
     actor_id: int | None,
     identificador_externo: str,
+    nombre_visible: str | None = None,
     solicitud_id: uuid.UUID | None = None,
 ) -> Cuenta:
-    usuario = Usuario(identificador_externo=identificador_externo, estado=EstadoUsuario.HABILITADA)
+    usuario = Usuario(
+        identificador_externo=identificador_externo,
+        estado=EstadoUsuario.HABILITADA,
+        nombre_visible=nombre_visible,
+    )
     try:
         with sesion.begin_nested():
             sesion.add(usuario)
@@ -200,3 +207,35 @@ def crear_administrador_inicial(sesion: Session, identificador_externo: str) -> 
     return cambiar_rol(
         sesion, actor_id=None, usuario_id=cuenta.id, rol=Rol.ADMINISTRADOR_OPERATIVO, otorgado=True
     )
+
+
+def cambiar_nombre(
+    sesion: Session,
+    *,
+    actor_id: int,
+    usuario_id: int,
+    nombre_visible: str | None,
+    solicitud_id: uuid.UUID | None = None,
+) -> Cuenta:
+    """DO-2026-10-22-WEB F5: el administrador carga el nombre que muestra la interfaz."""
+    usuario = _obtener_modificable(sesion, usuario_id)
+    if usuario.nombre_visible != nombre_visible:
+        usuario.nombre_visible = nombre_visible
+        sesion.flush()
+        registrar_evento_auditoria(
+            sesion,
+            accion=AccionAuditoria.CUENTA_NOMBRE_CAMBIADO,
+            entidad_tipo=ENTIDAD,
+            entidad_id=usuario.id,
+            actor_id=actor_id,
+            solicitud_id=solicitud_id,
+        )
+    return _cuenta(sesion, usuario)
+
+
+def directorio(sesion: Session, ids: list[int]) -> dict[int, str | None]:
+    """Solo id y nombre visible: lo necesario para mostrar quién actuó (F5)."""
+    filas = sesion.execute(
+        select(Usuario.id, Usuario.nombre_visible).where(Usuario.id.in_(ids))
+    ).all()
+    return {i: n for i, n in filas}
