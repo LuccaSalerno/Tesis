@@ -99,13 +99,22 @@ Convenciones:
 3. **Proponé un plan corto** antes de escribir código si la tarea toca infraestructura, el modelo de datos o más de un módulo.
 4. **Implementá en incrementos chicos**, con sus pruebas en el mismo cambio.
 5. **Ejecutá las pruebas** que correspondan. No declares una tarea terminada con pruebas fallando o sin pruebas.
-6. **Informá** con este formato:
+6. **Registrá las diferencias con la tesis** en `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, en el mismo cambio que las introduce. Incluye todo lo que la implementación:
+   - **agrega**: columnas, tablas, estados, rutas, componentes;
+   - **precisa**: valores, límites, formatos, criterios;
+   - **restringe**: por ejemplo, consultar solo versiones vigentes;
+   - **resuelve de otra forma** por necesidad de implementación;
+   - **hace distinto en local o en la CI** que en AWS.
+
+   También lo que la tesis da por existente y todavía no está implementado. Cada entrada indica la sección de la tesis, qué se implementó, la decisión que la respalda y una acción sugerida. Registrar no autoriza contradecir RF, RN o RNF: eso se consulta antes (§2.3).
+7. **Informá** con este formato:
 
 ```
 Tarea: <hito del plan>
 Requisitos cubiertos: <IDs>
 Archivos modificados: <lista>
 Decisiones delegadas tomadas: <IDs o «ninguna»>
+Diferencias con la tesis registradas: <IDs DIF-NN o «ninguna»>
 Pruebas: <qué se ejecutó y resultado>
 Pendientes o bloqueos: <lista>
 Preguntas para el equipo: <lista o «ninguna»>
@@ -121,6 +130,7 @@ Una tarea está terminada cuando:
 - tiene pruebas automatizadas que pasan, incluidas las negativas de autorización cuando corresponde;
 - no registra contenido documental en logs;
 - las decisiones delegadas están documentadas;
+- las diferencias con la tesis están registradas en `docs/tesis/Registro_Diferencias_con_la_Tesis.md`;
 - el informe de §6 está completo.
 
 **Una verificación de los contratos de aceptación solo puede marcarse como `Cumple` si se ejecutó contra su oráculo y se conservó la evidencia.** Que el código exista no la cumple.
