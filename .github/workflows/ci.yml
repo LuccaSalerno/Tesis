@@ -1,0 +1,67 @@
+# CI sin acceso a AWS (RC-P02, DO-2026-10-21): linting, análisis estático,
+# pruebas y cobertura con PostgreSQL + pgvector temporal en el runner.
+# Prohibido agregar OIDC, id-token, credenciales AWS o pasos de despliegue.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.1-pg16
+        env:
+          # Base efímera del runner, sin claves: autenticación trust solo dentro del job.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
+    env:
+      PGHOST: localhost
+      POSTGRES_USER: postgres
+      ATLAS_ENTORNO: tests
+      ATLAS_BD_HOST: localhost
+      ATLAS_BD_PUERTO: "5432"
+      ATLAS_BD_NOMBRE: atlas_tests
+      ATLAS_BD_USUARIO: atlas_tests_app
+      ATLAS_BD_USUARIO_MIGRACION: atlas_tests_migracion
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c requisitos-bloqueados.txt -e ".[desarrollo]"
+      - name: Inicializar PostgreSQL (equivalente local de RC-P10-15)
+        run: ../infra/local/inicializar_base.sh
+      - name: Linting
+        run: |
+          ruff format --check src tests migraciones
+          ruff check src tests migraciones
+      - name: Análisis estático
+        run: mypy
+      - name: Pruebas del backend con cobertura
+        run: pytest --cov --cov-report=term --cov-report=xml
+      - name: Pruebas de herramientas del corpus
+        working-directory: .
+        run: python -m pytest -q tests

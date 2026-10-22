@@ -1,0 +1,25 @@
+# PostgreSQL + pgvector para desarrollo local (RC-P02). Solo escucha en 127.0.0.1.
+# No es infraestructura AWS ni la sustituye. Uso: ver backend/README.md.
+name: atlas-local
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.1-pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${ATLAS_LOCAL_CLAVE_SUPERUSUARIO:?definir en infra/local/.env}
+      ATLAS_LOCAL_CLAVE_APP: ${ATLAS_LOCAL_CLAVE_APP:?definir en infra/local/.env}
+      ATLAS_LOCAL_CLAVE_MIGRACION: ${ATLAS_LOCAL_CLAVE_MIGRACION:?definir en infra/local/.env}
+    ports:
+      - "127.0.0.1:${ATLAS_LOCAL_PUERTO:-5432}:5432"
+    volumes:
+      - ./inicializar_base.sh:/docker-entrypoint-initdb.d/10_inicializar_base.sh:ro
+      - datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d atlas_tests"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  datos:
