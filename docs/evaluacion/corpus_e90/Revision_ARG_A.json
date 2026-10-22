@@ -34,6 +34,7 @@
     "version_maquetacion": "arg-a-v1"
   },
   "base_commit": "ec67dbf",
+  "commit_implementacion": "35dad5b",
   "congelado": false,
   "consultas_modificadas": [
     "Q12"

@@ -1,6 +1,6 @@
 # Incorporación de ARG_A — CPAU
 
-Fecha: 22/10/2026. Rama `codex/corpus-e90`, base de esta revisión `ec67dbf`. Decisión **DO-2026-10-22-CORPUS-ARG-A**, aprobación expresa del reemplazo recibida antes de implementar. Estado: **CANDIDATO_NO_CONGELADO**, sin mediciones de IA ni revisión de autores.
+Fecha: 22/10/2026. Rama `codex/corpus-e90`, base de esta revisión `ec67dbf`. **Commit de implementación: `35dad5b`**; cierre documental en el commit posterior. Decisión **DO-2026-10-22-CORPUS-ARG-A**, aprobación expresa del reemplazo recibida antes de implementar. Estado: **CANDIDATO_NO_CONGELADO**, sin mediciones de IA ni revisión de autores.
 
 ## Verificación del archivo y condiciones de reutilización
 
