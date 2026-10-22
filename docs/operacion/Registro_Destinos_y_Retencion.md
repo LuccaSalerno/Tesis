@@ -54,3 +54,15 @@ Hechos del código del repositorio, verificados con pruebas automatizadas locale
 - **Titan 256:** fue solo una prueba mínima de acceso. RC-P07 conserva **1024 dimensiones** para ambos embeddings en la comparación, con sus parámetros fijados; no se alteran migraciones, esquema vectorial ni protocolo a partir del smoke test.
 
 Los tokens y dimensiones comunicados son metadatos de las pruebas mínimas, no costos medidos ni resultados del corpus. Los presupuestos están en [Política de costos AWS](Politica_Costos_AWS.md). La conservación de estas notas no marca ninguna verificación contractual como `Cumple`.
+
+## Construcción local del corpus E90 — 22/10/2026
+
+DO-2026-10-22-CORPUS-CONSTRUCCION. Este incremento no añade destinos AWS ni modifica los servicios de aplicación. Solo se generan documentos sintéticos; los modelos públicos aprobados en blanco se consultaron para adaptación y atribución. No se envió contenido de los documentos generados a esos sitios ni se invocó Textract/Bedrock.
+
+| Componente local | Contenido y finalidad | Ubicación / retención | Verificación y límites |
+|---|---|---|---|
+| python-docx, Pillow y pypdf del entorno exclusivo de corpus | Fuentes, simulaciones y comprobación de documentos sintéticos y referencias | Worktree local: `corpus/e90/`, `oraculos/e90/`; conservación versionada hasta revisión/congelación del equipo, sin borrado automático | Paquetes/versiones en requisitos y manifiesto. Sin contenido en salidas de diagnóstico; solo códigos/IDs/recuentos |
+| LibreOffice headless y pdftoppm | Conversión DOCX a PDF y rasterización local para simulaciones | Procesos y temporales locales; documentos finales y auxiliares en el repositorio. Temporales de generación se limpian al salir; previews de QA e iteraciones en `/tmp` tienen retención temporal, no son evidencia permanente | Versión exacta registrada. Sin red en las herramientas de generación. ImageMagick disponible/versionado, no utilizado para transformar |
+| CI sin AWS | Valida archivos y referencias ya construidos; no genera ni invoca modelos | Copia efímera del runner/ensayo local y archivos sintéticos del repositorio. No cambia retención de servicios AWS ni sube artefactos nuevos | Pruebas de render omitidas explícitamente en CI; se ejecutan localmente con dependencias aprobadas |
+
+Los hashes y el resumen de verificación se conservan en `docs/evaluacion/corpus_e90/`. Los PDF/DOCX y las referencias contienen datos ficticios y no son registros de observabilidad. La consulta ARCA está reservada al equipo y no fue ejecutada por el agente.

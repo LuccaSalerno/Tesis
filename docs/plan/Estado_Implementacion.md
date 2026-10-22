@@ -82,3 +82,17 @@ Antes de implementar se propone el diseño y se espera la aprobación.
 | Diferencias con la tesis | `docs/tesis/Registro_Diferencias_con_la_Tesis.md` |
 | Destinos y retención del contenido documental | `docs/operacion/Registro_Destinos_y_Retencion.md` |
 | Puesta en marcha local, verificaciones y ensayo de CI limpio | `backend/README.md` |
+
+## Incremento aislado del corpus E90 — 22/10/2026
+
+**Rama:** `codex/corpus-e90`, desde `1e2a6c6`. **Decisión:** DO-2026-10-22-CORPUS-CONSTRUCCION y aprobación posterior de cuatro fuentes contractuales públicas. **Commit:** pendiente de registrar después del ensayo final de CI limpia. Esta sección describe solo el alcance de la rama del corpus; no cambia el estado del frontend ni del despliegue que se trabaja en paralelo.
+
+- Generados 65 documentos **candidatos**: 50 de medición y 15 de ajuste, con las cuatro familias por tipo del plan y tres adversariales dentro de medición. PD-07 permanece intacto y separado.
+- Doce CUIT candidatos de dígito válido, consulta manual ARCA pendiente; lista en `docs/evaluacion/corpus_e90/CUIT_Candidatos_Para_ARCA.md`.
+- Registros fuente previos, dependencias aisladas, fuentes públicas atribuidas, parámetros de simulaciones y versiones/hashes de herramientas/archivos registrados.
+- Inventario real, 403 referencias de campos y 30 consultas candidatas preparadas sobre documentos construidos. Ningún oráculo revisado por los autores ni congelado; no se midieron modelos ni se ejecutó AWS.
+- Auditoría estática de PD-07: hashes de cinco PDF y tres conjuntos esperados cotejados; ocho campos y localizadores incompletos en el oráculo. DIF-84 sigue abierta.
+- Pruebas finales y evidencia: ver `docs/evaluacion/corpus_e90/Informe_Cierre_Incremento.md`; se completa con resultados observados al terminar los comandos.
+- Diferencias provisionales: DIF-E90-01 a DIF-E90-07. Se renumeran al integrar con los registros de otras ramas.
+
+**Próximo paso:** revisión técnica independiente del otro agente, consulta manual ARCA, revisión de fuentes/traducciones, registros y referencias por los autores. Si cambia un CUIT u otro contenido, generar una revisión nueva y verificar de nuevo hashes/localizadores/consultas. La congelación y las campañas de IA quedan fuera del incremento.

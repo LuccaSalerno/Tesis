@@ -1,0 +1,648 @@
+{
+  "consultas": [
+    {
+      "afirmaciones_esperadas": [
+        "73.450,01 ARS"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-CTR-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-CTR-01-CAMPO-monto_total",
+        "E90-M-CTR-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Cuál es el total y en qué moneda está expresado en E90-M-CTR-01?",
+      "pregunta_id": "Q01",
+      "respuesta_referencia": "73.450,01 ARS",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "Entidad Sintética ATLAS E90 01 (ficticia)"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-CTR-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-CTR-01-CAMPO-contraparte"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué entidad interviene como contraparte en E90-M-CTR-01?",
+      "pregunta_id": "Q02",
+      "respuesta_referencia": "Entidad Sintética ATLAS E90 01 (ficticia)",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "121.797,01 USD"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-01-CAMPO-importe_total",
+        "E90-M-PRE-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Cuál es el total y en qué moneda está expresado en E90-M-PRE-01?",
+      "pregunta_id": "Q03",
+      "respuesta_referencia": "121.797,01 USD",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "Entidad Sintética ATLAS E90 02 (ficticia)"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-01-CAMPO-proveedor"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué entidad interviene como proveedor en E90-M-PRE-01?",
+      "pregunta_id": "Q04",
+      "respuesta_referencia": "Entidad Sintética ATLAS E90 02 (ficticia)",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "170.144,01 EUR"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-OC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-01-CAMPO-importe_total",
+        "E90-M-OC-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Cuál es el total y en qué moneda está expresado en E90-M-OC-01?",
+      "pregunta_id": "Q05",
+      "respuesta_referencia": "170.144,01 EUR",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "Entidad Sintética ATLAS E90 03 (ficticia)"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-OC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-01-CAMPO-proveedor"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué entidad interviene como proveedor en E90-M-OC-01?",
+      "pregunta_id": "Q06",
+      "respuesta_referencia": "Entidad Sintética ATLAS E90 03 (ficticia)",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "218.491,01 ARS"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-FAC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-FAC-01-CAMPO-importe_total",
+        "E90-M-FAC-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Cuál es el total y en qué moneda está expresado en E90-M-FAC-01?",
+      "pregunta_id": "Q07",
+      "respuesta_referencia": "218.491,01 ARS",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "Entidad Sintética ATLAS E90 04 (ficticia)"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-FAC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-FAC-01-CAMPO-emisor"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué entidad interviene como emisor en E90-M-FAC-01?",
+      "pregunta_id": "Q08",
+      "respuesta_referencia": "Entidad Sintética ATLAS E90 04 (ficticia)",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "266.838,01 USD"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-COM-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-COM-01-CAMPO-importe",
+        "E90-M-COM-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Cuál es el total y en qué moneda está expresado en E90-M-COM-01?",
+      "pregunta_id": "Q09",
+      "respuesta_referencia": "266.838,01 USD",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "Entidad Sintética ATLAS E90 05 (ficticia)"
+      ],
+      "categoria": "directa",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-COM-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-COM-01-CAMPO-contraparte"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué entidad interviene como contraparte en E90-M-COM-01?",
+      "pregunta_id": "Q10",
+      "respuesta_referencia": "Entidad Sintética ATLAS E90 05 (ficticia)",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 13 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-CTR-02"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-CTR-02-P015"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-CTR-02, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q11",
+      "respuesta_referencia": "El plazo de entrega es de 13 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-CTR-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-CTR-03-P023"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-CTR-03, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q12",
+      "respuesta_referencia": "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 26 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-02"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-02-P014"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-PRE-02, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q13",
+      "respuesta_referencia": "El plazo de entrega es de 26 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 27 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-03-P021"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-PRE-03, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q14",
+      "respuesta_referencia": "El plazo de entrega es de 27 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 22 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-OC-02"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-02-P014"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-OC-02, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q15",
+      "respuesta_referencia": "El plazo de entrega es de 22 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 23 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-OC-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-03-P021"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-OC-03, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q16",
+      "respuesta_referencia": "El plazo de entrega es de 23 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 18 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-FAC-02"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-FAC-02-P014"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-FAC-02, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q17",
+      "respuesta_referencia": "El plazo de entrega es de 18 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "El plazo de entrega es de 19 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      ],
+      "categoria": "condiciones",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-FAC-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-FAC-03-P021"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "Para coordinar la prestación de E90-M-FAC-03, ¿qué plazo y modalidad hay que tener en cuenta?",
+      "pregunta_id": "Q18",
+      "respuesta_referencia": "El plazo de entrega es de 19 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-PRE-01: 121.797,01 USD; E90-M-OC-01: 170.144,01 EUR"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-01",
+        "E90-M-OC-01",
+        "E90-M-FAC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-01-CAMPO-importe_total",
+        "E90-M-PRE-01-CAMPO-moneda",
+        "E90-M-OC-01-CAMPO-importe_total",
+        "E90-M-OC-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-PRE-01 y E90-M-OC-01?",
+      "pregunta_id": "Q19",
+      "respuesta_referencia": "E90-M-PRE-01: 121.797,01 USD; E90-M-OC-01: 170.144,01 EUR",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-OC-01: 170.144,01 EUR; E90-M-FAC-01: 218.491,01 ARS"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-01",
+        "E90-M-OC-01",
+        "E90-M-FAC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-01-CAMPO-importe_total",
+        "E90-M-OC-01-CAMPO-moneda",
+        "E90-M-FAC-01-CAMPO-importe_total",
+        "E90-M-FAC-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-OC-01 y E90-M-FAC-01?",
+      "pregunta_id": "Q20",
+      "respuesta_referencia": "E90-M-OC-01: 170.144,01 EUR; E90-M-FAC-01: 218.491,01 ARS",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-PRE-01: 121.797,01 USD; E90-M-FAC-01: 218.491,01 ARS"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-01",
+        "E90-M-OC-01",
+        "E90-M-FAC-01"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-01-CAMPO-importe_total",
+        "E90-M-PRE-01-CAMPO-moneda",
+        "E90-M-FAC-01-CAMPO-importe_total",
+        "E90-M-FAC-01-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-PRE-01 y E90-M-FAC-01?",
+      "pregunta_id": "Q21",
+      "respuesta_referencia": "E90-M-PRE-01: 121.797,01 USD; E90-M-FAC-01: 218.491,01 ARS",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-PRE-03: 129.235,03 ARS; E90-M-OC-03: 177.582,03 USD"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03",
+        "E90-M-OC-03",
+        "E90-M-FAC-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-03-CAMPO-importe_total",
+        "E90-M-PRE-03-CAMPO-moneda",
+        "E90-M-OC-03-CAMPO-importe_total",
+        "E90-M-OC-03-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-PRE-03 y E90-M-OC-03?",
+      "pregunta_id": "Q22",
+      "respuesta_referencia": "E90-M-PRE-03: 129.235,03 ARS; E90-M-OC-03: 177.582,03 USD",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-OC-03: 177.582,03 USD; E90-M-FAC-03: 225.929,03 EUR"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03",
+        "E90-M-OC-03",
+        "E90-M-FAC-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-OC-03-CAMPO-importe_total",
+        "E90-M-OC-03-CAMPO-moneda",
+        "E90-M-FAC-03-CAMPO-importe_total",
+        "E90-M-FAC-03-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-OC-03 y E90-M-FAC-03?",
+      "pregunta_id": "Q23",
+      "respuesta_referencia": "E90-M-OC-03: 177.582,03 USD; E90-M-FAC-03: 225.929,03 EUR",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [
+        "E90-M-PRE-03: 129.235,03 ARS; E90-M-FAC-03: 225.929,03 EUR"
+      ],
+      "categoria": "multidocumento",
+      "clase": "respondible",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03",
+        "E90-M-OC-03",
+        "E90-M-FAC-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [
+        "E90-M-PRE-03-CAMPO-importe_total",
+        "E90-M-PRE-03-CAMPO-moneda",
+        "E90-M-FAC-03-CAMPO-importe_total",
+        "E90-M-FAC-03-CAMPO-moneda"
+      ],
+      "motivo_abstencion": null,
+      "pregunta": "¿Qué importes y monedas figuran en E90-M-PRE-03 y E90-M-FAC-03?",
+      "pregunta_id": "Q24",
+      "respuesta_referencia": "E90-M-PRE-03: 129.235,03 ARS; E90-M-FAC-03: 225.929,03 EUR",
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "No se declara financiación ni una tasa anual en el contexto autorizado.",
+      "pregunta": "¿Qué tasa de interés anual se pactó para financiar esta operación?",
+      "pregunta_id": "Q25",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "El documento solo identifica una entidad ficticia, no beneficiarios finales.",
+      "pregunta": "¿Qué persona física es beneficiaria final de la contraparte?",
+      "pregunta_id": "Q26",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "No hay cuenta bancaria en el contexto autorizado.",
+      "pregunta": "¿Cuál es el número de la cuenta bancaria para realizar el pago?",
+      "pregunta_id": "Q27",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "No se identifica un representante con un poder verificable.",
+      "pregunta": "¿Quién autorizó el gasto en representación del cliente y con qué poder?",
+      "pregunta_id": "Q28",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "No se incluyen personas ni domicilios particulares.",
+      "pregunta": "¿Qué domicilio particular tiene quien supervisa la entrega?",
+      "pregunta_id": "Q29",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    },
+    {
+      "afirmaciones_esperadas": [],
+      "categoria": "sin_evidencia",
+      "clase": "sin_evidencia",
+      "consenso": null,
+      "documentos_autorizados": [
+        "E90-M-PRE-03"
+      ],
+      "estado": "CANDIDATO_NO_CONGELADO",
+      "evaluaciones_autores": [],
+      "fragmentos_relevantes": [],
+      "motivo_abstencion": "Un contrato ajeno al contexto autorizado no es fuente disponible; no inferir su precio.",
+      "pregunta": "¿Cuál es el precio que se acordó en el contrato relacionado que no está incluido aquí?",
+      "pregunta_id": "Q30",
+      "respuesta_referencia": null,
+      "revisado_por_autores": false
+    }
+  ],
+  "estado": "CANDIDATO_NO_CONGELADO",
+  "nota": "Borradores de referencias previas a modelos; no son evaluaciones ni revisión humana. Los fragmentos primarios se mapearán a chunks de cada indexación congelada después.",
+  "revisado_por_autores": false
+}
