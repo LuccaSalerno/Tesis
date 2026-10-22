@@ -233,7 +233,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -250,7 +250,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -267,7 +267,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -284,7 +284,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -301,7 +301,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -318,7 +318,7 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
@@ -335,13 +335,13 @@
         "origen": "pdf_digital",
         "pagina": 1,
         "referencia_pdf": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-        "referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+        "referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
         "tipo": "pagina"
       },
       "presente": true,
-      "representacion": "EUR",
+      "representacion": "ARS",
       "revisado_por_autores": false,
-      "valor_esperado": "EUR"
+      "valor_esperado": "ARS"
     },
     {
       "aplicable": true,

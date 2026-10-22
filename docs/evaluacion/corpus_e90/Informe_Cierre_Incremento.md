@@ -1,5 +1,7 @@
 # Cierre del incremento de corpus E90 candidato
 
+**Informe histórico del incremento inicial (`5970ebe`/`ec67dbf`).** El reemplazo posterior aprobado de un contrato por ARG_A y las verificaciones actuales están en `Incorporacion_ARG_A_CPAU.md`; los resultados siguientes corresponden al incremento inicial.
+
 Fecha: 22/10/2026. Rama `codex/corpus-e90`, desde `1e2a6c6`. **Estado: generación candidata y validadores completados; sin congelación, revisión de autores ni mediciones de modelos.** Commit de implementación: `5970ebe`; ajuste no funcional de finales de línea CSV y cierre documental en el commit siguiente.
 
 Tarea: preparación de Etapa 4 (§6.3.1) hasta el límite aprobado en DO-2026-10-22-CORPUS-CONSTRUCCION, más auditoría PD-07 en lectura.

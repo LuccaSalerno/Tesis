@@ -2,6 +2,8 @@
 
 **Estado 21/10/2026:** diseño de filas y cobertura preparado para generación y revisión. **No hay 50 documentos de medición ni 15 de ajuste generados y validados en este ZIP.** El protocolo vigente de aceptación sigue admitiendo **10–15 documentos de ajuste (2–3 por tipo)**; para la implementación se propone concretarlo en **15 (3 por tipo)**, elección dentro del rango que debe confirmar el equipo antes de congelar el inventario. No cambiar la tesis para decir 15 hasta decidirlo y construirlos.
 
+**Adenda 22/10/2026 — DO-2026-10-22-CORPUS-ARG-A:** el equipo aprobó sustituir únicamente la plantilla de E90-M-CTR-03, de CTR-BASE_A a CTR-ARG_A (CPAU). Los 65 casos, tipos, formatos, particiones, dificultades y adversariales se conservan. Las cuatro familias iniciales siguen representadas; ARG_A es exclusiva de medición. El CSV sigue siendo diseño; los archivos construidos y sus referencias se encuentran en el inventario candidato separado. Esta adenda no modifica el protocolo E90.
+
 ## Cantidades y particiones que no se modifican
 
 | Grupo | Contrato | Presupuesto | Orden de compra | Factura | Comprobante | Total |

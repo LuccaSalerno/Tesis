@@ -232,7 +232,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "Entidad Sintética ATLAS E90 03 (ficticia)"
+      "texto": "Contraparte: Entidad Sintética ATLAS E90 03 (ficticia)"
     },
     {
       "campo": "cuit_contraparte",
@@ -244,7 +244,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "30-98641004-6"
+      "texto": "CUIT de la contraparte: 30-98641004-6"
     },
     {
       "campo": "fecha_celebracion",
@@ -256,7 +256,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "13/01/2026"
+      "texto": "Fecha de celebración: 13/01/2026"
     },
     {
       "campo": "vigencia_desde",
@@ -268,7 +268,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "13/01/2026"
+      "texto": "Vigencia desde: 13/01/2026"
     },
     {
       "campo": "vigencia_hasta",
@@ -280,7 +280,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "12/01/2027"
+      "texto": "Vigencia hasta: 12/01/2027"
     },
     {
       "campo": "monto_total",
@@ -292,7 +292,7 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "80.888,03"
+      "texto": "Monto total: 80.888,03"
     },
     {
       "campo": "moneda",
@@ -304,29 +304,29 @@
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "EUR"
+      "texto": "Moneda: ARS"
     },
     {
       "doc_id": "E90-M-CTR-03",
       "estado": "CANDIDATO_NO_CONGELADO",
-      "fragmento_id": "E90-M-CTR-03-P022",
+      "fragmento_id": "E90-M-CTR-03-P013",
       "localizador": {
         "pagina": 1,
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "El objeto de esta operación es revisión preventiva de estaciones de laboratorio. El alcance se limita al laboratorio sintético y no involucra equipos, clientes ni documentos de una organización real."
+      "texto": "El objeto de esta operación es el proyecto y la dirección de adecuación de salas de ensayo del predio sintético E90, sin domicilio real. No incluye ejecución material de la construcción."
     },
     {
       "doc_id": "E90-M-CTR-03",
       "estado": "CANDIDATO_NO_CONGELADO",
-      "fragmento_id": "E90-M-CTR-03-P023",
+      "fragmento_id": "E90-M-CTR-03-P014",
       "localizador": {
         "pagina": 1,
         "tipo": "pagina"
       },
       "revisado_por_autores": false,
-      "texto": "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+      "texto": "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético."
     },
     {
       "campo": "contraparte",

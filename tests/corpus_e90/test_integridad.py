@@ -8,7 +8,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from herramientas.corpus_e90.comun import cuit_valido, digito_cuit, ruta_segura
+from herramientas.corpus_e90.comun import (
+    cuit_valido,
+    digito_cuit,
+    leer_json,
+    ruta_segura,
+    sha256,
+)
 from herramientas.corpus_e90.validar import (
     comprobar_localizador,
     leer_conjunto,
@@ -113,10 +119,96 @@ class IntegridadE90Tests(unittest.TestCase):
         self.data["artefactos"]["estado"] = "CONGELADO"
         self.assertProblema("E90_ESTADO_NO_CANDIDATO")
 
-    def test_ia_d01_exige_cuatro_fuentes_distintas(self):
+    def test_ia_d01_exige_cinco_fuentes_distintas(self):
         fuentes = self.data["plantillas"]["fuentes"]
         fuentes["MED_D"]["url_archivo"] = fuentes["BASE_A"]["url_archivo"]
         self.assertProblema("E90_DIVERSIDAD_FUENTES")
+
+    def test_ia_d03_arg_a_exclusiva_medicion(self):
+        next(r for r in self.data["registros"]["registros"] if r["grupo"] == "ajuste")[
+            "plantilla_id"
+        ] = "CTR-ARG_A"
+        self.assertProblema("E90_PLANTILLA_AJUSTE")
+
+    def test_ia_d03_arg_a_no_se_extiende_a_otro_documento(self):
+        next(
+            r
+            for r in self.data["registros"]["registros"]
+            if r["doc_id"] == "E90-M-PRE-03"
+        )["plantilla_id"] = "PRE-ARG_A"
+        self.assertProblema("E90_ARG_A_ALCANCE")
+
+    def test_ia_d03_arg_a_no_sustituye_caso_extenso(self):
+        next(
+            r
+            for r in self.data["registros"]["registros"]
+            if r["doc_id"] == "E90-M-CTR-06"
+        )["plantilla_id"] = "CTR-ARG_A"
+        self.assertProblema("E90_ARG_A_ALCANCE")
+
+    def test_ia_d01_arg_a_no_pierde_licencia_compartir_igual(self):
+        self.data["plantillas"]["fuentes"]["ARG_A"]["licencia_adaptacion"] = "CC-BY-4.0"
+        self.assertProblema("E90_ARG_A_LICENCIA")
+
+    def test_ia_d01_arg_a_no_habilita_uso_comercial(self):
+        self.data["plantillas"]["fuentes"]["ARG_A"]["uso_no_comercial"] = False
+        self.assertProblema("E90_ARG_A_LICENCIA")
+
+    def test_ia_d07_arg_a_preserva_64_entradas_y_128_auxiliares(self):
+        revision = leer_json(RAIZ / "docs/evaluacion/corpus_e90/Revision_ARG_A.json")
+        self.assertEqual(len(revision["entradas_sin_cambios"]), 64)
+        for entry in revision["entradas_sin_cambios"]:
+            self.assertNotEqual(entry["doc_id"], "E90-M-CTR-03")
+            self.assertEqual(len(entry["archivos_sha256"]), 3)
+            for path, expected in entry["archivos_sha256"].items():
+                self.assertEqual(sha256(RAIZ / path), expected, entry["doc_id"])
+
+    def test_rc_p04_arg_a_ground_truth_separa_honorarios_y_obra(self):
+        record = next(
+            r
+            for r in self.data["registros"]["registros"]
+            if r["doc_id"] == "E90-M-CTR-03"
+        )
+        self.assertEqual(
+            record["valores"],
+            {
+                "contraparte": "Entidad Sintética ATLAS E90 03 (ficticia)",
+                "cuit_contraparte": "30-98641004-6",
+                "fecha_celebracion": "2026-01-13",
+                "vigencia_desde": "2026-01-13",
+                "vigencia_hasta": "2027-01-12",
+                "monto_total": "80888.03",
+                "moneda": "ARS",
+            },
+        )
+        self.assertEqual(
+            record["contexto_contractual"]["monto_total_corresponde_a"],
+            "honorarios completos; no presupuesto de construcción",
+        )
+        fields = [
+            f for f in self.data["campos"]["campos"] if f["doc_id"] == record["doc_id"]
+        ]
+        self.assertEqual(len(fields), 7)
+        self.assertTrue(
+            all(f["presente"] and f["localizador"]["pagina"] == 1 for f in fields)
+        )
+
+    def test_ia_d01_preparar_reproduce_registros_aprobados_con_arg_a(self):
+        from herramientas.corpus_e90.preparar import preparar
+
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp)
+            folder = target / "docs/evaluacion"
+            folder.mkdir(parents=True)
+            shutil.copy2(
+                RAIZ / "docs/evaluacion/plan_diseno_corpus_e90.csv",
+                folder / "plan_diseno_corpus_e90.csv",
+            )
+            preparar(target)
+            self.assertEqual(
+                leer_json(target / "corpus/e90/registros_fuente.json"),
+                self.data["registros"],
+            )
 
     def test_ia_d01_no_usar_fuente_sin_aprobar(self):
         self.data["plantillas"]["fuentes"]["BASE_B"]["estado_aprobacion"] = "pendiente"
@@ -278,15 +370,25 @@ class RenderLocalE90Tests(unittest.TestCase):
 
         data = leer_conjunto(RAIZ)
         with tempfile.TemporaryDirectory() as tmp:
-            for tipo in (
-                "contrato",
-                "presupuesto",
-                "orden_compra",
-                "factura",
-                "comprobante",
-            ):
-                r = next(r for r in data["registros"]["registros"] if r["tipo"] == tipo)
-                path = Path(tmp) / (tipo + ".docx")
+            casos = [
+                next(r for r in data["registros"]["registros"] if r["tipo"] == tipo)
+                for tipo in (
+                    "contrato",
+                    "presupuesto",
+                    "orden_compra",
+                    "factura",
+                    "comprobante",
+                )
+            ]
+            casos.append(
+                next(
+                    r
+                    for r in data["registros"]["registros"]
+                    if r["doc_id"] == "E90-M-CTR-03"
+                )
+            )
+            for r in casos:
+                path = Path(tmp) / (r["doc_id"] + ".docx")
                 crear_docx(r, path, data["plantillas"]["fuentes"])
                 self.assertTrue(parrafos_docx(path))
                 import subprocess

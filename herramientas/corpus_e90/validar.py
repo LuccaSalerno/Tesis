@@ -96,10 +96,17 @@ def validar_estructura(data: dict) -> list[str]:
         if r["estado"] != ESTADO or r["revisado_por_autores"]:
             errores.append(problema("E90_REVISION_NO_AUTORIZADA", ident))
         family = r["plantilla_id"].split("-", 1)[-1]
-        if family not in {"BASE_A", "BASE_B", "MED_C", "MED_D"} or (
-            r["grupo"] == "ajuste" and family.startswith("MED_")
+        if family not in {"BASE_A", "BASE_B", "MED_C", "MED_D", "ARG_A"} or (
+            r["grupo"] == "ajuste" and (family.startswith("MED_") or family == "ARG_A")
         ):
             errores.append(problema("E90_PLANTILLA_AJUSTE", ident))
+        if family == "ARG_A" and (
+            ident != "E90-M-CTR-03"
+            or r["tipo"] != "contrato"
+            or r["grupo"] != "medicion"
+            or r["formato"] != "pdf_digital"
+        ):
+            errores.append(problema("E90_ARG_A_ALCANCE", ident))
         expected = set(CAMPOS[r["tipo"]])
         present = set(r["valores"])
         absent = set(r["ausentes"])
@@ -135,11 +142,25 @@ def validar_estructura(data: dict) -> list[str]:
             for r in records
             if r["tipo"] == tipo and r["grupo"] == "medicion"
         }
-        if families != {"BASE_A", "BASE_B", "MED_C", "MED_D"}:
+        expected_families = {"BASE_A", "BASE_B", "MED_C", "MED_D"}
+        if tipo == "contrato":
+            expected_families.add("ARG_A")
+        if families != expected_families:
             errores.append(problema("E90_PLANTILLAS_MEDICION", tipo))
     sources = data["plantillas"]["fuentes"]
-    if len({s["url_archivo"] for s in sources.values()}) != 4:
+    if (
+        set(sources) != {"BASE_A", "BASE_B", "MED_C", "MED_D", "ARG_A"}
+        or len({s["url_archivo"] for s in sources.values()}) != 5
+    ):
         errores.append(problema("E90_DIVERSIDAD_FUENTES"))
+    arg = sources.get("ARG_A", {})
+    if (
+        arg.get("licencia") != "CC-BY-NC-SA-4.0"
+        or arg.get("licencia_adaptacion") != "CC-BY-NC-SA-4.0"
+        or arg.get("uso_no_comercial") is not True
+        or arg.get("uso_en_ajuste") is not False
+    ):
+        errores.append(problema("E90_ARG_A_LICENCIA"))
     for family, s in sources.items():
         if (
             s["estado_aprobacion"] != "aprobada"
@@ -345,6 +366,19 @@ def validar_archivos(root: Path, data: dict) -> list[str]:
         ]:
             if r[key] != expected.get(col):
                 errores.append(problema("E90_PLAN_DISCREPANTE", ident))
+    proof = leer_json(
+        root / "docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_verificacion.json"
+    )
+    arg = data["plantillas"]["fuentes"]["ARG_A"]
+    avisos = root / "docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_avisos.html"
+    if (
+        proof["sha256_archivo_original"] != arg["sha256_archivo_original"]
+        or proof["licencia"] != arg["licencia"]
+        or proof["url_archivo"] != arg["url_archivo"]
+        or proof["version"] != arg["version"]
+        or sha256(avisos) != proof["sha256_extractos_ficha_conservados"]
+    ):
+        errores.append(problema("E90_ARG_A_PROCEDENCIA"))
     from pypdf import PdfReader
 
     byid = {a["doc_id"]: a for a in data["artefactos"]["artefactos"]}
@@ -383,6 +417,21 @@ def validar_archivos(root: Path, data: dict) -> list[str]:
                 p.extract_text().strip() for p in finalreader.pages
             ):
                 errores.append(problema("E90_IMAGEN_CON_CAPA_TEXTO", ident))
+        if ident == "E90-M-CTR-03":
+            texto = normalizar(
+                " ".join(p.extract_text() or "" for p in PdfReader(final).pages)
+            )
+            avisos = (
+                "CC BY-NC-SA 4.0",
+                "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+                "https://repositorio.cpau.org/items/show/823",
+                "Consejo Profesional de Arquitectura y Urbanismo",
+                "no comercial",
+                "Cambios:",
+                "sin garantías",
+            )
+            if any(normalizar(aviso) not in texto for aviso in avisos):
+                errores.append(problema("E90_ARG_A_ATRIBUCION", ident))
         referencepages = PdfReader(reference).pages
         if len(referencepages) != a["paginas"]:
             errores.append(problema("E90_PDF_REFERENCIA_PAGINAS", ident))

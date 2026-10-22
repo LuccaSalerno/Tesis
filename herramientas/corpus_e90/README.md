@@ -12,7 +12,7 @@ Decisión: **DO-2026-10-22-CORPUS-CONSTRUCCION**. Estado: candidato, no congelad
 - `consultas_candidatas.json`: 30 borradores de preguntas, referencias y abstenciones sobre documentos ya construidos; 10 directas, 8 de condiciones, 6 multidocumento y 6 sin evidencia. Evaluaciones individuales de los autores vacías. El mapeo a chunks de una indexación congelada queda pendiente.
 - `cuit_candidatos.json`: 12 CUIT de dígito correcto, con consulta ARCA pendiente. La comprobación matemática no acredita que estén desasignados.
 
-Las familias BASE_A/BASE_B son compartidas; MED_C/MED_D se usan exclusivamente en medición, por tipo. Cada registro/archivo es independiente. Los tres adversariales pertenecen a los 50 de medición. PD-07 permanece separado y sin modificaciones.
+Las familias BASE_A/BASE_B son compartidas; MED_C/MED_D se usan exclusivamente en medición, por tipo. DO-2026-10-22-CORPUS-ARG-A agrega CTR-ARG_A exclusivamente a E90-M-CTR-03, en reemplazo de una repetición de BASE_A: hay cinco familias en contratos y cuatro en los demás tipos. No cambian los 65 casos ni sus formatos. Cada registro/archivo es independiente. Los tres adversariales pertenecen a los 50 de medición. PD-07 permanece separado y sin modificaciones.
 
 ## Dependencias
 
@@ -42,7 +42,7 @@ python -m herramientas.corpus_e90.consultas --raiz /ruta/nueva_revision
 python -m herramientas.corpus_e90.validar --raiz /ruta/nueva_revision
 ```
 
-`preparar` crea candidatos por defecto: para reemplazar CUIT se editan en la raíz nueva tanto su registro como los registros fuente antes de `generar`. No copiar un inventario o unas referencias del resultado anterior como si correspondieran a los archivos nuevos. Los comandos se niegan a sobrescribir registros o generaciones existentes. Se conserva la revisión anterior. La raíz nueva debe contener `docs/evaluacion/plan_diseno_corpus_e90.csv` y `herramientas/corpus_e90/plantillas/contratos.json`; copiar solo esas referencias y herramientas, sin claves ni datos operativos.
+`preparar` crea candidatos por defecto: para reemplazar CUIT se editan en la raíz nueva tanto su registro como los registros fuente antes de `generar`. No copiar un inventario o unas referencias del resultado anterior como si correspondieran a los archivos nuevos. Los comandos se niegan a sobrescribir registros o generaciones existentes. Se conserva la revisión anterior. La raíz nueva debe contener `docs/evaluacion/plan_diseno_corpus_e90.csv`, `herramientas/corpus_e90/plantillas/contratos.json` y los dos archivos de procedencia `docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_verificacion.json` y `ARG_A_CPAU_avisos.html`; copiar esas referencias y herramientas, sin claves ni datos operativos. Para una revisión posterior con cambios autorizados en otros casos, actualizar su evidencia de revisión en vez de atribuirle la preservación de 64 archivos que se verifica específicamente en esta incorporación ARG_A.
 
 Una generación interrumpida deja archivos parciales y no acredita el conjunto completo: utilizar otra raíz limpia de revisión. El validador informa entradas incompletas; no las rellena ni cuenta auxiliares para llegar a 65.
 
@@ -59,10 +59,12 @@ Los mensajes del validador contienen códigos e identificadores, sin preguntas, 
 ## Revisión independiente y pendientes
 
 1. Contrastar inventario y plan; distinguir entradas finales de sus auxiliares.
-2. Revisar procedencia, avisos de licencia, traducciones y cambios de las cuatro fuentes contractuales en `plantillas/contratos.json`.
+2. Revisar procedencia, avisos de licencia, traducciones y cambios de las cinco fuentes contractuales en `plantillas/contratos.json`.
 3. Inspeccionar PDFs/DOCX y cotejar el contenido de cada registro, no solo los hashes. Las imágenes degradadas son simulaciones digitales, no capturas físicas.
 4. Revisar las referencias de campos y las 30 consultas; sus textos y fuentes siguen candidatos. La clasificación de casos ambiguos y la dificultad de la muestra requieren revisión de autores.
 5. Resolver los CUIT con el registro manual ARCA antes de la generación definitiva. Si cambia un identificador, regenerar en una revisión nueva y verificar hashes/localizadores otra vez.
 6. Conservar las revisiones de ambos autores; no marcar los oráculos como revisados desde una prueba automatizada. No medir ni congelar en este incremento.
 
-La demo principal sigue siendo PD-07, contrato de mantenimiento y sus inconsistencias fijadas. Las cuatro familias de E90 no reemplazan esa historia ni su oráculo. Las diferencias provisionales DIF-E90-* se renumerarán al integrar.
+La demo principal sigue siendo PD-07, contrato de mantenimiento y sus inconsistencias fijadas. Las familias de E90 no reemplazan esa historia ni su oráculo. Las diferencias provisionales DIF-E90-* se renumerarán al integrar.
+
+ARG_A conserva licencia CC BY-NC-SA 4.0 sobre su adaptación y extractos; uso no comercial, atribución y CompartirIgual. Ver `corpus/e90/ATRIBUCIONES.md` y `docs/evaluacion/corpus_e90/Incorporacion_ARG_A_CPAU.md`. Los otros 64 archivos de entrada y sus 128 auxiliares conservan sus hashes; la evidencia está en `Revision_ARG_A.json`. La reconstrucción desde una raíz nueva prepara también los datos particulares de ARG_A antes de generar.

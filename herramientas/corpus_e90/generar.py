@@ -41,6 +41,7 @@ ESTILOS = {
     "BASE_B": ("Liberation Serif", 11.5),
     "MED_C": ("Liberation Sans", 10.5),
     "MED_D": ("Liberation Serif", 11),
+    "ARG_A": ("Liberation Serif", 11),
 }
 
 
@@ -72,6 +73,91 @@ def docx_determinista(path: Path) -> None:
             info = ZipInfo(name, date_time=(2026, 10, 22, 0, 0, 0))
             info.compress_type = ZIP_DEFLATED
             z.writestr(info, data)
+
+
+def contenido_arg_a(doc, registro: dict, fuente: dict) -> None:
+    """DO-CORPUS-ARG-A: proyecto/dirección, sin mezclar cláusulas de otras fuentes."""
+    if (
+        registro["doc_id"] != "E90-M-CTR-03"
+        or registro["grupo"] != "medicion"
+        or registro["tipo"] != "contrato"
+        or fuente["estado_aprobacion"] != "aprobada"
+        or fuente["licencia_adaptacion"] != "CC-BY-NC-SA-4.0"
+        or fuente["uso_no_comercial"] is not True
+    ):
+        raise ValueError("arg_a_fuera_del_alcance_aprobado")
+    contexto = registro["contexto_contractual"]
+    doc.add_paragraph(
+        "Entre "
+        + contexto["comitente"]
+        + ", en adelante Comitente, y "
+        + registro["valores"]["contraparte"]
+        + ", en adelante Arquitecto/a a los fines de este escenario, se acuerda "
+        "el encargo de proyecto y dirección. Son sujetos ficticios: no se identifica "
+        "a una persona real ni se declara matrícula profesional."
+    )
+    doc.add_heading("Condiciones particulares del encargo", level=1)
+    for campo in CAMPOS["contrato"]:
+        doc.add_paragraph(
+            ETIQUETAS[campo] + ": " + representacion(campo, registro["valores"][campo])
+        )
+    doc.add_paragraph(
+        "El objeto de esta operación es el proyecto y la dirección de "
+        + contexto["destino"]
+        + ". No incluye ejecución material de la construcción."
+    )
+    c = registro["condiciones"]
+    doc.add_paragraph(
+        f"El plazo de entrega es de {c['plazo_entrega_dias']} días corridos. "
+        f"La modalidad acordada es {c['modalidad_entrega']}. "
+        f"Las solicitudes se canalizan mediante la {c['canal_atencion']}."
+    )
+    hitos = contexto["hitos_dias_corridos"]
+    doc.add_paragraph(
+        f"Croquis preliminar: día {hitos['croquis_preliminar']}; "
+        f"anteproyecto: día {hitos['anteproyecto']}; "
+        f"documentación de proyecto: día {hitos['documentacion_proyecto']}. "
+        "Los días se cuentan desde Vigencia desde. La dirección se desarrolla "
+        "hasta Vigencia hasta. El monto total indicado es el total de honorarios "
+        "en ARS; no es el costo de construcción ni se agregan tributos al total."
+    )
+    for n, clause in enumerate(fuente["clausulas"], 1):
+        doc.add_heading(f"CLÁUSULA {n}. {clause['titulo'].upper()}", level=1)
+        doc.add_paragraph(clause["adaptacion_es"])
+    doc.add_page_break()
+    doc.add_heading("Procedencia, modificaciones y permiso de reutilización", level=1)
+    doc.add_paragraph(
+        "Adaptación académica no comercial de "
+        + fuente["titulo"]
+        + ", "
+        + fuente["version"]
+        + ". Autor y organismo: "
+        + fuente["atribucion"]
+        + ". Fuente: "
+        + fuente["url_publicacion"]
+        + "."
+    )
+    doc.add_paragraph(
+        "Original y adaptación: Creative Commons Atribución-NoComercial-"
+        "CompartirIgual 4.0 Internacional (CC BY-NC-SA 4.0). "
+        + fuente["url_licencia"]
+        + " La reutilización es exclusivamente no comercial; conservar atribución, "
+        "fuente, licencia y registro de cambios. Las adaptaciones compartidas "
+        "deben distribuirse bajo CC BY-NC-SA 4.0."
+    )
+    doc.add_paragraph(
+        "Cambios: selección y abreviación de las nueve cláusulas numeradas, "
+        "incorporación de condiciones y datos ficticios, sustitución de remisiones "
+        "a anexos no adjuntos, y omisión de logotipos, firmas y matrículas. "
+        "El original está en español; no se realizó traducción. El material se "
+        "ofrece sin garantías. No hay aval del CPAU ni validación jurídica para "
+        "Argentina. El permiso sobre este texto es independiente de la cláusula "
+        "sobre planos de un proyecto hipotético."
+    )
+    doc.add_paragraph(
+        "Pieza sintética candidata, no congelada. CUIT candidato pendiente de "
+        "consulta ARCA. Sin contratación, obra, firma ni aprobación real."
+    )
 
 
 def crear_docx(registro: dict, path: Path, fuentes: dict) -> None:
@@ -124,7 +210,11 @@ def crear_docx(registro: dict, path: Path, fuentes: dict) -> None:
             if border.tag == qn("w:pBdr"):
                 element.remove(border)
     doc.add_paragraph(MARCA).runs[0].font.size = Pt(8)
-    title = TITULOS[registro["tipo"]]
+    title = (
+        "Contrato de proyecto y dirección de obra"
+        if family == "ARG_A"
+        else TITULOS[registro["tipo"]]
+    )
     if registro["caso_dificil"] == "ambiguo_entre_categorias":
         title = "Propuesta comercial y " + (
             "presupuesto definitivo"
@@ -140,6 +230,12 @@ def crear_docx(registro: dict, path: Path, fuentes: dict) -> None:
     doc.styles["Subtitle"].font.name = font
     doc.styles["Subtitle"].font.color.rgb = RGBColor(0, 0, 0)
     doc.styles["Subtitle"].font.size = Pt(10)
+    if family == "ARG_A":
+        contenido_arg_a(doc, registro, fuentes[family])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        doc.save(path)
+        docx_determinista(path)
+        return
     if registro["tipo"] == "contrato":
         doc.add_paragraph(
             "Partes ficticias: Laboratorio Sintético E90 y la contraparte identificada en este instrumento. No existe contratación real ni validación jurídica para Argentina."
@@ -362,7 +458,7 @@ def generar(root: Path, libreoffice: str, pdftoppm: str) -> None:
     fuentes = leer_json(root / "herramientas/corpus_e90/plantillas/contratos.json")[
         "fuentes"
     ]
-    for family in ("BASE_A", "BASE_B", "MED_C", "MED_D"):
+    for family in ("BASE_A", "BASE_B", "MED_C", "MED_D", "ARG_A"):
         if fuentes[family]["estado_aprobacion"] != "aprobada":
             raise ValueError("fuente_contractual_no_aprobada")
     manifest = root / "oraculos/e90/artefactos_candidatos.json"

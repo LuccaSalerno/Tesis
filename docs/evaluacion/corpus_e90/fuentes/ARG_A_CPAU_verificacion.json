@@ -1,0 +1,71 @@
+{
+  "autor": "Consejo Profesional de Arquitectura y Urbanismo (Buenos Aires)",
+  "condiciones": [
+    "atribución a CPAU, obra y edición",
+    "identificar fuente y licencia",
+    "indicar cambios",
+    "uso exclusivamente no comercial",
+    "adaptaciones compartidas bajo CC BY-NC-SA 4.0",
+    "sin logotipos, firmas, matrículas ni datos reales en la adaptación",
+    "sin aval ni validación jurídica de CPAU o para Argentina"
+  ],
+  "editor": "CPAU",
+  "evidencia_asignacion": "La ficha individual tiene campo Licencia CC BY-NC-SA 4.0 y asocia el único archivo 834 al nombre y URL indicados; no se infiere el permiso solo del pie general del sitio.",
+  "familia": "ARG_A",
+  "fecha_verificacion": "2026-10-22",
+  "fuentes_consultadas_licencia": [
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.es",
+    "https://creativecommons.org/faq/#if-i-create-a-collection-that-includes-a-work-offered-under-a-cc-license-which-licenses-may-i-choose-for-the-collection"
+  ],
+  "id_archivo_repositorio": "834",
+  "idioma": "es",
+  "integracion_aprobada": {
+    "decision": "DO-2026-10-22-CORPUS-ARG-A",
+    "doc_id": "E90-M-CTR-03",
+    "formato": "pdf_digital",
+    "grupo": "medicion",
+    "plantilla_anterior": "CTR-BASE_A",
+    "plantilla_nueva": "CTR-ARG_A",
+    "resto_documentos": "64 entradas preservadas"
+  },
+  "licencia": "CC-BY-NC-SA-4.0",
+  "localizadores_ficha_html": {
+    "archivo": [
+      317,
+      318
+    ],
+    "licencia_especifica": [
+      416,
+      418
+    ]
+  },
+  "nombre_archivo_original": "MEPAU_A-301_2023.pdf",
+  "paginas": 7,
+  "pais": "Argentina",
+  "revision_pdf": {
+    "aviso_contradictorio_detectado": false,
+    "aviso_licencia_interno": false,
+    "limite": "Verificación documental de avisos visibles, no dictamen jurídico ni garantía de titularidad.",
+    "observaciones": "El PDF identifica MEPAU/CPAU y 9.ª edición 2023. La cláusula 7 regula los planos del proyecto contratado; no es el permiso de reutilización del modelo. La introducción describe diez cláusulas, pero el cuerpo numera 1 a 9 y termina con espacios de acuerdos y firmas; no se inventa una cláusula 10 del original.",
+    "paginas_leidas_e_inspeccionadas": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "sha256_archivo_original": "f033e08cf26c1d62a289e3ada3549962e8094866b087eb15cb3e6b56647c0205",
+  "sha256_extractos_ficha_conservados": "18d16de0d3859a6611413e7095ad5868b6da52b4184691670776c2d588bb3012",
+  "sha256_ficha_completa": "fb79d317a8b1ab6cdb7fcc7a0fa1bca2026cdab4bbdb509aec95f8aa8fc879d9",
+  "sha256_texto_extraido": "5c3a418655c02213792be9055d3e20034a4228d31c5595a352a0e5ed63cbc14e",
+  "tamano_bytes": 337927,
+  "titulo": "A-301: Contrato de proyecto y dirección",
+  "url_archivo": "https://repositorio.cpau.org/files/original/6a40a2ebfb34e5f36f1f2d8a361003ca.pdf",
+  "url_licencia": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "url_publicacion": "https://repositorio.cpau.org/items/show/823",
+  "uso_en_ajuste": false,
+  "version": "9.ª edición, 2023"
+}

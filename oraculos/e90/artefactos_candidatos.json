@@ -37,16 +37,18 @@
       "doc_id": "E90-M-CTR-03",
       "estado": "CANDIDATO_NO_CONGELADO",
       "formato": "pdf_digital",
-      "fuente_contractual": "BASE_A",
+      "fuente_contractual": "ARG_A",
       "fuente_docx": "corpus/e90/fuentes_docx/medicion/E90-M-CTR-03.docx",
-      "fuente_docx_sha256": "bb79698404cb3fc303cd861ba131f6f01925529a789fabf37d8c6c6357e7a62f",
+      "fuente_docx_sha256": "4976a8e105efc8d460fd6457bc26404bca8b3834391f8ad1f12aa52e310af669",
+      "licencia_adaptacion": "CC-BY-NC-SA-4.0",
       "paginas": 3,
       "pdf_referencia": "corpus/e90/pdf_referencia/medicion/E90-M-CTR-03.pdf",
-      "pdf_referencia_sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
+      "pdf_referencia_sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
       "revisado_por_autores": false,
       "ruta": "corpus/e90/medicion/E90-M-CTR-03.pdf",
-      "sha256": "4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6",
-      "tamano_bytes": 85552
+      "sha256": "58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda",
+      "tamano_bytes": 75510,
+      "version_maquetacion": "arg-a-v1"
     },
     {
       "captura": null,
@@ -1282,7 +1284,37 @@
     "typing_extensions": "4.16.0",
     "uso_imagemagick": "no; transformaciones con Pillow"
   },
-  "plantillas_sha256": "875fa1ad5007fc2e0826808f9d95599776a8c5cd7540f7d31b0e974bc3f2e41a",
-  "registros_sha256": "2c4a596d975a085d7f77ef0718b9173d6d717b959f8686e725622e3c247c2f46",
+  "plantillas_sha256": "f25d0bb1c95996206e7d23e4467bcd5b9b950c138150f58962b1f16e4e7463fc",
+  "registros_sha256": "744f52b22db381e94ac428d32118e54a2b40fcabc53bba6933d7f94d476e8eac",
+  "revision_parcial": {
+    "base_commit": "ec67dbf",
+    "codigo_sha256": {
+      "__init__.py": "40a6664c9b0bc3346dcea29b4c00309e3a87c7430f687e5a26ef72398decdbc2",
+      "comun.py": "cd827cce8cfedf76a77129d6d080cb0ca8e22b6f32405c9e1ee6feeb4893e762",
+      "consultas.py": "9e4e47490ea3534449cb8fe26287b1792ff1ac85ef197818cf566d2f44bdbae5",
+      "generar.py": "02fe699cb6ed41f7f487949a569d4b20f683295c0073c7f0ed9ebb277ee01036",
+      "preparar.py": "23bd3ca75ee00172cac1d2116a8ea19d39986f73294b0ac9cdf6f52a7b235709",
+      "validar.py": "3c20ada779fc9770e0185538a3f8666958f6c1986ee6414bc4e0c3beef6c8084"
+    },
+    "decision": "DO-2026-10-22-CORPUS-ARG-A",
+    "documentos_entradas_preservadas": 64,
+    "documentos_sustituidos": [
+      "E90-M-CTR-03"
+    ],
+    "herramientas": {
+      "Pillow": "12.3.0",
+      "imagemagick": "Version: ImageMagick 6.9.12-98 Q16 x86_64 18038 https://legacy.imagemagick.org",
+      "libreoffice": "LibreOfficeDev 26.8.0.0.alpha0 2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+      "lxml": "6.1.1",
+      "pdftoppm": "pdftoppm version 26.05.0",
+      "pypdf": "6.10.0",
+      "python-docx": "1.2.0",
+      "typing_extensions": "4.16.0",
+      "uso_imagemagick": "no; transformaciones con Pillow"
+    },
+    "manifiesto_anterior_sha256": "0d4895e470f02e476790a6370fb4397adb8a90edfb205dde66c79ca480887ab2",
+    "nota": "La instantánea superior codigo_sha256/version_maquetacion corresponde a los 64 documentos previos conservados; esta revisión identifica la generación de ARG_A. Registros/plantillas_sha256 superiores corresponden al conjunto actual. Se conservó después el formato original del banco de las cuatro fuentes anteriores; el contenido de las cinco fuentes no cambió.",
+    "plantillas_al_generar_sha256": "9b71e3bed09f3f2fd27fa0978c6954bf32e81f3fabe4ec69ca9220d162a3147a"
+  },
   "version_maquetacion": "e90-v2"
 }

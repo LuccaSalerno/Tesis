@@ -1,7 +1,7 @@
 doc_id,grupo,tipo,formato,plantilla_id,ruta,sha256,prompt_injection,observaciones
 E90-M-CTR-01,medicion,contrato,pdf_digital,CTR-BASE_A,corpus/e90/medicion/E90-M-CTR-01.pdf,6afae2d2b51bfd3de3e09adb58cb44112dcc28ce2d14bc38662edbaf927ab58a,no,CANDIDATO_NO_CONGELADO
 E90-M-CTR-02,medicion,contrato,docx,CTR-BASE_B,corpus/e90/medicion/E90-M-CTR-02.docx,4157a0d08483a4b2397e2945d27aa2eb28a59ad3e28472c95fc6f1dc51fade31,no,CANDIDATO_NO_CONGELADO
-E90-M-CTR-03,medicion,contrato,pdf_digital,CTR-BASE_A,corpus/e90/medicion/E90-M-CTR-03.pdf,4e1bc7d4111cbe16f5db89e658d2c7561e3febf8d886ddd51c4988efa19782a6,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-03,medicion,contrato,pdf_digital,CTR-ARG_A,corpus/e90/medicion/E90-M-CTR-03.pdf,58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda,no,CANDIDATO_NO_CONGELADO
 E90-M-CTR-04,medicion,contrato,docx,CTR-BASE_B,corpus/e90/medicion/E90-M-CTR-04.docx,ce82454f11848c6fbd04a61ed8dd5c4493b9d97ac0b4e008ff436b63f72c5f8c,no,CANDIDATO_NO_CONGELADO
 E90-M-CTR-05,medicion,contrato,pdf_escaneado,CTR-MED_C,corpus/e90/medicion/E90-M-CTR-05.pdf,992e209efe65f938dbd218ec6775174777746c80e8204825a0f67c0b866aaed9,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
 E90-M-CTR-06,medicion,contrato,pdf_digital,CTR-MED_C,corpus/e90/medicion/E90-M-CTR-06.pdf,315959a3e200f649e7c1d0eb1ff3ebd5722c01b6be76bc326a6bd6385b0002c0,no,CANDIDATO_NO_CONGELADO

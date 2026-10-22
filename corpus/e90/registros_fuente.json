@@ -76,19 +76,31 @@
       "caso_dificil": "",
       "clasificacion_esperada": "contrato",
       "condiciones": {
-        "canal_atencion": "mesa de servicios sintética",
-        "modalidad_entrega": "entrega digital",
+        "canal_atencion": "mesa de coordinación del proyecto sintético",
+        "modalidad_entrega": "entrega digital de planos y visitas coordinadas al predio sintético",
         "plazo_entrega_dias": 14
+      },
+      "contexto_contractual": {
+        "comitente": "Laboratorio Sintético E90 (ficticio)",
+        "destino": "adecuación de salas de ensayo del predio sintético E90, sin domicilio real",
+        "hitos_dias_corridos": {
+          "anteproyecto": 9,
+          "croquis_preliminar": 4,
+          "documentacion_proyecto": 14
+        },
+        "licencia_adaptacion": "CC-BY-NC-SA-4.0",
+        "monto_total_corresponde_a": "honorarios completos; no presupuesto de construcción",
+        "rol_contraparte": "Arquitecto/a, prestador ficticio sin matrícula real"
       },
       "contexto_rag": "E90-CONTEXTO-E90-M-CTR-03",
       "cuit_id": "CUIT-E90-03",
       "doc_id": "E90-M-CTR-03",
       "estado": "CANDIDATO_NO_CONGELADO",
       "formato": "pdf_digital",
-      "fuente_contractual": "pendiente_aprobacion",
+      "fuente_contractual": "ARG_A",
       "grupo": "medicion",
       "no_aplicables": [],
-      "plantilla_id": "CTR-BASE_A",
+      "plantilla_id": "CTR-ARG_A",
       "prompt_injection": false,
       "referencias_relacionadas": [],
       "revisado_por_autores": false,
@@ -98,7 +110,7 @@
         "contraparte": "Entidad Sintética ATLAS E90 03 (ficticia)",
         "cuit_contraparte": "30-98641004-6",
         "fecha_celebracion": "2026-01-13",
-        "moneda": "EUR",
+        "moneda": "ARS",
         "monto_total": "80888.03",
         "vigencia_desde": "2026-01-13",
         "vigencia_hasta": "2027-01-12"

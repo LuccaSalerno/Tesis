@@ -96,3 +96,11 @@ Antes de implementar se propone el diseño y se espera la aprobación.
 - Diferencias provisionales: DIF-E90-01 a DIF-E90-07. Se renumeran al integrar con los registros de otras ramas.
 
 **Próximo paso:** revisión técnica independiente del otro agente, consulta manual ARCA, revisión de fuentes/traducciones, registros y referencias por los autores. Si cambia un CUIT u otro contenido, generar una revisión nueva y verificar de nuevo hashes/localizadores/consultas. La congelación y las campañas de IA quedan fuera del incremento.
+
+## Adenda corpus ARG_A — 22/10/2026
+
+DO-2026-10-22-CORPUS-ARG-A incorpora CPAU MEPAU A-301 (9.ª edición, 2023) en **E90-M-CTR-03**, PDF digital de medición; sustituye una repetición de BASE_A. Las cuatro familias previas siguen representadas. Los otros 64 documentos y 128 auxiliares conservan sus hashes. El corpus mantiene 50+15, tres adversariales y 30 preguntas; solo Q12 cambia sus referencias de contenido. No se toca la demo PD-07 ni el frontend, backend o infraestructura.
+
+Procedencia, asignación de licencia al archivo concreto, cambios y condiciones CC BY-NC-SA 4.0 documentados en `docs/evaluacion/corpus_e90/Incorporacion_ARG_A_CPAU.md`, evidencia en `fuentes/` y `Revision_ARG_A.json`, atribución dentro del contrato y en `corpus/e90/ATRIBUCIONES.md`. DIF-E90-08 provisional. Commit y resultados finales: informe de incorporación. Ninguna decisión delegada.
+
+Estado: candidato, no congelado y sin oráculos revisados. Se mantienen pendientes ARCA, revisión independiente y revisión de ambos autores. Un solo contrato argentino no permite afirmar representatividad del contexto nacional ni ausencia de sesgos; su diversidad estructural se inspecciona y documenta antes de medir.

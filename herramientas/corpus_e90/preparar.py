@@ -150,6 +150,30 @@ def preparar(root: Path) -> None:
             r["referencias_relacionadas"] = [x["doc_id"] for x in docs if x is not r]
     for r in registros:
         r.setdefault("contexto_rag", "E90-CONTEXTO-" + r["doc_id"])
+        if r["plantilla_id"] == "CTR-ARG_A":
+            if r["doc_id"] != "E90-M-CTR-03" or r["grupo"] != "medicion":
+                raise ValueError("arg_a_fuera_del_alcance_aprobado")
+            r["fuente_contractual"] = "ARG_A"
+            r["valores"]["moneda"] = "ARS"
+            r["condiciones"]["modalidad_entrega"] = (
+                "entrega digital de planos y visitas coordinadas al predio sintético"
+            )
+            r["condiciones"]["canal_atencion"] = (
+                "mesa de coordinación del proyecto sintético"
+            )
+            r["contexto_contractual"] = {
+                "comitente": "Laboratorio Sintético E90 (ficticio)",
+                "rol_contraparte": "Arquitecto/a, prestador ficticio sin matrícula real",
+                "destino": "adecuación de salas de ensayo del predio sintético E90, sin domicilio real",
+                "hitos_dias_corridos": {
+                    "croquis_preliminar": 4,
+                    "anteproyecto": 9,
+                    "documentacion_proyecto": 14,
+                },
+                "monto_total_corresponde_a": "honorarios completos; no presupuesto de construcción",
+                "licencia_adaptacion": "CC-BY-NC-SA-4.0",
+            }
+
     escribir_json(
         root / "oraculos/e90/cuit_candidatos.json",
         {"decision": DECISION, "estado": ESTADO, "candidatos": candidatos},

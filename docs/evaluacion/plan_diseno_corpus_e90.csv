@@ -1,7 +1,7 @@
 caso_plan,grupo_previsto,tipo,formato_previsto,plantilla_prevista,clasificacion_referencia_prevista,casos_dificiles_planificados,prompt_injection_previsto,estado
 E90-M-CTR-01,medicion,contrato,pdf_digital,CTR-BASE_A,contrato,,no,pendiente_de_generacion
 E90-M-CTR-02,medicion,contrato,docx,CTR-BASE_B,contrato,,no,pendiente_de_generacion
-E90-M-CTR-03,medicion,contrato,pdf_digital,CTR-BASE_A,contrato,,no,pendiente_de_generacion
+E90-M-CTR-03,medicion,contrato,pdf_digital,CTR-ARG_A,contrato,,no,pendiente_de_generacion
 E90-M-CTR-04,medicion,contrato,docx,CTR-BASE_B,contrato,,no,pendiente_de_generacion
 E90-M-CTR-05,medicion,contrato,pdf_escaneado,CTR-MED_C,contrato,campo_ausente,no,pendiente_de_generacion
 E90-M-CTR-06,medicion,contrato,pdf_digital,CTR-MED_C,contrato,contrato_extenso,no,pendiente_de_generacion

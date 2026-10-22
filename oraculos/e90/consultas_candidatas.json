@@ -238,7 +238,7 @@
     },
     {
       "afirmaciones_esperadas": [
-        "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética."
+        "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético."
       ],
       "categoria": "condiciones",
       "clase": "respondible",
@@ -249,12 +249,12 @@
       "estado": "CANDIDATO_NO_CONGELADO",
       "evaluaciones_autores": [],
       "fragmentos_relevantes": [
-        "E90-M-CTR-03-P023"
+        "E90-M-CTR-03-P014"
       ],
       "motivo_abstencion": null,
       "pregunta": "Para coordinar la prestación de E90-M-CTR-03, ¿qué plazo y modalidad hay que tener en cuenta?",
       "pregunta_id": "Q12",
-      "respuesta_referencia": "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.",
+      "respuesta_referencia": "El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético.",
       "revisado_por_autores": false
     },
     {

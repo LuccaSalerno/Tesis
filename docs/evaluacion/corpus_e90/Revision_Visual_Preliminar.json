@@ -1,13 +1,11 @@
 {
-  "estado": "revision_visual_del_agente_no_revision_de_autores",
   "documentos": 65,
-  "paginas_renderizadas": 104,
-  "paginas_inspeccionadas_en_paneles": 104,
-  "resolucion_previa_por_pagina_px": 900,
+  "estado": "revision_visual_del_agente_no_revision_de_autores",
   "limite": "Inspección de maquetación y legibilidad en paneles; no es revisión semántica, jurídica ni de oráculos por los autores.",
-  "observacion": "Sin recortes o superposiciones detectados; degradaciones simuladas visibles. Algunos contratos tienen páginas finales poco densas.",
-  "revisado_por_autores": false,
-  "manifiesto_sha256": "0d4895e470f02e476790a6370fb4397adb8a90edfb205dde66c79ca480887ab2",
+  "manifiesto_sha256": "3c3cfd34e42a723ef6e73254f8446de58477854b0c4241d50985386936dad58f",
+  "observacion": "Sin recortes o superposiciones detectados; degradaciones simuladas visibles. Algunos contratos tienen páginas finales poco densas. ARG_A: tres páginas, atribución y licencia en página separada; sin recortes ni superposiciones detectados.",
+  "paginas_inspeccionadas_en_paneles": 104,
+  "paginas_renderizadas": 104,
   "paneles": [
     {
       "paginas": [
@@ -31,7 +29,8 @@
         "E90-M-CTR-03-2.png",
         "E90-M-CTR-03-3.png"
       ],
-      "sha256": "f3acc15567ad84d0f565eb2416f7365ddfd55b8d7b18d1bf5693850471c261c9"
+      "revision": "ARG_A, tres páginas revisadas en imágenes individuales de 1100 px",
+      "sha256": "e82945f7c2814c1b76df1a820f292b46a2a4f41c1e2eff7d8228d8c8fe2fe447"
     },
     {
       "paginas": [
@@ -289,5 +288,15 @@
       "sha256": "6b030f49104e56cf52eebf07514526d726b16c20c46a44ed34af4d9b05a28df5"
     }
   ],
-  "retencion_previews": "/tmp/e90_qa_v2; temporal. Los documentos finales y el manifiesto permanecen versionados."
+  "resolucion_previa_por_pagina_px": 900,
+  "retencion_previews": "/tmp/e90_qa_v2; temporal. Los documentos finales y el manifiesto permanecen versionados.",
+  "revisado_por_autores": false,
+  "revision_parcial": {
+    "doc_id": "E90-M-CTR-03",
+    "limite": "Inspección del agente, no de autores. Los otros paneles se conservan porque sus artefactos son idénticos por hash.",
+    "manifiesto_previo_sha256": "0d4895e470f02e476790a6370fb4397adb8a90edfb205dde66c79ca480887ab2",
+    "paginas_nuevas_inspeccionadas": 3,
+    "paginas_previas_sin_cambios": 101,
+    "resolucion_inspeccion_nueva_px": 1100
+  }
 }

@@ -40,3 +40,13 @@ El SHA del código presente durante la generación está en el manifiesto como i
 ## Integración posterior
 
 Los IDs DIF-E90-* son provisionales. Conciliar las cuatro actualizaciones de documentos compartidos con las de otras ramas y renumerar donde corresponda. Revisar diff y ejecutar verificaciones en la rama integrada antes de aceptar. Este incremento no hace push ni merge a main. Una revisión técnica de agente no reemplaza las revisiones humanas ni la congelación del equipo.
+
+## Adenda ARG_A — revisión del reemplazo aprobado
+
+Ver `Incorporacion_ARG_A_CPAU.md` y `Revision_ARG_A.json`: solo E90-M-CTR-03 cambia de BASE_A a CPAU. Ahora hay cinco familias de contratos y cuatro por cada otro tipo; cantidades, formatos y dificultades siguen iguales. El CSV del diseño tiene una única fila cambiada respecto del incremento inicial. Revisar las siete referencias de campos, los nueve fragmentos primarios del nuevo documento y Q12; los otros 29 registros de preguntas se conservan.
+
+La ficha específica CPAU vincula el único archivo 834, MEPAU_A-301_2023.pdf, con CC BY-NC-SA 4.0. `fuentes/ARG_A_CPAU_verificacion.json` registra SHA-256 y revisión de las siete páginas; `ARG_A_CPAU_avisos.html` conserva extractos de la ficha. El original en blanco se descargó a `/tmp/e90_cpau_A301_2023.pdf`, no se agrega como entrada del corpus. Los extractos originales españoles del banco se localizan por cláusula y página de PDF, no por los índices de párrafo de las otras fuentes. No se confundió la cláusula de propiedad intelectual de planos con la licencia del modelo. La introducción menciona diez cláusulas, pero el cuerpo numera nueve; se adaptaron esas nueve, sin inventar un original adicional.
+
+Comparar los 64 documentos y 128 auxiliares con las huellas anteriores preservadas en `Revision_ARG_A.json`. La revisión parcial del manifiesto identifica el código y entorno usados para ARG_A; los campos superiores históricos de código no fueron sustituidos por los del generador nuevo. La revisión visual actual conserva las 101 páginas sin cambios y sustituye la inspección de las tres páginas de ARG_A, sin atribuir una nueva revisión humana al resto.
+
+La licencia no comercial y CompartirIgual se identifica dentro de la pieza y por fuente en el banco; no se mezclan cláusulas con las familias OGL/CC BY. Revisar los permisos de cada pieza al distribuir la colección. Ninguna verificación de agente equivale a dictamen jurídico ni a revisión de autores.
