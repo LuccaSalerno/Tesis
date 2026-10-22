@@ -17,4 +17,13 @@ Todavía no hay infraestructura ni aplicación implementadas o verificadas en es
 
 Medición: 50 **sintéticos** (10 por tipo), con 3 pruebas de *prompt injection* dentro de esos 50; 10–15 archivos separados de ajuste y 30 preguntas RAG. No se crean los 16 casos extra ni un conjunto público. La demo descartable y EVD-01 tienen su escenario sintético PD-07; la validación operativa real constituye un procedimiento distinto, sin ingreso de documentos auténticos al repositorio/CI/agente ni a la demo. Los resultados no confidenciales de esa validación se registran únicamente cuando existan y estén autorizados.
 
-**La fuente académica `docs/tesis/main.pdf` todavía tiene el recuento anterior; sus autores realizan la modificación.** Esto no bloquea la fundación local del backend, frontend y base, pero el protocolo de 50 es el vigente para producir el corpus de evaluación.
+**El `docs/tesis/main.pdf` actualizado ya refleja el conjunto de medición de 50 documentos.** La nueva redacción de 6.0–6.3 está separada en Markdown y requiere incorporación a la fuente LaTeX. Esto no bloquea la fundación local del backend, frontend y base.
+
+## Preparación para implementar (actualización del equipo)
+
+- [Correspondencia entre EVD-01, cadena de evidencia y BDD/Gherkin](docs/aceptacion/Correspondencia_EVD01_BDD_Tesis.md): mismos cuatro recorridos y criterios internos; cambios solo de presentación académica.
+- [Plan operativo de corpus E90](docs/evaluacion/Plan_Diseno_Corpus_E90.md): 50 medición y 15 ajuste **propuestos**, sin archivos ni oráculos inventados.
+- [Evidencias pendientes para completar el capítulo 6](docs/evaluacion/Mapa_Evidencias_Pendientes_Capitulo_6.md).
+- [Informe de preparación y compuertas](docs/operacion/Informe_Preparacion_Implementacion_2026-10-21.md).
+
+En `docs/tesis/` se guardan el PDF más reciente aportado y la última propuesta Markdown de 6.0–6.3 (aún no integrada en LaTeX). No tomar los escenarios `.feature` como tests ya aprobados.

@@ -38,6 +38,10 @@ Las **30 preguntas RAG** se mantienen: **24 con respuesta documental** y **6 sin
 
 Conservar **sin alteraciones** todos los umbrales/criterios definidos en el documento contractual de aceptación (§5.2) y en la tesis: F1 macro clasificación, recall de clases, F1 y exactitud de extracción, procedencia PDF/DOCX, Recall@5/MRR, calidad y respaldo de RAG, abstenciones, latencia, comparación de modelos y embeddings. No inventar mediciones ni reducir umbrales en función del resultado.
 
+## Plan de construcción adjunto (sin cambiar el protocolo aprobado)
+
+`Plan_Diseno_Corpus_E90.md` y `plan_diseno_corpus_e90.csv` ofrecen una distribución de trabajo (50 de medición, **15 de ajuste propuestos**, tres adversariales dentro de los 50). **No son inventario de documentos existentes ni congelación de oráculos**. La decisión aprobada sigue siendo 10–15 de ajuste hasta que el equipo confirme la concreción del grupo. El registro de preguntas `plan_oraculo_30_consultas_rag_e90.csv` contiene solo espacios reservados y no respuestas verificadas.
+
 ## 4. Archivos de trabajo y congelación
 
 - `plantilla_inventario_e90.csv`: **solo encabezado**, no 50 documentos ya construidos. Debe completarse con los archivos *reales sintéticos generados*, uno por fila, con tipo, partición, plantilla, hash, modalidad, marcas adversariales y ruta. No incluir archivos de procedencia operativa real.
@@ -53,4 +57,4 @@ Conservar **sin alteraciones** todos los umbrales/criterios definidos en el docu
 3. Registrar fecha, commit, versiones de modelos/perfiles, configuración de OCR/chunks, y parámetros para permitir repetir el experimento.
 4. Mantener resultados independientes de §6.3 y §6.4. Si una ejecución falla o no alcanza un umbral, conservar la evidencia del fallo; no retocar corpus/umbrales.
 5. Las ejecuciones AWS requieren intervención humana, plan y presupuesto aprobados. El desarrollo y tests locales no requieren desplegar AWS.
-6. La actualización académica de §6.3.1/§6.4/§6.6 en `main.pdf` corresponde a los autores; la versión de PDF incluida aún tiene cantidades antiguas. No atribuir al documento final actividades todavía no realizadas.
+6. El `main.pdf` más reciente incorporado ya contiene el protocolo de 50 documentos para §6.3.1; la integración LaTeX de la propuesta nueva de 6.0–6.3 y la redacción de §6.4–§6.6 con evidencias reales corresponden a los autores. No atribuir al documento final actividades todavía no realizadas.

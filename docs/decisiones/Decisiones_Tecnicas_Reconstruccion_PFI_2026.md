@@ -1,7 +1,7 @@
 # Decisiones técnicas — Reconstrucción del prototipo ATLAS (PFI UADE 2026)
 
 **Estado del documento:** registro vivo de decisiones. Se actualiza a medida que se cierra cada decisión.
-**Última actualización:** 21/10/2026. Además de las decisiones de operación manual y demo descartable, el equipo aprobó DO-2026-10-21-E90-CORPUS para ajustar **solo el protocolo documental de medición**: 50 sintéticos, 3 casos adversariales incluidos y ajuste separado. No modifica RF/RN/RNF ni umbrales; el PDF de la tesis aún debe ser actualizado por sus autores. RC-P10-13 y las verificaciones de ejecución siguen pendientes.
+**Última actualización:** 21/10/2026. Además de las decisiones de operación manual y demo descartable, el equipo aprobó DO-2026-10-21-E90-CORPUS para ajustar **solo el protocolo documental de medición**: 50 sintéticos, 3 casos adversariales incluidos y ajuste separado. No modifica RF/RN/RNF ni umbrales. El PDF más reciente incorporado en este paquete ya contempla 50 documentos; resta integrar la propuesta de redacción 6.0–6.3 en LaTeX por sus autores. RC-P10-13 y las verificaciones de ejecución siguen pendientes.
 
 ---
 
@@ -130,7 +130,7 @@ Los cuatro campos críticos de la Sección 6.3.1 (importe total, fecha, número 
 
 **Decisión vigente según DO-2026-10-21-E90-CORPUS:** la medición se realiza exclusivamente con **50 documentos sintéticos**, diez por cada uno de los cinco tipos; **tres de los 50** contienen intentos de *prompt injection*. Se mantiene un grupo **independiente de ajuste**, con **2–3 documentos por tipo** (10–15 en total), fuera de las métricas de medición y con al menos una plantilla de cada tipo reservada a medición. Se conservan las 30 preguntas RAG (seis sin respuesta), las métricas y los umbrales de la tesis. **No se requieren 16 documentos adicionales ni conjuntos públicos o empresariales de contraste** para estas métricas. El protocolo completo se encuentra en `docs/evaluacion/Protocolo_E90_Corpus_y_Validacion.md`.
 
-**Trazabilidad:** el texto de `docs/tesis/main.pdf` todavía expresa el esquema anterior (66 sintéticos y 10–15 públicos). Los autores actualizarán su fuente académica; no se reescribe el PDF ni se finge que el cambio ya está aplicado. Esta revisión es una **decisión expresa del equipo sobre el conjunto de evaluación**, no una autorización para rebajar requisitos funcionales o umbrales.
+**Trazabilidad actualizada para este paquete:** el PDF `docs/tesis/main.pdf` fue reemplazado por una versión más reciente proporcionada por los autores que expresa 50 sintéticos y ajuste independiente. La propuesta de 6.0–6.3 en Markdown todavía debe integrarse en la fuente LaTeX. Esta revisión es una **decisión expresa del equipo sobre el conjunto de evaluación**, no una autorización para rebajar requisitos funcionales o umbrales.
 
 ---
 

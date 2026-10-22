@@ -1,7 +1,7 @@
 # EVD-01 — Criterios de aceptación para la reconstrucción del prototipo
 
 **Proyecto:** PFI Ingeniería en Informática, UADE 2026  
-**Estado:** especificación de aceptación propuesta; sin ejecución ni resultados  
+**Estado:** especificación de aceptación propuesta; sin ejecución ni resultados. En la redacción académica nueva de §6.2, EVD-01 se presenta como «Verificación de la cadena de evidencia documental»; sus criterios V1–V11 y los cuatro recorridos siguen vigentes. Escenarios BDD/Gherkin: `../../tests/acceptance/features/cadena_evidencia.feature` (solo especificación, no implementación).  
 **Contrato:** `main.pdf`, §§3.2.1–3.2.2, 3.3.1, 3.3.3–3.3.4, 5.2 (Figura 5.4) y 6; observaciones E50 30 y 35; Reglamento Maestro §§9.12–9.13 y 22.  
 **No modifica** ningún RF, RN ni las relaciones del modelo lógico. Las referencias y evidencias de prueba se especifican como objetivos de reconstrucción, no como capacidades ya desarrolladas.
 

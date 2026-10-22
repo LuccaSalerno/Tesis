@@ -15,18 +15,20 @@ Leelos en este orden. Ante una contradicción, prevalece el de número menor.
 | 1 | Tesis vigente | `docs/tesis/` | **El contrato.** RF, RN, RNF, modelo de datos (Sección 5.2), arquitectura (Sección 5), validación (Sección 6) |
 | 2 | Decisiones técnicas | `docs/decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md` | Todo lo que la tesis no especifica y el equipo ya decidió |
 | 3 | Contrato de aceptación integral (v1.1) | `docs/aceptacion/` | Cómo se verifica cada RF, RN y RNF |
-| 4 | Criterios EVD-01 | `docs/aceptacion/` | Cadena de evidencia: V1–V11 y recorridos EVD-A, EVD-B, EVD-C, EVD-N12 |
+| 4 | Criterios EVD-01 y correspondencia BDD | `docs/aceptacion/` | Cadena de evidencia: V1–V11 y recorridos EVD-A, EVD-B, EVD-C, EVD-N12; la tesis lo presenta como «Verificación de la cadena de evidencia documental» |
 | 5 | Diseño de infraestructura RC-P10 | `docs/diseno/RC-P10_Diseno_Infraestructura.md` | Detalle de la infraestructura AWS aprobada |
 | 6 | Plan por etapas | `docs/plan/Plan_Implementacion_por_Etapas.md` | Qué se construye primero y qué entra en cada etapa |
-| 7 | Protocolo E90 de evaluación | `docs/evaluacion/Protocolo_E90_Corpus_y_Validacion.md` | Decisión vigente sobre particiones sintéticas y separación de validación operativa |
+| 7 | Protocolo E90 y plan de corpus | `docs/evaluacion/` | Particiones aprobadas, plan no construido y separación de validación operativa; ver mapa de evidencias |
 
 Si un documento de esta lista no está en el repositorio, **detenete y avisá**. No lo reemplaces con suposiciones.
 
 ---
 
+**Aclaración documental del capítulo 6 (22/10/2026):** `docs/tesis/main.pdf` incorpora la redacción académica consolidada de 6.0–6.3. `docs/tesis/ATLAS_Seccion_6_Version_Final_6_0_a_6_3.md` fue sincronizado con esa versión para referencia editorial; prevalece el PDF ante diferencias de formato. No presupone pruebas ejecutadas. EVD-01 sigue siendo el contrato técnico para la verificación llamada «cadena de evidencia documental» en §6.2. No suprimir ni rebautizar sus casos en el código por cambios editoriales. El plan de corpus de 65 filas es diseño de muestra, **no inventario de archivos**. Si un cambio introduce una contradicción sustantiva con RF/RN/RNF o arquitectura, consultar antes de implementar.
+
 ## 2. Reglas inviolables
 
-1. **La tesis es el contrato.** No modifiques ni reinterpretes RF, RN, RNF, entidades o relaciones del modelo de datos, estados del trámite ni umbrales de la Sección 6 para facilitar la implementación. **Excepción documental explícita y acotada:** el equipo aprobó DO-2026-10-21-E90-CORPUS y revisó los criterios IA-D03 a IA-D07 para cambiar *solo* cantidades/composición del corpus §6.3.1. El PDF incluido todavía contiene el diseño anterior; sus autores lo actualizarán. Para implementar el corpus, seguí esta decisión más reciente y no restaures los 16 casos adicionales ni el conjunto público.
+1. **La tesis es el contrato.** No modifiques ni reinterpretes RF, RN, RNF, entidades o relaciones del modelo de datos, estados del trámite ni umbrales de la Sección 6 para facilitar la implementación. **Excepción documental explícita y acotada:** el equipo aprobó DO-2026-10-21-E90-CORPUS y revisó los criterios IA-D03 a IA-D07 para cambiar *solo* cantidades/composición del corpus §6.3.1. El PDF incluido ya contiene el protocolo sintético de 50 documentos y la redacción consolidada 6.0–6.3; siguen pendientes los resultados experimentales y el desarrollo de 6.4/6.5. Para implementar el corpus, seguí esta decisión más reciente y no restaures los 16 casos adicionales ni el conjunto público.
 2. **Nada de código previo.** El prototipo anterior no se usa como base. Si encontrás código viejo en algún lado, ignoralo y avisá.
 3. **No inventes requisitos.** Si algo no está en la tesis ni en las decisiones técnicas y no es una decisión delegada (ver §4), **detenete y preguntá**. No elijas un comportamiento funcional por tu cuenta.
 4. **Para el agente, la CI y la demo: exclusivamente datos sintéticos.** Nunca ingieras, proceses, copies, publiques ni subas a AWS documentos reales, anonimizados o no, desde este repositorio o mediante el agente. Los datos de medición y prueba se generan en `corpus/`. **La validación operativa real (§6.4) es un procedimiento distinto y autorizado del equipo**, no una fuente de documentos para el agente, la CI o la demo: exige controles propios de confidencialidad, consentimiento/permiso y destinos RNF-03/RC-P09, y solo puede aportar resultados/evidencia saneados y autorizados. No falsifiques ni inventes su ejecución.
@@ -79,7 +81,7 @@ Lo que fija la tesis o las decisiones (no cambiar):
 - **Autenticación:** Amazon Cognito.
 - **Frontend:** React y TypeScript, servido con S3 y CloudFront.
 - **Infraestructura:** Terraform, con los estados `bootstrap`, `persistent`, `runtime`, `demo` y `tests` (RC-P10-07).
-- **Pruebas:** pytest (+ pytest-cov, objetivo ≥ 85 %), PostgreSQL con pgvector real para las pruebas de persistencia, Playwright para los recorridos críticos.
+- **Pruebas:** pytest (+ pytest-cov, objetivo ≥ 85 %), PostgreSQL con pgvector real para persistencia, **BDD/Gherkin Dado–Cuando–Entonces confirmado** para aceptación, Playwright para recorridos críticos. Runner BDD propuesto: `pytest-bdd`, pendiente de aprobación por el equipo; `.feature` aún no implica ejecución.
 - **CI:** GitHub Actions sin acceso a AWS (RC-P02 y DO-2026-10-21). Despliegue y operación manual por el equipo.
 
 Convenciones:

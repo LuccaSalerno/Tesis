@@ -58,6 +58,8 @@ Los hitos se construyen **en orden**. Cada uno marcado como «punto de demo» de
 
 ---
 
+**Trazabilidad editorial EVD-01:** el título de la tesis pasó a «Verificación de la cadena de evidencia documental» en la propuesta Markdown de §6.2, pero EVD-01/V1–V11 y los cuatro casos de la reconstrucción se mantienen como IDs internos. BDD/Gherkin está aprobado para describir aceptación; las pruebas API deben implementarse y ejecutarse. Véase `docs/aceptacion/Correspondencia_EVD01_BDD_Tesis.md`.
+
 ## Etapa 2 — Cadena de evidencia completa (diferencial)
 
 - Completar V1, V2, V3, V4, V7 y V9: versionado, cambio de ciclo (RN-12) con operación atómica y rechazo de decisiones tardías (PD-05), separación de funciones (RC-P03.3).
@@ -79,8 +81,10 @@ Los hitos se construyen **en orden**. Cada uno marcado como «punto de demo» de
 - Implementar el oráculo de **30 preguntas RAG**, seis sin respuesta, y los oráculos de clasificación, extracción, procedencia y tres pruebas adversariales (RC-P05, RC-P06.2, DO-2026-10-21-E90-CORPUS).
 - Comparación de modelos y embeddings (RC-P07), pruebas técnicas y de rendimiento, actualización de la cotización previa y registro de costos reales (RC-P10-13). Cada campaña AWS tiene autorización manual y presupuesto; la cotización inicial no se difiere a esta etapa.
 
+**Evidencias de evaluación a recolectar:** `docs/evaluacion/Mapa_Evidencias_Pendientes_Capitulo_6.md` (instrumentos, resultados esperados, evidencias saneadas para 6.2–6.6). Los escenarios BDD declarados y el CSV de plan del corpus no constituyen ejecución.
+
 ## Etapa 5 — Resultados y tesis
 
 - Campañas finales de EVD-01 y de 6.3 con oráculos congelados, conservando todas las ejecuciones y los resultados fallidos.
 - **Línea separada de validación operativa real (§6.4):** su ejecución requiere autorizaciones y controles RNF-03/RC-P09; ni documentos operativos ni datos confidenciales entran en el repositorio, la CI, el agente o la demo descartable. Documentar solo resultados no sensibles autorizados, sin atribuirles los umbrales del corpus sintético.
-- Los autores elaboran los resultados reales de 6.2, 6.4 y 6.5 y actualizan la tesis (incluyendo retirar el antiguo total 76–81 y las menciones a 16 extra/públicos). **El agente no redacta resultados inexistentes ni modifica `main.pdf`.**
+- Los autores elaboran los resultados reales de 6.2, 6.4 y 6.5 y actualizan la tesis (incluyendo integrar en LaTeX el capítulo 6 actualizado y conservar el diseño de 50 documentos ya presente en el PDF más reciente). **El agente no redacta resultados inexistentes ni modifica `main.pdf`.**

@@ -2,7 +2,7 @@
 
 **Estado:** especificación de pruebas y aceptación propuesta para la reconstrucción; **sin resultados de ejecución**.  
 **Fuente contractual:** `main.pdf` vigente, especialmente §§3.2–3.3, 5.2 y 6.1–6.6.  
-**Complemento obligatorio:** `EVD-01_Criterios_Aceptacion_Reconstruccion_APROBADO_2026-10-20.md`.  
+**Complemento obligatorio:** `EVD-01_Criterios_Aceptacion_Reconstruccion_APROBADO_2026-10-20.md`. La presentación académica de ese contrato en §6.2 se titula «Verificación de la cadena de evidencia documental»; ver `Correspondencia_EVD01_BDD_Tesis.md`. El equipo confirmó BDD/Gherkin para casos de aceptación; no reemplaza las aserciones de API exigidas aquí.  
 **Alcance enumerado:** **RF-01 a RF-26 (26)**, **RN-01 a RN-15 (15)**, **RNF-01 a RNF-09 (9)** y verificaciones especificadas en **§6.3.1–§6.3.4**. Incluye escenario representativo §6.4, discusión §6.5 y limitaciones §6.6.
 
 > **Regla rectora.** La tesis es el contrato: ninguna expectativa de prueba autoriza a cambiar, suavizar o eliminar un RF, RN, RNF, relación de §5.2, método o umbral ya fijado en §6. Si una decisión de implementación no está especificada, se documenta como pendiente de decisión, sin atribuirla a la tesis.
@@ -151,7 +151,7 @@ Las RN son **invariantes y restricciones**, no simples descripciones de pantalla
 | **§6.3.4 — OP-03** | Consulta RAG usa **los límites de §6.3.1**, no un segundo umbral. | EXP: referenciar IA-M08, mismo protocolo. |
 | **§6.4 — DEM-01** | Escenario representativo desde la UI, con evidencia del recorrido; vincularlo a casos EVD-01 automatizados. | UI: capturas/guion, trazabilidad a V1–V11, sin afirmar que demuestra seguridad/IA por sí solo. |
 | **§6.5 — RES-01** | Reportar resultados reales, decisión de tecnología, incumplimientos, casos no ejecutados y causas. | Informe con trazabilidad requisito→test→resultado→evidencia. |
-| **§6.6 — LIM-01** | Discutir representatividad de sintéticos, corpus público no homogéneo, juicio humano, OCR indirecto, ataques limitados y cargas configuradas. | Discusión de limitaciones coherente con los resultados sin extrapolar a producción. |
+| **§6.6 — LIM-01** | Discutir representatividad de sintéticos, ausencia de contraste empresarial cuantitativo, juicio humano, OCR indirecto, ataques limitados, selección de modelos sobre la misma muestra y cargas configuradas. | Discusión de limitaciones coherente con los resultados sin extrapolar a producción. |
 
 ## 7. EVD-01 automatizado: condición de entrada y de salida
 
@@ -196,7 +196,7 @@ Los ocho PD del EVD-01 permanecen vigentes. A nivel global, registrar adicionalm
 | **RC-P02** | Herramienta para API-AUTO, fixtures aislados, CI, versionado de oráculos y evidencia por corrida. | EVD-A/B/C/N12 automatizados; los mocks no sustituyen evaluación real de §6.3.1. |
 | **RC-P03** | Casos concretos de roles/tareas/estados para matriz de acceso y transiciones. | Cobertura completa de reglas enumeradas en §3.3 y Tabla 3.VI. |
 | **RC-P04** | Inventario definitivo de formatos/tamaños admitidos y campos configurados por categoría. | Debe reflejar la tesis y la implementación seleccionada; no introducir tipos adicionales como si fuesen obligatorios. |
-| **RC-P05 [REVISADO E90]** | **50 sintéticos medidos, diez por categoría, con tres adversariales incluidos**; 10–15 de ajuste separados (2–3 por tipo), sin los antiguos 16 extras ni conjunto público. | DO-2026-10-21-E90-CORPUS y tabla §5.1 vigente; PDF de tesis pendiente de actualización por sus autores. No cambia métricas ni umbrales. |
+| **RC-P05 [REVISADO E90]** | **50 sintéticos medidos, diez por categoría, con tres adversariales incluidos**; 10–15 de ajuste separados (2–3 por tipo), sin los antiguos 16 extras ni conjunto público. | DO-2026-10-21-E90-CORPUS y tabla §5.1 vigente; El PDF vigente incorporado ya refleja 50; la última redacción de 6.0–6.3 aún requiere integración en LaTeX. No cambia métricas ni umbrales. |
 | **RC-P06 [REVISADO E90]** | **Sin contraste adicional**; se conserva el formato del oráculo de 30 consultas RAG con seis sin respuesta. | Dos evaluadores independientes, referencias congeladas y consenso documentado; partición ajuste/medición conforme a §5.1. |
 | **RC-P07** | Configuración de entorno de comparación IA/embeddings, números de repeticiones e instrumentos de latencia. | Misma entrada y entorno comparables; conservar umbrales predefinidos, no crear cifras de desempeño. |
 | **RC-P08** | Mecanismos de fallas/reintentos/concurrencia y recolección de métricas/configuración. | Pruebas de §§6.3.2–6.3.4 sin atribuir garantias de producción. |

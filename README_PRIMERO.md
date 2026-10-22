@@ -1,4 +1,9 @@
+> **Actualización documental 22/10/2026:** el PDF y el Markdown 6.0–6.3 están sincronizados; ver [informe de sincronización](docs/operacion/Informe_Sincronizacion_Tesis_2026-10-22.md). La implementación, el corpus real y los resultados siguen pendientes.
+
 # ATLAS — Preparación de la reconstrucción (21/10/2026)
+
+**Actualización de este paquete para el inicio de implementación:** ver [informe de cambios](docs/operacion/Informe_Preparacion_Implementacion_2026-10-21.md), [equivalencia EVD-01/BDD](docs/aceptacion/Correspondencia_EVD01_BDD_Tesis.md), [plan del corpus](docs/evaluacion/Plan_Diseno_Corpus_E90.md) y [evidencias necesarias para el capítulo 6](docs/evaluacion/Mapa_Evidencias_Pendientes_Capitulo_6.md). El PDF de `docs/tesis/main.pdf` fue actualizado con la versión más reciente adjuntada por los autores (50 documentos en §6.3.1); la redacción consolidada de 6.0–6.3 ya está incorporada al PDF del 22/10/2026. El plan de 15 ajustes es **propuesta operativa**, no corpus construido.
+
 
 Este repositorio contiene documentación y corpus candidatos. **No hay aplicación, Terraform ni workflows de CI implementados**, ni ciclo de despliegue/apagado verificado. El equipo comunicó comprobaciones de acceso y privacidad AWS; sus capturas formales siguen pendientes.
 
@@ -7,7 +12,7 @@ Este repositorio contiene documentación y corpus candidatos. **No hay aplicaci�
 - `AGENTS.md` fija las reglas del agente; `docs/tesis/main.pdf` está presente como tesis contractual para esta revisión.
 - `docs/` contiene decisiones, aceptación, diseño, plan y registros operativos.
 - `corpus/` y `oraculos/` contienen documentos y oráculo candidatos de PD-07 para demo/EVD; **no son aún** el conjunto de medición de 50. CUIT pendiente de consulta oficial ARCA.
-- `docs/evaluacion/` fija el **protocolo vigente E90**: 50 sintéticos (3 adversariales dentro), 10–15 de ajuste, 30 preguntas RAG y validación operativa como procedimiento separado. La fuente PDF de tesis todavía expresa el corpus antiguo; su actualización corresponde a los autores.
+- `docs/evaluacion/` fija el **protocolo vigente E90**: 50 sintéticos (3 adversariales dentro), 10–15 de ajuste, 30 preguntas RAG y validación operativa como procedimiento separado. El PDF incorporado en esta actualización expresa el corpus de 50; la versión académica consolidada de 6.0–6.3 se encuentra en el PDF adjunto y en el Markdown sincronizado.
 - `operaciones/aws/` contiene runbooks manuales y un script de auditoría de solo lectura para ejecución humana. La plantilla de confianza OIDC de GitHub fue retirada por DO-2026-10-21; el antecedente se conserva en las decisiones.
 - `herramientas/generar_corpus.py` es la fuente local de generación; no se modifica el corpus en esta tarea.
 
@@ -26,7 +31,7 @@ Leer [INICIO_CODEx_E90.md](INICIO_CODEx_E90.md). El agente puede comenzar localm
 
 ## Antes del primer despliegue
 
-1. Consolidar las evidencias comunicadas de Organizations, logging Bedrock, acceso a modelos y Budgets; revisar el [registro de destinos](docs/operacion/Registro_Destinos_y_Retencion.md) y congelar la versión contractual de la tesis.
+1. Consolidar las evidencias comunicadas de Organizations, logging Bedrock, acceso a modelos y Budgets; revisar el [registro de destinos](docs/operacion/Registro_Destinos_y_Retencion.md) y congelar la huella de la versión contractual de la tesis y conservar la trazabilidad con su fuente LaTeX.
 2. Completar cotización RC-P10-13 por hora, sesión y mes con inactividad/residuales, y registrar presupuesto aceptado. Los budgets USD 1 y USD 20 son alertas, no autorizaciones ni límites de gasto.
 3. Implementar y verificar los prerrequisitos 1.0/1.1 del [plan](docs/plan/Plan_Implementacion_por_Etapas.md): el mantenimiento, apagado manual y recuperación se adelantan antes de habilitar demo.
 4. Completar inventario, responsables y autorización humana del plan exacto, según [runbook manual](operaciones/aws/README_OPERACION_MANUAL.md) y [política de costos](docs/operacion/Politica_Costos_AWS.md).
