@@ -229,6 +229,7 @@ class AutorizacionCarga(Base):
     creada_en: Mapped[datetime] = _instante()
     expira_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     archivo_id: Mapped[int | None] = mapped_column(ForeignKey("archivo.id"), unique=True)
+    limpiada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class TrabajoProcesamiento(Base):

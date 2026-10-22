@@ -20,6 +20,7 @@ from sqlalchemy.pool import NullPool
 from atlas.autenticacion.claves_locales import CLIENTE_LOCAL, EMISOR_LOCAL, ClavesLocales
 from atlas.configuracion import Configuracion, ErrorConfiguracion
 from atlas.integraciones.aws import crear_cliente
+from atlas.integraciones.ciclo_vida_s3 import aplicar_ciclo_vida
 
 RAIZ_BACKEND = Path(__file__).resolve().parents[1]
 
@@ -94,7 +95,10 @@ def moto_local() -> Iterator[str]:
     host, puerto = servidor.get_host_and_port()
     endpoint = f"http://{host}:{puerto}"
     configuracion = configuracion_sin_base(aws_endpoint_url=endpoint)
-    crear_cliente(configuracion, "s3").create_bucket(Bucket=BUCKET_PRUEBA)
+    s3 = crear_cliente(configuracion, "s3")
+    s3.create_bucket(Bucket=BUCKET_PRUEBA)
+    s3.put_bucket_versioning(Bucket=BUCKET_PRUEBA, VersioningConfiguration={"Status": "Enabled"})
+    aplicar_ciclo_vida(s3, BUCKET_PRUEBA)
     crear_cliente(configuracion, "stepfunctions").create_state_machine(
         name=ARN_MAQUINA_PRUEBA.rsplit(":", 1)[1],
         definition=json.dumps({"StartAt": "Fin", "States": {"Fin": {"Type": "Succeed"}}}),

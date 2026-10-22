@@ -315,7 +315,6 @@ def test_rf_05_un_archivo_origina_una_sola_version(conexion_aplicacion: Connecti
         "DELETE FROM atlas.documento WHERE id = :d",
         "DELETE FROM atlas.archivo WHERE id = :a",
         "UPDATE atlas.archivo SET huella = repeat('0', 64) WHERE id = :a",
-        "UPDATE atlas.archivo SET clave_objeto = 'otra' WHERE id = :a",
         "UPDATE atlas.documento SET tramite_id = tramite_id WHERE id = :d",
         "UPDATE atlas.alembic_version SET version_num = version_num",
     ],

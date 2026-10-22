@@ -52,6 +52,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
         caracteres_maximos_docx=configuracion_efectiva.carga_caracteres_maximos_docx,
     )
     aplicacion.state.vigencia_url_carga_s = configuracion_efectiva.carga_vigencia_url_s
+    aplicacion.state.vigencia_carga_pendiente_s = configuracion_efectiva.carga_vigencia_pendiente_s
     aplicacion.state.motor = crear_motor(configuracion_efectiva)
     aplicacion.state.fabrica_sesiones = crear_fabrica_sesiones(aplicacion.state.motor)
     aplicacion.dependency_overrides[obtener_configuracion] = lambda: configuracion_efectiva

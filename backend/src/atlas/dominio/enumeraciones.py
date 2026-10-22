@@ -41,6 +41,7 @@ class EstadoIncorporacion(StrEnum):
     PENDIENTE = "pendiente"
     INCORPORADO = "incorporado"
     DESCARTADO = "descartado"
+    VENCIDO = "vencido"  # no se incorporó dentro de su vigencia (DO-2026-10-22-CARGAS)
 
 
 class FormatoArchivo(StrEnum):
@@ -99,5 +100,6 @@ class AccionAuditoria(StrEnum):
     AUTORIZACION_CIERRE_RETIRADA = "autorizacion_cierre_retirada"
     TRAMITE_CREADO = "tramite_creado"
     CARGA_CONFIRMADA = "carga_confirmada"
+    CARGA_VENCIDA = "carga_vencida"
     DOCUMENTO_INCORPORADO = "documento_incorporado"
     TRAMITE_VUELVE_A_BORRADOR = "tramite_vuelve_a_borrador"

@@ -47,6 +47,10 @@ claves propias guardadas en `backend/.claves_locales/` (no versionado):
   el archivo se transfiere con `PUT` directo a esa URL, y después se confirma con
   `POST /tramites/{id}/cargas/{carga_id}/confirmacion`.
 
+Vencimiento (DO-2026-10-22-CARGAS): la URL prefirmada dura 5 minutos y la carga tiene 24 horas para
+incorporarse. `.venv/bin/python -m atlas.herramientas.limpiar_cargas_vencidas` limpia de forma
+idempotente los objetos temporales vencidos (todas sus versiones) y las multipartes incompletas.
+
 En AWS no se define `ATLAS_AWS_ENDPOINT_URL`: el servidor en demo no arranca si está definida.
 Las pruebas levantan su propio moto dentro de pytest, así que no necesitan el contenedor.
 
@@ -58,6 +62,10 @@ Las pruebas levantan su propio moto dentro de pytest, así que no necesitan el c
 .venv/bin/mypy
 .venv/bin/pytest --cov
 ```
+
+Los escenarios de aceptación en Gherkin (`tests/acceptance/features/`, en la raíz) se ejecutan con
+`pytest-bdd` como parte de la misma corrida; sus pasos están en `tests/aceptacion/`. Los escenarios
+EVD-01 aparecen como omitidos, con el motivo, hasta que existan sus capacidades.
 
 Las pruebas marcadas `integracion` usan la base real `atlas_tests` y fallan (no se omiten) si
 no está disponible. Solo corren con `ATLAS_ENTORNO=tests` sobre una base `*_tests`.

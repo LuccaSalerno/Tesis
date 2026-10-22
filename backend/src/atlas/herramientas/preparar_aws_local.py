@@ -11,6 +11,7 @@ import sys
 
 from atlas.configuracion import ErrorConfiguracion, obtener_configuracion
 from atlas.integraciones.aws import crear_cliente
+from atlas.integraciones.ciclo_vida_s3 import aplicar_ciclo_vida
 
 _ROL_FICTICIO = "arn:aws:iam::123456789012:role/atlas-procesamiento-local"
 
@@ -32,6 +33,9 @@ def main(argumentos: list[str] | None = None) -> int:
     bucket = configuracion.s3_bucket_documentos
     if bucket not in {b["Name"] for b in s3.list_buckets().get("Buckets", [])}:
         s3.create_bucket(Bucket=bucket)
+    # Como en AWS (RC-P10): bucket versionado y regla de respaldo para cargas temporales.
+    s3.put_bucket_versioning(Bucket=bucket, VersioningConfiguration={"Status": "Enabled"})
+    aplicar_ciclo_vida(s3, bucket or "")
 
     sfn = crear_cliente(configuracion, "stepfunctions")
     arn = configuracion.sfn_maquina_procesamiento_arn or ""

@@ -450,6 +450,31 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 
 ---
 
+### DO-2026-10-22-BDD — Runner de aceptación BDD/Gherkin
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada.
+
+1. Los escenarios de aceptación en Gherkin (Dado–Cuando–Entonces) se automatizan con **`pytest-bdd`**, integrado con pytest (RC-P02).
+2. Playwright se conserva para las verificaciones de interfaz, en especial RNF-07.
+3. Los escenarios EVD-01 siguen verificando sus invariantes mediante la **API autenticada y autorizada**. Un `.feature` no acredita cumplimiento: el escenario debe ejecutarse contra su oráculo y conservar la evidencia (AGENTS.md §7).
+4. No modifica RF, RN, RNF ni criterios de aceptación.
+
+### DO-2026-10-22-CARGAS — Vencimiento de cargas pendientes y limpieza en S3
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada para implementación local; su despliegue en AWS requiere aprobación aparte.
+
+1. Una carga pendiente tiene **24 horas** desde su creación para confirmarse. Después se considera vencida y **no puede incorporarse** al trámite. El vencimiento lo comprueba la aplicación al operar, sin depender de la limpieza.
+2. Las URL prefirmadas vencen a los **5 minutos**.
+3. Los objetos vencidos se limpian de forma **segura e idempotente**, comprobando antes que no hayan sido confirmados.
+4. Como respaldo, una regla de **S3 Lifecycle de 2 días** actúa sobre el **prefijo exclusivo de cargas temporales**. No se depende de ella para el vencimiento exacto.
+5. Los documentos y versiones confirmados quedan fuera de esa eliminación: al incorporarse, el original se traslada a un prefijo definitivo y se verifica su huella.
+6. El proceso contempla las **versiones residuales de S3** (versiones anteriores y marcadores de eliminación) y las **cargas multiparte incompletas**.
+7. No modifica RF, RN, RNF ni criterios de aceptación, y no autoriza despliegues AWS adicionales.
+
+**Implementación local:** ver `docs/decisiones/Decisiones_Delegadas.md` (DT-CARGA-01) y `docs/operacion/Registro_Destinos_y_Retencion.md`.
+
+---
+
 ## 2. Decisiones en curso
 
 Ninguna en este momento.

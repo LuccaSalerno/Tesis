@@ -28,6 +28,8 @@ desarrollo = [
     "mypy>=2.4,<3",
     # Simulación local de S3 y Step Functions (DT-AWS-01): nunca en el paquete desplegado.
     "moto[server]>=5.2,<6",
+    # Escenarios de aceptación en Gherkin (DO-2026-10-22-BDD).
+    "pytest-bdd>=8.1,<9",
 ]
 
 [tool.setuptools.packages.find]
@@ -36,8 +38,13 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
+bdd_features_base_dir = "../tests/acceptance/features"
 markers = [
     "integracion: requiere PostgreSQL con pgvector real (base atlas_tests)",
+    # Etiquetas de los .feature (pytest-bdd las convierte en marcadores): trazabilidad.
+    "evd_01", "cadena_evidencia", "evd_a", "evd_b", "evd_c", "evd_n12",
+    "rf_04", "rf_05", "rf_07", "rn_08", "rn_09", "rn_12", "rn_13", "rnf_01",
+    "do_2026_10_22_cargas",
 ]
 
 [tool.coverage.run]

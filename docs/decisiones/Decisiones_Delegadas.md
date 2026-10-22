@@ -37,3 +37,22 @@ Autenticación del hito 1.2, aprobada por Lucca Salerno el 22/10/2026:
 Servicios AWS del hito 1.3, aprobado por Lucca Salerno el 22/10/2026:
 
 - **DT-AWS-01 — S3 y Step Functions sin AWS en local y CI:** un solo código con `boto3` detrás de los puertos `AlmacenDocumental` y `OrquestadorProcesamiento`. En local y en CI corre contra **moto**: en Docker Compose (`motoserver/moto:5.2.4`, en `127.0.0.1`) y dentro de pytest. Las credenciales ficticias solo se usan con un endpoint local, y el workflow de CI no recibe ninguna. En demo, el arranque falla si hay endpoint configurado. `moto` es dependencia de desarrollo y nunca entra al paquete desplegado. `pypdf` valida los PDF (protección, daño, páginas); los DOCX se validan con la biblioteca estándar. Textract y Bedrock siguen sin simuladores (RC-P02.3).
+
+Decisiones del equipo del 22/10/2026 registradas en `Decisiones_Tecnicas_Reconstruccion_PFI_2026.md` (DO-2026-10-22-BDD y DO-2026-10-22-CARGAS). Su implementación local:
+
+- **DT-BDD-01 — `pytest-bdd`:** los `.feature` están en `tests/acceptance/features/` y sus pasos en `backend/tests/aceptacion/`. Se ejecutan con pytest contra la API real (PostgreSQL y moto). `incorporacion_documental.feature` cubre RF-04, RF-05, RF-07, RNF-01 y el vencimiento de cargas. Los cuatro escenarios de `cadena_evidencia.feature` (EVD-01) se recolectan y se **omiten con motivo explícito** hasta que existan ciclos, tareas y decisiones; no se informan como aprobados. Las etiquetas de los `.feature` se registran como marcadores en `backend/pyproject.toml`.
+- **DT-CARGA-01 — Vencimiento y limpieza (migración `0004`, PD-04-006):**
+  - Las cargas se transfieren a `cargas-temporales/tramites/{t}/{uuid}`. La URL prefirmada vence a los 300 s.
+  - La confirmación técnica se admite hasta 24 h después de la autorización. La incorporación se admite hasta 24 h después del registro del archivo pendiente (`cargado_en`); `GET /tramites/{id}/archivos` informa ese límite en `vence_en`.
+  - Al incorporarse, el original se copia del lado del servidor a `documentos/tramites/{t}/{uuid}`, se verifica que la copia conserve la huella SHA-256 y recién entonces se registra la versión. `archivo.clave_objeto` cambia una sola vez y solo en esa transición: lo exige un *trigger* que también impide alterar la huella y los metadatos de carga, incluso al propietario.
+  - Nuevo estado final `vencido` para archivos pendientes no incorporados; los estados distintos de `pendiente` no cambian. La limpieza audita el vencimiento como acción del sistema (`carga_vencida`).
+  - Limpieza (`atlas.servicios.cargas.limpiar_cargas_vencidas`, herramienta `python -m atlas.herramientas.limpiar_cargas_vencidas`):
+    - revisa las autorizaciones con más de 24 h y sin `limpiada_en`;
+    - marca vencidos los archivos pendientes con una actualización condicional;
+    - elimina todas las versiones y marcadores de eliminación de la clave temporal, solo si es temporal y ningún archivo incorporado la usa;
+    - aborta las cargas multiparte incompletas del prefijo temporal;
+    - marca la autorización como limpiada.
+
+    Es idempotente: si algo falla, la próxima ejecución lo retoma. Una carga confirmada tarde se difiere hasta su propio vencimiento.
+  - Regla de S3 Lifecycle de respaldo definida en un solo lugar (`atlas.integraciones.ciclo_vida_s3`): solo sobre el prefijo `cargas-temporales/`, con expiración, versiones no actuales y multipartes incompletas a 2 días, más la eliminación de marcadores huérfanos. La herramienta local la aplica a moto. **La IaC futura debe replicarla** y dar permisos de eliminación solo sobre ese prefijo.
+  - **Pendiente para AWS (requiere aprobación):** la ejecución programada de la limpieza (Scheduler + Lambda) y la regla de Lifecycle en Terraform.

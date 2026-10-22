@@ -64,7 +64,9 @@ class Configuracion(BaseSettings):
     carga_tamano_maximo_bytes: int = 20 * 1024 * 1024
     carga_paginas_maximas_pdf: int = 50
     carga_caracteres_maximos_docx: int = 150_000
-    carga_vigencia_url_s: int = 900
+    # DO-2026-10-22-CARGAS: URL prefirmada de 5 minutos; 24 horas para confirmar la carga.
+    carga_vigencia_url_s: int = 300
+    carga_vigencia_pendiente_s: int = 24 * 60 * 60
 
     def validar_servicios_aws(self) -> None:
         if not self.s3_bucket_documentos or not self.sfn_maquina_procesamiento_arn:

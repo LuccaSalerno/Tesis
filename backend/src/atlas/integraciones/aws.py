@@ -6,6 +6,7 @@ credenciales de la identidad del despliegue (rol de la Lambda).
 """
 
 import json
+from datetime import datetime
 from typing import Any, Final
 
 import boto3
@@ -77,6 +78,54 @@ class AlmacenS3:
         except (BotoCoreError, ClientError) as error:
             raise ErrorIntegracion("s3_lectura_fallida") from error
         return datos
+
+    def copiar(self, origen: str, destino: str) -> None:
+        try:
+            self._cliente.copy_object(
+                Bucket=self._bucket,
+                Key=destino,
+                CopySource={"Bucket": self._bucket, "Key": origen},
+                MetadataDirective="COPY",
+            )
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_copia_fallida") from error
+
+    def eliminar_definitivamente(self, clave: str) -> int:
+        try:
+            versiones = [
+                {"Key": clave, "VersionId": v["VersionId"]}
+                for pagina in self._cliente.get_paginator("list_object_versions").paginate(
+                    Bucket=self._bucket, Prefix=clave
+                )
+                for v in pagina.get("Versions", []) + pagina.get("DeleteMarkers", [])
+                if v["Key"] == clave  # el prefijo podría abarcar otras claves
+            ]
+            for inicio in range(0, len(versiones), 1000):
+                respuesta = self._cliente.delete_objects(
+                    Bucket=self._bucket,
+                    Delete={"Objects": versiones[inicio : inicio + 1000], "Quiet": True},
+                )
+                if respuesta.get("Errors"):
+                    raise ErrorIntegracion("s3_eliminacion_incompleta")
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_eliminacion_fallida") from error
+        return len(versiones)
+
+    def abortar_multipartes(self, prefijo: str, iniciadas_antes: datetime) -> int:
+        abortadas = 0
+        try:
+            for pagina in self._cliente.get_paginator("list_multipart_uploads").paginate(
+                Bucket=self._bucket, Prefix=prefijo
+            ):
+                for carga in pagina.get("Uploads", []):
+                    if carga["Initiated"] < iniciadas_antes:
+                        self._cliente.abort_multipart_upload(
+                            Bucket=self._bucket, Key=carga["Key"], UploadId=carga["UploadId"]
+                        )
+                        abortadas += 1
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_multiparte_fallida") from error
+        return abortadas
 
 
 class OrquestadorStepFunctions:

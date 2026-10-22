@@ -81,7 +81,7 @@ Lo que fija la tesis o las decisiones (no cambiar):
 - **Autenticación:** Amazon Cognito.
 - **Frontend:** React y TypeScript, servido con S3 y CloudFront.
 - **Infraestructura:** Terraform, con los estados `bootstrap`, `persistent`, `runtime`, `demo` y `tests` (RC-P10-07).
-- **Pruebas:** pytest (+ pytest-cov, objetivo ≥ 85 %), PostgreSQL con pgvector real para persistencia, **BDD/Gherkin Dado–Cuando–Entonces confirmado** para aceptación, Playwright para recorridos críticos. Runner BDD propuesto: `pytest-bdd`, pendiente de aprobación por el equipo; `.feature` aún no implica ejecución.
+- **Pruebas:** pytest (+ pytest-cov, objetivo ≥ 85 %), PostgreSQL con pgvector real para persistencia, **BDD/Gherkin Dado–Cuando–Entonces confirmado** para aceptación, Playwright para recorridos críticos. Runner BDD: `pytest-bdd`, aprobado por el equipo el 22/10/2026 (DO-2026-10-22-BDD); `.feature` aún no implica ejecución.
 - **CI:** GitHub Actions sin acceso a AWS (RC-P02 y DO-2026-10-21). Despliegue y operación manual por el equipo.
 
 Convenciones:

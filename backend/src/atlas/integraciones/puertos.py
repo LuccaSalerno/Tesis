@@ -2,6 +2,7 @@
 hacia los registros: solo claves, tamaños e identificadores."""
 
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Protocol
 
 
@@ -28,6 +29,21 @@ class AlmacenDocumental(Protocol):
         ...
 
     def leer(self, clave: str) -> bytes: ...
+
+    def copiar(self, origen: str, destino: str) -> None:
+        """Copia del lado del servidor, sin que el contenido pase por la aplicación."""
+        ...
+
+    def eliminar_definitivamente(self, clave: str) -> int:
+        """Elimina todas las versiones y marcadores de eliminación de `clave`.
+
+        Idempotente: devuelve cuántas versiones eliminó (0 si no quedaba nada).
+        """
+        ...
+
+    def abortar_multipartes(self, prefijo: str, iniciadas_antes: datetime) -> int:
+        """Aborta las cargas multiparte incompletas del prefijo iniciadas antes del instante."""
+        ...
 
 
 class OrquestadorProcesamiento(Protocol):

@@ -21,7 +21,7 @@ La cadena se verifica mediante API autenticada/autorizada y aserciones sobre est
 - Los **criterios de aceptación de comportamiento** se expresan mediante archivos Gherkin en español `Dado–Cuando–Entonces`, sin introducir requisitos adicionales.
 - **BDD** organiza los escenarios y sus expectativas; **Gherkin** es el formato legible, no evidencia de ejecución por sí mismo.
 - La automatización obligatoria de EVD-01 se realiza contra API autenticada/autorizada. Los recorridos UI con Playwright verifican interacción, permisos visibles y RNF-07; se vinculan a los mismos RF/RN/RNF, sin confundir UI con la API.
-- Se propone integrar los `.feature` con `pytest-bdd` (compatible con pytest acordado), sujeto a aprobación del equipo para la biblioteca concreta; los ejemplos incluidos son **especificaciones, no pruebas ejecutables implementadas**. Cualquier runner alternativo debe preservar el mismo contrato.
+- Los `.feature` se integran con `pytest-bdd`, aprobado por el equipo el 22/10/2026 (DO-2026-10-22-BDD); los ejemplos incluidos son **especificaciones, no pruebas ejecutables implementadas**. Cualquier runner alternativo debe preservar el mismo contrato.
 - Localización sugerida: `tests/acceptance/features/*.feature`, implementación en `tests/acceptance/steps/` y pruebas UI en la estructura frontend/Playwright que se establezca. Los nombres y fixtures efectivos se fijan al desarrollar, sin crear endpoints imaginarios.
 - Asociar cada escenario con los IDs de aceptación en etiquetas o metadatos y conservar esperado/observado, commit, entorno, datos sintéticos y resultado de cada ejecución. No marcar un caso «Cumple» por tener el archivo `.feature`.
 

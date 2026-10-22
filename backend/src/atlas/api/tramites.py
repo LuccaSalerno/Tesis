@@ -59,9 +59,15 @@ def obtener_limites(request: Request) -> LimitesCarga:
     return limites
 
 
+def obtener_vigencia_pendiente(request: Request) -> int:
+    vigencia: int = request.app.state.vigencia_carga_pendiente_s
+    return vigencia
+
+
 Almacen = Annotated[AlmacenDocumental, Depends(obtener_almacen)]
 Orquestador = Annotated[OrquestadorProcesamiento, Depends(obtener_orquestador)]
 Limites = Annotated[LimitesCarga, Depends(obtener_limites)]
+VigenciaPendiente = Annotated[int, Depends(obtener_vigencia_pendiente)]
 
 
 class NuevoTramite(BaseModel):
@@ -135,11 +141,18 @@ class ArchivoRespuesta(BaseModel):
     huella: str
     estado_incorporacion: EstadoIncorporacion
     cargado_en: datetime
+    vence_en: datetime | None = Field(
+        description="Límite para incorporar una carga pendiente (DO-2026-10-22-CARGAS)"
+    )
     trabajo: TrabajoRespuesta | None
 
     @classmethod
-    def desde(cls, archivo: Archivo, trabajo: TrabajoProcesamiento | None) -> "ArchivoRespuesta":
+    def desde(
+        cls, archivo: Archivo, trabajo: TrabajoProcesamiento | None, vigencia_s: int
+    ) -> "ArchivoRespuesta":
+        pendiente = archivo.estado_incorporacion == EstadoIncorporacion.PENDIENTE
         return cls(
+            vence_en=cargas.vencimiento(archivo.cargado_en, vigencia_s) if pendiente else None,
             id=archivo.id,
             nombre=archivo.nombre,
             formato=archivo.formato,
@@ -241,6 +254,7 @@ def confirmar_carga(
     almacen: Almacen,
     orquestador: Orquestador,
     limites: Limites,
+    vigencia: VigenciaPendiente,
     solicitud_id: SolicitudId,
     response: Response,
 ) -> ArchivoRespuesta:
@@ -253,19 +267,23 @@ def confirmar_carga(
         tramite=tramite,
         autorizacion_id=carga_id,
         usuario_id=usuario.id,
+        vigencia_pendiente_s=vigencia,
         solicitud_id=solicitud_id,
     )
     if not confirmada.nueva:
         response.status_code = status.HTTP_200_OK
-    return ArchivoRespuesta.desde(confirmada.archivo, confirmada.trabajo)
+    return ArchivoRespuesta.desde(confirmada.archivo, confirmada.trabajo, vigencia)
 
 
 @enrutador.get("/{tramite_id}/archivos", response_model=list[ArchivoRespuesta])
 def listar_archivos(
-    tramite_id: int, usuario: Autenticado, sesion: Sesion
+    tramite_id: int, usuario: Autenticado, sesion: Sesion, vigencia: VigenciaPendiente
 ) -> list[ArchivoRespuesta]:
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
-    return [ArchivoRespuesta.desde(a, t) for a, t in cargas.listar_archivos(sesion, tramite.id)]
+    return [
+        ArchivoRespuesta.desde(a, t, vigencia)
+        for a, t in cargas.listar_archivos(sesion, tramite.id)
+    ]
 
 
 @enrutador.post(
@@ -278,18 +296,26 @@ def incorporar_archivo(
     archivo_id: int,
     usuario: Responsable,
     sesion: Sesion,
+    almacen: Almacen,
+    vigencia: VigenciaPendiente,
     solicitud_id: SolicitudId,
     incorporacion: Incorporacion | None = None,
 ) -> DocumentoRespuesta:
-    """RF-07: confirma el archivo como documento nuevo con su versión inicial vigente."""
+    """RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.
+
+    La carga debe estar vigente (24 h, DO-2026-10-22-CARGAS); el original se traslada
+    al prefijo definitivo de S3 antes de registrar la versión.
+    """
     # PD-05.2: las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     documento, version = cargas.incorporar_como_documento_nuevo(
         sesion,
+        almacen,
         tramite=tramite,
         archivo_id=archivo_id,
         usuario_id=usuario.id,
         nombre=incorporacion.nombre if incorporacion else None,
+        vigencia_pendiente_s=vigencia,
         solicitud_id=solicitud_id,
     )
     return DocumentoRespuesta(
