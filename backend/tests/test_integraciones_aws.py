@@ -113,3 +113,14 @@ def test_dt_aws_01_preparar_aws_local_es_idempotente_y_solo_local(
     sin_endpoint = configuracion.model_copy(update={"aws_endpoint_url": None})
     monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: sin_endpoint)
     assert preparar_aws_local.main() == 1
+
+
+def test_dt_aws_01_preparar_aws_local_con_configuracion_incompleta(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from atlas.herramientas import preparar_aws_local
+
+    incompleta = configuracion_sin_base(s3_bucket_documentos=None)
+    monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: incompleta)
+    assert preparar_aws_local.main() == 1
+    assert "No se preparó" in capsys.readouterr().err

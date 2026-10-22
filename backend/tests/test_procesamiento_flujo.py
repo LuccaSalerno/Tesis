@@ -426,3 +426,25 @@ def test_dt_proc_codigo_de_falla_solo_tecnico(
     error: str | None, causa: str | None, codigo: str
 ) -> None:
     assert lambdas.codigo_de_falla(error, causa) == codigo
+
+
+@pytest.mark.parametrize("operacion", ["leer", "escribir"])
+def test_rc_p08_falla_de_s3_en_una_etapa_es_reintentable(operacion: str) -> None:
+    from atlas.integraciones.puertos import ErrorIntegracion
+
+    class AlmacenCaido:
+        def leer(self, clave: str) -> bytes:
+            raise ErrorIntegracion("s3_lectura_fallida")
+
+        def escribir(self, *_: Any) -> None:
+            raise ErrorIntegracion("s3_escritura_fallida")
+
+    if operacion == "leer":
+        with pytest.raises(ErrorTransitorio, match="s3_lectura_fallida"):
+            etapas.normalizar_docx(AlmacenCaido(), clave_objeto="k", trabajo_id=1, intento=1)  # type: ignore[arg-type]
+    else:
+        analizador = AnalizadorFijo([[("linea", "texto")]])
+        with pytest.raises(ErrorTransitorio, match="s3_escritura_fallida"):
+            etapas.normalizar_textract(
+                analizador, AlmacenCaido(), job_id="j", trabajo_id=1, intento=1
+            )  # type: ignore[arg-type]

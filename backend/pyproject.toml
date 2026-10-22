@@ -58,6 +58,11 @@ branch = true
 
 [tool.coverage.report]
 show_missing = true
+# Arranque por línea de comandos de las herramientas: se prueba llamando a main().
+exclude_also = ["if __name__ == .__main__.:"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["atlas", "herramientas_ci", "tests"]
 
 [tool.ruff]
 line-length = 100

@@ -72,8 +72,11 @@ ATLAS_PRUEBAS_AWS_REAL=1 ATLAS_EVIDENCIA_AWS_REAL=evidencia.json .venv/bin/pytes
 .venv/bin/ruff format --check src tests migraciones
 .venv/bin/ruff check src tests migraciones
 .venv/bin/mypy
-.venv/bin/pytest --cov
+.venv/bin/pytest --cov --cov-report=json
+.venv/bin/python -m herramientas_ci.verificar_cobertura coverage.json --minimo 90
 ```
+
+La CI exige al menos un 90 % de cobertura en **cada módulo**, no solo en el total.
 
 Los escenarios de aceptación en Gherkin (`tests/acceptance/features/`, en la raíz) se ejecutan con
 `pytest-bdd` como parte de la misma corrida; sus pasos están en `tests/aceptacion/`. Los escenarios
