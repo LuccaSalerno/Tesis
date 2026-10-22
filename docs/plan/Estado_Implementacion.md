@@ -4,8 +4,8 @@
 
 **Actualización:** 22/10/2026, después del hito 1.0 preparado en local (la Etapa 1 queda completa en local; nada se desplegó).
 **Rama de trabajo:** `fundacion/local-backend` (no se hace merge a `main` sin revisión del equipo).
-**Último commit con CI en verde en GitHub:** `c71b66b` (567 pruebas aprobadas, 6 omitidas, cobertura total 98 % y ≥ 90 % por módulo).
-**Hito 1.0, ensayo de CI limpio local:** 677 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 73 módulos ≥ 90 %; incluye la inicialización privilegiada contra el superusuario efímero de PostgreSQL. Sin push.
+**Último commit con CI en verde en GitHub:** `2bb4dff` (hito 1.0; 677 pruebas aprobadas, 4 omitidas, cobertura total 98 % y los 73 módulos ≥ 90 %).
+**Hito 1.0, ensayo de CI limpio local:** 677 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 73 módulos ≥ 90 %; incluye la inicialización privilegiada contra el superusuario efímero de PostgreSQL.
 **Hito 1.8, ensayo de CI limpio local** (`backend/herramientas_ci/ensayo_ci_limpio.sh`): 632 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 65 módulos ≥ 90 %. Sin push: la CI de GitHub no corrió sobre este commit.
 
 ## Hitos de la Etapa 1
