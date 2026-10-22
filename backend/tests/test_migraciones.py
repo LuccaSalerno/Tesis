@@ -2,6 +2,7 @@
 
 import pytest
 from alembic import command
+from alembic.script import ScriptDirectory
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.pool import NullPool
@@ -26,7 +27,10 @@ def test_rc_p10_15_migraciones_reproducibles_desde_cero(
         command.downgrade(config, "base")
         assert _revision_actual(motor_migracion) is None
         command.upgrade(config, "head")
-        assert _revision_actual(motor_migracion) == "0001"
+        assert (
+            _revision_actual(motor_migracion)
+            == ScriptDirectory.from_config(config).get_current_head()
+        )
 
 
 def test_rc_p10_15_pgvector_disponible_para_usuario_de_aplicacion(

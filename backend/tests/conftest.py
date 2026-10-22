@@ -11,8 +11,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from alembic import command
 from alembic.config import Config
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Connection, Engine, create_engine
 from sqlalchemy.pool import NullPool
 
 from atlas.configuracion import Configuracion, ErrorConfiguracion
@@ -77,3 +78,38 @@ def motor_aplicacion(configuracion_tests: Configuracion) -> Iterator[Engine]:
     motor = create_engine(configuracion_tests.url_aplicacion(), poolclass=NullPool)
     yield motor
     motor.dispose()
+
+
+@pytest.fixture(scope="session")
+def base_migrada(configuracion_tests: Configuracion) -> Configuracion:
+    """Lleva `atlas_tests` a la última revisión antes de las pruebas del modelo."""
+    command.upgrade(configuracion_alembic(configuracion_tests), "head")
+    return configuracion_tests
+
+
+def _conexion_revertida(motor: Engine) -> Iterator[Connection]:
+    with motor.connect() as conexion:
+        transaccion = conexion.begin()
+        try:
+            yield conexion
+        finally:
+            transaccion.rollback()
+
+
+@pytest.fixture
+def conexion_aplicacion(
+    base_migrada: Configuracion, motor_aplicacion: Engine
+) -> Iterator[Connection]:
+    """Conexión del usuario de aplicación dentro de una transacción que se revierte.
+
+    La aplicación no puede borrar (RNF-04); revertir es la única limpieza posible.
+    """
+    yield from _conexion_revertida(motor_aplicacion)
+
+
+@pytest.fixture
+def conexion_migracion(
+    base_migrada: Configuracion, motor_migracion: Engine
+) -> Iterator[Connection]:
+    """Conexión del usuario de migración (propietario) en una transacción que se revierte."""
+    yield from _conexion_revertida(motor_migracion)

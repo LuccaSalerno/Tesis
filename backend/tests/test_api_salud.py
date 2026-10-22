@@ -12,8 +12,6 @@ VALOR_DOCUMENTAL = "CUIT 30-71234567-8"
 
 
 def nueva_aplicacion() -> FastAPI:
-    # Se crea dentro de cada prueba: el manejador de registro toma el sys.stdout
-    # vigente al crearse, y capsys solo lo reemplaza durante la fase de ejecución.
     return crear_aplicacion(configuracion_sin_base())
 
 
