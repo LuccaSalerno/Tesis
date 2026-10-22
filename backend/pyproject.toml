@@ -14,6 +14,8 @@ dependencies = [
     "psycopg[binary]>=3.3,<4",
     "alembic>=1.20,<2",
     "PyJWT[crypto]>=2.15,<3",
+    "boto3>=1.43,<2",
+    "pypdf>=6.21,<7",
 ]
 
 [project.optional-dependencies]
@@ -24,6 +26,8 @@ desarrollo = [
     "pytest-cov>=7.1,<8",
     "ruff>=0.17,<0.18",
     "mypy>=2.4,<3",
+    # Simulación local de S3 y Step Functions (DT-AWS-01): nunca en el paquete desplegado.
+    "moto[server]>=5.2,<6",
 ]
 
 [tool.setuptools.packages.find]
@@ -58,3 +62,8 @@ python_version = "3.12"
 strict = true
 mypy_path = "src"
 packages = ["atlas"]
+
+# boto3/botocore no publican tipos; se usan detrás de los puertos de atlas.integraciones.
+[[tool.mypy.overrides]]
+module = ["boto3", "boto3.*", "botocore", "botocore.*"]
+ignore_missing_imports = true

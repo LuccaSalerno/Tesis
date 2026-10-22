@@ -16,6 +16,7 @@ from atlas.configuracion import Configuracion
 from atlas.herramientas import inicializar_administrador
 from atlas.principal import crear_aplicacion
 from tests.conftest import CLAVES_PRUEBA, lineas_registro
+from tests.datos import crear_cuenta, portador
 
 pytestmark = pytest.mark.integracion
 
@@ -30,41 +31,6 @@ def cliente(base_migrada: Configuracion) -> Iterator[TestClient]:
     with TestClient(aplicacion) as cliente:
         yield cliente
     aplicacion.state.motor.dispose()
-
-
-def crear_cuenta(
-    motor: Engine, *roles: str, estado: str = "habilitada", autorizacion_cierre: bool = False
-) -> tuple[int, str]:
-    """Cuenta confirmada en la base (la aplicación no puede borrarla: datos únicos por prueba)."""
-    sub = f"sub-{uuid.uuid4()}"
-    with motor.begin() as conexion:
-        usuario_id = conexion.execute(
-            text(
-                "INSERT INTO atlas.usuario (identificador_externo, estado, autorizacion_cierre)"
-                " VALUES (:s, 'habilitada', :a) RETURNING id"
-            ),
-            {"s": sub, "a": autorizacion_cierre},
-        ).scalar_one()
-        for rol in roles:
-            conexion.execute(
-                text("INSERT INTO atlas.usuario_rol (usuario_id, rol) VALUES (:u, :r)"),
-                {"u": usuario_id, "r": rol},
-            )
-        if estado != "habilitada":
-            conexion.execute(
-                text(
-                    "UPDATE atlas.usuario SET estado = :e, identificador_externo ="
-                    " CASE WHEN CAST(:e AS varchar) = 'suprimida' THEN NULL"
-                    " ELSE identificador_externo END"
-                    " WHERE id = :u"
-                ),
-                {"e": estado, "u": usuario_id},
-            )
-    return int(usuario_id), sub
-
-
-def portador(sub: str) -> dict[str, str]:
-    return {"Authorization": f"Bearer {CLAVES_PRUEBA.emitir(sub)}"}
 
 
 def eventos(motor: Engine, usuario_id: int) -> list[dict[str, Any]]:

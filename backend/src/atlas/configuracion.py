@@ -11,6 +11,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlparse
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -18,6 +19,8 @@ from sqlalchemy import URL
 
 Entorno = Literal["desarrollo", "tests", "demo"]
 
+
+HOSTS_LOCALES = frozenset({"localhost", "127.0.0.1", "::1"})
 
 # Emisor de un User Pool de Cognito: https://cognito-idp.<región>.amazonaws.com/<pool>
 _EMISOR_COGNITO = re.compile(
@@ -49,6 +52,31 @@ class Configuracion(BaseSettings):
     jwt_cliente: str | None = None
     jwt_jwks: str | None = None
     jwt_jwks_archivo: Path | None = None
+
+    # Servicios AWS (DT-AWS-01). Sin endpoint: AWS real con la identidad del despliegue.
+    # Con endpoint: simulación local (moto), prohibida en demo y solo en hosts locales.
+    aws_region: str = "us-east-1"
+    aws_endpoint_url: str | None = None
+    s3_bucket_documentos: str | None = None
+    sfn_maquina_procesamiento_arn: str | None = None
+
+    # Límites de carga (RC-P04), configurables sin modificar el código.
+    carga_tamano_maximo_bytes: int = 20 * 1024 * 1024
+    carga_paginas_maximas_pdf: int = 50
+    carga_caracteres_maximos_docx: int = 150_000
+    carga_vigencia_url_s: int = 900
+
+    def validar_servicios_aws(self) -> None:
+        if not self.s3_bucket_documentos or not self.sfn_maquina_procesamiento_arn:
+            raise ErrorConfiguracion(
+                "Faltan ATLAS_S3_BUCKET_DOCUMENTOS y ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN"
+            )
+        if self.aws_endpoint_url is None:
+            return
+        if self.entorno == "demo":
+            raise ErrorConfiguracion("En demo no se admite ATLAS_AWS_ENDPOINT_URL")
+        if urlparse(self.aws_endpoint_url).hostname not in HOSTS_LOCALES:
+            raise ErrorConfiguracion("ATLAS_AWS_ENDPOINT_URL solo admite hosts locales")
 
     def cargar_jwks(self) -> dict[str, Any]:
         """Devuelve el JWKS configurado, validando que la configuración de tokens esté completa."""

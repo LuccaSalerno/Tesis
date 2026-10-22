@@ -74,6 +74,19 @@ class ResultadoAuditoria(StrEnum):
     RECHAZO = "rechazo"
 
 
+class EstadoTrabajo(StrEnum):
+    """Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).
+
+    Es independiente del estado funcional del trámite. «En espera» (RC-P08.8)
+    llega con el control de admisión y el reconciliador (Etapa 3).
+    """
+
+    PENDIENTE = "pendiente"  # registrado; inicio de la ejecución no confirmado
+    EN_EJECUCION = "en_ejecucion"
+    COMPLETADO = "completado"
+    FALLIDO = "fallido"
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 
@@ -84,3 +97,7 @@ class AccionAuditoria(StrEnum):
     ROL_RETIRADO = "rol_retirado"
     AUTORIZACION_CIERRE_OTORGADA = "autorizacion_cierre_otorgada"
     AUTORIZACION_CIERRE_RETIRADA = "autorizacion_cierre_retirada"
+    TRAMITE_CREADO = "tramite_creado"
+    CARGA_CONFIRMADA = "carga_confirmada"
+    DOCUMENTO_INCORPORADO = "documento_incorporado"
+    TRAMITE_VUELVE_A_BORRADOR = "tramite_vuelve_a_borrador"

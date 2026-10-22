@@ -31,6 +31,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from atlas.dominio.enumeraciones import (
     EstadoIncorporacion,
+    EstadoTrabajo,
     EstadoTramite,
     EstadoUsuario,
     FormatoArchivo,
@@ -210,3 +211,39 @@ class EventoAuditoria(Base):
         DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
     )
     solicitud_id: Mapped[uuid.UUID | None] = mapped_column(Uuid)
+
+
+class AutorizacionCarga(Base):
+    """Técnica (+): URL prefirmada emitida para una carga (§5.3.1, RC-P04). Se usa una sola vez."""
+
+    __tablename__ = "autorizacion_carga"
+    __table_args__ = (CheckConstraint("tamano_bytes > 0", name="tamano_positivo"),)
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False, index=True)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    clave_objeto: Mapped[str] = mapped_column(String(1024), nullable=False, unique=True)
+    nombre: Mapped[str] = mapped_column(String(255), nullable=False)
+    formato: Mapped[FormatoArchivo] = mapped_column(catalogo(FormatoArchivo, 10), nullable=False)
+    tamano_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    creada_en: Mapped[datetime] = _instante()
+    expira_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    archivo_id: Mapped[int | None] = mapped_column(ForeignKey("archivo.id"), unique=True)
+
+
+class TrabajoProcesamiento(Base):
+    """Técnica (+): trabajo de procesamiento de un archivo (§5.3.1, RC-P08)."""
+
+    __tablename__ = "trabajo_procesamiento"
+    __table_args__ = (CheckConstraint("intento > 0", name="intento_positivo"),)
+
+    id: Mapped[int] = _id()
+    archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, unique=True)
+    intento: Mapped[int] = mapped_column(Integer, nullable=False, server_default=text("1"))
+    estado: Mapped[EstadoTrabajo] = mapped_column(
+        catalogo(EstadoTrabajo, 20), nullable=False, server_default=EstadoTrabajo.PENDIENTE.value
+    )
+    ejecucion_iniciada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    codigo_error: Mapped[str | None] = mapped_column(String(60))
+    creado_en: Mapped[datetime] = _instante()
+    actualizado_en: Mapped[datetime] = _instante()

@@ -3,7 +3,9 @@
 import hashlib
 import uuid
 
-from sqlalchemy import Connection, text
+from sqlalchemy import Connection, Engine, text
+
+from tests.conftest import CLAVES_PRUEBA
 
 
 def crear_usuario(conexion: Connection, estado: str = "habilitada") -> int:
@@ -145,3 +147,38 @@ def escenario_documento(conexion: Connection) -> dict[str, int]:
         "documento": documento,
         "version": version,
     }
+
+
+def crear_cuenta(
+    motor: Engine, *roles: str, estado: str = "habilitada", autorizacion_cierre: bool = False
+) -> tuple[int, str]:
+    """Cuenta confirmada en la base (la aplicación no puede borrarla: datos únicos por prueba)."""
+    sub = f"sub-{uuid.uuid4()}"
+    with motor.begin() as conexion:
+        usuario_id = conexion.execute(
+            text(
+                "INSERT INTO atlas.usuario (identificador_externo, estado, autorizacion_cierre)"
+                " VALUES (:s, 'habilitada', :a) RETURNING id"
+            ),
+            {"s": sub, "a": autorizacion_cierre},
+        ).scalar_one()
+        for rol in roles:
+            conexion.execute(
+                text("INSERT INTO atlas.usuario_rol (usuario_id, rol) VALUES (:u, :r)"),
+                {"u": usuario_id, "r": rol},
+            )
+        if estado != "habilitada":
+            conexion.execute(
+                text(
+                    "UPDATE atlas.usuario SET estado = :e, identificador_externo ="
+                    " CASE WHEN CAST(:e AS varchar) = 'suprimida' THEN NULL"
+                    " ELSE identificador_externo END"
+                    " WHERE id = :u"
+                ),
+                {"e": estado, "u": usuario_id},
+            )
+    return int(usuario_id), sub
+
+
+def portador(sub: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {CLAVES_PRUEBA.emitir(sub)}"}

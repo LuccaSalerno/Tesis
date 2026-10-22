@@ -21,6 +21,16 @@
 | Cognito | No (solo identidades) | us-east-1 | Autenticación de usuarios por entorno | Política efectiva pendiente | Dos User Pools; OIDC/OAuth2 funcional conservado | Sin verificación de despliegue |
 | S3 web / CloudFront / API Gateway | API puede transportar valores/documentos autorizados; frontend solo artefactos estáticos | S3/API: us-east-1; distribución CloudFront global según diseño | Entrega web y acceso autenticado | Configuración de caché/retención pendiente; no cachear contenido sensible en distribución web | Sin contenido en access logs; autorización/cifrado y configuración por verificar | Sin verificación de despliegue |
 
+## Notas de implementación (código local, 22/10/2026)
+
+Hechos del código del repositorio, verificados con pruebas automatizadas locales sin AWS. No acreditan recursos desplegados ni retención efectiva.
+
+- **S3 documental:** los originales se guardan con la clave `tramites/{tramite_id}/cargas/{uuid}`. El navegador los transfiere directamente mediante una URL prefirmada de PUT (vigencia configurable, 15 min por defecto); el binario no pasa por la API. Al confirmar, la API lee el objeto para validar su contenido y calcular su huella SHA-256.
+- **Objetos no confirmados o rechazados:** permanecen en el bucket, porque la aplicación no borra objetos. **Pendiente:** definir en la IaC una regla de ciclo de vida que expire las cargas que no llegaron a registrarse como archivo. Hay que decidir el plazo y comprobar que la regla no afecte a los originales registrados.
+- **Step Functions:** la entrada de cada ejecución contiene solo `{"trabajo_id", "intento"}`, y su nombre es `trabajo-{id}-intento-{n}`. Una prueba automatizada lo verifica contra moto.
+- **Registros de la API:** se verificó que no contengan el token, la URL prefirmada firmada, el título del trámite ni el nombre del archivo.
+- **moto (desarrollo y CI):** es una simulación local en `127.0.0.1` o dentro del proceso de pruebas, no un destino. Solo recibe documentos sintéticos del corpus o generados por las pruebas.
+
 ## Configuración efectiva comunicada de la cuenta
 
 - **AWS Organizations:** política efectiva de exclusión del uso de contenido por servicios de IA verificada por el equipo el 21/10/2026; capturas pendientes. No implica que el servicio no procese o conserve temporalmente resultados.

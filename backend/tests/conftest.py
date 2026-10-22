@@ -13,21 +13,32 @@ from typing import Any
 import pytest
 from alembic import command
 from alembic.config import Config
+from moto.server import ThreadedMotoServer
 from sqlalchemy import Connection, Engine, create_engine
 from sqlalchemy.pool import NullPool
 
 from atlas.autenticacion.claves_locales import CLIENTE_LOCAL, EMISOR_LOCAL, ClavesLocales
 from atlas.configuracion import Configuracion, ErrorConfiguracion
+from atlas.integraciones.aws import crear_cliente
 
 RAIZ_BACKEND = Path(__file__).resolve().parents[1]
 
 # Par de claves de la sesión de pruebas: firma los tokens con la forma de Cognito.
 CLAVES_PRUEBA = ClavesLocales.generar()
+BUCKET_PRUEBA = "atlas-documentos-pruebas"
+ARN_MAQUINA_PRUEBA = (
+    "arn:aws:states:us-east-1:123456789012:stateMachine:atlas-procesamiento-pruebas"
+)
 CONFIGURACION_JWT: dict[str, Any] = {
     "jwt_emisor": EMISOR_LOCAL,
     "jwt_cliente": CLIENTE_LOCAL,
     "jwt_jwks": json.dumps(CLAVES_PRUEBA.jwks()),
     "jwt_jwks_archivo": None,
+    # Servicios AWS simulados (DT-AWS-01). Las pruebas unitarias no los contactan.
+    "aws_region": "us-east-1",
+    "aws_endpoint_url": "http://127.0.0.1:9",
+    "s3_bucket_documentos": BUCKET_PRUEBA,
+    "sfn_maquina_procesamiento_arn": ARN_MAQUINA_PRUEBA,
 }
 
 
@@ -73,8 +84,31 @@ def lineas_registro(salida: str) -> list[dict[str, Any]]:
 
 
 @pytest.fixture(scope="session")
-def configuracion_tests() -> Configuracion:
-    return cargar_configuracion_tests().model_copy(update=CONFIGURACION_JWT)
+def moto_local() -> Iterator[str]:
+    """Servidor moto efímero dentro de pytest (DT-AWS-01): S3 y Step Functions sin AWS.
+
+    Atiende las URL prefirmadas por HTTP, como lo haría S3 con el navegador.
+    """
+    servidor = ThreadedMotoServer(ip_address="127.0.0.1", port=0, verbose=False)
+    servidor.start()
+    host, puerto = servidor.get_host_and_port()
+    endpoint = f"http://{host}:{puerto}"
+    configuracion = configuracion_sin_base(aws_endpoint_url=endpoint)
+    crear_cliente(configuracion, "s3").create_bucket(Bucket=BUCKET_PRUEBA)
+    crear_cliente(configuracion, "stepfunctions").create_state_machine(
+        name=ARN_MAQUINA_PRUEBA.rsplit(":", 1)[1],
+        definition=json.dumps({"StartAt": "Fin", "States": {"Fin": {"Type": "Succeed"}}}),
+        roleArn="arn:aws:iam::123456789012:role/atlas-procesamiento-pruebas",
+    )
+    yield endpoint
+    servidor.stop()
+
+
+@pytest.fixture(scope="session")
+def configuracion_tests(moto_local: str) -> Configuracion:
+    return cargar_configuracion_tests().model_copy(
+        update={**CONFIGURACION_JWT, "aws_endpoint_url": moto_local}
+    )
 
 
 @pytest.fixture(scope="session")

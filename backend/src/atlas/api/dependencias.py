@@ -27,9 +27,18 @@ NO_PERMITIDO = "Operación no permitida"
 
 
 def obtener_sesion(request: Request) -> Iterator[Session]:
-    """Una transacción por solicitud: se confirma al terminar o se revierte ante un error."""
-    with request.app.state.fabrica_sesiones() as sesion, sesion.begin():
-        yield sesion
+    """Sesión por solicitud: se confirma al terminar o se revierte ante un error.
+
+    Una operación puede confirmar antes por sí misma cuando la tesis lo exige
+    (la carga se confirma antes de iniciar Step Functions, §5.3.1).
+    """
+    with request.app.state.fabrica_sesiones() as sesion:
+        try:
+            yield sesion
+            sesion.commit()
+        except Exception:
+            sesion.rollback()
+            raise
 
 
 def obtener_solicitud_id(request: Request) -> uuid.UUID | None:

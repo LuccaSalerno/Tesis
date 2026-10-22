@@ -36,6 +36,20 @@ claves propias guardadas en `backend/.claves_locales/` (no versionado):
 
 `token_local` se niega a funcionar con `ATLAS_ENTORNO=demo`.
 
+## S3 y Step Functions simulados (DT-AWS-01)
+
+`docker compose -f infra/local/docker-compose.yml up -d --wait` levanta también moto en
+`127.0.0.1:5000`. Con las variables `ATLAS_AWS_*`, `ATLAS_S3_*` y `ATLAS_SFN_*` de `.env.example`:
+
+- `.venv/bin/python -m atlas.herramientas.preparar_aws_local` crea el bucket y la máquina de estados
+  ficticia. Es idempotente y se niega a funcionar sin un endpoint local.
+- La carga sigue el recorrido de la tesis: `POST /tramites/{id}/cargas` devuelve una URL prefirmada,
+  el archivo se transfiere con `PUT` directo a esa URL, y después se confirma con
+  `POST /tramites/{id}/cargas/{carga_id}/confirmacion`.
+
+En AWS no se define `ATLAS_AWS_ENDPOINT_URL`: el servidor en demo no arranca si está definida.
+Las pruebas levantan su propio moto dentro de pytest, así que no necesitan el contenedor.
+
 ## Verificaciones
 
 ```
