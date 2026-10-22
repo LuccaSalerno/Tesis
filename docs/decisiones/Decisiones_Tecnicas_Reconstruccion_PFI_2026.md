@@ -473,6 +473,16 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 
 **Implementación local:** ver `docs/decisiones/Decisiones_Delegadas.md` (DT-CARGA-01) y `docs/operacion/Registro_Destinos_y_Retencion.md`.
 
+### DO-2026-10-22-PROC — Diseño y pruebas del procesamiento con Textract y Bedrock (hito 1.4)
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada; la ejecución contra AWS sigue sujeta a DO-2026-10-21 (sesión manual, costos aprobados).
+
+1. **P1 — Alcance de RC-P02.3:** la CI admite respuestas fijas (construidas a mano y, más adelante, grabadas en sesiones reales con documentos sintéticos) **solo para probar la lógica propia**: normalización, armado de instrucciones, validación de respuestas, verificación de procedencia, normalización de valores y persistencia. La calidad de Textract y de los modelos se verifica únicamente con los servicios reales, en sesiones AWS autorizadas que ejecuta el equipo (pruebas `aws_real`), y en la evaluación de §6.3.
+2. **P2 — Cliente:** `boto3` con la API **Converse** de Amazon Bedrock, uso de herramienta forzado con esquema JSON y validación de la respuesta en el backend. No se incorpora el SDK `anthropic`.
+3. **P3 — Resultados intermedios:** el contenido normalizado y las respuestas de los servicios se guardan en S3 bajo `resultados/{trabajo}/{intento}/`. Se conservan mientras exista el archivo y se eliminan, con todas sus versiones, cuando la carga vence (DO-2026-10-22-CARGAS).
+4. **P4 — Textract:** `StartDocumentAnalysis` con `TABLES` y `LAYOUT`. El costo por página se incorpora a RC-P10-13 antes de la primera sesión.
+5. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

@@ -35,12 +35,17 @@ desarrollo = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"atlas.procesamiento" = ["*.asl.json"]
+"atlas.procesamiento.instrucciones" = ["*.txt"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
 bdd_features_base_dir = "../tests/acceptance/features"
 markers = [
     "integracion: requiere PostgreSQL con pgvector real (base atlas_tests)",
+    "aws_real: nivel B, servicios AWS reales en una sesión autorizada (nunca en la CI)",
     # Etiquetas de los .feature (pytest-bdd las convierte en marcadores): trazabilidad.
     "evd_01", "cadena_evidencia", "evd_a", "evd_b", "evd_c", "evd_n12",
     "rf_04", "rf_05", "rf_07", "rn_08", "rn_09", "rn_12", "rn_13", "rnf_01",

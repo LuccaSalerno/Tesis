@@ -22,17 +22,20 @@ from atlas.api.dependencias import (
     obtener_usuario_actual,
 )
 from atlas.dominio.enumeraciones import (
+    ClaseSugerencia,
     EstadoIncorporacion,
     EstadoTrabajo,
     EstadoTramite,
     FormatoArchivo,
+    MotivoSinFuente,
     Rol,
     TipoDocumental,
 )
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.puertos import AlmacenDocumental, OrquestadorProcesamiento
 from atlas.persistencia.modelos import Archivo, TrabajoProcesamiento, Tramite
-from atlas.servicios import cargas, tramites
+from atlas.servicios import cargas, resultados, tramites
+from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["tramites"])
 
@@ -166,6 +169,31 @@ class ArchivoRespuesta(BaseModel):
                 else TrabajoRespuesta(estado=trabajo.estado, intento=trabajo.intento)
             ),
         )
+
+
+class Localizador(BaseModel):
+    pagina: int | None
+    seccion: str | None
+    fragmento: str | None
+
+
+class SugerenciaRespuesta(BaseModel):
+    """Resultado automático: es una sugerencia hasta su validación humana (RN-02)."""
+
+    campo: str
+    valor: str
+    valor_original: str
+    localizador: Localizador | None
+    motivo_sin_fuente: MotivoSinFuente | None
+    modelo: str
+    version_instrucciones: str
+    version_esquema: str
+
+
+class SugerenciasRespuesta(BaseModel):
+    trabajo: TrabajoRespuesta | None
+    clasificacion: SugerenciaRespuesta | None
+    campos: list[SugerenciaRespuesta]
 
 
 class Incorporacion(BaseModel):
@@ -335,4 +363,50 @@ async def responder_archivo_rechazado(_: Request, error: Exception) -> JSONRespo
     return JSONResponse(
         {"detalle": error.mensaje, "codigo": error.codigo},
         status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+    )
+
+
+@enrutador.get(
+    "/{tramite_id}/archivos/{archivo_id}/sugerencias", response_model=SugerenciasRespuesta
+)
+def consultar_sugerencias(
+    tramite_id: int, archivo_id: int, usuario: Autenticado, sesion: Sesion
+) -> SugerenciasRespuesta:
+    """RF-08, RF-10, RF-11: clasificación y campos sugeridos con su localizador, o el
+    motivo por el que no hay uno verificable."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    archivo = sesion.get(Archivo, archivo_id)
+    if archivo is None or archivo.tramite_id != tramite.id:
+        raise NoEncontrado("El archivo no existe en este trámite")
+    trabajo, filas = resultados.sugerencias_vigentes(sesion, archivo.id)
+    sugerencias = {
+        valor.id: SugerenciaRespuesta(
+            campo=valor.campo,
+            valor=valor.valor,
+            valor_original=valor.valor_original,
+            localizador=(
+                None
+                if fuente is None
+                else Localizador(
+                    pagina=fuente.pagina, seccion=fuente.seccion, fragmento=fuente.fragmento
+                )
+            ),
+            motivo_sin_fuente=valor.motivo_sin_fuente,
+            modelo=valor.modelo,
+            version_instrucciones=valor.version_instrucciones,
+            version_esquema=valor.version_esquema,
+        )
+        for valor, fuente in filas
+    }
+    clases = {valor.id: valor.clase for valor, _ in filas}
+    return SugerenciasRespuesta(
+        trabajo=(
+            None
+            if trabajo is None
+            else TrabajoRespuesta(estado=trabajo.estado, intento=trabajo.intento)
+        ),
+        clasificacion=next(
+            (s for i, s in sugerencias.items() if clases[i] == ClaseSugerencia.CLASIFICACION), None
+        ),
+        campos=[s for i, s in sugerencias.items() if clases[i] == ClaseSugerencia.CAMPO],
     )

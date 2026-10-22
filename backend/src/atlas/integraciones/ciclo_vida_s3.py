@@ -10,6 +10,9 @@ from typing import Any, Final
 
 PREFIJO_CARGAS_TEMPORALES: Final = "cargas-temporales/"
 PREFIJO_DOCUMENTOS: Final = "documentos/"
+# Resultados intermedios por trabajo e intento (DO-2026-10-22-PROC, P3): fuera de esta
+# regla; los elimina la limpieza junto con su carga vencida.
+PREFIJO_RESULTADOS: Final = "resultados/"
 DIAS_RESPALDO: Final = 2
 
 REGLAS_CICLO_VIDA: Final[list[dict[str, Any]]] = [

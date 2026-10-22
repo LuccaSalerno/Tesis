@@ -79,6 +79,27 @@ class AlmacenS3:
             raise ErrorIntegracion("s3_lectura_fallida") from error
         return datos
 
+    def escribir(self, clave: str, datos: bytes, tipo_contenido: str) -> None:
+        try:
+            self._cliente.put_object(
+                Bucket=self._bucket, Key=clave, Body=datos, ContentType=tipo_contenido
+            )
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_escritura_fallida") from error
+
+    def eliminar_prefijo(self, prefijo: str) -> int:
+        try:
+            claves = {
+                v["Key"]
+                for pagina in self._cliente.get_paginator("list_object_versions").paginate(
+                    Bucket=self._bucket, Prefix=prefijo
+                )
+                for v in pagina.get("Versions", []) + pagina.get("DeleteMarkers", [])
+            }
+        except (BotoCoreError, ClientError) as error:
+            raise ErrorIntegracion("s3_eliminacion_fallida") from error
+        return sum(self.eliminar_definitivamente(clave) for clave in sorted(claves))
+
     def copiar(self, origen: str, destino: str) -> None:
         try:
             self._cliente.copy_object(

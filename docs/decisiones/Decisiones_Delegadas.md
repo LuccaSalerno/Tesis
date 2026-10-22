@@ -13,6 +13,8 @@ Registro de las decisiones que el agente toma por su cuenta dentro de lo permiti
 | 22/10/2026 | RC-P01-003 | Cuentas (RF-25): `GET /usuarios/yo` para cualquier cuenta habilitada; `GET /usuarios`, `POST /usuarios` (alta por `identificador_externo`), `GET /usuarios/{id}`, `PUT /usuarios/{id}/estado` (`habilitada` o `deshabilitada`), `PUT` y `DELETE /usuarios/{id}/roles/{rol}`, `PUT /usuarios/{id}/autorizacion-cierre`, solo para el administrador operativo. Errores con forma `{"detalle": …}`: 401 con `WWW-Authenticate: Bearer`, 403 sin motivo, 404, 409 y 422. Los cambios sin efecto no generan eventos | Operaciones de la Tabla 3.II para el administrador, con denegación por defecto y sin revelar el motivo del rechazo | RF-01, RF-02, RF-21, RF-25, RN-01, RNF-01, RC-P03.2 | Pendiente |
 | 22/10/2026 | RC-P01-004 | Trámites y cargas: `POST /tramites` (`titulo` obligatorio, `descripcion` opcional), `GET /tramites` (solo los accesibles), `GET /tramites/{id}` (con sus documentos y versión vigente), `POST /tramites/{id}/cargas` (devuelve `url`, `metodo` y `encabezados` para un PUT directo a S3), `POST /tramites/{id}/cargas/{carga_id}/confirmacion` (201 la primera vez, 200 si se repite), `GET /tramites/{id}/archivos` (con estado técnico del trabajo), `POST /tramites/{id}/archivos/{archivo_id}/incorporacion` (documento nuevo). Un trámite inexistente o sin acceso responde 404 en ambos casos. Archivo rechazado: 422 `{"detalle", "codigo"}`. Falla de un servicio externo antes de producir efectos: 503 | Recorrido de §5.3.1 sin que el binario pase por la API. La respuesta 404 evita revelar qué trámites existen | RF-03, RF-04, RF-05, RF-07, RC-P04, RNF-01 | Pendiente |
 | 22/10/2026 | PD-04-005 | Migración `0003`: tablas técnicas `autorizacion_carga` (URL emitida, de un solo uso: `UPDATE` solo de `archivo_id`) y `trabajo_procesamiento` (`UNIQUE (archivo_id)`, `intento`, estados `pendiente`, `en_ejecucion`, `completado` y `fallido`; `UPDATE` solo de las columnas técnicas). «En espera» llega con el control de admisión (Etapa 3) | Estructuras operativas que la Figura 5.4 omite (§5.2). Un único trabajo por archivo y el número de intento evitan duplicaciones ante confirmaciones repetidas | §5.3.1, RF-04, RC-P08 | Pendiente |
+| 22/10/2026 | PD-04-007 | Migración `0005`: `referencia_fuente` (`archivo_id`, `pagina`, `seccion` como en la Figura 5.4; agregados `fragmento`, `trabajo_id`, `intento`, `creado_en`) y `valor_sugerido` (`archivo_id`, `fuente_id`, `clase`, `campo`, `valor`; agregados `valor_original`, `motivo_sin_fuente`, `trabajo_id`, `intento`, `modelo`, `version_instrucciones`, `version_esquema`, `creado_en`). `UNIQUE (trabajo_id, intento, clase, campo)`, ambas tablas inmutables. Sin fuente, el motivo es obligatorio (`no_informada`, `no_verificada`, `no_aplica`). Un dato no extraído no genera fila | Procedencia y configuración de cada resultado automático (§5.3.3); idempotencia ante reintentos (RC-P08.6); informar cuando no hay localizador (RF-11) | RF-08, RF-10, RF-11, RN-02, RC-P08 | Pendiente |
+| 22/10/2026 | RC-P01-005 | `GET /tramites/{id}/archivos/{archivo_id}/sugerencias`: trabajo, clasificación y campos sugeridos del intento vigente, cada uno con `valor`, `valor_original`, `localizador` (`pagina`, `seccion`, `fragmento`) o `motivo_sin_fuente`, y modelo y versiones. Solo con acceso al trámite (404 en otro caso) | Mostrar cada extracción con su localizador más preciso o informar que no lo hay, antes de la validación humana | RF-08, RF-10, RF-11, RN-02 | Pendiente |
 
 ## Elecciones técnicas consultadas y aprobadas (no delegadas)
 
@@ -56,3 +58,24 @@ Decisiones del equipo del 22/10/2026 registradas en `Decisiones_Tecnicas_Reconst
     Es idempotente: si algo falla, la próxima ejecución lo retoma. Una carga confirmada tarde se difiere hasta su propio vencimiento.
   - Regla de S3 Lifecycle de respaldo definida en un solo lugar (`atlas.integraciones.ciclo_vida_s3`): solo sobre el prefijo `cargas-temporales/`, con expiración, versiones no actuales y multipartes incompletas a 2 días, más la eliminación de marcadores huérfanos. La herramienta local la aplica a moto. **La IaC futura debe replicarla** y dar permisos de eliminación solo sobre ese prefijo.
   - **Pendiente para AWS (requiere aprobación):** la ejecución programada de la limpieza (Scheduler + Lambda) y la regla de Lifecycle en Terraform.
+
+Procesamiento del hito 1.4 (DO-2026-10-22-PROC, aprobado por Lucca Salerno el 22/10/2026). Implementación local:
+
+- **DT-PROC-01 — Recorrido:** la máquina de estados `atlas/procesamiento/maquina_estados.asl.json` encadena:
+  - Preparar;
+  - PDF: Textract con espera de 12 s y como máximo 150 consultas; DOCX: lectura directa;
+  - Normalizar, Clasificar, Extraer y Persistir;
+  - RegistrarFallo, ante cualquier error.
+
+  Reintentos de 3 intentos, con intervalos de 2, 4 y 8 s y *jitter*, solo para `ErrorTransitorio`. Las etapas intercambian solo identificadores y claves de S3; los resultados se guardan en `resultados/{trabajo}/{intento}/`. Dos funciones Lambda: procesamiento, fuera de la VPC, y persistencia, dentro de la VPC (§5.4.2). Los errores salen con un código técnico y sin la excepción original.
+- **DT-PROC-02 — Modelo:** Bedrock Converse con herramienta forzada, `temperature` 0 y perfil `us.anthropic.claude-haiku-4-5-20251001-v1:0`.
+  - Instrucciones versionadas, con huella fija verificada por prueba: `clasificacion-v1` y `extraccion-v1`.
+  - Contenido delimitado como datos, con los delimitadores neutralizados.
+  - Esquemas sin propiedades adicionales, validados en el backend.
+  - Procedencia aceptada solo si la cita aparece en la página indicada (en DOCX, en el documento, sin página).
+  - Fechas, importes, CUIT (con dígito verificador) y moneda normalizados de forma determinista, conservando el valor original.
+  - Un documento que excede el límite configurado (400.000 caracteres) es fallo técnico: nunca se trunca.
+- **DT-PROC-03 — Pruebas:**
+  - **Nivel A (CI):** respuestas fijas para la lógica propia (P1); `botocore.stub.Stubber` valida las solicitudes a Converse y Textract contra el modelo de servicio de botocore.
+  - **Nivel B:** `tests/aws_real/` contra servicios reales, omitido salvo `ATLAS_PRUEBAS_AWS_REAL=1`; compara C-v1 con el oráculo preliminar PD-07 y falla ante cualquier diferencia.
+- **Pendiente:** Terraform de las funciones y de la máquina de estados, empaquetado Lambda e inicio de las ejecuciones en AWS (requieren aprobación); embeddings (hito 1.6); validación humana (hito 1.5).

@@ -1,0 +1,453 @@
+{
+  "Comment": "ATLAS — procesamiento documental (§5.3.1, RC-P08, DO-2026-10-22-PROC). Entradas y salidas: solo identificadores y claves de S3.",
+  "TimeoutSeconds": 2400,
+  "StartAt": "Preparar",
+  "States": {
+    "Preparar": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaPersistencia}",
+        "Payload": {
+          "etapa": "preparar",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "formato.$": "$.Payload.formato",
+        "clave_objeto.$": "$.Payload.clave_objeto"
+      },
+      "ResultPath": "$.archivo",
+      "Next": "ElegirLectura"
+    },
+    "ElegirLectura": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.archivo.formato",
+          "StringEquals": "pdf",
+          "Next": "IniciarTextract"
+        }
+      ],
+      "Default": "NormalizarDocx"
+    },
+    "IniciarTextract": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "iniciar_textract",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "clave_objeto.$": "$.archivo.clave_objeto"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "job_id.$": "$.Payload.job_id"
+      },
+      "ResultPath": "$.textract",
+      "Next": "IniciarEspera"
+    },
+    "IniciarEspera": {
+      "Type": "Pass",
+      "Result": 0,
+      "ResultPath": "$.iteraciones",
+      "Next": "EsperarTextract"
+    },
+    "EsperarTextract": {
+      "Type": "Wait",
+      "Seconds": 12,
+      "Next": "ConsultarTextract"
+    },
+    "ConsultarTextract": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "consultar_textract",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "job_id.$": "$.textract.job_id"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "estado.$": "$.Payload.estado"
+      },
+      "ResultPath": "$.analisis",
+      "Next": "EvaluarTextract"
+    },
+    "EvaluarTextract": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.analisis.estado",
+          "StringEquals": "completado",
+          "Next": "NormalizarTextract"
+        },
+        {
+          "Variable": "$.analisis.estado",
+          "StringEquals": "fallido",
+          "Next": "TextractFallido"
+        },
+        {
+          "Variable": "$.iteraciones",
+          "NumericGreaterThanEquals": 150,
+          "Next": "TextractTiempoAgotado"
+        }
+      ],
+      "Default": "ContarEspera"
+    },
+    "ContarEspera": {
+      "Type": "Pass",
+      "Parameters": {
+        "valor.$": "States.MathAdd($.iteraciones, 1)"
+      },
+      "ResultPath": "$.contador",
+      "Next": "ActualizarEspera"
+    },
+    "ActualizarEspera": {
+      "Type": "Pass",
+      "InputPath": "$.contador.valor",
+      "ResultPath": "$.iteraciones",
+      "Next": "EsperarTextract"
+    },
+    "TextractFallido": {
+      "Type": "Pass",
+      "Result": {
+        "Error": "ErrorPermanente",
+        "Cause": "{\"errorMessage\": \"textract_fallido\"}"
+      },
+      "ResultPath": "$.error",
+      "Next": "RegistrarFallo"
+    },
+    "TextractTiempoAgotado": {
+      "Type": "Pass",
+      "Result": {
+        "Error": "ErrorPermanente",
+        "Cause": "{\"errorMessage\": \"textract_tiempo_agotado\"}"
+      },
+      "ResultPath": "$.error",
+      "Next": "RegistrarFallo"
+    },
+    "NormalizarTextract": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "normalizar_textract",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "job_id.$": "$.textract.job_id"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "contenido.$": "$.Payload.contenido"
+      },
+      "ResultPath": "$.resultados",
+      "Next": "Clasificar"
+    },
+    "NormalizarDocx": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "normalizar_docx",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "clave_objeto.$": "$.archivo.clave_objeto"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "contenido.$": "$.Payload.contenido"
+      },
+      "ResultPath": "$.resultados",
+      "Next": "Clasificar"
+    },
+    "Clasificar": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "clasificar",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "contenido.$": "$.resultados.contenido"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "clasificacion.$": "$.Payload.clasificacion"
+      },
+      "ResultPath": "$.clasificacion",
+      "Next": "Extraer"
+    },
+    "Extraer": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaProcesamiento}",
+        "Payload": {
+          "etapa": "extraer",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "contenido.$": "$.resultados.contenido",
+          "clasificacion.$": "$.clasificacion.clasificacion"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultSelector": {
+        "extraccion.$": "$.Payload.extraccion"
+      },
+      "ResultPath": "$.extraccion",
+      "Next": "Persistir"
+    },
+    "Persistir": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaPersistencia}",
+        "Payload": {
+          "etapa": "persistir",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "clasificacion.$": "$.clasificacion.clasificacion",
+          "extraccion.$": "$.extraccion.extraccion"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.error",
+          "Next": "RegistrarFallo"
+        }
+      ],
+      "ResultPath": null,
+      "End": true
+    },
+    "RegistrarFallo": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${ArnLambdaPersistencia}",
+        "Payload": {
+          "etapa": "registrar_fallo",
+          "trabajo_id.$": "$.trabajo_id",
+          "intento.$": "$.intento",
+          "error.$": "$.error.Error",
+          "causa.$": "$.error.Cause"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "ErrorTransitorio",
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "BackoffRate": 2.0,
+          "MaxAttempts": 3,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultPath": null,
+      "Next": "Fallido"
+    },
+    "Fallido": {
+      "Type": "Fail",
+      "Error": "TrabajoFallido",
+      "Cause": "Fallo técnico registrado en el trabajo"
+    }
+  }
+}

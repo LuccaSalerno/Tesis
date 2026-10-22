@@ -54,6 +54,18 @@ idempotente los objetos temporales vencidos (todas sus versiones) y las multipar
 En AWS no se define `ATLAS_AWS_ENDPOINT_URL`: el servidor en demo no arranca si está definida.
 Las pruebas levantan su propio moto dentro de pytest, así que no necesitan el contenedor.
 
+## Procesamiento documental (hito 1.4, DO-2026-10-22-PROC)
+
+`src/atlas/procesamiento/` contiene las etapas de la máquina de estados (`maquina_estados.asl.json`):
+Textract o lectura del DOCX, normalización, clasificación y extracción con Claude Haiku 4.5
+(Bedrock Converse) y persistencia de las sugerencias con su procedencia. En local y en la CI se
+prueban con respuestas fijas, sin contactar AWS. Las pruebas de `tests/aws_real/` usan los servicios
+reales y solo las ejecuta el equipo, en una sesión autorizada:
+
+```
+ATLAS_PRUEBAS_AWS_REAL=1 ATLAS_EVIDENCIA_AWS_REAL=evidencia.json .venv/bin/pytest tests/aws_real -m aws_real
+```
+
 ## Verificaciones
 
 ```

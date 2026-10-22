@@ -88,6 +88,21 @@ class EstadoTrabajo(StrEnum):
     FALLIDO = "fallido"
 
 
+class ClaseSugerencia(StrEnum):
+    """Qué produjo el procesamiento (§5.3.2): la categoría o un campo extraído."""
+
+    CLASIFICACION = "clasificacion"
+    CAMPO = "campo"
+
+
+class MotivoSinFuente(StrEnum):
+    """Por qué una sugerencia no tiene localizador verificable (RF-11)."""
+
+    NO_INFORMADA = "no_informada"  # el modelo no indicó página ni fragmento
+    NO_VERIFICADA = "no_verificada"  # el fragmento citado no está en la página indicada
+    NO_APLICA = "no_aplica"  # la clasificación se refiere al documento completo
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 

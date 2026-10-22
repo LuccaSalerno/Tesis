@@ -49,6 +49,9 @@ def entorno(base_reiniciada: Configuracion) -> Iterator[tuple[Any, Contexto, Any
     """Base recreada desde cero: la limpieza recorre todas las cargas, así sus conteos son
     exactos. Devuelve la aplicación, el contexto del responsable y el cliente S3."""
     aplicacion = crear_aplicacion(base_reiniciada)
+    # La base se recrea y los ids de trabajo vuelven a empezar: se retiran los resultados
+    # que corridas anteriores dejaron en el bucket simulado.
+    aplicacion.state.almacen.eliminar_prefijo("resultados/")
     motor = aplicacion.state.motor
     usuario_id, sub = crear_cuenta(motor, "responsable_tramite")
     with TestClient(aplicacion) as cliente:
@@ -371,3 +374,36 @@ def test_do_2026_10_22_herramienta_de_limpieza_es_idempotente(
     assert "vencidas 1" in capsys.readouterr().out
     assert limpiar_cargas_vencidas.main([]) == 0
     assert "Revisadas 0" in capsys.readouterr().out
+
+
+def test_p3_resultados_intermedios_se_eliminan_con_la_carga_vencida(
+    entorno: Any, base_reiniciada: Configuracion
+) -> None:
+    """DO-2026-10-22-PROC (P3): se conservan mientras exista el archivo incorporado y se
+    eliminan, con todas sus versiones, cuando la carga vence."""
+    _, ctx, s3 = entorno
+    tramite = crear_tramite(ctx)
+    vencido = cargar(ctx, tramite["id"], archivos.pdf())
+    incorporado = cargar(ctx, tramite["id"], archivos.CONTRATO_PDF.read_bytes())
+    assert incorporar(ctx, tramite["id"], incorporado["id"]).status_code == 201
+    prefijos = {}
+    for archivo in (vencido, incorporado):
+        trabajo = fila(
+            ctx.motor,
+            "SELECT id FROM atlas.trabajo_procesamiento WHERE archivo_id = :a",
+            a=archivo["id"],
+        )[0]
+        prefijos[archivo["id"]] = f"resultados/{trabajo}/"
+        for nombre in ("contenido.json", "extraccion.json"):
+            for _ in range(2):  # dos versiones de cada resultado
+                s3.put_object(
+                    Bucket=BUCKET_PRUEBA, Key=f"{prefijos[archivo['id']]}1/{nombre}", Body=b"{}"
+                )
+
+    resumen = limpiar(base_reiniciada, datetime.now(UTC) + timedelta(hours=25))
+    assert resumen.errores == []
+    restantes = {
+        archivo_id: versiones(s3, f"{prefijo}1/contenido.json")
+        for archivo_id, prefijo in prefijos.items()
+    }
+    assert restantes == {vencido["id"]: 0, incorporado["id"]: 2}

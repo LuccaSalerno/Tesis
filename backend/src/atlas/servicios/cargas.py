@@ -34,7 +34,11 @@ from atlas.dominio.validacion_archivo import (
     validar_contenido,
     validar_tamano,
 )
-from atlas.integraciones.ciclo_vida_s3 import PREFIJO_CARGAS_TEMPORALES, PREFIJO_DOCUMENTOS
+from atlas.integraciones.ciclo_vida_s3 import (
+    PREFIJO_CARGAS_TEMPORALES,
+    PREFIJO_DOCUMENTOS,
+    PREFIJO_RESULTADOS,
+)
 from atlas.integraciones.puertos import (
     AlmacenDocumental,
     ErrorIntegracion,
@@ -399,11 +403,16 @@ def limpiar_cargas_vencidas(
         if not _clave_temporal_liberada(sesion, autorizacion.clave_objeto):
             resumen.errores.append("clave_en_uso")
             continue
+        prefijos = _resultados_a_eliminar(sesion, autorizacion.archivo_id)
         sesion.commit()
         try:
             resumen.versiones_eliminadas += almacen.eliminar_definitivamente(
                 autorizacion.clave_objeto
             )
+            # DO-2026-10-22-PROC (P3): los resultados intermedios de una carga vencida
+            # se eliminan con ella; los de archivos incorporados se conservan.
+            for prefijo in prefijos:
+                resumen.versiones_eliminadas += almacen.eliminar_prefijo(prefijo)
         except ErrorIntegracion as error:
             resumen.errores.append(error.codigo)
             continue
@@ -434,6 +443,21 @@ def limpiar_cargas_vencidas(
         diferidas=resumen.diferidas,
     )
     return resumen
+
+
+def _resultados_a_eliminar(sesion: Session, archivo_id: int | None) -> list[str]:
+    if archivo_id is None:
+        return []
+    archivo = sesion.get_one(Archivo, archivo_id)
+    if archivo.estado_incorporacion not in (
+        EstadoIncorporacion.VENCIDO,
+        EstadoIncorporacion.DESCARTADO,
+    ):
+        return []
+    trabajo_id = sesion.scalar(
+        select(TrabajoProcesamiento.id).where(TrabajoProcesamiento.archivo_id == archivo_id)
+    )
+    return [] if trabajo_id is None else [f"{PREFIJO_RESULTADOS}{trabajo_id}/"]
 
 
 def _clave_temporal_liberada(sesion: Session, clave: str) -> bool:

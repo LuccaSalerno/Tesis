@@ -30,11 +30,13 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from atlas.dominio.enumeraciones import (
+    ClaseSugerencia,
     EstadoIncorporacion,
     EstadoTrabajo,
     EstadoTramite,
     EstadoUsuario,
     FormatoArchivo,
+    MotivoSinFuente,
     ResultadoAuditoria,
     Rol,
     TipoActor,
@@ -248,3 +250,52 @@ class TrabajoProcesamiento(Base):
     codigo_error: Mapped[str | None] = mapped_column(String(60))
     creado_en: Mapped[datetime] = _instante()
     actualizado_en: Mapped[datetime] = _instante()
+
+
+class ReferenciaFuente(Base):
+    """Figura 5.4: localizador del origen de un resultado automático (§5.3.3, RF-11)."""
+
+    __tablename__ = "referencia_fuente"
+    __table_args__ = (
+        CheckConstraint("pagina IS NULL OR pagina > 0", name="pagina_positiva"),
+        CheckConstraint(
+            "pagina IS NOT NULL OR seccion IS NOT NULL OR fragmento IS NOT NULL",
+            name="algun_localizador",
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, index=True)
+    pagina: Mapped[int | None] = mapped_column(Integer)
+    seccion: Mapped[str | None] = mapped_column(String(255))
+    fragmento: Mapped[str | None] = mapped_column(Text)
+    trabajo_id: Mapped[int] = mapped_column(ForeignKey("trabajo_procesamiento.id"), nullable=False)
+    intento: Mapped[int] = mapped_column(Integer, nullable=False)
+    creado_en: Mapped[datetime] = _instante()
+
+
+class ValorSugerido(Base):
+    """Figura 5.4: sugerencia automática; solo su validación humana la vuelve utilizable."""
+
+    __tablename__ = "valor_sugerido"
+    __table_args__ = (
+        UniqueConstraint("trabajo_id", "intento", "clase", "campo"),
+        CheckConstraint(
+            "(fuente_id IS NULL) = (motivo_sin_fuente IS NOT NULL)", name="fuente_o_motivo"
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, index=True)
+    fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
+    clase: Mapped[ClaseSugerencia] = mapped_column(catalogo(ClaseSugerencia, 20), nullable=False)
+    campo: Mapped[str] = mapped_column(String(60), nullable=False)
+    valor: Mapped[str] = mapped_column(Text, nullable=False)
+    valor_original: Mapped[str] = mapped_column(Text, nullable=False)
+    motivo_sin_fuente: Mapped[MotivoSinFuente | None] = mapped_column(catalogo(MotivoSinFuente, 20))
+    trabajo_id: Mapped[int] = mapped_column(ForeignKey("trabajo_procesamiento.id"), nullable=False)
+    intento: Mapped[int] = mapped_column(Integer, nullable=False)
+    modelo: Mapped[str] = mapped_column(String(120), nullable=False)
+    version_instrucciones: Mapped[str] = mapped_column(String(40), nullable=False)
+    version_esquema: Mapped[str] = mapped_column(String(40), nullable=False)
+    creado_en: Mapped[datetime] = _instante()

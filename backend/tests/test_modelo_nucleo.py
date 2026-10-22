@@ -13,10 +13,13 @@ from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.pool import NullPool
 
 from atlas.dominio.enumeraciones import (
+    ClaseSugerencia,
     EstadoIncorporacion,
+    EstadoTrabajo,
     EstadoTramite,
     EstadoUsuario,
     FormatoArchivo,
+    MotivoSinFuente,
     ResultadoAuditoria,
     Rol,
     TipoActor,
@@ -89,6 +92,9 @@ def test_pd_04_modelos_coinciden_con_la_migracion(
         ("ck_documento_tipo", TipoDocumental),
         ("ck_evento_auditoria_actor_tipo", TipoActor),
         ("ck_evento_auditoria_resultado", ResultadoAuditoria),
+        ("ck_trabajo_procesamiento_estado", EstadoTrabajo),
+        ("ck_valor_sugerido_clase", ClaseSugerencia),
+        ("ck_valor_sugerido_motivo_sin_fuente", MotivoSinFuente),
     ],
 )
 def test_pd_04_catalogos_de_la_base_coinciden_con_las_enumeraciones(

@@ -68,6 +68,12 @@ class Configuracion(BaseSettings):
     carga_vigencia_url_s: int = 300
     carga_vigencia_pendiente_s: int = 24 * 60 * 60
 
+    # Procesamiento (hito 1.4, DO-2026-10-22-PROC). Perfil geográfico de EE. UU. (RC-P09).
+    bedrock_perfil_generativo: str = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+    procesamiento_max_tokens_clasificacion: int = 256
+    procesamiento_max_tokens_extraccion: int = 2048
+    procesamiento_caracteres_maximos: int = 400_000
+
     def validar_servicios_aws(self) -> None:
         if not self.s3_bucket_documentos or not self.sfn_maquina_procesamiento_arn:
             raise ErrorConfiguracion(

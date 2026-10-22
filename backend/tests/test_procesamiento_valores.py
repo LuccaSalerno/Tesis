@@ -1,0 +1,37 @@
+"""Normalización determinista de valores (§5.3.2)."""
+
+import pytest
+
+from atlas.procesamiento.valores import ClaseValor, cuit_valido, normalizar
+
+
+@pytest.mark.parametrize(
+    ("entrada", "clase", "esperado"),
+    [
+        ("30-96472518-3", ClaseValor.CUIT, "30-96472518-3"),
+        ("30964725183", ClaseValor.CUIT, "30-96472518-3"),
+        ("30-96472518-4", ClaseValor.CUIT, "30-96472518-4"),  # dígito inválido: sin normalizar
+        ("20 de febrero de 2026", ClaseValor.FECHA, "2026-02-20"),
+        ("1º de marzo de 2026", ClaseValor.FECHA, "2026-03-01"),
+        ("01/03/2026", ClaseValor.FECHA, "2026-03-01"),
+        ("2027-02-28", ClaseValor.FECHA, "2027-02-28"),
+        ("31/02/2026", ClaseValor.FECHA, "31/02/2026"),  # fecha imposible: sin normalizar
+        ("ARS 1.250.000,00", ClaseValor.IMPORTE, "1250000.00"),
+        ("$ 10.500", ClaseValor.IMPORTE, "10500.00"),
+        ("1,234.56", ClaseValor.IMPORTE, "1234.56"),
+        ("10,5", ClaseValor.IMPORTE, "10.50"),
+        ("un millón", ClaseValor.IMPORTE, "un millón"),
+        ("pesos argentinos", ClaseValor.MONEDA, "ARS"),
+        ("U$S", ClaseValor.MONEDA, "USD"),
+        ("euros", ClaseValor.MONEDA, "euros"),
+        ("  Servicios   Integrales  ", ClaseValor.TEXTO, "Servicios Integrales"),
+    ],
+)
+def test_rf_10_normalizacion(entrada: str, clase: ClaseValor, esperado: str) -> None:
+    assert normalizar(entrada, clase) == esperado
+
+
+def test_rf_10_digito_verificador_de_cuit() -> None:
+    assert cuit_valido("30964725183")
+    assert not cuit_valido("30964725184")
+    assert not cuit_valido("3096472518")
