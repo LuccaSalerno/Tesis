@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
 from atlas import __version__
-from atlas.api import consultas, cuentas, salud, tramites, vinculos
+from atlas.api import consultas, cuentas, revision, salud, tramites, vinculos
 from atlas.api.middleware import MiddlewareSolicitudes
 from atlas.autenticacion.verificador import VerificadorJwt
 from atlas.configuracion import Configuracion, obtener_configuracion
@@ -21,7 +21,7 @@ from atlas.integraciones.puertos import ErrorIntegracion
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
 from atlas.procesamiento.errores import ErrorEtapa
 from atlas.registro import configurar_registro
-from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
+from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado, NoPermitido
 
 
 def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
@@ -80,6 +80,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.include_router(tramites.enrutador)
     aplicacion.include_router(consultas.enrutador)
     aplicacion.include_router(vinculos.enrutador)
+    aplicacion.include_router(revision.enrutador)
     return aplicacion
 
 
@@ -97,6 +98,8 @@ async def _responder_dominio(_: Request, error: Exception) -> JSONResponse:
         raise error
     if isinstance(error, NoEncontrado):
         codigo = 404
+    elif isinstance(error, NoPermitido):
+        codigo = 403
     elif isinstance(error, Conflicto):
         codigo = 409
     else:

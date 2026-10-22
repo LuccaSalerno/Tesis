@@ -66,6 +66,18 @@ reales y solo las ejecuta el equipo, en una sesión autorizada:
 ATLAS_PRUEBAS_AWS_REAL=1 ATLAS_EVIDENCIA_AWS_REAL=evidencia.json .venv/bin/pytest tests/aws_real -m aws_real
 ```
 
+## Revisión, decisiones y evidencia (hito 1.8, DO-2026-10-22-TAR)
+
+Recorrido por la API, con cuentas sintéticas:
+
+1. El administrador crea la plantilla de contratos: `POST /plantillas-flujo` con dos pasos. El revisor del último paso necesita autorización de cierre.
+2. El responsable valida la clasificación y todos los campos de cada documento, y envía el trámite a validación: `POST /tramites/{id}/envio-a-validacion`.
+3. Consulta la sugerencia (`GET /tramites/{id}/flujo-sugerido`) y la confirma (`POST /tramites/{id}/ciclos`).
+4. Cada revisor ve sus tareas (`GET /tareas`, `GET /tareas/{id}`) y decide: `POST /tareas/{id}/decision`.
+5. La evidencia se reconstruye con `GET /decisiones/{id}/evidencia` y el historial con `GET /tramites/{id}/linea-tiempo`.
+
+Si un trámite queda Observado, el responsable lo subsana (`POST /tramites/{id}/subsanacion`), corrige y confirma un ciclo nuevo.
+
 ## Verificaciones
 
 ```

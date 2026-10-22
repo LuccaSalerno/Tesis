@@ -158,6 +158,40 @@ class DisparadorRegla(StrEnum):
     VALIDACION = "validacion"  # validación de la clasificación o de un campo
 
 
+class AlcancePlantilla(StrEnum):
+    """A qué trámites se sugiere una plantilla de flujo (RC-P03.1.4, DO-2026-10-22-TAR P2)."""
+
+    CONTRATO = "contrato"  # algún documento vigente clasificado como contrato
+    GENERAL = "general"
+
+
+class EstadoCiclo(StrEnum):
+    """Situación de un ciclo de revisión (RN-09, RN-12, DO-2026-10-22-TAR)."""
+
+    EN_CURSO = "en_curso"
+    APROBADO = "aprobado"
+    OBSERVADO = "observado"
+    DESPLAZADO = "desplazado"  # cambió el conjunto documental (RN-12, PD-05.1)
+
+
+class EstadoTarea(StrEnum):
+    """Estado de una tarea; no es un estado del trámite (PD-05.4)."""
+
+    EN_ESPERA = "en_espera"  # espera la aprobación de la tarea anterior
+    PENDIENTE = "pendiente"  # habilitada para decidir
+    APROBADA = "aprobada"
+    OBSERVADA = "observada"
+    ANULADA = "anulada"  # por cambio documental (RN-12, PD-05.4)
+    DESCARTADA = "descartada"  # el ciclo concluyó por una observación anterior
+
+
+class TipoDecision(StrEnum):
+    """Resolución de una tarea (RF-20)."""
+
+    APROBACION = "aprobacion"
+    OBSERVACION = "observacion"
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 
@@ -184,3 +218,19 @@ class AccionAuditoria(StrEnum):
     VINCULO_RECHAZADO = "vinculo_rechazado"
     VINCULO_ELIMINADO = "vinculo_eliminado"
     REGLA_EJECUTADA = "regla_ejecutada"
+    PLANTILLA_CREADA = "plantilla_creada"
+    PLANTILLA_DESACTIVADA = "plantilla_desactivada"
+    TRAMITE_ENVIADO_A_VALIDACION = "tramite_enviado_a_validacion"
+    FLUJO_CONFIRMADO = "flujo_confirmado"
+    TAREA_ASIGNADA = "tarea_asignada"
+    TAREA_REASIGNADA = "tarea_reasignada"
+    TAREA_SIN_ASIGNAR = "tarea_sin_asignar"
+    TAREA_HABILITADA = "tarea_habilitada"
+    TAREA_APROBADA = "tarea_aprobada"
+    TAREA_OBSERVADA = "tarea_observada"
+    TAREA_DESCARTADA = "tarea_descartada"
+    TAREA_ANULADA = "tarea_anulada"
+    TRAMITE_APROBADO = "tramite_aprobado"
+    TRAMITE_OBSERVADO = "tramite_observado"
+    TRAMITE_SUBSANADO = "tramite_subsanado"
+    CICLO_DESPLAZADO = "ciclo_desplazado"

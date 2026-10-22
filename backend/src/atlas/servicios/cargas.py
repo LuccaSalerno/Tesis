@@ -53,7 +53,7 @@ from atlas.persistencia.modelos import (
     VersionDocumental,
 )
 from atlas.registro import registrar_evento
-from atlas.servicios import tramites
+from atlas.servicios import ciclos, tramites
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, NoEncontrado
 
@@ -310,6 +310,14 @@ def incorporar_como_documento_nuevo(
         entidad_id=documento.id,
         actor_id=usuario_id,
         tramite_id=tramite.id,
+        version_id=version.id,
+        solicitud_id=solicitud_id,
+    )
+    # RN-12, PD-05.1: el ciclo en curso queda desplazado y sus tareas abiertas, anuladas.
+    ciclos.desplazar_en_curso(
+        sesion,
+        tramite_id=tramite.id,
+        usuario_id=usuario_id,
         version_id=version.id,
         solicitud_id=solicitud_id,
     )

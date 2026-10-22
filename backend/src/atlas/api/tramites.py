@@ -1,8 +1,10 @@
 """Trámites, cargas e incorporación (RF-03, RF-04, RF-05, RF-07, RC-P04). Rutas: RC-P01-004.
 
 Permisos (Tabla 3.II): crear trámites, cargar e incorporar requieren el rol de
-responsable del trámite y ser el responsable de ese trámite. Un trámite sin
-acceso responde 404, igual que uno inexistente.
+responsable del trámite y ser el responsable de ese trámite. Las consultas también
+las hace el revisor/aprobador con una tarea asignada, limitadas a las versiones de sus
+ciclos (DO-2026-10-22-TAR, P8). Un trámite sin acceso responde 404, igual que uno
+inexistente.
 """
 
 import uuid
@@ -12,10 +14,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Request, Response, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
     UsuarioActual,
+    es_revisor,
     exigir_rol,
     obtener_sesion,
     obtener_solicitud_id,
@@ -42,6 +46,7 @@ from atlas.persistencia.modelos import (
     Tramite,
     ValidacionHumana,
     ValorSugerido,
+    VersionDocumental,
 )
 from atlas.servicios import cargas, resultados, tramites, validaciones
 from atlas.servicios.errores import NoEncontrado
@@ -74,6 +79,23 @@ def obtener_limites(request: Request) -> LimitesCarga:
 def obtener_vigencia_pendiente(request: Request) -> int:
     vigencia: int = request.app.state.vigencia_carga_pendiente_s
     return vigencia
+
+
+def _consulta(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramites.Acceso:
+    return tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
+
+
+def _archivos_permitidos(sesion: Session, acceso: tramites.Acceso) -> set[int] | None:
+    """Para el revisor, solo los archivos de las versiones de sus ciclos."""
+    if acceso.versiones is None:
+        return None
+    return set(
+        sesion.scalars(
+            select(VersionDocumental.archivo_id).where(VersionDocumental.id.in_(acceso.versiones))
+        )
+    )
 
 
 Almacen = Annotated[AlmacenDocumental, Depends(obtener_almacen)]
@@ -226,12 +248,16 @@ def crear_tramite(
 
 @enrutador.get("", response_model=list[TramiteRespuesta])
 def listar_tramites(usuario: Autenticado, sesion: Sesion) -> list[TramiteRespuesta]:
-    return [TramiteRespuesta.desde(t) for t in tramites.listar_accesibles(sesion, usuario.id)]
+    return [
+        TramiteRespuesta.desde(t)
+        for t in tramites.listar_accesibles(sesion, usuario.id, revisor=es_revisor(usuario))
+    ]
 
 
 @enrutador.get("/{tramite_id}", response_model=TramiteDetalle)
 def abrir_tramite(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> TramiteDetalle:
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    acceso = _consulta(sesion, tramite_id, usuario)
+    tramite = acceso.tramite
     documentos = [
         DocumentoRespuesta(
             id=d.id,
@@ -242,6 +268,7 @@ def abrir_tramite(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> Tram
             ),
         )
         for d in tramites.documentos_vigentes(sesion, tramite.id)
+        if acceso.permite(d.version_vigente_id)
     ]
     return TramiteDetalle(**TramiteRespuesta.desde(tramite).model_dump(), documentos=documentos)
 
@@ -317,10 +344,12 @@ def confirmar_carga(
 def listar_archivos(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, vigencia: VigenciaPendiente
 ) -> list[ArchivoRespuesta]:
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    acceso = _consulta(sesion, tramite_id, usuario)
+    permitidos = _archivos_permitidos(sesion, acceso)
     return [
         ArchivoRespuesta.desde(a, t, vigencia)
-        for a, t in cargas.listar_archivos(sesion, tramite.id)
+        for a, t in cargas.listar_archivos(sesion, acceso.tramite.id)
+        if permitidos is None or a.id in permitidos
     ]
 
 
@@ -384,9 +413,14 @@ def consultar_sugerencias(
 ) -> SugerenciasRespuesta:
     """RF-08, RF-10, RF-11: clasificación y campos sugeridos con su localizador, o el
     motivo por el que no hay uno verificable."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    acceso = _consulta(sesion, tramite_id, usuario)
+    permitidos = _archivos_permitidos(sesion, acceso)
     archivo = sesion.get(Archivo, archivo_id)
-    if archivo is None or archivo.tramite_id != tramite.id:
+    if (
+        archivo is None
+        or archivo.tramite_id != acceso.tramite.id
+        or (permitidos is not None and archivo.id not in permitidos)
+    ):
         raise NoEncontrado("El archivo no existe en este trámite")
     trabajo, filas = resultados.sugerencias_vigentes(sesion, archivo.id)
     sugerencias = {valor.id: _sugerencia(valor, fuente) for valor, fuente in filas}
@@ -504,8 +538,10 @@ def consultar_validaciones(
     tramite_id: int, documento_id: int, usuario: Autenticado, sesion: Sesion
 ) -> ValidacionesRespuesta:
     """Versión vigente: sugerencias, validaciones vigentes e historial de cada dato."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
-    actual = validaciones.consultar(sesion, tramite, documento_id)
+    acceso = _consulta(sesion, tramite_id, usuario)
+    actual = validaciones.consultar(sesion, acceso.tramite, documento_id)
+    if not acceso.permite(actual.version.id):
+        raise NoEncontrado("El documento no existe en este trámite")
 
     def respuesta(validacion: ValidacionHumana) -> ValidacionRespuesta:
         fuente = actual.fuentes.get(validacion.fuente_id) if validacion.fuente_id else None

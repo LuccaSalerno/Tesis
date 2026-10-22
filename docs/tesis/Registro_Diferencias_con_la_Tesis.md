@@ -2,7 +2,7 @@
 
 **Propósito:** reunir en un solo lugar todo lo que la implementación agrega, precisa, restringe o resuelve de otra forma respecto de `docs/tesis/main.pdf`, para que los autores decidan si hay que actualizar la tesis. **No modifica requisitos:** cada entrada indica qué decisión la respalda. Lo que contradiga RF, RN o RNF no se implementa sin consultar (AGENTS.md §2.3).
 
-**Actualización:** 22/10/2026, después del hito 1.7 (rama `fundacion/local-backend`).
+**Actualización:** 22/10/2026, después del hito 1.8 (rama `fundacion/local-backend`).
 
 **Cómo se usa:**
 - Toda diferencia nueva se agrega en el mismo cambio que la introduce (AGENTS.md §6 y §7).
@@ -77,7 +77,7 @@ Las entidades y relaciones de la Figura 5.4 existen con sus nombres. La tesis ac
 | ID | Sección | Implementación | Tipo y respaldo | Acción sugerida | Estado |
 |---|---|---|---|---|---|
 | DIF-31 | RF-09, RF-12 | Se valida **solo la versión vigente** | Restricción. DO-2026-10-22-VAL (P1) | Aclarar en RF-12 o §5.3.3 | Pendiente |
-| DIF-32 | Tabla 3.VI | Se admite validar en **Borrador** y **Pendiente de validación**. En **Observado**, recién con la transición de subsanación (RN-13, hito 1.8). En los demás estados se rechaza | Precisión. DO-2026-10-22-VAL (P2) | Aclarar en qué estados se puede validar | Pendiente |
+| DIF-32 | Tabla 3.VI | Se admite validar en **Borrador** y **Pendiente de validación**. En **Observado**, primero se subsana (Observado → Pendiente de validación, DIF-71) y después se valida. En los demás estados se rechaza | Precisión. DO-2026-10-22-VAL (P2), DO-2026-10-22-TAR (P9) | Aclarar en qué estados se puede validar | Pendiente |
 | DIF-33 | RF-10, §5.3.2 | Los campos se validan **después** de validar la clasificación | Precisión. DO-2026-10-22-VAL (P3) | Aclarar el orden | Pendiente |
 | DIF-34 | §5.3.2 (formatos) | El valor validado se exige en formato canónico. Un dígito verificador de CUIT inválido produce una **advertencia, no un rechazo** | Agregado. DO-2026-10-22-VAL (P4) | Mencionarlo, porque los valores validados alimentan R1 a R4 | Pendiente |
 
@@ -89,7 +89,7 @@ Las entidades y relaciones de la Figura 5.4 existen con sus nombres. La tesis ac
 | DIF-36 | §5.3.4 («respuestas asistidas cuya evidencia se conserva») | Se conservan **todas** las consultas: pregunta, respuesta o abstención, fragmentos recuperados y citados, modelo y versiones. Sin borrado | Precisión. DO-2026-10-22-RAG (P2) | Aclarar que se conservan todas y su retención (RNF-03) | Pendiente |
 | DIF-37 | RF-13 (abstención) | Abstiene el modelo; el backend descarta las afirmaciones sin cita a los fragmentos recuperados y, si no queda ninguna, la respuesta es una abstención. **Sin umbral de similitud.** La respuesta es la unión de las afirmaciones citadas | Precisión. DO-2026-10-22-RAG (P3) | Describir el criterio en §5.3.4 | Pendiente |
 | DIF-38 | §5.3.4 (segmentación) | `segmentacion-v1`: fragmentos de hasta 1.200 caracteres dentro de una misma página y sección; k = 5 por coseno exacto (RC-P07.3) | Precisión. DT-RAG-01 | Opcional | Pendiente |
-| DIF-39 | Tabla 3.II («Realizar una consulta asistida: revisor en tarea asignada») | Por ahora consulta **solo el responsable**: el revisor se habilita con las tareas (hito 1.8) | Pendiente de implementación | Ninguna (temporal) | Pendiente |
+| DIF-39 | Tabla 3.II («Realizar una consulta asistida: revisor en tarea asignada») | Consultan el responsable y el revisor con tarea asignada; para este, el alcance son las versiones vigentes **de sus ciclos** (DIF-73). El administrador recibe 403 y un revisor sin tarea, 404 | Restricción. DO-2026-10-22-TAR (P8) | Aclarar en §5.3.4 el alcance del revisor | Pendiente |
 
 ## F bis. Vínculos y reglas de consistencia (RF-14 a RF-16, RN-05, RN-06, §5.3.5)
 
@@ -103,9 +103,28 @@ Las entidades y relaciones de la Figura 5.4 existen con sus nombres. La tesis ac
 | DIF-57 | §5.3.5 («Cuando se incorpora un nuevo documento o una nueva versión, se vuelven a ejecutar las reglas») | Las reglas se ejecutan **al crear o confirmar un vínculo y al validar un dato**, en la misma transacción. Incorporar un documento nuevo no ejecuta reglas, porque todavía no tiene vínculos ni validaciones. Una versión nueva (Etapa 2) tampoco tiene validaciones (RN-09): sus reglas se ejecutan al validarla. Por ser síncronas, la situación de «controles pendientes» de PD-02.3 no se presenta | Diferencia. DO-2026-10-22-REG (P4) | Ajustar §5.3.5: las reglas se vuelven a ejecutar cuando cambian los valores validados o los vínculos | Pendiente |
 | DIF-58 | §5.3.5 (resultado «no aplicable») | Una regla sin vínculo pertinente se presenta como «no aplicable» **calculado, sin guardar ejecución**. Un vínculo entre tipos sin regla no genera ejecuciones. R4 con monedas distintas sí guarda una ejecución «no aplicable» | Precisión. DO-2026-10-22-REG (P5), PD-01 | Aclarar cuándo «no aplicable» deja evidencia | Pendiente |
 | DIF-59 | RF-16, PD-01 (evaluación) | Valores de la versión vigente con su validación vigente. Falta de datos con las entradas que existen. R4 revisa primero la moneda y después los importes. R3 incluye los extremos. Explicación como plantilla con los valores, guardada solo en la base | Precisión. DO-2026-10-22-REG (P6) | Opcional: incluir la formalización de R1 a R4 (ya prevista en el ítem 3 de la §4 de decisiones) | Pendiente |
-| DIF-60 | Tabla 3.II y Tabla 3.VI (vínculos) | Se crean, confirman, rechazan y eliminan vínculos solo con el trámite en **Borrador o Pendiente de validación**. En Observado, con la subsanación (RN-13, hito 1.8) | Precisión. DO-2026-10-22-REG (P7) | Aclarar en qué estados se administran vínculos | Pendiente |
+| DIF-60 | Tabla 3.II y Tabla 3.VI (vínculos) | Se crean, confirman, rechazan y eliminan vínculos solo con el trámite en **Borrador o Pendiente de validación**. En Observado, después de subsanar (DIF-71) | Precisión. DO-2026-10-22-REG (P7) | Aclarar en qué estados se administran vínculos | Pendiente |
 | DIF-61 | RF-21 (auditoría de vínculos y reglas) | Eventos `vinculo_creado`, `vinculo_confirmado`, `vinculo_rechazado`, `vinculo_eliminado`, y `vinculo_sugerido` y `regla_ejecutada` **atribuidos al sistema** | Precisión. DO-2026-10-22-REG | Opcional | Pendiente |
-| DIF-62 | Tabla 3.II («Consultar documentación y fuentes: revisor en tarea asignada») | Por ahora solo el responsable consulta vínculos y controles; el revisor, con las tareas (hito 1.8) | Pendiente de implementación | Ninguna (temporal) | Pendiente |
+| DIF-62 | Tabla 3.II («Consultar documentación y fuentes: revisor en tarea asignada») | El revisor con tarea asignada consulta, en solo lectura, documentos, archivos, sugerencias, validaciones, vínculos y controles **de las versiones de sus ciclos** (DIF-73) | Restricción. DO-2026-10-22-TAR (P8) | Ver DIF-73 | Pendiente |
+
+## F ter. Tareas, decisiones y evidencia (RF-17 a RF-22, RN-07 a RN-09, RN-12, RN-13, §5.2)
+
+| ID | Sección | Implementación | Tipo y respaldo | Acción sugerida | Estado |
+|---|---|---|---|---|---|
+| DIF-63 | CICLO_REVISION, TAREA, DECISION (Figura 5.4) | Ciclo: se agregan `plantilla_flujo_id`, `confirmado_por_id`, `confirmado_en` y `concluido_en`; un solo ciclo `en_curso` por trámite. Tarea: `nombre`, `creada_en` y `actualizada_en`; nunca asignada al responsable de su trámite (*trigger*). Decisión: `decidida_en`, una por tarea; la base exige el motivo en la observación. `CICLO_REVISION_VERSION` verifica que la versión sea del trámite del ciclo | Agregado. PD-04-011 | Opcional: mostrar las fechas en la Figura 5.4 | Pendiente |
+| DIF-64 | Estructuras operativas (§5.2) | Tablas técnicas `plantilla_flujo` y `plantilla_flujo_paso` (flujos del administrador) y `asignacion_tarea` (cada asignación o reasignación: anterior, nueva, quién y cuándo). El evento de auditoría por sí solo no identifica a la persona asignada | Agregado. PD-04-011, DO-2026-10-22-TAR (P1, P7) | Mencionar las plantillas de flujo y el registro de asignaciones en §5.2 | Pendiente |
+| DIF-65 | RF-17 («reglas y configuraciones habilitadas»), RC-P03.1 | Plantillas por **alcance** (`contrato` o `general`), de uno a tres pasos, inmutables y versionadas; una nueva reemplaza a la activa de su alcance. El revisor del último paso debe tener autorización de cierre | Precisión. DO-2026-10-22-TAR (P1) | Describir las plantillas en §3.3 o §5.2 | Pendiente |
+| DIF-66 | RF-17 («mantenerla inactiva hasta que el responsable la confirme») | La sugerencia **no se guarda**: se calcula al consultarla. Hasta confirmar no existe ninguna tarea. La confirmación indica la plantilla y su versión; si ya no es la sugerida, se rechaza | Precisión. DO-2026-10-22-TAR (P2) | Opcional: aclarar que la sugerencia inactiva no es una entidad | Pendiente |
+| DIF-67 | Tabla 3.VI («Confirmar los datos requeridos y el flujo») | «Datos requeridos»: la clasificación y **todos los campos del esquema del tipo** (RC-P04) validados en cada documento vigente. **Pregunta abierta:** si un campo no consta en el documento, hoy no hay forma de registrar «no consta» y el flujo no puede confirmarse | Precisión. DO-2026-10-22-TAR (P4) | Definir los datos requeridos y cómo se registra un dato ausente | Pendiente |
+| DIF-68 | TAREA: estados (la tesis no los enumera) | `en_espera` (espera la tarea anterior), `pendiente`, `aprobada`, `observada`, `anulada` (cambio documental, PD-05.4) y `descartada` (el ciclo concluyó por una observación anterior). Al confirmar se crean **todas** las tareas: la primera `pendiente` y las demás `en_espera` | Precisión. RC-P03.1.3, PD-05.4, DO-2026-10-22-TAR (P4, P5) | Nombrar los estados de la tarea en §5.2 | Pendiente |
+| DIF-69 | CICLO_REVISION: estados | `en_curso`, `aprobado`, `observado` y `desplazado` (cambió el conjunto documental, RN-12) | Precisión. DO-2026-10-22-TAR | Nombrar los estados del ciclo en §5.2 | Pendiente |
+| DIF-70 | Tabla 3.VI (observar) y RN-13 | La observación **concluye el ciclo** y descarta sus tareas en espera. Después de subsanar se confirma un **ciclo nuevo**, con las mismas versiones si no cambiaron; las decisiones del ciclo observado no se trasladan. En la aprobación el motivo es opcional | Precisión. DO-2026-10-22-TAR (P5, P9) | Aclarar que la subsanación requiere un nuevo ciclo de revisión | Pendiente |
+| DIF-71 | Tabla 3.VI («Subsanar datos o metadatos… → Pendiente de validación») | La subsanación es una **acción explícita** del responsable que primero pasa a Pendiente de validación; las correcciones se hacen después, en ese estado. No exige haber corregido algo | Diferencia de orden. DO-2026-10-22-TAR (P9) | Ajustar la redacción de la Tabla 3.VI o confirmar que el orden es indistinto | Pendiente |
+| DIF-72 | RN-12 | Con la incorporación de un **documento nuevo**, en la misma transacción: el ciclo `en_curso` pasa a `desplazado`, sus tareas abiertas a `anulada` y el trámite a Borrador. Un ciclo aprobado conserva su estado. La decisión tardía responde 409 con el mensaje de PD-05.3 y no registra nada | Implementación parcial. PD-05, DO-2026-10-22-TAR (P10) | Ninguna (la parte de versiones nuevas sigue en DIF-48) | Pendiente |
+| DIF-73 | §5.2 («se limita a las versiones consideradas en el ciclo de revisión correspondiente») | El acceso del revisor exige el rol de revisor/aprobador y una tarea **asignada hoy** en el trámite (en cualquier estado); se limita a las versiones de los ciclos de esas tareas y es de solo lectura. Si se le reasigna la tarea, pierde el acceso. Ve todos los eventos de la línea de tiempo, pero solo abre las versiones de sus ciclos | Precisión. DO-2026-10-22-TAR (P8, P11) | Aclarar en §5.2 qué pasa al reasignar | Pendiente |
+| DIF-74 | RF-22, PD-03 (evidencia de la decisión) | Endpoint `GET /decisiones/{id}/evidencia`. Las validaciones son las vigentes **en el instante de la decisión**, calculadas por la cadena de reemplazos y la fecha, sin copiarlas. Los eventos relacionados son los del ciclo, sus tareas y decisiones, las validaciones y las ejecuciones listadas, **incluidos los posteriores** (por ejemplo, el desplazamiento del ciclo) | Precisión. DO-2026-10-22-TAR (P12), PD-06-001 | Agregar el mockup de la vista (ítem 1 de la §4 de decisiones) | Pendiente |
+| DIF-75 | RF-21 (auditoría del flujo) | Eventos nuevos: `plantilla_creada`, `plantilla_desactivada`, `tramite_enviado_a_validacion`, `flujo_confirmado`, `tarea_asignada`, `tarea_reasignada`, `tarea_sin_asignar`, `tarea_habilitada`, `tarea_aprobada`, `tarea_observada`, `tarea_descartada`, `tarea_anulada`, `tramite_aprobado`, `tramite_observado`, `tramite_subsanado` y `ciclo_desplazado`. La asignación por defecto, la tarea sin asignar, la habilitación y el descarte se **atribuyen al sistema** | Precisión. DO-2026-10-22-TAR | Opcional | Pendiente |
+| DIF-76 | RF-24 (administrador) | El administrador lista las tareas abiertas sin asignar con metadatos (título y estado del trámite, ciclo y tarea), sin acceso a documentos, validaciones, controles ni evidencia. El panel general del administrador sigue diferido | Implementación parcial. RC-P03.3.2, DO-2026-10-22-TAR (P7) | Ninguna | Pendiente |
 
 ## G. Entornos: local, CI y AWS
 
@@ -122,7 +141,7 @@ Las entidades y relaciones de la Figura 5.4 existen con sus nombres. La tesis ac
 | ID | Tema | Implementación | Tipo y respaldo | Acción sugerida | Estado |
 |---|---|---|---|---|---|
 | DIF-45 | Cobertura (RC-P02.7: ≥ 85 %) | La CI exige **≥ 90 % en cada módulo**, no solo en el total | Más estricto. Pedido del equipo (22/10/2026) | Si la tesis menciona el 85 %, decidir si se actualiza | Pendiente |
-| DIF-46 | Aceptación BDD | Escenarios Gherkin ejecutados con `pytest-bdd` contra la API. Los de EVD-01 se omiten con su motivo hasta los hitos 1.7 y 1.8 | Precisión. DO-2026-10-22-BDD | Opcional | Pendiente |
+| DIF-46 | Aceptación BDD | Escenarios Gherkin ejecutados con `pytest-bdd` contra la API. De EVD-01 se ejecutan EVD-C y EVD-N12 (este con un documento nuevo como cambio del conjunto documental); EVD-A y EVD-B se omiten con su motivo hasta RF-06 (Etapa 2). Ejecutarlos no acredita EVD-01: falta el oráculo congelado y la evidencia conservada | Precisión. DO-2026-10-22-BDD | Opcional | Pendiente |
 
 ## I. Pendientes que la tesis da por existentes
 
@@ -131,7 +150,7 @@ Para no describir en la tesis como implementado lo que todavía no está:
 | ID | Requisito | Estado de la implementación |
 |---|---|---|
 | DIF-47 | RF-25: supresión de cuentas | Requiere la Lambda de operaciones de Cognito (§5.4.2); no implementada |
-| DIF-48 | RN-12 y PD-05: anular tareas abiertas al incorporar | La vuelta a Borrador está implementada; los ciclos y tareas llegan con el hito 1.8 |
+| DIF-48 | RN-12 y PD-05 con una **versión nueva** | Implementado con un documento nuevo (DIF-72). Con una versión nueva depende de RF-06 (DIF-49), Etapa 2 |
 | DIF-49 | RF-06 y RF-07: sugerencia y confirmación de nueva versión, descarte de archivos | Solo «documento nuevo»; el resto queda para la Etapa 2 |
 | DIF-50 | RC-P08: reconciliador y estado «En espera» | Diseñados; sin implementar (Etapa 3) |
 | DIF-51 | Infraestructura (Terraform, despliegue, limpieza programada) | Sin implementar; requiere aprobación (DO-2026-10-21) |

@@ -13,3 +13,7 @@ class NoEncontrado(ErrorDominio):
 
 class Conflicto(ErrorDominio):
     pass
+
+
+class NoPermitido(ErrorDominio):
+    """El actor tiene acceso al recurso pero no puede ejecutar la operación (RN-08)."""

@@ -42,6 +42,7 @@ _ALCANCE = text(
     JOIN atlas.trabajo_procesamiento t
       ON t.id = f.trabajo_id AND t.intento = f.intento AND t.estado = 'completado'
     LEFT JOIN atlas.referencia_fuente rf ON rf.id = f.fuente_id
+    WHERE CAST(:versiones AS bigint[]) IS NULL OR v.id = ANY(CAST(:versiones AS bigint[]))
     ORDER BY distancia, f.id
     LIMIT :limite
     """
@@ -76,10 +77,21 @@ class Resultado:
 
 
 def recuperar(
-    sesion: Session, tramite_id: int, vector: list[float], limite: int
+    sesion: Session,
+    tramite_id: int,
+    vector: list[float],
+    limite: int,
+    versiones: frozenset[int] | None = None,
 ) -> list[FragmentoRecuperado]:
+    """`versiones`: None para el responsable; para el revisor, las de sus ciclos (P8)."""
     filas = sesion.execute(
-        _ALCANCE, {"vector": a_texto(vector), "tramite": tramite_id, "limite": limite}
+        _ALCANCE,
+        {
+            "vector": a_texto(vector),
+            "tramite": tramite_id,
+            "limite": limite,
+            "versiones": None if versiones is None else sorted(versiones),
+        },
     ).mappings()
     return [
         FragmentoRecuperado(
@@ -141,10 +153,11 @@ def consultar(
     modelo: ModeloGenerativo,
     limite: int,
     max_tokens: int,
+    versiones: frozenset[int] | None = None,
 ) -> Resultado:
     inicio = time.perf_counter()
     vector = embeddings.embeber([pregunta], "search_query")[0]
-    recuperados = recuperar(sesion, tramite.id, vector, limite)
+    recuperados = recuperar(sesion, tramite.id, vector, limite, versiones)
     por_etiqueta = {f.etiqueta: f for f in recuperados}
 
     afirmaciones: list[Afirmacion] = []

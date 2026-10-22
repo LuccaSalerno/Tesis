@@ -114,3 +114,8 @@ def exigir_rol(rol: Rol) -> Callable[..., UsuarioActual]:
         return usuario
 
     return dependencia
+
+
+def es_revisor(usuario: UsuarioActual) -> bool:
+    """El acceso derivado de una tarea exige el rol de revisor/aprobador (RF-19, P8)."""
+    return Rol.REVISOR_APROBADOR in usuario.roles

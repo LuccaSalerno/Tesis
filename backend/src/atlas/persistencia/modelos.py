@@ -32,9 +32,12 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from atlas.dominio.enumeraciones import (
+    AlcancePlantilla,
     ClaseSugerencia,
     DisparadorRegla,
+    EstadoCiclo,
     EstadoIncorporacion,
+    EstadoTarea,
     EstadoTrabajo,
     EstadoTramite,
     EstadoUsuario,
@@ -47,6 +50,7 @@ from atlas.dominio.enumeraciones import (
     ResultadoRegla,
     Rol,
     TipoActor,
+    TipoDecision,
     TipoDocumental,
     TipoValidacion,
     TipoVinculo,
@@ -528,3 +532,149 @@ class EjecucionReglaVersion(Base):
     )
     version_id: Mapped[int] = mapped_column(ForeignKey("version_documental.id"), primary_key=True)
     papel: Mapped[TipoDocumental] = mapped_column(catalogo(TipoDocumental, 20), nullable=False)
+
+
+class PlantillaFlujo(Base):
+    """Técnica (+): flujo configurado por el administrador (RC-P03.1, DO-2026-10-22-TAR P1).
+
+    Inmutable salvo la desactivación (migración 0009).
+    """
+
+    __tablename__ = "plantilla_flujo"
+    __table_args__ = (
+        UniqueConstraint("alcance", "version"),
+        Index("uq_plantilla_flujo_activa", "alcance", unique=True, postgresql_where=text("activa")),
+    )
+
+    id: Mapped[int] = _id()
+    nombre: Mapped[str] = mapped_column(String(120), nullable=False)
+    alcance: Mapped[AlcancePlantilla] = mapped_column(
+        catalogo(AlcancePlantilla, 20), nullable=False
+    )
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    activa: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
+    creada_por_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    creada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+    desactivada_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    desactivada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class PlantillaFlujoPaso(Base):
+    """Técnica (+): paso de una plantilla con su revisor por defecto (RC-P03.1.2)."""
+
+    __tablename__ = "plantilla_flujo_paso"
+
+    plantilla_flujo_id: Mapped[int] = mapped_column(
+        ForeignKey("plantilla_flujo.id"), primary_key=True
+    )
+    orden: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nombre: Mapped[str] = mapped_column(String(120), nullable=False)
+    rol_requerido: Mapped[Rol] = mapped_column(catalogo(Rol, 30), nullable=False)
+    revisor_por_defecto_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+
+
+class CicloRevision(Base):
+    """Figura 5.4: ciclo de revisión de un conjunto documental (RF-18, RN-09)."""
+
+    __tablename__ = "ciclo_revision"
+    __table_args__ = (
+        UniqueConstraint("tramite_id", "numero"),
+        Index(
+            "uq_ciclo_revision_en_curso",
+            "tramite_id",
+            unique=True,
+            postgresql_where=text("estado = 'en_curso'"),
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False)
+    numero: Mapped[int] = mapped_column(Integer, nullable=False)
+    estado: Mapped[EstadoCiclo] = mapped_column(
+        catalogo(EstadoCiclo, 20), nullable=False, server_default=EstadoCiclo.EN_CURSO.value
+    )
+    plantilla_flujo_id: Mapped[int] = mapped_column(
+        ForeignKey("plantilla_flujo.id"), nullable=False
+    )
+    confirmado_por_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    confirmado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+    concluido_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class CicloRevisionVersion(Base):
+    """Figura 5.4: versión considerada en un ciclo (RN-09, V1). Inmutable."""
+
+    __tablename__ = "ciclo_revision_version"
+
+    ciclo_revision_id: Mapped[int] = mapped_column(
+        ForeignKey("ciclo_revision.id"), primary_key=True
+    )
+    version_id: Mapped[int] = mapped_column(
+        ForeignKey("version_documental.id"), primary_key=True, index=True
+    )
+
+
+class Tarea(Base):
+    """Figura 5.4: tarea de un ciclo con su rol requerido (RF-18, RF-19, PD-05.4)."""
+
+    __tablename__ = "tarea"
+    __table_args__ = (UniqueConstraint("ciclo_revision_id", "orden"),)
+
+    id: Mapped[int] = _id()
+    ciclo_revision_id: Mapped[int] = mapped_column(ForeignKey("ciclo_revision.id"), nullable=False)
+    orden: Mapped[int] = mapped_column(Integer, nullable=False)
+    nombre: Mapped[str] = mapped_column(String(120), nullable=False)
+    rol_requerido: Mapped[Rol] = mapped_column(catalogo(Rol, 30), nullable=False)
+    estado: Mapped[EstadoTarea] = mapped_column(catalogo(EstadoTarea, 20), nullable=False)
+    asignada_a_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"), index=True)
+    creada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+    actualizada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class AsignacionTarea(Base):
+    """Técnica (+): cada asignación o reasignación de una tarea (RF-19). Inmutable."""
+
+    __tablename__ = "asignacion_tarea"
+
+    id: Mapped[int] = _id()
+    tarea_id: Mapped[int] = mapped_column(ForeignKey("tarea.id"), nullable=False, index=True)
+    anterior_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    asignada_a_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    asignada_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    asignada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class Decision(Base):
+    """Figura 5.4: aprobación u observación de una tarea (RF-20, RN-08). Inmutable."""
+
+    __tablename__ = "decision"
+
+    id: Mapped[int] = _id()
+    tarea_id: Mapped[int] = mapped_column(ForeignKey("tarea.id"), nullable=False, unique=True)
+    actor_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    tipo: Mapped[TipoDecision] = mapped_column(catalogo(TipoDecision, 20), nullable=False)
+    motivo: Mapped[str | None] = mapped_column(Text)
+    decidida_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class DecisionControl(Base):
+    """Figura 5.4: ejecución de regla considerada al decidir (PD-02, V4). Inmutable."""
+
+    __tablename__ = "decision_control"
+
+    decision_id: Mapped[int] = mapped_column(ForeignKey("decision.id"), primary_key=True)
+    ejecucion_regla_id: Mapped[int] = mapped_column(
+        ForeignKey("ejecucion_regla.id"), primary_key=True
+    )

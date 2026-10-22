@@ -255,12 +255,15 @@ def test_rnf_seg_la_pregunta_no_puede_cerrar_sus_delimitadores(entorno: dict[str
     assert contenido.count("</pregunta>") == 1 and contenido.count("<fragmentos>") == 1
 
 
-@pytest.mark.parametrize("roles", [("revisor_aprobador",), ("administrador_operativo",)])
-def test_rnf_01_consulta_solo_del_responsable(
-    entorno: dict[str, Any], roles: tuple[str, ...]
-) -> None:
-    _, sub = crear_cuenta(entorno["ctx"].motor, *roles)
+def test_rnf_01_rf_24_el_administrador_no_consulta(entorno: dict[str, Any]) -> None:
+    _, sub = crear_cuenta(entorno["ctx"].motor, "administrador_operativo")
     assert consultar(entorno, encabezados=portador(sub)).status_code == 403
+
+
+def test_rnf_01_revisor_sin_tarea_asignada_no_accede(entorno: dict[str, Any]) -> None:
+    """DO-2026-10-22-TAR P8: el acceso del revisor se deriva de una tarea asignada."""
+    _, sub = crear_cuenta(entorno["ctx"].motor, "revisor_aprobador")
+    assert consultar(entorno, encabezados=portador(sub)).status_code == 404
 
 
 def test_rnf_01_otro_responsable_no_accede(entorno: dict[str, Any]) -> None:
@@ -320,3 +323,20 @@ def _cantidad_consultas(motor: Engine) -> int:
         return int(
             conexion.execute(text("SELECT count(*) FROM atlas.consulta_asistida")).scalar_one()
         )
+
+
+def test_p8_el_alcance_del_revisor_se_limita_a_las_versiones_de_sus_ciclos(
+    entorno: dict[str, Any],
+) -> None:
+    """DO-2026-10-22-TAR P8: vigentes ∩ versiones de los ciclos de sus tareas."""
+    from atlas.servicios.consultas import recuperar
+
+    vector = EmbeddingsFijos().embeber([PREGUNTA], "search_query")[0]
+    tramite_id = entorno["tramite"]["id"]
+    version = entorno["documento"]["version_vigente"]["id"]
+    with entorno["aplicacion"].state.fabrica_sesiones() as sesion:
+        todos = recuperar(sesion, tramite_id, vector, 5)
+        propios = recuperar(sesion, tramite_id, vector, 5, frozenset({version}))
+        ajenos = recuperar(sesion, tramite_id, vector, 5, frozenset({version + 1_000_000}))
+    assert todos and [f.fragmento_id for f in propios] == [f.fragmento_id for f in todos]
+    assert ajenos == []

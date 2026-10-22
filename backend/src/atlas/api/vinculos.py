@@ -1,8 +1,9 @@
 """Vínculos documentales y controles de consistencia (RF-14, RF-15, RF-16). Rutas: RC-P01-008.
 
 Permisos (Tabla 3.II): crear, confirmar, rechazar y eliminar vínculos requieren el rol de
-responsable del trámite y ser su responsable. Consultar vínculos y controles, por ahora,
-solo el responsable: el revisor con tarea asignada se incorpora con las tareas (hito 1.8).
+responsable del trámite y ser su responsable. Consultan vínculos y controles el responsable
+y el revisor/aprobador con una tarea asignada, limitado a las versiones de sus ciclos
+(DO-2026-10-22-TAR, P8).
 """
 
 import uuid
@@ -15,6 +16,7 @@ from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
     UsuarioActual,
+    es_revisor,
     exigir_rol,
     obtener_sesion,
     obtener_solicitud_id,
@@ -32,6 +34,7 @@ from atlas.dominio.enumeraciones import (
 from atlas.dominio.fuentes import FuenteIndicada
 from atlas.persistencia.modelos import ReferenciaFuente, VinculoDocumental
 from atlas.servicios import reglas, tramites, vinculos
+from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["vinculos"])
 
@@ -109,6 +112,20 @@ class VinculosRespuesta(BaseModel):
     )
 
 
+def _documentos_permitidos(
+    sesion: Session, acceso: tramites.Acceso, vinculo: VinculoDocumental
+) -> bool:
+    """Para el revisor, los vínculos entre documentos con alguna versión en sus ciclos."""
+    if acceso.versiones is None:
+        return True
+    permitidos = tramites.documentos_de_versiones(sesion, acceso.versiones)
+    return {vinculo.documento_origen_id, vinculo.documento_destino_id} <= permitidos
+
+
+def _ejecucion_permitida(acceso: tramites.Acceso, detalle: reglas.DetalleEjecucion) -> bool:
+    return all(acceso.permite(v.version.id) for v in detalle.versiones)
+
+
 def _respuesta(sesion: Session, vinculo: VinculoDocumental) -> VinculoRespuesta:
     fuente = sesion.get(ReferenciaFuente, vinculo.fuente_id) if vinculo.fuente_id else None
     return VinculoRespuesta.desde(vinculo, fuente)
@@ -118,8 +135,14 @@ def _respuesta(sesion: Session, vinculo: VinculoDocumental) -> VinculoRespuesta:
 def listar_vinculos(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, historial: bool = False
 ) -> VinculosRespuesta:
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
-    todos = vinculos.listar(sesion, tramite.id, historial=historial)
+    acceso = tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
+    todos = [
+        v
+        for v in vinculos.listar(sesion, acceso.tramite.id, historial=historial)
+        if _documentos_permitidos(sesion, acceso, v)
+    ]
     fuentes = vinculos.fuentes(sesion, todos)
     respuestas = [
         VinculoRespuesta.desde(v, fuentes.get(v.fuente_id) if v.fuente_id else None) for v in todos
@@ -315,7 +338,9 @@ def consultar_controles(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, historial: bool = False
 ) -> ControlesRespuesta:
     """RF-16: regla, versiones, valores comparados y resultado de cada control."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    acceso = tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
     return ControlesRespuesta(
         vigentes=[
             ControlRespuesta(
@@ -327,10 +352,15 @@ def consultar_controles(
                 explicacion=c.explicacion,
                 ejecucion=None if c.detalle is None else EjecucionRespuesta.desde(c.detalle),
             )
-            for c in reglas.vigentes(sesion, tramite.id)
+            for c in reglas.vigentes(sesion, acceso.tramite.id)
+            if c.detalle is None or _ejecucion_permitida(acceso, c.detalle)
         ],
         historial=(
-            [EjecucionRespuesta.desde(d) for d in reglas.historial(sesion, tramite.id)]
+            [
+                EjecucionRespuesta.desde(d)
+                for d in reglas.historial(sesion, acceso.tramite.id)
+                if _ejecucion_permitida(acceso, d)
+            ]
             if historial
             else []
         ),
@@ -342,5 +372,10 @@ def consultar_ejecucion(
     tramite_id: int, ejecucion_id: int, usuario: Autenticado, sesion: Sesion
 ) -> EjecucionRespuesta:
     """V3: una ejecución con sus entradas validadas y versiones de origen."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
-    return EjecucionRespuesta.desde(reglas.obtener(sesion, tramite.id, ejecucion_id))
+    acceso = tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
+    detalle = reglas.obtener(sesion, acceso.tramite.id, ejecucion_id)
+    if not _ejecucion_permitida(acceso, detalle):
+        raise NoEncontrado("La ejecución no existe en este trámite")
+    return EjecucionRespuesta.desde(detalle)

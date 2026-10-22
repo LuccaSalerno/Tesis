@@ -1,8 +1,9 @@
 """Consulta asistida (RF-13, RN-04, DO-2026-10-22-RAG). Rutas: RC-P01-007.
 
-La consulta la realiza el responsable del trámite (Tabla 3.II); el revisor con tarea
-asignada se incorpora con las tareas (hito 1.8). El alcance documental lo calcula el
-backend: el cuerpo de la solicitud solo trae la pregunta.
+La consulta la realiza el responsable del trámite o el revisor/aprobador con una tarea
+asignada (Tabla 3.II); para este, el alcance son las versiones vigentes de sus ciclos
+(DO-2026-10-22-TAR, P8). El alcance documental lo calcula el backend: el cuerpo de la
+solicitud solo trae la pregunta.
 """
 
 from datetime import datetime
@@ -12,14 +13,15 @@ from fastapi import APIRouter, Depends, Request, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from atlas.api.dependencias import UsuarioActual, exigir_rol, obtener_sesion
+from atlas.api.dependencias import UsuarioActual, es_revisor, obtener_sesion, obtener_usuario_actual
 from atlas.dominio.enumeraciones import MotivoAbstencion, Rol
 from atlas.servicios import consultas, tramites
+from atlas.servicios.errores import NoPermitido
 
 enrutador = APIRouter(prefix="/tramites", tags=["consultas"])
 
 Sesion = Annotated[Session, Depends(obtener_sesion)]
-Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
+Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 
 
 class NuevaConsulta(BaseModel):
@@ -67,14 +69,20 @@ class ConsultaRespuesta(BaseModel):
 def consultar(
     tramite_id: int,
     nueva: NuevaConsulta,
-    usuario: Responsable,
+    usuario: Autenticado,
     sesion: Sesion,
     request: Request,
 ) -> ConsultaRespuesta:
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    # Tabla 3.II: responsable del trámite o revisor/aprobador con tarea asignada.
+    if not ({Rol.RESPONSABLE_TRAMITE, Rol.REVISOR_APROBADOR} & usuario.roles):
+        raise NoPermitido("Operación no permitida")
+    acceso = tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
     resultado = consultas.consultar(
         sesion,
-        tramite=tramite,
+        tramite=acceso.tramite,
+        versiones=acceso.versiones,
         usuario_id=usuario.id,
         pregunta=nueva.pregunta.strip(),
         embeddings=request.app.state.embeddings,
