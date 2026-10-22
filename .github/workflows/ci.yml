@@ -40,6 +40,8 @@ jobs:
       ATLAS_BD_NOMBRE: atlas_tests
       ATLAS_BD_USUARIO: atlas_tests_app
       ATLAS_BD_USUARIO_MIGRACION: atlas_tests_migracion
+      # Superusuario efímero del runner: prueba la inicialización privilegiada (RC-P10-15).
+      ATLAS_PRUEBAS_PG_SUPERUSUARIO: "host=localhost user=postgres"
     defaults:
       run:
         working-directory: backend

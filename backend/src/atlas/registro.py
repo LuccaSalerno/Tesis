@@ -28,6 +28,7 @@ METADATOS_PERMITIDOS: Final = frozenset(
         "codigo_error",
         "entorno",
         "revision",
+        "accion",
         # Conteos técnicos de procesos por lotes (por ejemplo, la limpieza de cargas).
         "revisadas",
         "vencidas",

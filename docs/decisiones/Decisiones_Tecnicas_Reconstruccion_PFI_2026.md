@@ -538,6 +538,26 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 13. **Alcance EVD-01:** en este hito se ejecutan EVD-C y EVD-N12 (con documento nuevo como cambio del conjunto documental). EVD-A y EVD-B siguen omitidos hasta RF-06 (Etapa 2).
 14. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-22-OPS — Preparación local del despliegue manual E90A (hito 1.0)
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** RC-P10, RC-P10-13, RC-P10-15, DO-2026-10-21, DO-2026-10-21-E90A, PD-07. **No autoriza crear, modificar ni destruir recursos AWS:** el agente prepara código, planes y procedimientos; el operador humano los ejecuta tras aprobar plan, impacto y costos.
+
+1. **P1 — Orden:** cambios de la aplicación para correr en AWS; Terraform y empaquetado; seed y exportación de evidencia probados en local; runbook concreto, plan de destrucción y cotización por sesión.
+2. **P2 — Mantenimiento:** objeto `control/mantenimiento.json` en el bucket documental, que la API solo lee, con caché de 15 s y denegación si no puede leerse. `draining`: se admiten consultas y las operaciones que modifican responden 503. `offline`: todo responde 503 salvo `/salud`, con `Retry-After`. `/salud` informa el estado. Las Lambdas de procesamiento no se bloquean; el drenaje verifica que no queden trabajos.
+3. **P3 — Lambda privada de operaciones:** una función dentro de la VPC, invocada solo por el operador, con las acciones `inicializar_base`, `migrar`, `estado_migraciones`, `crear_administrador` y `verificar_drenaje` (solo lectura y conteos).
+4. **P4 — Conexión a la base:** `bd_autenticacion = clave | iam`. Con `iam`, un token de RDS por conexión y TLS `verify-full` con el paquete de certificados de RDS, que descarga el equipo.
+5. **P5 — FastAPI en Lambda:** biblioteca **Mangum** (aprobada como dependencia nueva).
+6. **P6 — Empaquetado:** un solo zip arm64 para todas las funciones, construido con Docker; Terraform lo sube a un bucket de artefactos de la raíz `demo`.
+7. **P7 — Terraform:** raíces `bootstrap`, `persistent`, `runtime` y `demo`; `tests` documentado y no desplegado en E90. Terraform ≥ 1.10 (`use_lockfile`) y proveedor AWS fijado a una versión exacta. Se aprueba instalar Terraform en local para `fmt` y `validate -backend=false`, sin credenciales ni operaciones AWS.
+8. **P8 — Protecciones y destrucción selectiva:** `prevent_destroy` en `bootstrap`. RDS con `deletion_protection`, `skip_final_snapshot` y `delete_automated_backups` gobernados por `retiro_autorizado`. Buckets sin `force_destroy`, vaciados con una herramienta que simula por defecto y exige escribir el nombre del bucket. Retiro `demo → runtime → persistent` con planes revisados; sin `destroy` global ni `state rm`.
+9. **P9 — Recursos del primer despliegue:** sin frontend/CloudFront, Scheduler/reconciliador, Lambda de Cognito ni endpoint de interfaz de Lambda. Endpoints de interfaz: Step Functions, Bedrock Runtime y Secrets Manager (temporal), más el gateway de S3. SSE-S3 sin claves KMS propias.
+10. **P10 — Cognito y cuentas:** User Pool y cliente con `USER_PASSWORD_AUTH` solo en demo. El operador crea cuatro usuarios ficticios; las contraseñas solo viven en su terminal. El primer administrador se crea con `crear_administrador`; las demás cuentas, por API.
+11. **P11 — Seed:** solo por API. Confirma la sugerencia que coincide con el oráculo y corrige al valor del oráculo la que no. Deja dos trámites: uno completo hasta la evidencia (demo D) y otro en Pendiente de validación. Manifiesto local de la sesión sin tokens. Probado contra el stack local.
+12. **P12 — Exportación de evidencia:** por API, JSON local con índice SHA-256; funciona en `draining`.
+13. **P13 — Cotización por sesión:** inventario de recursos facturables derivado del Terraform y fórmula por hora y por sesión con tarifas preliminares no oficiales. La exportación de Pricing Calculator y la aprobación siguen siendo del equipo.
+14. **P14 — Oráculo:** el seed usa `oraculo_PD07_preliminar.json`, marcado como preliminar; no acredita EVD-01.
+15. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

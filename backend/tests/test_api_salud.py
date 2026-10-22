@@ -19,7 +19,7 @@ def test_rc_p01_001_salud_responde_sin_base() -> None:
     aplicacion = nueva_aplicacion()
     respuesta = TestClient(aplicacion).get("/salud")
     assert respuesta.status_code == 200
-    assert respuesta.json() == {"estado": "ok", "entorno": "tests"}
+    assert respuesta.json() == {"estado": "ok", "entorno": "tests", "operacion": "active"}
     assert respuesta.headers[CABECERA_SOLICITUD]
 
 

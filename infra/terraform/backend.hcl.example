@@ -1,0 +1,6 @@
+# Copiar como backend.hcl (no versionado) y completar. Uso en cada raíz de sesión:
+#   terraform init -backend-config=../backend.hcl
+bucket       = "<bucket_estado de la raíz bootstrap>"
+region       = "us-east-1"
+encrypt      = true
+use_lockfile = true

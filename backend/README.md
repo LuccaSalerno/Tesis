@@ -78,6 +78,20 @@ Recorrido por la API, con cuentas sintéticas:
 
 Si un trámite queda Observado, el responsable lo subsana (`POST /tramites/{id}/subsanacion`), corrige y confirma un ciclo nuevo.
 
+## Despliegue manual en AWS (hito 1.0, DO-2026-10-22-OPS)
+
+Preparado y validado sin AWS; solo lo ejecuta el operador autorizado, con plan y costos
+aprobados. Procedimiento completo: [infra/terraform/README.md](../infra/terraform/README.md).
+
+- `atlas.lambda_api.manejar`: la API detrás de API Gateway (Mangum).
+- `atlas.operacion.lambda_operaciones.manejar`: Lambda privada de operaciones (inicializar la
+  base, migrar, crear el primer administrador, verificar el drenaje).
+- Modo mantenimiento: `ATLAS_MANTENIMIENTO_FUENTE=s3` lee `control/mantenimiento.json`; en local
+  y en la CI es `fija_active`.
+- Base con IAM: `ATLAS_BD_AUTENTICACION=iam` y `ATLAS_BD_CA_CERTIFICADOS` (TLS `verify-full`).
+- Herramientas del operador: `sembrar_demo`, `exportar_evidencia` y `vaciar_bucket_versionado`
+  (en `atlas.herramientas`).
+
 ## Verificaciones
 
 ```

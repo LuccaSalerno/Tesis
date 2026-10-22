@@ -1,0 +1,5 @@
+cuenta_id                = "000000000000"
+sesion                   = "e90-2026-10-24"
+nombre_bucket_documentos = "atlas-demo-documentos-<sesion>-<sufijo-unico>"
+# Solo en el plan de retiro aprobado (paso B del runbook):
+# retiro_autorizado = true

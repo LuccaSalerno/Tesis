@@ -1,0 +1,4 @@
+cuenta_id     = "000000000000"
+bucket_estado = "atlas-estado-terraform-<sufijo-unico>"
+# Después de inicializar la base, false retira el endpoint temporal de Secrets Manager:
+# endpoint_secrets_manager = false

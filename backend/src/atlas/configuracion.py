@@ -18,6 +18,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 Entorno = Literal["desarrollo", "tests", "demo"]
+# DO-2026-10-22-OPS P4: clave en local y CI; token IAM de RDS en AWS (RC-P10-04).
+AutenticacionBd = Literal["clave", "iam"]
+# DO-2026-10-22-OPS P2: estado operativo leído de S3 o fijo en `active` fuera de AWS.
+FuenteMantenimiento = Literal["s3", "fija_active"]
 
 
 HOSTS_LOCALES = frozenset({"localhost", "127.0.0.1", "::1"})
@@ -45,6 +49,11 @@ class Configuracion(BaseSettings):
     bd_clave: SecretStr | None = None
     bd_usuario_migracion: str | None = None
     bd_clave_migracion: SecretStr | None = None
+    # Las migraciones y la administración se conectan directo a RDS, no al proxy (RC-P10).
+    bd_host_migracion: str | None = None
+    bd_autenticacion: AutenticacionBd = "clave"
+    # Paquete de certificados de RDS: TLS verify-full (obligatorio con IAM).
+    bd_ca_certificados: Path | None = None
 
     # Verificación de tokens de acceso (DT-AUT-01). El JWKS llega por configuración:
     # en AWS lo provee el despliegue (sin salida a Internet); en local, claves locales.
@@ -59,6 +68,16 @@ class Configuracion(BaseSettings):
     aws_endpoint_url: str | None = None
     s3_bucket_documentos: str | None = None
     sfn_maquina_procesamiento_arn: str | None = None
+
+    # Lambda privada de operaciones (RC-P10-15, DO-2026-10-22-OPS P3): credencial maestra
+    # administrada por RDS en Secrets Manager, solo para la inicialización privilegiada.
+    ops_secreto_maestro_arn: str | None = None
+    ops_directorio_migraciones: Path = Path(__file__).resolve().parents[2] / "migraciones"
+
+    # Modo mantenimiento (RC-P10-09, DO-2026-10-22-OPS P2).
+    mantenimiento_fuente: FuenteMantenimiento = "fija_active"
+    mantenimiento_cache_s: float = 15.0
+    mantenimiento_reintentar_s: int = 300
 
     # Límites de carga (RC-P04), configurables sin modificar el código.
     carga_tamano_maximo_bytes: int = 20 * 1024 * 1024
@@ -90,6 +109,24 @@ class Configuracion(BaseSettings):
         if urlparse(self.aws_endpoint_url).hostname not in HOSTS_LOCALES:
             raise ErrorConfiguracion("ATLAS_AWS_ENDPOINT_URL solo admite hosts locales")
 
+    def validar_despliegue(self) -> None:
+        """Demo exige base con IAM y TLS verificado, y mantenimiento leído de S3 (RC-P10)."""
+        if self.bd_autenticacion == "iam" and self.bd_ca_certificados is None:
+            raise ErrorConfiguracion(
+                "Con ATLAS_BD_AUTENTICACION=iam falta ATLAS_BD_CA_CERTIFICADOS"
+            )
+        if self.entorno != "demo":
+            return
+        if self.bd_autenticacion != "iam":
+            raise ErrorConfiguracion("En demo la base usa autenticación IAM")
+        if self.mantenimiento_fuente != "s3":
+            raise ErrorConfiguracion("En demo el modo mantenimiento se lee de S3")
+
+    def argumentos_conexion(self) -> dict[str, str]:
+        if self.bd_ca_certificados is None:
+            return {}
+        return {"sslmode": "verify-full", "sslrootcert": str(self.bd_ca_certificados)}
+
     def cargar_jwks(self) -> dict[str, Any]:
         """Devuelve el JWKS configurado, validando que la configuración de tokens esté completa."""
         if not self.jwt_emisor or not self.jwt_cliente:
@@ -116,14 +153,18 @@ class Configuracion(BaseSettings):
         """URL del usuario de migración (propietario del esquema)."""
         if self.bd_usuario_migracion is None:
             raise ErrorConfiguracion("Falta ATLAS_BD_USUARIO_MIGRACION para ejecutar migraciones")
-        return self._url(self.bd_usuario_migracion, self.bd_clave_migracion)
+        return self._url(
+            self.bd_usuario_migracion,
+            self.bd_clave_migracion,
+            host=self.bd_host_migracion or self.bd_host,
+        )
 
-    def _url(self, usuario: str, clave: SecretStr | None) -> URL:
+    def _url(self, usuario: str, clave: SecretStr | None, host: str | None = None) -> URL:
         return URL.create(
             "postgresql+psycopg",
             username=usuario,
             password=clave.get_secret_value() if clave is not None else None,
-            host=self.bd_host,
+            host=host or self.bd_host,
             port=self.bd_puerto,
             database=self.bd_nombre,
         )

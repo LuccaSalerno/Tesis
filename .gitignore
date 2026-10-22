@@ -44,3 +44,8 @@ coverage.xml
 **/datos_confidenciales/
 **/evidencias_operativas_privadas/
 **/resultados_confidenciales/
+
+# Despliegue manual (DO-2026-10-22-OPS): configuración del operador y paquetes construidos
+infra/terraform/backend.hcl
+dist/
+operaciones/sesiones/

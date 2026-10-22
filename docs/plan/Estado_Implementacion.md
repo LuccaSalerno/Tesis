@@ -2,9 +2,10 @@
 
 **Propósito:** que cualquier persona o agente pueda retomar el trabajo sin el historial de conversaciones. Se actualiza en el mismo commit que cierra cada hito (AGENTS.md §6). El plan está en `Plan_Implementacion_por_Etapas.md`; este documento solo registra dónde estamos.
 
-**Actualización:** 22/10/2026, después del hito 1.8 (cierre de la Etapa 1 en local).
+**Actualización:** 22/10/2026, después del hito 1.0 preparado en local (la Etapa 1 queda completa en local; nada se desplegó).
 **Rama de trabajo:** `fundacion/local-backend` (no se hace merge a `main` sin revisión del equipo).
 **Último commit con CI en verde en GitHub:** `c71b66b` (567 pruebas aprobadas, 6 omitidas, cobertura total 98 % y ≥ 90 % por módulo).
+**Hito 1.0, ensayo de CI limpio local:** 677 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 73 módulos ≥ 90 %; incluye la inicialización privilegiada contra el superusuario efímero de PostgreSQL. Sin push.
 **Hito 1.8, ensayo de CI limpio local** (`backend/herramientas_ci/ensayo_ci_limpio.sh`): 632 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 65 módulos ≥ 90 %. Sin push: la CI de GitHub no corrió sobre este commit.
 
 ## Hitos de la Etapa 1
@@ -12,7 +13,8 @@
 | Hito | Estado | Commit | Decisiones aprobadas | Punto de demo |
 |---|---|---|---|---|
 | Fundación local | Hecho | `b6df546`, `43cef95` | RC-P02, PD-04 (núcleo, migraciones 0001–0002) | — |
-| 1.0 y 1.1 | **Pendiente del equipo** (AWS manual, presupuesto, Terraform) | — | DO-2026-10-21, DO-2026-10-21-E90A | — |
+| 1.0 Preparación del despliegue manual | Hecho, solo local (Terraform validado sin AWS) | commit del hito 1.0 (`RC-P10…`) | DO-2026-10-22-OPS | — |
+| 1.1 Primer ciclo en AWS | **Pendiente del equipo** (presupuesto, cotización oficial, ejecución manual) | — | DO-2026-10-21, DO-2026-10-21-E90A | — |
 | 1.2 Autenticación, roles y cuentas | Hecho, solo local | `32b00af` | DT-AUT-01, DT-AUT-02 | — |
 | 1.3 Trámite, carga e incorporación | Hecho, solo local | `a954137`, `6cc7afa` | DT-AWS-01, DO-2026-10-22-CARGAS | — |
 | 1.4 Procesamiento (Textract y Haiku 4.5) | Hecho, solo local; nivel B sin ejecutar | `b1a7207` | DO-2026-10-22-PROC | — |
@@ -34,22 +36,41 @@
 - **EVD-01:** EVD-C y EVD-N12 se ejecutan contra la API. EVD-A y EVD-B siguen omitidos hasta RF-06 (Etapa 2). Ejecutarlos no acredita EVD-01: falta el oráculo congelado y la evidencia conservada.
 - Diferencias nuevas: DIF-63 a DIF-76.
 
+## Hito 1.0: qué quedó (DO-2026-10-22-OPS)
+
+- **Aplicación lista para Lambda:**
+  - modo mantenimiento leído de S3 (`active`, `draining`, `offline`) y `/salud` con el estado operativo;
+  - conexión a la base con token IAM y TLS `verify-full`;
+  - adaptador Mangum;
+  - en demo, la aplicación no arranca sin esos controles.
+- **Lambda privada de operaciones:** `inicializar_base`, `migrar`, `estado_migraciones`, `crear_administrador` y `verificar_drenaje`. La inicialización se probó en PostgreSQL 16 real como superusuario; en RDS el usuario maestro no lo es, así que queda por verificar en la sesión (V-DB).
+- **Terraform** `bootstrap`, `persistent`, `runtime` y `demo`: `validate` y `fmt` en verde con el proveedor AWS 6.67.0. **Nunca se planificó contra una cuenta.**
+- **Paquete arm64** de 36 MB. No se pudo probar su importación en arm64 en esta máquina: queda para el humo de la sesión.
+- **Herramientas del operador:** semilla y exportación de evidencia por API, probadas contra el stack local, y vaciado de buckets versionados, probado con moto.
+- **Documentación:** procedimiento concreto en `infra/terraform/README.md` y cotización por sesión en `docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md` (≈ USD 0,21/h de base, sin oficializar).
+- Diferencias nuevas: DIF-77 a DIF-86.
+
 ## Próximo paso
 
-La Etapa 1 queda completa **en local**. Lo que sigue depende del equipo:
+**1.1 (equipo, manual):**
+1. Descargar el paquete de certificados de RDS (`infra/certificados/README.md`).
+2. Cotizar en Pricing Calculator, incluidos Textract `AnalyzeDocument` y Bedrock, y aprobar el presupuesto.
+3. Ejecutar `infra/terraform/README.md` pasos A.1 a A.9 con planes revisados.
+4. Verificar A, B-E90, IAM, V-DB, V-MT y E, y retirar con el paso B.
 
-- **1.0 y 1.1 (equipo):** presupuesto, Terraform y despliegue manual. Ningún punto de demo está verificado en AWS.
-- **Interfaz web:** la tesis fija React y TypeScript, pero ningún hito de la Etapa 1 la nombra. Definir si los puntos de demo A a D se muestran con interfaz o por API.
-- **Etapa 2:** RF-06 (versión nueva) para ejecutar EVD-A y EVD-B y completar RN-12 con versiones (DIF-48, DIF-49).
+Agente, cuando el equipo lo decida:
+- **interfaz web** para los puntos de demo;
+- **Etapa 2:** RF-06, que habilita EVD-A y EVD-B.
 
-Antes de implementar cada uno se propone el diseño y se espera la aprobación.
+Antes de implementar se propone el diseño y se espera la aprobación.
 
 ## Preguntas abiertas al equipo
 
 - **DIF-21:** ¿RF-21 exige auditar los intentos rechazados (401 y 403)? Hoy quedan solo en los registros técnicos.
 - **DIF-67:** confirmar el flujo exige todos los campos del esquema validados. Si un campo no consta en el documento, ¿cómo se registra «no consta»? Hoy bloquea la confirmación.
 - **Interfaz web para la demo** (ver «Próximo paso»).
-- **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con 76 entradas pendientes de revisión por los autores.
+- **DIF-84:** el oráculo PD-07 no trae número ni razón social de la orden y la factura; la semilla los toma del generador del corpus. ¿Se agregan al oráculo al congelarlo?
+- **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con 86 entradas pendientes de revisión por los autores.
 
 ## Dónde está cada cosa
 

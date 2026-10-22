@@ -16,6 +16,8 @@ dependencies = [
     "PyJWT[crypto]>=2.15,<3",
     "boto3>=1.43,<2",
     "pypdf>=6.21,<7",
+    # FastAPI en Lambda detrás de API Gateway (DO-2026-10-22-OPS P5).
+    "mangum>=0.19,<0.20",
 ]
 
 [project.optional-dependencies]

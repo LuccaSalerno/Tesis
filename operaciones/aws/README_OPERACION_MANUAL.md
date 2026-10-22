@@ -2,6 +2,12 @@
 
 **Fecha:** 21/10/2026. **Estado:** diseño del procedimiento, **no implementado ni probado**. **Autoridad:** DO-2026-10-21-E90A (decisiones técnicas), RC-P10, AGENTS.md. [Versión anterior histórica](../../docs/operacion/Runbook_RDS_Detenido_HISTORICO_2026-10-21.md) — no ejecutar.
 
+## Procedimiento concreto (DO-2026-10-22-OPS, 22/10/2026)
+
+Los comandos de cada paso, las raíces de Terraform, la Lambda privada de operaciones, la semilla, la exportación de evidencia y el vaciado de buckets están en [infra/terraform/README.md](../../infra/terraform/README.md). Cotización por sesión: [RC-P10-13_Cotizacion_Sesion_E90A.md](../../docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md). Todo está **preparado y validado sin AWS**; nada se ejecutó contra una cuenta.
+
+**Precisión del paso A.4:** la semilla usa la API, así que exige el estado `active`. Se pasa a `active` antes de sembrar, con solo las cuentas ficticias del operador (Cognito no admite registro propio), y la demo se abre a participantes recién después del paso A.6.
+
 ## Alcance y límites inviolables
 
 Una sesión E90 **crea una infraestructura nueva de demo, la puebla con corpus sintético, la evalúa y elimina todos sus recursos AWS** (incluida RDS). No se conserva ningún trámite/documento/usuario/historial en AWS entre sesiones; la aplicación sigue prohibiendo el borrado funcional de estos elementos. El repositorio local, evidencias académicas saneadas, Budgets, cuenta/Organizations, exclusión de contenido IA y `bootstrap` (estado remoto Terraform) **no** se eliminan. Ninguna acción se ejecuta desde GitHub Actions o agente; un humano autorizado administra AWS.

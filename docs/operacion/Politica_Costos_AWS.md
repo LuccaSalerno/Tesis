@@ -6,6 +6,10 @@
 
 **ATLAS no funcionará permanentemente en AWS durante el desarrollo de la tesis.** Se habilita en sesiones controladas de pruebas, evaluación y defensa, ejecutadas y supervisadas por operadores humanos. Crear recursos facturables requiere aprobación expresa previa de impacto y costos. Terraform, PostgreSQL Multi-AZ, RDS Proxy, endpoints privados, servicios IA, aislamiento y controles de la tesis permanecen.
 
+### Cotización por sesión E90A (22/10/2026, preliminar)
+
+[RC-P10-13_Cotizacion_Sesion_E90A.md](RC-P10-13_Cotizacion_Sesion_E90A.md) lista los recursos facturables que crea el Terraform preparado y la fórmula por hora y por sesión (≈ USD 0,21/h de base con tarifas de referencia). Textract `AnalyzeDocument` y Bedrock siguen sin cotizar. **No es la cotización oficial ni autoriza gasto.**
+
 ### Referencia de costos investigados (no aprobados)
 
 Se incorporaron [el informe numérico preliminar RC-P10-13](RC-P10-13_Cotizacion_Preliminar_2026-10-21.md) y [el modelo editable](RC-P10-13_Modelo_Costos_2026-10-21.xlsx). Las tarifas de referencia son hipótesis de investigación para `us-east-1`, no precios contractuales, importes facturados ni presupuesto autorizado. **Las tablas de 20/40/80 horas que sumaban almacenamiento RDS para el mes completo corresponden al escenario anterior RDS `stopped` y NO son la estimación de E90A.** El escenario A exige prorratear el tiempo realmente aprovisionado y contemplar mínimos y eliminación efectiva. RC-P10-13 permanece **PENDIENTE** hasta configurar el cálculo oficial con la infraestructura definitiva, exportarlo y aprobarlo expresamente. No interpretar el total básico de los escenarios como costo completo del sistema.

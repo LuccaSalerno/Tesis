@@ -18,6 +18,7 @@ from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.aws import AlmacenS3, OrquestadorStepFunctions, crear_cliente
 from atlas.integraciones.bedrock import EmbeddingsCohereBedrock, ModeloBedrockConverse
 from atlas.integraciones.puertos import ErrorIntegracion
+from atlas.operacion.mantenimiento import LectorMantenimiento, MiddlewareMantenimiento
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
 from atlas.procesamiento.errores import ErrorEtapa
 from atlas.registro import configurar_registro
@@ -69,6 +70,22 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.state.motor = crear_motor(configuracion_efectiva)
     aplicacion.state.fabrica_sesiones = crear_fabrica_sesiones(aplicacion.state.motor)
     aplicacion.dependency_overrides[obtener_configuracion] = lambda: configuracion_efectiva
+    # RC-P10-09: el mantenimiento se evalúa antes de cualquier operación; el registro de
+    # solicitudes queda por fuera para correlacionar también las respuestas 503.
+    aplicacion.state.mantenimiento = (
+        LectorMantenimiento.desde_s3(
+            crear_cliente(configuracion_efectiva, "s3"),
+            configuracion_efectiva.s3_bucket_documentos or "",
+            configuracion_efectiva.mantenimiento_cache_s,
+        )
+        if configuracion_efectiva.mantenimiento_fuente == "s3"
+        else LectorMantenimiento.fijo_active()
+    )
+    aplicacion.add_middleware(
+        MiddlewareMantenimiento,
+        lector=aplicacion.state.mantenimiento,
+        reintentar_s=configuracion_efectiva.mantenimiento_reintentar_s,
+    )
     aplicacion.add_middleware(MiddlewareSolicitudes)
     aplicacion.add_exception_handler(HTTPException, _responder_http)
     aplicacion.add_exception_handler(ErrorDominio, _responder_dominio)

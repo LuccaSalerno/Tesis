@@ -2,7 +2,7 @@
 
 **Propósito:** reunir en un solo lugar todo lo que la implementación agrega, precisa, restringe o resuelve de otra forma respecto de `docs/tesis/main.pdf`, para que los autores decidan si hay que actualizar la tesis. **No modifica requisitos:** cada entrada indica qué decisión la respalda. Lo que contradiga RF, RN o RNF no se implementa sin consultar (AGENTS.md §2.3).
 
-**Actualización:** 22/10/2026, después del hito 1.8 (rama `fundacion/local-backend`).
+**Actualización:** 22/10/2026, después del hito 1.0 preparado en local (rama `fundacion/local-backend`).
 
 **Cómo se usa:**
 - Toda diferencia nueva se agrega en el mismo cambio que la introduce (AGENTS.md §6 y §7).
@@ -125,6 +125,23 @@ Las entidades y relaciones de la Figura 5.4 existen con sus nombres. La tesis ac
 | DIF-74 | RF-22, PD-03 (evidencia de la decisión) | Endpoint `GET /decisiones/{id}/evidencia`. Las validaciones son las vigentes **en el instante de la decisión**, calculadas por la cadena de reemplazos y la fecha, sin copiarlas. Los eventos relacionados son los del ciclo, sus tareas y decisiones, las validaciones y las ejecuciones listadas, **incluidos los posteriores** (por ejemplo, el desplazamiento del ciclo) | Precisión. DO-2026-10-22-TAR (P12), PD-06-001 | Agregar el mockup de la vista (ítem 1 de la §4 de decisiones) | Pendiente |
 | DIF-75 | RF-21 (auditoría del flujo) | Eventos nuevos: `plantilla_creada`, `plantilla_desactivada`, `tramite_enviado_a_validacion`, `flujo_confirmado`, `tarea_asignada`, `tarea_reasignada`, `tarea_sin_asignar`, `tarea_habilitada`, `tarea_aprobada`, `tarea_observada`, `tarea_descartada`, `tarea_anulada`, `tramite_aprobado`, `tramite_observado`, `tramite_subsanado` y `ciclo_desplazado`. La asignación por defecto, la tarea sin asignar, la habilitación y el descarte se **atribuyen al sistema** | Precisión. DO-2026-10-22-TAR | Opcional | Pendiente |
 | DIF-76 | RF-24 (administrador) | El administrador lista las tareas abiertas sin asignar con metadatos (título y estado del trámite, ciclo y tarea), sin acceso a documentos, validaciones, controles ni evidencia. El panel general del administrador sigue diferido | Implementación parcial. RC-P03.3.2, DO-2026-10-22-TAR (P7) | Ninguna | Pendiente |
+
+## F quater. Despliegue AWS preparado (hito 1.0, §5.1, §5.4, RC-P10)
+
+Nada de esta sección se desplegó: es código y procedimiento validados sin AWS (DO-2026-10-22-OPS).
+
+| ID | Sección | Implementación | Tipo y respaldo | Acción sugerida | Estado |
+|---|---|---|---|---|---|
+| DIF-77 | RC-P10-09 (modo mantenimiento) | Objeto `control/mantenimiento.json` en el bucket documental, leído con caché de 15 s; ilegible o inválido, se deniega. En `draining` se admiten **consultas** (GET) y lo que modifica responde 503; en `offline`, todo salvo `/salud`. `/salud` informa `estado` (`ok` o `mantenimiento`) y `operacion` | Precisión. DO-2026-10-22-OPS (P2) | Mencionar el modo mantenimiento en §5.4 si se describe la operación | Pendiente |
+| DIF-78 | Figura 5.2, §5.4.2 (frontend, reconciliador, Lambda de Cognito) | El primer despliegue **no incluye** frontend (S3 + CloudFront), EventBridge Scheduler ni reconciliador, la Lambda de operaciones de Cognito ni el endpoint de interfaz de Lambda: no existen o no hay nada que los use | Pendiente. DO-2026-10-22-OPS (P9), DIF-47, DIF-50 | No describir la demo como completa respecto de la Figura 5.2 | Pendiente |
+| DIF-79 | RC-P10 §2.3 («claves KMS del otro entorno») | Cifrado **SSE-S3** en los buckets y claves administradas por AWS en RDS y Secrets Manager, sin claves KMS propias: no dejan claves con borrado diferido al retirar la sesión | Diferencia. DO-2026-10-22-OPS (P9) | Ajustar la mención a claves KMS por entorno, si figura en la tesis | Pendiente |
+| DIF-80 | §5.4.2 (FastAPI en Lambda) | Adaptador **Mangum** para API Gateway HTTP API (payload 2.0). Un solo paquete **arm64** para las cuatro funciones, con su propio manejador | Precisión. DO-2026-10-22-OPS (P5, P6) | Opcional | Pendiente |
+| DIF-81 | RC-P10-15 (Lambda de inicialización y funciones de migración) | Una sola **Lambda privada de operaciones** con las acciones `inicializar_base`, `migrar`, `estado_migraciones`, `crear_administrador` y `verificar_drenaje`. Las migraciones, el administrador inicial y el drenaje usan el usuario de migración con IAM, directo a la instancia | Precisión. DO-2026-10-22-OPS (P3) | Opcional: aclarar en §5.4 | Pendiente |
+| DIF-82 | §5.4.3 (TLS e IAM con RDS Proxy) | Token IAM de RDS por conexión y TLS `verify-full` con el paquete de certificados de RDS (que descarga el equipo). En demo, la aplicación no arranca sin IAM, sin certificados o sin mantenimiento leído de S3 | Precisión. DO-2026-10-22-OPS (P4) | Ninguna | Pendiente |
+| DIF-83 | §5.4.2 (Cognito) | Cliente con `USER_PASSWORD_AUTH` solo en demo, para la semilla; usuarios ficticios creados por el operador con la CLI; registro propio deshabilitado | Precisión. DO-2026-10-22-OPS (P10) | Opcional | Pendiente |
+| DIF-84 | PD-07 (oráculo preliminar) | El oráculo no trae todos los campos de RC-P04 (número y razón social de la orden y la factura). La semilla los toma literalmente de la fuente reproducible del corpus (`herramientas/generar_corpus.py`). **Pregunta abierta:** agregarlos al oráculo al congelarlo | Precisión. DO-2026-10-22-OPS (P11, P14) | Completar el oráculo con los campos de RC-P04 | Pendiente |
+| DIF-85 | RNF-03 (registros) | API Gateway sin registro de acceso y con límite de 20 solicitudes de ráfaga y 10 por segundo; Step Functions sin registro de ejecuciones; registros de Lambda con 7 días de retención | Precisión. DO-2026-10-22-OPS | Ninguna | Pendiente |
+| DIF-86 | RC-P10-13 (dimensionamiento) | PostgreSQL 16 (versión menor elegida por RDS), `db.t4g.medium` Multi-AZ, 20 GiB gp3, proxy con 50 % de las conexiones. Hipótesis, sin medición | Precisión. RC-P10-13 | Confirmar con la cotización oficial y las mediciones | Pendiente |
 
 ## G. Entornos: local, CI y AWS
 
