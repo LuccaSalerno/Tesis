@@ -51,6 +51,7 @@ markers = [
     "rf_04", "rf_05", "rf_07", "rn_08", "rn_09", "rn_12", "rn_13", "rnf_01",
     "do_2026_10_22_cargas", "rf_09", "rf_12", "rn_02", "rn_03", "punto_demo_a",
     "rf_13", "rn_04", "punto_demo_b",
+    "rf_14", "rf_15", "rf_16", "rn_05", "rn_06", "punto_demo_c",
 ]
 
 [tool.coverage.run]

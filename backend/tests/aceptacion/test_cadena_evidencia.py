@@ -2,7 +2,7 @@
 
 Se recolectan para que el contrato sea visible en cada ejecución, pero se
 **omiten con motivo explícito**: verifican ciclos de revisión, tareas y
-decisiones, que todavía no existen (hitos 1.7 a 1.8). pytest los informa como
+decisiones, que todavía no existen (hito 1.8). pytest los informa como
 omitidos, nunca como aprobados; ningún criterio EVD-01 se da por cumplido.
 """
 
@@ -12,7 +12,7 @@ from pytest_bdd import given, scenarios
 scenarios("cadena_evidencia.feature")
 
 PENDIENTE = (
-    "EVD-01 pendiente: requiere ciclos de revisión, tareas y decisiones (hitos 1.7 a 1.8); "
+    "EVD-01 pendiente: requiere ciclos de revisión, tareas y decisiones (hito 1.8); "
     "no acredita cumplimiento"
 )
 

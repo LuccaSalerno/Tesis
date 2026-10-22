@@ -7,7 +7,8 @@ esquema del tipo validado (P3); valores en formato canónico (P4).
 Cada validación es una fila nueva: una corrección posterior referencia la que
 reemplaza, y quien valida debe indicar cuál es la vigente (si otra persona validó antes,
 la operación se rechaza sin efectos). Solo los valores validados alimentan reglas y
-decisiones (RN-02); la IA no interviene aquí.
+decisiones (RN-02); la IA no interviene aquí. Cada validación vuelve a ejecutar las
+reglas de consistencia pertinentes y puede sugerir vínculos (hito 1.7).
 """
 
 import uuid
@@ -21,10 +22,12 @@ from atlas.dominio import formatos
 from atlas.dominio.enumeraciones import (
     AccionAuditoria,
     ClaseSugerencia,
+    DisparadorRegla,
     EstadoTramite,
     TipoDocumental,
     TipoValidacion,
 )
+from atlas.dominio.fuentes import FuenteIndicada
 from atlas.persistencia.modelos import (
     Documento,
     ReferenciaFuente,
@@ -34,19 +37,12 @@ from atlas.persistencia.modelos import (
     VersionDocumental,
 )
 from atlas.procesamiento import esquemas
-from atlas.servicios import resultados
+from atlas.servicios import reglas, resultados, vinculos
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
 
 ESTADOS_QUE_ADMITEN = frozenset({EstadoTramite.BORRADOR, EstadoTramite.PENDIENTE_VALIDACION})
 CAMPO_CLASIFICACION = esquemas.CAMPO_CLASIFICACION
-
-
-@dataclass(frozen=True)
-class FuenteIndicada:
-    pagina: int | None
-    seccion: str | None
-    fragmento: str | None
 
 
 @dataclass
@@ -208,7 +204,7 @@ def registrar(
     referencia: ReferenciaFuente | None = None
     if fuente is not None and tipo is not TipoValidacion.CONFIRMACION:
         # §5.3.3: si la corrección usa otra fuente, también se registra esa referencia.
-        if fuente.pagina is None and not fuente.seccion and not fuente.fragmento:
+        if fuente.vacia:
             raise ErrorDominio("La fuente debe indicar página, sección o fragmento")
         referencia = ReferenciaFuente(
             archivo_id=actual.version.archivo_id,
@@ -254,6 +250,18 @@ def registrar(
         actor_id=usuario_id,
         tramite_id=tramite.id,
         version_id=actual.version.id,
+        solicitud_id=solicitud_id,
+    )
+    # §5.3.5 y DO-2026-10-22-REG (P3, P4): con el dato validado, sugerir vínculos y volver a
+    # ejecutar las reglas de los vínculos confirmados del documento, en esta transacción.
+    vinculos.sugerir(
+        sesion, tramite_id=tramite.id, documento_id=actual.documento.id, solicitud_id=solicitud_id
+    )
+    reglas.ejecutar(
+        sesion,
+        tramite_id=tramite.id,
+        disparador=DisparadorRegla.VALIDACION,
+        documento_id=actual.documento.id,
         solicitud_id=solicitud_id,
     )
     sesion.refresh(validacion)

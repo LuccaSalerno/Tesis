@@ -33,18 +33,23 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from atlas.dominio.enumeraciones import (
     ClaseSugerencia,
+    DisparadorRegla,
     EstadoIncorporacion,
     EstadoTrabajo,
     EstadoTramite,
     EstadoUsuario,
+    EstadoVinculo,
     FormatoArchivo,
     MotivoAbstencion,
     MotivoSinFuente,
+    OrigenVinculo,
     ResultadoAuditoria,
+    ResultadoRegla,
     Rol,
     TipoActor,
     TipoDocumental,
     TipoValidacion,
+    TipoVinculo,
 )
 from atlas.persistencia.base import Base
 from atlas.persistencia.vector import Vector
@@ -159,6 +164,8 @@ class Documento(Base):
             initially="DEFERRED",
             use_alter=True,
         ),
+        # Destino de las claves compuestas de los vínculos: mismo trámite (RF-14, 0008).
+        UniqueConstraint("tramite_id", "id"),
     )
 
     id: Mapped[int] = _id()
@@ -424,3 +431,100 @@ class ConsultaFragmento(Base):
     fragmento_id: Mapped[int] = mapped_column(ForeignKey("fragmento.id"), nullable=False)
     distancia: Mapped[float] = mapped_column(Float, nullable=False)
     citado: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
+
+class VinculoDocumental(Base):
+    """Figura 5.4: relación entre dos documentos del mismo trámite (RF-14, RF-15, RN-05).
+
+    Las transiciones admitidas viven en la migración 0008 (trigger).
+    """
+
+    __tablename__ = "vinculo_documental"
+    __table_args__ = (
+        UniqueConstraint("tramite_id", "id"),
+        # A lo sumo un vínculo activo por par de documentos, en cualquier dirección.
+        Index(
+            "uq_vinculo_documental_par_activo",
+            text("LEAST(documento_origen_id, documento_destino_id)"),
+            text("GREATEST(documento_origen_id, documento_destino_id)"),
+            unique=True,
+            postgresql_where=text("estado IN ('pendiente', 'confirmado')"),
+        ),
+        ForeignKeyConstraint(
+            ["tramite_id", "documento_origen_id"],
+            ["documento.tramite_id", "documento.id"],
+            name="fk_vinculo_documental_origen",
+        ),
+        ForeignKeyConstraint(
+            ["tramite_id", "documento_destino_id"],
+            ["documento.tramite_id", "documento.id"],
+            name="fk_vinculo_documental_destino",
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False, index=True)
+    documento_origen_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    documento_destino_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    tipo: Mapped[TipoVinculo] = mapped_column(catalogo(TipoVinculo, 20), nullable=False)
+    origen: Mapped[OrigenVinculo] = mapped_column(catalogo(OrigenVinculo, 20), nullable=False)
+    estado: Mapped[EstadoVinculo] = mapped_column(catalogo(EstadoVinculo, 20), nullable=False)
+    justificacion: Mapped[str] = mapped_column(Text, nullable=False)
+    fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
+    creado_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+    resuelto_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    resuelto_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class EjecucionRegla(Base):
+    """Figura 5.4: ejecución inmutable de una regla de consistencia (RF-16, §5.3.5, PD-01)."""
+
+    __tablename__ = "ejecucion_regla"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tramite_id", "vinculo_id"],
+            ["vinculo_documental.tramite_id", "vinculo_documental.id"],
+            name="fk_ejecucion_regla_vinculo",
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False, index=True)
+    vinculo_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    codigo_regla: Mapped[str] = mapped_column(String(60), nullable=False)
+    version_regla: Mapped[str] = mapped_column(String(20), nullable=False)
+    resultado: Mapped[ResultadoRegla] = mapped_column(catalogo(ResultadoRegla, 20), nullable=False)
+    explicacion: Mapped[str] = mapped_column(Text, nullable=False)
+    disparador: Mapped[DisparadorRegla] = mapped_column(
+        catalogo(DisparadorRegla, 20), nullable=False
+    )
+    ejecutada_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
+class EntradaRegla(Base):
+    """Figura 5.4: validación humana usada como entrada de una ejecución (RN-02, V3)."""
+
+    __tablename__ = "entrada_regla"
+
+    ejecucion_regla_id: Mapped[int] = mapped_column(
+        ForeignKey("ejecucion_regla.id"), primary_key=True
+    )
+    validacion_id: Mapped[int] = mapped_column(ForeignKey("validacion_humana.id"), primary_key=True)
+
+
+class EjecucionReglaVersion(Base):
+    """Técnica (+): versión considerada por una ejecución y su papel (§5.3.5, V3)."""
+
+    __tablename__ = "ejecucion_regla_version"
+    __table_args__ = (UniqueConstraint("ejecucion_regla_id", "papel"),)
+
+    ejecucion_regla_id: Mapped[int] = mapped_column(
+        ForeignKey("ejecucion_regla.id"), primary_key=True
+    )
+    version_id: Mapped[int] = mapped_column(ForeignKey("version_documental.id"), primary_key=True)
+    papel: Mapped[TipoDocumental] = mapped_column(catalogo(TipoDocumental, 20), nullable=False)

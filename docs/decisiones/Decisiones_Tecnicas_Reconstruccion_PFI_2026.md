@@ -506,6 +506,19 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **P4:** los embeddings se generan en el **procesamiento**, en la etapa `Indexar` (§5.3.1).
 5. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-22-REG — Vínculos documentales y reglas de consistencia (hito 1.7)
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** RF-14, RF-15, RF-16, RN-02, RN-05, RN-06, §5.3.5, PD-01, PD-02, PD-07.
+
+1. **P1 — Tipo de vínculo:** indica qué lo justifica: `referencia` (un documento cita al otro; admite una fuente en el documento de origen) o `campos` (comparten datos validados). Las reglas dependen de los tipos documentales validados, no del tipo de vínculo.
+2. **P2 — Eliminación:** baja lógica (`eliminado`). La fila, su justificación y las ejecuciones de reglas quedan en el historial; las ejecuciones dejan de mostrarse como vigentes.
+3. **P3 — Sugerencias (RF-15):** deterministas y solo con valores validados: CUIT del emisor de la factura = CUIT del proveedor de la orden, o CUIT del proveedor de la orden = CUIT de la contraparte del contrato. Se generan al validar, quedan pendientes y sin efecto hasta su confirmación y se atribuyen al sistema. Un par que ya tuvo un vínculo, en cualquier estado, no se vuelve a sugerir.
+4. **P4 — Ejecución síncrona:** en la misma transacción que crear o confirmar un vínculo o validar un dato. Se registra una ejecución nueva solo si cambiaron las versiones o validaciones de entrada; las anteriores no se modifican. La situación de «controles pendientes» de PD-02.3 no se presenta.
+5. **P5 — Pertinencia:** cada regla se evalúa por vínculo confirmado cuyos documentos tienen tipos validados que corresponden a la regla, en cualquier dirección. Una regla sin vínculo pertinente se presenta como «no aplicable», calculado y no guardado (coherente con PD-02.4). R4 con monedas distintas registra una ejecución «no aplicable». Sin clasificación validada, la regla no se ejecuta hasta validarla.
+6. **P6 — Evaluación:** versión vigente de cada documento y su validación vigente. Falta validar un campo necesario → falta de datos, con las entradas que existen y la explicación de lo que falta. R4 revisa primero la moneda (sin validar → falta de datos; distinta → no aplicable) y luego los importes (cumple si factura ≤ orden). R3 incluye los extremos de la vigencia. CUIT en formato canónico. La explicación es una plantilla con los valores, guardada solo en la base.
+7. **P7 — Estados y permisos:** el responsable crea, confirma, rechaza y elimina vínculos con el trámite en Borrador o Pendiente de validación (Observado con RN-13, hito 1.8). Vínculos y controles se consultan en cualquier estado; el revisor con tarea asignada, en el hito 1.8. Las reglas nunca cambian el estado del trámite (RN-06).
+8. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

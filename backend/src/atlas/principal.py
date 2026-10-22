@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
 from atlas import __version__
-from atlas.api import consultas, cuentas, salud, tramites
+from atlas.api import consultas, cuentas, salud, tramites, vinculos
 from atlas.api.middleware import MiddlewareSolicitudes
 from atlas.autenticacion.verificador import VerificadorJwt
 from atlas.configuracion import Configuracion, obtener_configuracion
@@ -79,6 +79,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.include_router(cuentas.enrutador)
     aplicacion.include_router(tramites.enrutador)
     aplicacion.include_router(consultas.enrutador)
+    aplicacion.include_router(vinculos.enrutador)
     return aplicacion
 
 

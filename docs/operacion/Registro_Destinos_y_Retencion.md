@@ -33,6 +33,7 @@ Hechos del código del repositorio, verificados con pruebas automatizadas locale
   - **En RDS:** los fragmentos (texto y vector) y cada consulta con su pregunta, respuesta, afirmaciones y fragmentos usados (`fragmento`, `consulta_asistida`, `consulta_fragmento`). Son inmutables, contienen contenido documental y se conservan con el trámite.
   - **En S3:** los vectores calculados (`fragmentos.json`), con los demás resultados intermedios.
   - **En los registros técnicos:** solo el trámite, el usuario, la duración y el motivo de abstención.
+- **Vínculos y reglas (DO-2026-10-22-REG):** no hay destinos nuevos; todo se procesa en la API. En RDS quedan la justificación de cada vínculo, que puede citar valores validados como el CUIT, y la explicación de cada ejecución de regla, que contiene los valores comparados (`vinculo_documental`, `ejecucion_regla`). Son inmutables y no se borran; la baja de un vínculo es lógica. Los registros técnicos y la auditoría solo llevan identificadores.
 - **Step Functions:** la entrada de cada ejecución contiene solo `{"trabajo_id", "intento"}`, y su nombre es `trabajo-{id}-intento-{n}`. Una prueba automatizada lo verifica contra moto.
 - **Registros de la API:** se verificó que no contengan el token, la URL prefirmada firmada, el título del trámite ni el nombre del archivo.
 - **moto (desarrollo y CI):** es una simulación local en `127.0.0.1` o dentro del proceso de pruebas, no un destino. Solo recibe documentos sintéticos del corpus o generados por las pruebas.

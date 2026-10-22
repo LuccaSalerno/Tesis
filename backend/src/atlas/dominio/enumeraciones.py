@@ -119,6 +119,45 @@ class MotivoAbstencion(StrEnum):
     SIN_FRAGMENTOS = "sin_fragmentos"  # no hay documentación autorizada indexada
 
 
+class TipoVinculo(StrEnum):
+    """Qué justifica un vínculo entre documentos (RF-14, DO-2026-10-22-REG P1)."""
+
+    REFERENCIA = "referencia"  # un documento cita al otro
+    CAMPOS = "campos"  # los documentos comparten datos validados
+
+
+class OrigenVinculo(StrEnum):
+    """RN-05: el vínculo manual rige de inmediato; el automático espera confirmación."""
+
+    MANUAL = "manual"
+    AUTOMATICO = "automatico"
+
+
+class EstadoVinculo(StrEnum):
+    """Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica (DO-2026-10-22-REG P2)."""
+
+    PENDIENTE = "pendiente"  # sugerido, sin efecto hasta confirmarse
+    CONFIRMADO = "confirmado"
+    RECHAZADO = "rechazado"
+    ELIMINADO = "eliminado"
+
+
+class ResultadoRegla(StrEnum):
+    """Los cuatro resultados de una regla de consistencia (§5.3.5, PD-01)."""
+
+    CUMPLIMIENTO = "cumplimiento"
+    ADVERTENCIA = "advertencia"
+    FALTA_DE_DATOS = "falta_de_datos"
+    NO_APLICABLE = "no_aplicable"
+
+
+class DisparadorRegla(StrEnum):
+    """Qué provocó una ejecución de reglas (§5.3.5, DO-2026-10-22-REG P4)."""
+
+    VINCULO = "vinculo"  # vínculo creado o confirmado
+    VALIDACION = "validacion"  # validación de la clasificación o de un campo
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 
@@ -139,3 +178,9 @@ class AccionAuditoria(StrEnum):
     CAMPO_CONFIRMADO = "campo_confirmado"
     CAMPO_CORREGIDO = "campo_corregido"
     CAMPO_REGISTRADO = "campo_registrado"
+    VINCULO_CREADO = "vinculo_creado"
+    VINCULO_SUGERIDO = "vinculo_sugerido"
+    VINCULO_CONFIRMADO = "vinculo_confirmado"
+    VINCULO_RECHAZADO = "vinculo_rechazado"
+    VINCULO_ELIMINADO = "vinculo_eliminado"
+    REGLA_EJECUTADA = "regla_ejecutada"

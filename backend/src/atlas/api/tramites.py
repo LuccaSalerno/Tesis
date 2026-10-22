@@ -32,6 +32,7 @@ from atlas.dominio.enumeraciones import (
     TipoDocumental,
     TipoValidacion,
 )
+from atlas.dominio.fuentes import FuenteIndicada
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.puertos import AlmacenDocumental, OrquestadorProcesamiento
 from atlas.persistencia.modelos import (
@@ -555,7 +556,7 @@ def registrar_validacion(
         valor_validado=nueva.valor_validado,
         valor_sugerido_id=nueva.valor_sugerido_id,
         reemplaza_a_id=nueva.reemplaza_a_id,
-        fuente=(validaciones.FuenteIndicada(**nueva.fuente.model_dump()) if nueva.fuente else None),
+        fuente=FuenteIndicada(**nueva.fuente.model_dump()) if nueva.fuente else None,
         solicitud_id=solicitud_id,
     )
     return ValidacionRegistradaRespuesta(
