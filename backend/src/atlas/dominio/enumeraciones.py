@@ -72,3 +72,15 @@ class ResultadoAuditoria(StrEnum):
 
     EXITO = "exito"
     RECHAZO = "rechazo"
+
+
+class AccionAuditoria(StrEnum):
+    """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
+
+    CUENTA_ALTA = "cuenta_alta"
+    CUENTA_HABILITADA = "cuenta_habilitada"
+    CUENTA_DESHABILITADA = "cuenta_deshabilitada"
+    ROL_OTORGADO = "rol_otorgado"
+    ROL_RETIRADO = "rol_retirado"
+    AUTORIZACION_CIERRE_OTORGADA = "autorizacion_cierre_otorgada"
+    AUTORIZACION_CIERRE_RETIRADA = "autorizacion_cierre_retirada"

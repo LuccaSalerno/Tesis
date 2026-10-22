@@ -1,5 +1,6 @@
 """Los registros no contienen contenido documental (AGENTS.md §2.5, RNF-03)."""
 
+import io
 import logging
 import sys
 
@@ -45,3 +46,17 @@ def test_rnf_03_argumentos_de_bibliotecas_no_se_interpolan() -> None:
     salida = FormateadorJson().format(registro)
     assert "parametros %s" in salida
     assert VALOR_DOCUMENTAL not in salida
+
+
+def test_rnf_03_cada_registro_se_vacia_inmediatamente(monkeypatch: pytest.MonkeyPatch) -> None:
+    class SalidaConBufer(io.StringIO):
+        vaciados = 0
+
+        def flush(self) -> None:
+            SalidaConBufer.vaciados += 1
+
+    monkeypatch.setattr(sys, "stdout", SalidaConBufer())
+    configurar_registro()
+    registrar_evento(logging.getLogger("prueba"), "evento_a")
+    registrar_evento(logging.getLogger("prueba"), "evento_b")
+    assert SalidaConBufer.vaciados == 2

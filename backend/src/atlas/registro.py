@@ -60,11 +60,16 @@ class FormateadorJson(logging.Formatter):
 
 
 class ManejadorSalidaEstandar(logging.Handler):
-    """Escribe en el `sys.stdout` vigente al emitir (no el de su creación)."""
+    """Escribe en el `sys.stdout` vigente al emitir (no el de su creación).
+
+    Vacía el búfer en cada registro: con la salida redirigida (Lambda, archivos)
+    un búfer pendiente se pierde si el proceso termina.
+    """
 
     def emit(self, record: logging.LogRecord) -> None:
         try:
             sys.stdout.write(self.format(record) + "\n")
+            sys.stdout.flush()
         except Exception:
             self.handleError(record)
 

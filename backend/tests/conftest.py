@@ -16,9 +16,19 @@ from alembic.config import Config
 from sqlalchemy import Connection, Engine, create_engine
 from sqlalchemy.pool import NullPool
 
+from atlas.autenticacion.claves_locales import CLIENTE_LOCAL, EMISOR_LOCAL, ClavesLocales
 from atlas.configuracion import Configuracion, ErrorConfiguracion
 
 RAIZ_BACKEND = Path(__file__).resolve().parents[1]
+
+# Par de claves de la sesión de pruebas: firma los tokens con la forma de Cognito.
+CLAVES_PRUEBA = ClavesLocales.generar()
+CONFIGURACION_JWT: dict[str, Any] = {
+    "jwt_emisor": EMISOR_LOCAL,
+    "jwt_cliente": CLIENTE_LOCAL,
+    "jwt_jwks": json.dumps(CLAVES_PRUEBA.jwks()),
+    "jwt_jwks_archivo": None,
+}
 
 
 def configuracion_sin_base(**campos: Any) -> Configuracion:
@@ -37,6 +47,7 @@ def configuracion_sin_base(**campos: Any) -> Configuracion:
         "bd_clave": None,
         "bd_usuario_migracion": None,
         "bd_clave_migracion": None,
+        **CONFIGURACION_JWT,
     }
     valores.update(campos)
     return Configuracion(_env_file=None, **valores)
@@ -63,7 +74,7 @@ def lineas_registro(salida: str) -> list[dict[str, Any]]:
 
 @pytest.fixture(scope="session")
 def configuracion_tests() -> Configuracion:
-    return cargar_configuracion_tests()
+    return cargar_configuracion_tests().model_copy(update=CONFIGURACION_JWT)
 
 
 @pytest.fixture(scope="session")
@@ -113,3 +124,12 @@ def conexion_migracion(
 ) -> Iterator[Connection]:
     """Conexión del usuario de migración (propietario) en una transacción que se revierte."""
     yield from _conexion_revertida(motor_migracion)
+
+
+@pytest.fixture
+def base_reiniciada(configuracion_tests: Configuracion) -> Configuracion:
+    """Esquema recreado desde cero: para operaciones que exigen una base sin cuentas."""
+    config = configuracion_alembic(configuracion_tests)
+    command.downgrade(config, "base")
+    command.upgrade(config, "head")
+    return configuracion_tests

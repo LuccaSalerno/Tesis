@@ -22,6 +22,20 @@ Requiere Python 3.12 (con `python3.12-venv`) y Docker.
 5. API: `.venv/bin/uvicorn --factory atlas.principal:crear_aplicacion --no-access-log`
    y consultar `GET /salud`.
 
+## Autenticación local (DT-AUT-01, DT-AUT-02)
+
+El backend verifica tokens de acceso con la forma de los de Cognito. En local se firman con
+claves propias guardadas en `backend/.claves_locales/` (no versionado):
+
+1. Emitir un token (la primera vez también genera las claves y el JWKS que lee el servidor):
+   `.venv/bin/python -m atlas.herramientas.token_local --sub sub-admin-local`
+2. Crear el primer administrador (operación manual, una sola vez por base):
+   `.venv/bin/python -m atlas.herramientas.inicializar_administrador --identificador-externo sub-admin-local`
+3. Usar el token como `Authorization: Bearer <token>`. Las demás cuentas las da de alta el
+   administrador con `POST /usuarios`. La documentación interactiva queda en `/docs`.
+
+`token_local` se niega a funcionar con `ATLAS_ENTORNO=demo`.
+
 ## Verificaciones
 
 ```
