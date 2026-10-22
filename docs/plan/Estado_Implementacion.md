@@ -85,7 +85,7 @@ Antes de implementar se propone el diseño y se espera la aprobación.
 
 ## Incremento aislado del corpus E90 — 22/10/2026
 
-**Rama:** `codex/corpus-e90`, desde `1e2a6c6`. **Decisión:** DO-2026-10-22-CORPUS-CONSTRUCCION y aprobación posterior de cuatro fuentes contractuales públicas. **Commit:** pendiente de registrar después del ensayo final de CI limpia. Esta sección describe solo el alcance de la rama del corpus; no cambia el estado del frontend ni del despliegue que se trabaja en paralelo.
+**Rama:** `codex/corpus-e90`, desde `1e2a6c6`. **Decisión:** DO-2026-10-22-CORPUS-CONSTRUCCION y aprobación posterior de cuatro fuentes contractuales públicas. **Commit de implementación:** `5970ebe` (DO-2026-10-22-CORPUS-CONSTRUCCION); ajuste de finales de línea CSV y cierre documental en el commit siguiente. Esta sección describe solo el alcance de la rama del corpus; no cambia el estado del frontend ni del despliegue que se trabaja en paralelo.
 
 - Generados 65 documentos **candidatos**: 50 de medición y 15 de ajuste, con las cuatro familias por tipo del plan y tres adversariales dentro de medición. PD-07 permanece intacto y separado.
 - Doce CUIT candidatos de dígito válido, consulta manual ARCA pendiente; lista en `docs/evaluacion/corpus_e90/CUIT_Candidatos_Para_ARCA.md`.

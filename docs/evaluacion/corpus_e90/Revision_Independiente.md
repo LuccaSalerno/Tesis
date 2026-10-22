@@ -35,7 +35,7 @@ Método de numeración para los extractos:
 - GOV.UK DOCX: se abrió `word/document.xml` como ZIP/XML y se enumeraron todos los elementos `w:p` en orden de documento, concatenando los textos `w:t`; se conservaron los párrafos vacíos. Índices 1-based.
 - Bonterms/Common Paper HTML: extracción con `html.parser.HTMLParser` de la biblioteca estándar, ignorando `script/style`. Se agregaron separadores de línea al abrir/cerrar `p`, `li`, `h1`–`h4`, `div`, y al abrir `br`. Cada línea no vacía se normalizó uniendo sus palabras con un espacio. Los rangos del banco son 1-based respecto de ese texto. Un cambio de HTML puede alterar la numeración; contrastar siempre también el extracto y los hashes.
 
-El SHA del código presente durante la generación está en el manifiesto como instantánea histórica; el validador se reforzó después para distinguir etiquetas de campos con el mismo valor. La evidencia final registra por separado las huellas del código de verificación. No cambiar las huellas de la generación histórica para simular que no hubo iteraciones.
+El SHA del código presente durante la generación está en el manifiesto como instantánea histórica; el validador se reforzó después para distinguir etiquetas de campos con el mismo valor y el escritor CSV se fijó a LF. El inventario anterior y el normalizado se compararon por parseo, sin cambios de datos. La evidencia final registra por separado las huellas del código de verificación. No cambiar las huellas de la generación histórica para simular que no hubo iteraciones.
 
 ## Integración posterior
 

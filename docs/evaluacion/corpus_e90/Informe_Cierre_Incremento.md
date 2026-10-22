@@ -1,6 +1,6 @@
 # Cierre del incremento de corpus E90 candidato
 
-Fecha: 22/10/2026. Rama `codex/corpus-e90`, desde `1e2a6c6`. **Estado: generación candidata y validadores completados; sin congelación, revisión de autores ni mediciones de modelos.** Commit de implementación: pendiente de registrar.
+Fecha: 22/10/2026. Rama `codex/corpus-e90`, desde `1e2a6c6`. **Estado: generación candidata y validadores completados; sin congelación, revisión de autores ni mediciones de modelos.** Commit de implementación: `5970ebe`; ajuste no funcional de finales de línea CSV y cierre documental en el commit siguiente.
 
 Tarea: preparación de Etapa 4 (§6.3.1) hasta el límite aprobado en DO-2026-10-22-CORPUS-CONSTRUCCION, más auditoría PD-07 en lectura.
 
@@ -28,7 +28,7 @@ Pruebas:
 
 La cobertura informada corresponde al backend (`atlas`), no se extrapola a las herramientas del corpus ni a cobertura de requisitos. Las omisiones no se cuentan como pruebas aprobadas: EVD-A/EVD-B y dos pruebas AWS en backend; creación/render en CI de corpus. La verificación local del corpus no contacta AWS.
 
-El lint inicial del código nuevo detectó importaciones, estilo y llamadas mejorables, corregidos antes de las comprobaciones finales. La revisión visual motivó una iteración de formato para quitar bordes heredados y saltos artificiales; una primera edición no se aplicó y se corrigió antes de la generación entregada. Las generaciones previas se preservaron temporalmente en `/tmp`; no se cambiaron registros fuente, umbrales ni datos tras observar modelos, porque no se ejecutaron modelos. Se reforzó el verificador para distinguir campos con valores iguales por sus etiquetas.
+El lint inicial del código nuevo detectó importaciones, estilo y llamadas mejorables, corregidos antes de las comprobaciones finales. La revisión visual motivó una iteración de formato para quitar bordes heredados y saltos artificiales; una primera edición no se aplicó y se corrigió antes de la generación entregada. El chequeo de Git al incorporar el CSV detectó sus finales CRLF; se normalizaron a LF y se fijó el generador, sin cambiar campos ni documentos. El ensayo limpio se ejecutó antes de esa normalización no funcional; después se repitieron los validadores, el lint y las pruebas de la raíz (38 aprobadas, una omitida), y se comprobó por parseo que el CSV conserva todos sus datos. Las generaciones previas se preservaron temporalmente en `/tmp`; no se cambiaron registros fuente, umbrales ni datos tras observar modelos, porque no se ejecutaron modelos. Se reforzó el verificador para distinguir campos con valores iguales por sus etiquetas.
 
 Pendientes o bloqueos:
 

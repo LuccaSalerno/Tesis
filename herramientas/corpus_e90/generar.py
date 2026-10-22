@@ -598,7 +598,9 @@ def generar(root: Path, libreoffice: str, pdftoppm: str) -> None:
     dest = root / "oraculos/e90/inventario_candidato.csv"
     dest.parent.mkdir(parents=True, exist_ok=True)
     with dest.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(csvrows[0]))
+        writer = csv.DictWriter(
+            stream, fieldnames=list(csvrows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(csvrows)
     escribir_json(
