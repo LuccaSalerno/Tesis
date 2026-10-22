@@ -483,6 +483,19 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **P4 — Textract:** `StartDocumentAnalysis` con `TABLES` y `LAYOUT`. El costo por página se incorpora a RC-P10-13 antes de la primera sesión.
 5. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-22-VAL — Validación humana de clasificación y campos (hito 1.5)
+
+**Fecha:** 22/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** RF-09, RF-10, RF-12, RN-02, RN-03, RN-09, §5.3.3, Tabla 3.VI.
+
+1. **P1:** se valida solo la **versión vigente** de cada documento. Las versiones anteriores conservan sus validaciones en el historial.
+2. **P2:** se admite validar con el trámite en **Borrador** o **Pendiente de validación**. En **Observado** se admitirá junto con la transición de subsanación a Pendiente de validación (RN-13, hito 1.8). En Pendiente de aprobación, Aprobado, Cerrado y Cancelado se rechaza.
+3. **P3:** los campos se validan **después de validar la clasificación**, y se presentan los del esquema del tipo validado (RF-10).
+   - Si el tipo se corrige, las validaciones de campos que no pertenecen al nuevo esquema quedan en el historial sin ser aplicables.
+   - Los campos del nuevo tipo sin sugerencia del mismo esquema se registran manualmente.
+   - Volver a extraer con el tipo corregido queda para una decisión posterior.
+4. **P4:** el valor validado se exige en formato canónico, porque alimenta las reglas R1 a R4: fecha `AAAA-MM-DD`, importe decimal con dos cifras, CUIT `##-########-#` y moneda ISO 4217 de tres letras. Un dígito verificador de CUIT inválido produce una **advertencia**, no un rechazo.
+5. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

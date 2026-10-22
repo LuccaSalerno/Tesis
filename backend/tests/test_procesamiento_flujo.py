@@ -22,43 +22,17 @@ from tests import archivos
 from tests.conftest import lineas_registro
 from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto, cargar, contar, crear_tramite
-from tests.procesamiento_fijo import ModeloFijo, dato, extraccion_c_v1_docx, textract_fijo
+from tests.flujo_procesamiento import (
+    AnalizadorFijo,
+    en_sesion,
+    modelo_contrato,
+    recorrer,
+    salida_sin_contenido,
+    trabajo_de,
+)
+from tests.procesamiento_fijo import dato, extraccion_c_v1_docx
 
 pytestmark = pytest.mark.integracion
-
-LIMITES = etapas.LimitesProcesamiento(
-    max_tokens_clasificacion=256, max_tokens_extraccion=2048, caracteres_maximos=400_000
-)
-CLAVES_DE_SALIDA = {
-    "formato",
-    "clave_objeto",
-    "job_id",
-    "estado",
-    "contenido",
-    "clasificacion",
-    "extraccion",
-    "resultado",
-    "registrado",
-}
-PALABRAS_DEL_DOCUMENTO = ("Servicios Integrales", "1.250.000", "30-96472518-3", "febrero")
-
-
-class AnalizadorFijo:
-    """Sustituto de Textract con resultado fijo (P1)."""
-
-    def __init__(self, paginas: list[Any]) -> None:
-        self.paginas = paginas
-        self.iniciados: list[tuple[str, int, int]] = []
-
-    def iniciar(self, clave: str, trabajo_id: int, intento: int) -> str:
-        self.iniciados.append((clave, trabajo_id, intento))
-        return "job-fijo"
-
-    def estado(self, job_id: str) -> str:
-        return "completado"
-
-    def resultado(self, job_id: str) -> list[dict[str, Any]]:
-        return textract_fijo(self.paginas)
 
 
 @pytest.fixture
@@ -70,95 +44,6 @@ def entorno(
     with TestClient(aplicacion) as cliente:
         yield aplicacion, Contexto(cliente, motor_aplicacion, usuario_id, portador(sub))
     aplicacion.state.motor.dispose()
-
-
-def trabajo_de(motor: Engine, archivo_id: int) -> int:
-    with motor.connect() as conexion:
-        return int(
-            conexion.execute(
-                text("SELECT id FROM atlas.trabajo_procesamiento WHERE archivo_id = :a"),
-                {"a": archivo_id},
-            ).scalar_one()
-        )
-
-
-def en_sesion(aplicacion: Any, funcion: Any, **parametros: Any) -> Any:
-    with aplicacion.state.fabrica_sesiones() as sesion:
-        resultado = funcion(sesion, **parametros)
-        sesion.commit()
-        return resultado
-
-
-def salida_sin_contenido(salida: dict[str, Any]) -> None:
-    """Regla 5: lo que vuelve a Step Functions son referencias, nunca datos del documento."""
-    assert set(salida) <= CLAVES_DE_SALIDA
-    serializada = json.dumps(salida, ensure_ascii=False)
-    assert not any(p in serializada for p in PALABRAS_DEL_DOCUMENTO)
-
-
-def recorrer(
-    aplicacion: Any, trabajo_id: int, modelo: ModeloFijo, analizador: AnalizadorFijo | None = None
-) -> list[dict[str, Any]]:
-    """Ejecuta las etapas en el orden de la máquina de estados."""
-    almacen = aplicacion.state.almacen
-    salidas = [en_sesion(aplicacion, etapas.preparar, trabajo_id=trabajo_id, intento=1)]
-    clave = salidas[0]["clave_objeto"]
-    if salidas[0]["formato"] == "pdf":
-        assert analizador is not None
-        salidas.append(
-            etapas.iniciar_textract(
-                analizador, clave_objeto=clave, trabajo_id=trabajo_id, intento=1
-            )
-        )  # type: ignore[arg-type]
-        salidas.append(etapas.consultar_textract(analizador, job_id="job-fijo"))  # type: ignore[arg-type]
-        salidas.append(
-            etapas.normalizar_textract(
-                analizador, almacen, job_id="job-fijo", trabajo_id=trabajo_id, intento=1
-            )  # type: ignore[arg-type]
-        )
-    else:
-        salidas.append(
-            etapas.normalizar_docx(almacen, clave_objeto=clave, trabajo_id=trabajo_id, intento=1)
-        )
-    contenido = salidas[-1]["contenido"]
-    salidas.append(
-        etapas.clasificar(
-            almacen, modelo, LIMITES, contenido=contenido, trabajo_id=trabajo_id, intento=1
-        )
-    )
-    clasificacion = salidas[-1]["clasificacion"]
-    salidas.append(
-        etapas.extraer(
-            almacen,
-            modelo,
-            LIMITES,
-            contenido=contenido,
-            clasificacion=clasificacion,
-            trabajo_id=trabajo_id,
-            intento=1,
-        )
-    )
-    salidas.append(
-        en_sesion(
-            aplicacion,
-            etapas.persistir,
-            almacen=almacen,
-            clasificacion=clasificacion,
-            extraccion=salidas[-1]["extraccion"],
-            trabajo_id=trabajo_id,
-            intento=1,
-        )
-    )
-    return salidas
-
-
-def modelo_contrato(extraccion: dict[str, Any]) -> ModeloFijo:
-    return ModeloFijo(
-        {
-            esquemas.HERRAMIENTA_CLASIFICACION: {"tipo": "contrato"},
-            esquemas.HERRAMIENTA_EXTRACCION: extraccion,
-        }
-    )
 
 
 # --- Recorrido completo -----------------------------------------------------------------

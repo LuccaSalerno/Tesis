@@ -30,11 +30,19 @@ from atlas.dominio.enumeraciones import (
     MotivoSinFuente,
     Rol,
     TipoDocumental,
+    TipoValidacion,
 )
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.puertos import AlmacenDocumental, OrquestadorProcesamiento
-from atlas.persistencia.modelos import Archivo, TrabajoProcesamiento, Tramite
-from atlas.servicios import cargas, resultados, tramites
+from atlas.persistencia.modelos import (
+    Archivo,
+    ReferenciaFuente,
+    TrabajoProcesamiento,
+    Tramite,
+    ValidacionHumana,
+    ValorSugerido,
+)
+from atlas.servicios import cargas, resultados, tramites, validaciones
 from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["tramites"])
@@ -180,6 +188,7 @@ class Localizador(BaseModel):
 class SugerenciaRespuesta(BaseModel):
     """Resultado automático: es una sugerencia hasta su validación humana (RN-02)."""
 
+    id: int
     campo: str
     valor: str
     valor_original: str
@@ -379,25 +388,7 @@ def consultar_sugerencias(
     if archivo is None or archivo.tramite_id != tramite.id:
         raise NoEncontrado("El archivo no existe en este trámite")
     trabajo, filas = resultados.sugerencias_vigentes(sesion, archivo.id)
-    sugerencias = {
-        valor.id: SugerenciaRespuesta(
-            campo=valor.campo,
-            valor=valor.valor,
-            valor_original=valor.valor_original,
-            localizador=(
-                None
-                if fuente is None
-                else Localizador(
-                    pagina=fuente.pagina, seccion=fuente.seccion, fragmento=fuente.fragmento
-                )
-            ),
-            motivo_sin_fuente=valor.motivo_sin_fuente,
-            modelo=valor.modelo,
-            version_instrucciones=valor.version_instrucciones,
-            version_esquema=valor.version_esquema,
-        )
-        for valor, fuente in filas
-    }
+    sugerencias = {valor.id: _sugerencia(valor, fuente) for valor, fuente in filas}
     clases = {valor.id: valor.clase for valor, _ in filas}
     return SugerenciasRespuesta(
         trabajo=(
@@ -409,4 +400,165 @@ def consultar_sugerencias(
             (s for i, s in sugerencias.items() if clases[i] == ClaseSugerencia.CLASIFICACION), None
         ),
         campos=[s for i, s in sugerencias.items() if clases[i] == ClaseSugerencia.CAMPO],
+    )
+
+
+def _localizador(fuente: ReferenciaFuente | None) -> Localizador | None:
+    if fuente is None:
+        return None
+    return Localizador(pagina=fuente.pagina, seccion=fuente.seccion, fragmento=fuente.fragmento)
+
+
+def _sugerencia(valor: ValorSugerido, fuente: ReferenciaFuente | None) -> SugerenciaRespuesta:
+    return SugerenciaRespuesta(
+        id=valor.id,
+        campo=valor.campo,
+        valor=valor.valor,
+        valor_original=valor.valor_original,
+        localizador=_localizador(fuente),
+        motivo_sin_fuente=valor.motivo_sin_fuente,
+        modelo=valor.modelo,
+        version_instrucciones=valor.version_instrucciones,
+        version_esquema=valor.version_esquema,
+    )
+
+
+# --- Validación humana (hito 1.5, RF-09, RF-12, DO-2026-10-22-VAL) --------------------
+
+
+class FuenteEntrada(BaseModel):
+    pagina: int | None = Field(default=None, ge=1)
+    seccion: str | None = Field(default=None, max_length=255)
+    fragmento: str | None = Field(default=None, max_length=500)
+
+
+class NuevaValidacion(BaseModel):
+    campo: Annotated[str, Field(min_length=1, max_length=60)]
+    valor_validado: Annotated[str, Field(min_length=1, max_length=500)]
+    valor_sugerido_id: int | None = None
+    reemplaza_a_id: int | None = Field(
+        default=None, description="Validación vigente del dato que se reemplaza, si la hay"
+    )
+    fuente: FuenteEntrada | None = None
+
+
+class ValidacionRespuesta(BaseModel):
+    """RN-03: valor validado, actor, fecha, versión, fuente y la sugerencia de origen."""
+
+    id: int
+    version_id: int
+    campo: str
+    valor_validado: str
+    tipo: TipoValidacion
+    valor_sugerido_id: int | None
+    reemplaza_a_id: int | None
+    validador_id: int
+    validado_en: datetime
+    localizador: Localizador | None
+
+    @classmethod
+    def desde(
+        cls, validacion: ValidacionHumana, fuente: ReferenciaFuente | None
+    ) -> "ValidacionRespuesta":
+        return cls(
+            id=validacion.id,
+            version_id=validacion.version_id,
+            campo=validacion.campo,
+            valor_validado=validacion.valor_validado,
+            tipo=validacion.tipo,
+            valor_sugerido_id=validacion.valor_sugerido_id,
+            reemplaza_a_id=validacion.reemplaza_a_id,
+            validador_id=validacion.validador_id,
+            validado_en=validacion.validado_en,
+            localizador=_localizador(fuente),
+        )
+
+
+class ValidacionRegistradaRespuesta(ValidacionRespuesta):
+    advertencias: list[str]
+
+
+class DatoValidacion(BaseModel):
+    campo: str
+    sugerencia: SugerenciaRespuesta | None
+    vigente: ValidacionRespuesta | None
+    historial: list[ValidacionRespuesta]
+
+
+class ValidacionesRespuesta(BaseModel):
+    documento_id: int
+    version: VersionResumen
+    tipo_validado: TipoDocumental | None
+    clasificacion: DatoValidacion
+    campos: list[DatoValidacion]
+    fuera_de_esquema: list[ValidacionRespuesta] = Field(
+        description="Validaciones de campos que no pertenecen al esquema del tipo validado"
+    )
+
+
+@enrutador.get(
+    "/{tramite_id}/documentos/{documento_id}/validaciones", response_model=ValidacionesRespuesta
+)
+def consultar_validaciones(
+    tramite_id: int, documento_id: int, usuario: Autenticado, sesion: Sesion
+) -> ValidacionesRespuesta:
+    """Versión vigente: sugerencias, validaciones vigentes e historial de cada dato."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    actual = validaciones.consultar(sesion, tramite, documento_id)
+
+    def respuesta(validacion: ValidacionHumana) -> ValidacionRespuesta:
+        fuente = actual.fuentes.get(validacion.fuente_id) if validacion.fuente_id else None
+        return ValidacionRespuesta.desde(validacion, fuente)
+
+    def dato(estado: validaciones.EstadoDato) -> DatoValidacion:
+        return DatoValidacion(
+            campo=estado.campo,
+            sugerencia=_sugerencia(*estado.sugerencia) if estado.sugerencia else None,
+            vigente=respuesta(estado.vigente) if estado.vigente else None,
+            historial=[respuesta(v) for v in estado.historial],
+        )
+
+    return ValidacionesRespuesta(
+        documento_id=actual.documento.id,
+        version=VersionResumen(
+            id=actual.version.id, numero=actual.version.numero, archivo_id=actual.version.archivo_id
+        ),
+        tipo_validado=actual.tipo_validado,
+        clasificacion=dato(actual.clasificacion),
+        campos=[dato(c) for c in actual.campos],
+        fuera_de_esquema=[respuesta(v) for v in actual.fuera_de_esquema],
+    )
+
+
+@enrutador.post(
+    "/{tramite_id}/documentos/{documento_id}/validaciones",
+    response_model=ValidacionRegistradaRespuesta,
+    status_code=status.HTTP_201_CREATED,
+)
+def registrar_validacion(
+    tramite_id: int,
+    documento_id: int,
+    nueva: NuevaValidacion,
+    usuario: Responsable,
+    sesion: Sesion,
+    solicitud_id: SolicitudId,
+) -> ValidacionRegistradaRespuesta:
+    """RF-09 y RF-12: confirma o corrige la clasificación o un campo de la versión vigente."""
+    # PD-05.2: las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
+    registrada = validaciones.registrar(
+        sesion,
+        tramite=tramite,
+        documento_id=documento_id,
+        usuario_id=usuario.id,
+        campo=nueva.campo,
+        valor_validado=nueva.valor_validado,
+        valor_sugerido_id=nueva.valor_sugerido_id,
+        reemplaza_a_id=nueva.reemplaza_a_id,
+        fuente=(validaciones.FuenteIndicada(**nueva.fuente.model_dump()) if nueva.fuente else None),
+        solicitud_id=solicitud_id,
+    )
+    return ValidacionRegistradaRespuesta(
+        **ValidacionRespuesta.desde(registrada.validacion, registrada.fuente).model_dump(),
+        advertencias=registrada.advertencias,
     )

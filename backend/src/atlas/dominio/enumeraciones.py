@@ -103,6 +103,14 @@ class MotivoSinFuente(StrEnum):
     NO_APLICA = "no_aplica"  # la clasificación se refiere al documento completo
 
 
+class TipoValidacion(StrEnum):
+    """Cómo resolvió la persona el dato (RF-09, RF-12, §5.3.3)."""
+
+    CONFIRMACION = "confirmacion"  # aceptó la sugerencia tal cual
+    CORRECCION = "correccion"  # registró un valor distinto del sugerido
+    SIN_SUGERENCIA = "sin_sugerencia"  # el dato no tenía sugerencia
+
+
 class AccionAuditoria(StrEnum):
     """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
 
@@ -118,3 +126,8 @@ class AccionAuditoria(StrEnum):
     CARGA_VENCIDA = "carga_vencida"
     DOCUMENTO_INCORPORADO = "documento_incorporado"
     TRAMITE_VUELVE_A_BORRADOR = "tramite_vuelve_a_borrador"
+    CLASIFICACION_CONFIRMADA = "clasificacion_confirmada"
+    CLASIFICACION_CORREGIDA = "clasificacion_corregida"
+    CAMPO_CONFIRMADO = "campo_confirmado"
+    CAMPO_CORREGIDO = "campo_corregido"
+    CAMPO_REGISTRADO = "campo_registrado"

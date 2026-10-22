@@ -41,6 +41,7 @@ from atlas.dominio.enumeraciones import (
     Rol,
     TipoActor,
     TipoDocumental,
+    TipoValidacion,
 )
 from atlas.persistencia.base import Base
 
@@ -258,6 +259,7 @@ class ReferenciaFuente(Base):
     __tablename__ = "referencia_fuente"
     __table_args__ = (
         CheckConstraint("pagina IS NULL OR pagina > 0", name="pagina_positiva"),
+        CheckConstraint("(trabajo_id IS NULL) = (intento IS NULL)", name="trabajo_e_intento"),
         CheckConstraint(
             "pagina IS NOT NULL OR seccion IS NOT NULL OR fragmento IS NOT NULL",
             name="algun_localizador",
@@ -269,8 +271,9 @@ class ReferenciaFuente(Base):
     pagina: Mapped[int | None] = mapped_column(Integer)
     seccion: Mapped[str | None] = mapped_column(String(255))
     fragmento: Mapped[str | None] = mapped_column(Text)
-    trabajo_id: Mapped[int] = mapped_column(ForeignKey("trabajo_procesamiento.id"), nullable=False)
-    intento: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Sin trabajo ni intento: fuente indicada por una persona al corregir (§5.3.3).
+    trabajo_id: Mapped[int | None] = mapped_column(ForeignKey("trabajo_procesamiento.id"))
+    intento: Mapped[int | None] = mapped_column(Integer)
     creado_en: Mapped[datetime] = _instante()
 
 
@@ -299,3 +302,44 @@ class ValorSugerido(Base):
     version_instrucciones: Mapped[str] = mapped_column(String(40), nullable=False)
     version_esquema: Mapped[str] = mapped_column(String(40), nullable=False)
     creado_en: Mapped[datetime] = _instante()
+
+
+class ValidacionHumana(Base):
+    """Figura 5.4: confirmación o corrección de un dato de una versión (RF-09, RF-12, RN-03).
+
+    Inmutable: una corrección posterior es una fila nueva que referencia la que reemplaza.
+    """
+
+    __tablename__ = "validacion_humana"
+    __table_args__ = (
+        CheckConstraint(
+            "(tipo = 'sin_sugerencia') = (valor_sugerido_id IS NULL)", name="sin_sugerencia"
+        ),
+        CheckConstraint("btrim(valor_validado) <> ''", name="valor_no_vacio"),
+        Index(
+            "uq_validacion_humana_primera",
+            "version_id",
+            "clase",
+            "campo",
+            unique=True,
+            postgresql_where=text("reemplaza_a_id IS NULL"),
+        ),
+    )
+
+    id: Mapped[int] = _id()
+    version_id: Mapped[int] = mapped_column(
+        ForeignKey("version_documental.id"), nullable=False, index=True
+    )
+    clase: Mapped[ClaseSugerencia] = mapped_column(catalogo(ClaseSugerencia, 20), nullable=False)
+    campo: Mapped[str] = mapped_column(String(60), nullable=False)
+    valor_sugerido_id: Mapped[int | None] = mapped_column(ForeignKey("valor_sugerido.id"))
+    reemplaza_a_id: Mapped[int | None] = mapped_column(
+        ForeignKey("validacion_humana.id"), unique=True
+    )
+    validador_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
+    valor_validado: Mapped[str] = mapped_column(Text, nullable=False)
+    tipo: Mapped[TipoValidacion] = mapped_column(catalogo(TipoValidacion, 20), nullable=False)
+    validado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )

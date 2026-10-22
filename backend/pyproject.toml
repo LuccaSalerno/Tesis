@@ -49,7 +49,7 @@ markers = [
     # Etiquetas de los .feature (pytest-bdd las convierte en marcadores): trazabilidad.
     "evd_01", "cadena_evidencia", "evd_a", "evd_b", "evd_c", "evd_n12",
     "rf_04", "rf_05", "rf_07", "rn_08", "rn_09", "rn_12", "rn_13", "rnf_01",
-    "do_2026_10_22_cargas",
+    "do_2026_10_22_cargas", "rf_09", "rf_12", "rn_02", "rn_03", "punto_demo_a",
 ]
 
 [tool.coverage.run]
