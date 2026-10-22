@@ -215,6 +215,7 @@ docs/evaluacion/corpus_e90/Revision_ARG_A.json
 docs/evaluacion/corpus_e90/Revision_Independiente.md
 docs/evaluacion/corpus_e90/Revision_Visual_Preliminar.json
 docs/evaluacion/corpus_e90/Verificacion_Candidatos.json
+docs/evaluacion/corpus_e90/Verificacion_Manual_CUIT_ARCA_2026-10-22.md
 docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_avisos.html
 docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_verificacion.json
 docs/evaluacion/plan_diseno_corpus_e90.csv

@@ -1,6 +1,6 @@
 # Corpus sintético E90 candidato
 
-50 documentos de medición y 15 de ajuste. Estado: **CANDIDATO_NO_CONGELADO**. CUIT pendientes de consulta manual ARCA; referencias y preguntas no revisadas por los autores.
+50 documentos de medición y 15 de ajuste. Estado: **CANDIDATO_NO_CONGELADO**. El equipo informó consulta manual ARCA del 22/10/2026, «No existe» para los doce CUIT; evidencia en `docs/evaluacion/corpus_e90/Verificacion_Manual_CUIT_ARCA_2026-10-22.md`. Referencias y preguntas no revisadas por los autores. Los archivos generados antes de ese reporte conservan su leyenda histórica de consulta pendiente.
 
 Los únicos archivos de entrada de la muestra están en `medicion/` y `ajuste/`, enumerados en `oraculos/e90/inventario_candidato.csv`. Los DOCX fuente y PDF de referencia de las otras carpetas son auxiliares reproducibles y no aumentan el N de medición. Las transformaciones de los PDF de imágenes son simulaciones digitales declaradas, con parámetros y semilla por documento.
 
