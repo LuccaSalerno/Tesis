@@ -14,7 +14,7 @@ Operación y compuertas: [runbook manual](README_OPERACION_MANUAL.md) y [políti
 |---|---|---|---|---|
 | 0.1 | Repositorio nuevo sin código anterior | URL y hash de commit inicial | PENDIENTE | Equipo |
 | 0.2 | Documentos obligatorios | `docs/tesis/main.pdf` presente y leído; confirmar congelación/versionado contractual | PRESENTE; congelación pendiente | Equipo |
-| 0.3 | Organizations + exclusión | Verificación efectiva comunicada el 21/10/2026 | VERIFICADO POR EQUIPO; capturas pendientes | Equipo |
+| 0.3 | Organizations + exclusión | Verificación efectiva comunicada el 21/10/2026 | VERIFICADO POR EQUIPO | Equipo |
 | 0.4 | Cuatro modelos | Invocaciones exitosas comunicadas; perfiles y dimensiones en registro de destinos | ACCESO VERIFICADO POR EQUIPO; capturas pendientes; Titan 1024 pendiente | Equipo |
 | 0.5 | Logging Bedrock desactivado | Verificación comunicada el 21/10/2026 | VERIFICADO POR EQUIPO; capturas pendientes | Equipo |
 | 0.6 | AWS Budgets y costos | Dos presupuestos revisados el 21/10/2026; detalle en política de costos | REVISADOS POR EQUIPO; cotización/importe aceptado pendientes | Equipo |

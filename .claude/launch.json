@@ -1,0 +1,32 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "atlas-api",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd backend && exec .venv/bin/uvicorn --factory atlas.principal:crear_aplicacion --no-access-log --host 127.0.0.1 --port 8000"
+      ],
+      "port": 8000
+    },
+    {
+      "name": "atlas-web",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd frontend && exec npx vite --host 127.0.0.1 --port 5173 --strictPort"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "atlas-web-local",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd frontend && VITE_ATLAS_API_URL=/api VITE_ATLAS_AUTENTICACION=local exec npx vite --host 127.0.0.1 --port 5173 --strictPort"
+      ],
+      "port": 5173
+    }
+  ]
+}
