@@ -13,7 +13,7 @@ locals {
     ATLAS_BD_NOMBRE                 = var.base_datos
     ATLAS_BD_USUARIO                = var.usuario_bd_aplicacion
     ATLAS_BD_AUTENTICACION          = "iam"
-    ATLAS_BD_CA_CERTIFICADOS        = "/var/task/certificados/rds-global-bundle.pem"
+    ATLAS_BD_CA_CERTIFICADOS        = "/var/task/certificados/ca-bd.pem" # RDS + Amazon Root CA (DIF-96)
     ATLAS_S3_BUCKET_DOCUMENTOS      = local.p.bucket_documentos
     ATLAS_MANTENIMIENTO_FUENTE      = "s3"
     ATLAS_BEDROCK_PERFIL_GENERATIVO = var.perfil_generativo

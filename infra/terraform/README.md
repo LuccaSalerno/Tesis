@@ -40,7 +40,7 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    El estado de `bootstrap` queda en la máquina del operador: respaldarlo fuera del repositorio.
    Copiar `../backend.hcl.example` como `../backend.hcl` con el bucket de la salida.
 
-2. **Paquete Lambda.** Con `infra/certificados/rds-global-bundle.pem` descargado por el
+2. **Paquete Lambda.** Con `rds-global-bundle.pem` y `amazon-trust-raices.pem` de `infra/certificados/` descargados por el
    equipo (ver su README): `infra/empaquetado/construir_lambda.sh`. Anotar el SHA-256 y el commit.
 
 3. **persistent** (RDS Multi-AZ tarda unos 20–30 min):

@@ -8,20 +8,24 @@
 # lo sube Terraform (raíz demo) cuando el operador aplica el plan aprobado.
 #
 # Uso, desde la raíz del repositorio:
-#   infra/empaquetado/construir_lambda.sh                  # exige infra/certificados/rds-global-bundle.pem
+#   infra/empaquetado/construir_lambda.sh                  # exige los dos .pem de infra/certificados
 #   infra/empaquetado/construir_lambda.sh --sin-certificados   # solo para ensayar el armado en local
 set -euo pipefail
 
 raiz="$(git rev-parse --show-toplevel)"
 certificado="$raiz/infra/certificados/rds-global-bundle.pem"
+# RDS Proxy presenta un certificado de ACM: su cadena termina en Amazon Root CA (DIF-96).
+raices_amazon="$raiz/infra/certificados/amazon-trust-raices.pem"
 salida="$raiz/dist/atlas-lambda.zip"
 sin_certificados=0
 [[ "${1:-}" == "--sin-certificados" ]] && sin_certificados=1
 
-if [[ $sin_certificados -eq 0 && ! -s "$certificado" ]]; then
-  echo "Falta $certificado (ver infra/certificados/README.md)" >&2
-  exit 1
-fi
+for requerido in "$certificado" "$raices_amazon"; do
+  if [[ $sin_certificados -eq 0 && ! -s "$requerido" ]]; then
+    echo "Falta $requerido (ver infra/certificados/README.md)" >&2
+    exit 1
+  fi
+done
 
 trabajo="$(mktemp -d)"
 trap 'docker run --rm -v "$trabajo":/t python:3.12-slim rm -rf /t/paquete >/dev/null 2>&1 || true; rm -rf "$trabajo"' EXIT
@@ -45,7 +49,8 @@ PY
 
 if [[ $sin_certificados -eq 0 ]]; then
   mkdir -p "$trabajo/paquete/certificados"
-  cp "$certificado" "$trabajo/paquete/certificados/rds-global-bundle.pem"
+  # Un solo archivo de CA para la instancia (RDS) y el proxy (ACM).
+  cat "$certificado" "$raices_amazon" > "$trabajo/paquete/certificados/ca-bd.pem"
 fi
 
 rm -f "$salida"
