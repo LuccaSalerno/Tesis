@@ -90,7 +90,7 @@ def test_seg_01_03_rnf_08_matriz_completa_sin_fallas(
     resultado = matriz.resumen(filas)
     assert resultado["fallas"] == [], json.dumps(resultado["fallas"], ensure_ascii=False, indent=1)
     assert resultado["cumple"] and resultado["casos"] > 150
-    assert len(resultado["no_implementadas"]) == 5
+    assert resultado["no_implementadas"] == []  # DO-2026-10-23-VER y CIERRE
     # Cada operación de la matriz se probó con los ocho actores.
     for caso in matriz.CASOS:
         actores = {f["actor"] for f in filas if f["caso"] == caso.codigo}

@@ -54,13 +54,9 @@ class NoImplementada:
     motivo: str
 
 
-NO_IMPLEMENTADAS: Final = (
-    NoImplementada("Confirmar o rechazar una sugerencia de versión", "RF-06 (Etapa 2)"),
-    NoImplementada("Cancelar un trámite", "RN-14"),
-    NoImplementada("Aplicar la firma digital simulada", "RF-23"),
-    NoImplementada("Suprimir cuentas", "RF-25 (supresión)"),
-    NoImplementada("Consultar el estado operativo general", "RF-24 (panel del administrador)"),
-)
+# DO-2026-10-23-VER y DO-2026-10-23-CIERRE implementaron las cinco operaciones que faltaban
+# (RF-06, RN-14, RF-23, supresión de RF-25 y RF-24): ahora son casos de la matriz.
+NO_IMPLEMENTADAS: Final[tuple[NoImplementada, ...]] = ()
 
 
 def _vinculo(e: Escenario) -> dict[str, Any]:
@@ -193,8 +189,64 @@ CASOS: Final = (
         lambda e: {"plantilla_id": e.plantilla["id"], "version_plantilla": e.plantilla["version"]},
         final=6,
     ),
+    # Versión nueva y descarte (RF-06, RF-07). Confirmar una versión exige una sugerencia
+    # pendiente: su caso permitido lo cubren las pruebas de la CI y EVD-A/EVD-B.
+    Caso(
+        "V1",
+        "Confirmar una sugerencia de versión",
+        "POST",
+        "/tramites/{tramite_a2}/archivos/{archivo_pendiente_a2}/version",
+        frozenset({DUENO}),
+        positivo=False,
+    ),
+    Caso(
+        "V2",
+        "Descartar un archivo cargado",
+        "POST",
+        "/tramites/{tramite_a2}/archivos/{archivo_descartable_a2}/descarte",
+        frozenset({DUENO}),
+        final=9,
+    ),
+    # Cancelación (RF-26, RN-14): A3 ya tiene su ciclo confirmado por D8.
+    Caso(
+        "C1",
+        "Cancelar un trámite",
+        "POST",
+        "/tramites/{tramite_a3}/cancelacion",
+        frozenset({DUENO}),
+        lambda e: {"motivo": "Cancelación de la verificación de seguridad"},
+        final=10,
+    ),
+    # Firma (RF-23): solo el aprobador con autorización de cierre y tarea en el ciclo; exige
+    # un trámite Aprobado, así que su caso permitido lo cubren la CI y EVD-B.
+    Caso(
+        "F1",
+        "Aplicar la firma digital simulada",
+        "POST",
+        "/tramites/{tramite_a}/firma",
+        frozenset({APROBADOR}),
+        lambda e: {"version_id": e["version_a"]},
+        positivo=False,
+    ),
     # Operaciones del administrador operativo.
     Caso("A1", "Gestionar cuentas", "GET", "/usuarios", frozenset({ADMINISTRADOR})),
+    Caso(
+        "A5",
+        "Consultar el estado operativo general",
+        "GET",
+        "/administracion/estado-general",
+        frozenset({ADMINISTRADOR}),
+    ),
+    # Supresión (RF-25): irreversible y elimina la cuenta de Cognito; el caso permitido no se
+    # ejecuta sobre las cuentas de la verificación (lo cubren las pruebas de la CI).
+    Caso(
+        "A6",
+        "Suprimir cuentas",
+        "POST",
+        "/usuarios/{usuario_deshabilitada}/supresion",
+        frozenset({ADMINISTRADOR}),
+        positivo=False,
+    ),
     Caso(
         "A2",
         "Habilitar o deshabilitar cuentas",

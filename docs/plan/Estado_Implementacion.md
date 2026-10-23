@@ -107,6 +107,9 @@
 - **Semilla:** cuarto trámite cancelado con motivo.
 - **CI:** `eliminar_prefijo` borra por lotes (la suite bajó de 10,7 GB a 1,1 GB de memoria máxima).
 - **D4 (DIF-84):** O y F regenerados con número estable y oráculo v2 preliminar; la semilla y la simulación lo usan.
+- **D5:** candidata v3 del corpus E90 con las correcciones de REV-E90-16 a 19 (`docs/evaluacion/corpus_e90/Correcciones_V3.md`); sigue sin congelar ni revisar por los autores.
+- **D7:** [resumen del registro de diferencias](../tesis/Resumen_Diferencias_para_Autores.md) con borradores de texto por sección de la tesis. DIF-29, 78, 93 y 112 actualizadas.
+- **§6.3.3:** la matriz de seguridad verifica ahora versión, descarte, cancelación, firma, estado general y supresión; ya no informa operaciones no implementadas.
 - Con esto **todos los RF-01 a RF-26 están implementados**; ninguno está probado contra AWS hasta la sesión de la sección 6.
 
 ## Próximo paso
@@ -115,7 +118,7 @@
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Agente: D4 (O y F con número estable, oráculo v2), D5 (candidata v3 del corpus) y D7 (resumen del registro de diferencias) de DO-2026-10-23-CIERRE.
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar la candidata v3 del corpus E90, completar las verificaciones manuales y congelar; decidir las siete entradas pendientes del resumen del registro y aplicar los borradores a la tesis.
 
 ## Preguntas abiertas al equipo
 

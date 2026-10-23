@@ -224,6 +224,7 @@ def construir(api: ClienteApi, *, esperar: Esperar | None = None) -> Escenario:
     )
     # Cargado sin incorporar: en A2, porque incorporar en A desplazaría el ciclo (PD-05).
     pendiente = _subir(api, DUENO, a2, "pendiente.docx", documentos.orden(m["a"]), esperar)
+    descartable = _subir(api, DUENO, a2, "descartable.docx", documentos.orden(m["a"]), esperar)
     vinculo = api.post(
         f"/tramites/{a2}/vinculos",
         DUENO,
@@ -241,6 +242,7 @@ def construir(api: ClienteApi, *, esperar: Esperar | None = None) -> Escenario:
         "documento_a2_orden": o2["id"],
         "vinculo_a2": vinculo["id"],
         "archivo_pendiente_a2": pendiente["id"],
+        "archivo_descartable_a2": descartable["id"],
     }
 
     # Trámite A3: validado y enviado, listo para confirmar el flujo.

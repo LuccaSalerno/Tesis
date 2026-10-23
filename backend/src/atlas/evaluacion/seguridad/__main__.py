@@ -157,7 +157,7 @@ def _informe(destino: Path) -> str:
             "",
             f"{resultado['cumplen']} de {resultado['casos']} casos con el resultado esperado.",
             "No implementadas (no se cuentan como cumplidas): "
-            f"{', '.join(resultado['no_implementadas'])}.",
+            f"{', '.join(resultado['no_implementadas']) or 'ninguna'}.",
             "",
         ]
         for falla in resultado["fallas"]:
