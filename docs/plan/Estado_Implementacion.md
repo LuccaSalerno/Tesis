@@ -62,9 +62,16 @@
 - DIF-21 cerrada como «No requiere cambio» (F12); DIF-67 resuelta con `ausente`; DIF-84 pasa al equipo (F11). Diferencias nuevas: DIF-87 a DIF-94.
 - **Verificación:** pruebas de componentes y dos recorridos E2E (evidencia de la decisión observada y validación con fuente) contra el stack local con procesamiento simulado. **No probado contra AWS** (Cognito, API Gateway, IA real).
 
+## Sesión AWS e90-ensayo-1 (22–23/10/2026, operador humano)
+
+- Creadas `bootstrap` (bucket `atlas-estado-terraform-5566`, se conserva), `persistent` (42), `runtime` (8) y `demo` (35) con el paquete `93d4367`: los planes coincidieron con lo esperado.
+- **Falla:** `inicializar_base` quedó a mitad de camino («PAM authentication failed» del maestro, `pg_hba +rds_iam`). Corregida en `002c5bd` (DIF-95: `rds_iam` al final) con pruebas y ensayo de CI limpio (698 aprobadas, 4 omitidas, 76 módulos ≥ 90 %). Se recreó solo la instancia RDS; la corrección **no llegó a probarse en AWS**.
+- Retiro completo el 23/10/2026; verificación de residuos sin recursos salvo el bucket de estado. Sin datos ni documentos cargados.
+- Paquete local `dist/atlas-lambda.zip` de `002c5bd` (SHA-256 `4ec77e9d…4a64b060`). `rds.force_ssl` con `pending-reboot` (sin diferencia perpetua en los planes).
+
 ## Próximo paso
 
-**1.1 (equipo, manual):** certificados de RDS, cotización oficial, presupuesto y `infra/terraform/README.md` (pasos A y B), ahora con `origenes_web` y `origenes_cors` para la aplicación local del presentador.
+**1.1 (equipo, manual):** nueva sesión desde `persistent` (bootstrap ya existe) con el paquete de `002c5bd`; `inicializar_base` una sola vez y verificar `al_dia: true` antes de seguir con cuentas, `active`, semilla y pruebas de nivel B.
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
