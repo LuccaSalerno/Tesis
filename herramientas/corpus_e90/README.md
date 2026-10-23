@@ -69,7 +69,7 @@ Los mensajes del validador contienen códigos e identificadores, sin preguntas, 
 
 ## Pendientes antes de congelar
 
-1. Verificación manual de las 18 razones sociales y de los 6 CUIT de ajuste (`docs/evaluacion/corpus_e90/Verificaciones_Pendientes_V2.md`).
+1. ~~Verificación manual de las 18 razones sociales y de los 6 CUIT de ajuste~~: completada el 23/10/2026 (`docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md`).
 2. Revisión técnica de contraste de la v2 por el agente que no la construyó (P0).
 3. Revisión de ambos autores con los cuadernos; no marcar oráculos como revisados desde una prueba automatizada.
 

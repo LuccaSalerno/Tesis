@@ -14,5 +14,5 @@ Se regeneró el conjunto completo en una raíz limpia con el entorno aprobado de
 ## Pendientes del equipo antes de congelar
 
 1. Revisión de ambos autores de la v3 con los cuadernos regenerados (los cuatro cambios anteriores y la muestra de documentos).
-2. Verificaciones manuales de las 18 razones sociales y de los 6 CUIT de ajuste (`Verificaciones_Pendientes_V2.md`), que no cambian en la v3.
+2. ~~Verificaciones manuales de las 18 razones sociales y de los 6 CUIT de ajuste~~: completadas el 23/10/2026 ([registro](Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md)); no hubo que reemplazar ninguna.
 3. Congelación del corpus y de los oráculos, con la tolerancia del 80 % confirmada (D6, DIF-110).

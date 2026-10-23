@@ -7,6 +7,6 @@ Borradores de referencia y metadatos de generación de la versión **e90-candida
 - `campos_candidatos.json`: 403 campos con valor normalizado, representación impresa, etiqueta impresa, modo de localización y localizador; distingue presencia y ausencia.
 - `fragmentos_candidatos.json`: 745 fragmentos primarios (campos, condiciones, cláusulas, extractos de procedencia, objeto, referencias y adversariales). Los chunks técnicos se mapearán después para cada indexación.
 - `consultas_candidatas.json`: 30 preguntas previas a ejecutar modelos, con afirmaciones atómicas limitadas a lo preguntado.
-- `cuit_candidatos.json`: 18 CUIT; los 12 de medición con el reporte manual ARCA del equipo («No existe», 22/10/2026) y los 6 de ajuste pendientes.
+- `cuit_candidatos.json`: 18 CUIT; los 12 de medición con el reporte manual ARCA del equipo («No existe», 22/10/2026) y los 6 de ajuste con el del 23/10/2026 («No existe»).
 
 Una comprobación estructural exitosa no acredita calidad de OCR/IA, adecuación semántica de las referencias, inexistencia de un CUIT o razón social, revisión de autores ni aceptación de IA-D/IA-M. PD-07 no se modifica ni se importa a estas particiones.

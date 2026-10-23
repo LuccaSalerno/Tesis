@@ -107,6 +107,7 @@
 - **Semilla:** cuarto trámite cancelado con motivo.
 - **CI:** `eliminar_prefijo` borra por lotes (la suite bajó de 10,7 GB a 1,1 GB de memoria máxima).
 - **D4 (DIF-84):** O y F regenerados con número estable y oráculo v2 preliminar; la semilla y la simulación lo usan.
+- **Verificaciones manuales del corpus E90 (23/10/2026):** el equipo informó «No existe» para los seis CUIT de ajuste y «Sin coincidencia observada» para las 18 razones sociales; no hubo reemplazos. Solo faltan la revisión de los autores y la congelación.
 - **D5:** candidata v3 del corpus E90 con las correcciones de REV-E90-16 a 19 (`docs/evaluacion/corpus_e90/Correcciones_V3.md`); sigue sin congelar ni revisar por los autores.
 - **D7:** [resumen del registro de diferencias](../tesis/Resumen_Diferencias_para_Autores.md) con borradores de texto por sección de la tesis. DIF-29, 78, 93 y 112 actualizadas.
 - **DO-2026-10-23-DIF:** el equipo decidió las siete diferencias pendientes; DIF-119 implementada (el administrador ve TR-n en lugar del título) y oráculo PD-07 v2 congelado tras la consulta en ARCA.
@@ -119,7 +120,7 @@
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar la candidata v3 del corpus E90, completar las verificaciones manuales y congelarla; aplicar a la tesis los borradores del resumen del registro.
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar la candidata v3 del corpus E90 y congelarla (las verificaciones manuales ya están); aplicar a la tesis los borradores del resumen del registro.
 
 ## Preguntas abiertas al equipo
 

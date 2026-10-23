@@ -183,10 +183,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641014-3",
       "estado": "candidato",
@@ -196,10 +198,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641015-1",
       "estado": "candidato",
@@ -209,10 +213,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641017-8",
       "estado": "candidato",
@@ -222,10 +228,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641018-6",
       "estado": "candidato",
@@ -235,10 +243,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641019-4",
       "estado": "candidato",
@@ -248,10 +258,12 @@
     {
       "advertencia": "Dígito correcto no acredita inexistencia ni ausencia de asignación.",
       "consulta_arca": {
-        "estado": "pendiente",
-        "evidencia": null,
-        "fecha": null,
-        "resultado": null
+        "estado": "realizada_informada_por_equipo",
+        "evidencia": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+        "fecha": "2026-10-23",
+        "observacion": "Resultado informado por el usuario en el chat el 23/10/2026 (se registra la fecha del informe); sin constancia ni captura adjunta. No acredita inexistencia absoluta ni asignación futura.",
+        "resultado": "No existe",
+        "tipo_evidencia": "reporte_del_equipo_en_chat"
       },
       "cuit": "30-98641020-8",
       "estado": "candidato",
