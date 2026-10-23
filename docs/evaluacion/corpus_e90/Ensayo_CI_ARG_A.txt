@@ -1,0 +1,18 @@
+DO-2026-10-22-CORPUS-ARG-A — ensayo local de CI limpia, sin AWS.
+Comando: backend/herramientas_ci/ensayo_ci_limpio.sh
+Log temporal completo: /tmp/e90_ensayo_ci_ARG_A.log
+Salida observada:
+== base inicializada
+135 files already formatted
+All checks passed!
+Success: no issues found in 73 source files
+TOTAL                                                  4562     55    744     41    98%
+677 passed, 4 skipped, 31 warnings in 372.15s (0:06:12)
+Los 73 módulos alcanzan al menos el 90 % de cobertura.
+46 passed, 1 skipped in 3.42s
+
+Comprobaciones adicionales fuera del ensayo:
+Ruff corpus: check y format --check conformes (ocho archivos).
+Suite local con render: 44 aprobadas, sin omisiones.
+Validadores de corpus e inventario: sin inconsistencias.
+El CSV de diseño conserva los CRLF previos; diff --check se ejecutó con cr-at-eol.

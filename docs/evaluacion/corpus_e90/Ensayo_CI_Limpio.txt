@@ -1,0 +1,8 @@
+== base inicializada
+135 files already formatted
+All checks passed!
+Success: no issues found in 73 source files
+TOTAL                                                  4562     55    744     41    98%
+677 passed, 4 skipped, 31 warnings in 372.78s (0:06:12)
+Los 73 módulos alcanzan al menos el 90 % de cobertura.
+38 passed, 1 skipped in 3.25s

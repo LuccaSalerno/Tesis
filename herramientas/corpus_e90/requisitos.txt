@@ -1,0 +1,8 @@
+# DO-2026-10-22-CORPUS-CONSTRUCCION. Entorno exclusivo del corpus, no del backend/Lambda.
+python-docx==1.2.0
+Pillow==12.3.0
+# Transitorias de python-docx, fijadas según el entorno local registrado.
+lxml==6.1.1
+typing_extensions==4.16.0
+# Lector PDF ya usado en el proyecto; fijado aquí para el entorno independiente del corpus.
+pypdf==6.10.0

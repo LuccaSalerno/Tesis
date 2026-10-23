@@ -188,3 +188,36 @@ Para no describir en la tesis como implementado lo que todavía no está:
 | DIF-49 | RF-06 y RF-07: sugerencia y confirmación de nueva versión, descarte de archivos | Solo «documento nuevo»; el resto queda para la Etapa 2 |
 | DIF-50 | RC-P08: reconciliador y estado «En espera» | Diseñados; sin implementar (Etapa 3) |
 | DIF-51 | Infraestructura (Terraform, despliegue, limpieza programada) | Sin implementar; requiere aprobación (DO-2026-10-21) |
+
+## J. Corpus E90 candidato — IDs provisionales de rama
+
+Las entradas provisionales DIF-E90-01 a 10 se renumeraron al integrar la rama del corpus (DO-2026-10-23-E90-MEDICION P1) como DIF-99 a DIF-108; los documentos históricos de `docs/evaluacion/corpus_e90/` conservan el ID anterior. Siguen pendientes de revisión editorial. Respaldo común: DO-2026-10-22-CORPUS-CONSTRUCCION. No se modificó el PDF de la tesis ni se acreditó aceptación académica.
+
+| ID provisional | Sección / requisito | Implementación o precisión | Tipo y acción pendiente |
+|---|---|---|---|
+| DIF-99 (antes DIF-E90-01) | §6.3.1; IA-D03/07 | Se concreta el grupo de ajuste en 15 (tres por tipo), separado de los 50 de medición; las 65 filas de diseño ahora tienen archivos candidatos en un inventario real independiente | Precisión aprobada dentro del rango 10–15. Congelación y revisión de autores pendientes |
+| DIF-100 (antes DIF-E90-02) | §6.3.1; IA-D02/04 | Los estratos etiquetados PDF escaneado/fotografiado son degradaciones digitales simuladas, con DPI, rotación, ruido, desenfoque, perspectiva/sombra y semilla por documento; no son capturas físicas | Diferencia metodológica aprobada expresamente. Describir la simulación y su límite al informar resultados; no atribuir propiedades de un escáner/cámara real |
+| DIF-101 (antes DIF-E90-03) | §6.2 y §6.3.1; RC-P02 | CI comprueba el corpus ya construido sin regenerarlo; pruebas de creación/render locales y explícitas, omitidas con motivo en CI. Requisitos del corpus separados de backend/Lambda | Diferencia local/CI. Conservar resultados y omisiones; la cobertura del backend no se presenta como cobertura de herramientas de corpus |
+| DIF-102 (antes DIF-E90-04) | RF-11; IA-M03/04 | En PDF de imágenes se conserva un PDF digital de referencia previo a la simulación, con igual orden de páginas y hashes vinculados; DOCX se localiza por parte XML e índice 1-based de párrafo, distinguiendo campos de igual valor por etiqueta | Precisión técnica. La presencia textual y la cadena de hashes no sustituyen el cotejo visual/humano del documento final ni evalúan OCR |
+| DIF-103 (antes DIF-E90-05) | §6.3.1; IA-D01 | Cuatro modelos públicos en blanco, con OGL/CC BY y aprobación expresa, traducidos y abreviados; dos familias reservadas a medición. Contratos extensos conservan extractos originales atribuidos como anexo de correspondencia, por lo que incluyen contenido bilingüe | Precisión de composición. Revisar traducciones, dificultad y representatividad; las adaptaciones no son modelos jurídicamente validados para Argentina |
+| DIF-104 (antes DIF-E90-06) | §6.3.1; IA-D01/08, IA-M12 | Doce CUIT de dígito válido siguen candidatos con ARCA pendiente. Referencias de campos, fragmentos y 30 consultas están preparadas, con revisión de autores falsa y evaluaciones vacías; sin congelación ni mediciones | Pendiente expreso. Consultar CUIT, regenerar lo que cambie y revisar referencias antes de congelar; no escribir resultados de IA inexistentes |
+| DIF-105 (antes DIF-E90-07) | §6.3.1; IA-D02/03/07 | Las fuentes DOCX y PDF de referencia son auxiliares reproducibles: solo los 65 archivos listados como entradas cuentan para ajuste/medición. Herramientas y hashes se registran; el renderer local usado es LibreOfficeDev 26.8 alpha, no se promete igualdad binaria con otra versión | Precisión. Mantener el inventario como denominador, inspeccionar antes de cambiar entorno de render y conservar versiones |
+
+## DIF-106 (antes DIF-E90-08) — familia contractual argentina CPAU en un caso existente
+
+- **Tesis:** §6.3.1 y protocolo E90, IA-D01/03/07/08; diseño operativo de plantillas.
+- **Implementación:** DO-2026-10-22-CORPUS-ARG-A sustituye exclusivamente la familia de E90-M-CTR-03, de BASE_A a ARG_A. Agrega una quinta familia en contratos, exclusiva de medición, manteniendo las cuatro iniciales. Conserva 65 casos, particiones, formatos, dificultades y consultas; el resto de 64 entradas y 128 auxiliares permanece idéntico por hash.
+- **Procedencia/precisión:** adaptación del CPAU MEPAU A-301, 9.ª ed., 2023, con atribución, cambios y CC BY-NC-SA 4.0; uso no comercial y CompartirIgual para las adaptaciones correspondientes. Verificación documental de licencia, sin dictamen jurídico. No se extiende esa licencia al código ni a otras familias. Se explicitan honorarios, roles y etapas para evitar confundir monto del encargo con costo de obra. No es un modelo jurídicamente validado para Argentina.
+- **Decisión:** aprobación expresa del equipo para ese reemplazo y sus controles; se conserva el estado candidato y revisión humana pendiente.
+- **Acción sugerida:** revisar contenido, fuente, ground truth y adecuación metodológica con ambos autores antes de congelar; no inferir representatividad argentina ni resultados de IA del único caso. Renumerar el ID al integrar.
+
+## Corpus E90 candidato v2 — DO-2026-10-22-CORPUS-REVISION (IDs provisionales)
+
+La v2 reemplaza los documentos y oráculos v1 sin cambiar cantidades, particiones, tipos, formatos, plantillas, adversariales, reparto de preguntas ni umbrales. Detalle en `docs/evaluacion/corpus_e90/Informe_Revision_V2.md`.
+
+| ID provisional | Sección / requisito | Implementación o precisión | Tipo y acción pendiente |
+|---|---|---|---|
+| DIF-107 (antes DIF-E90-09) | §6.3.1; IA-D04, IA-M02/03/04 | Cada familia de plantilla imprime fechas, importes, moneda y CUIT con un perfil de formato propio y etiquetas distintas. El oráculo guarda el valor normalizado, la representación y la etiqueta impresas, y localiza por etiqueta y valor contiguos | Precisión. Al medir IA-M02, normalizar como prevé el contrato; describir los perfiles al informar resultados |
+| DIF-108 (antes DIF-E90-10) | §6.3.1; IA-D07 | Los archivos de entrada usan nombres neutros (`doc-<8 hex>`) y metadatos sin el ID; la correspondencia con el ID de inventario está solo en el inventario y los cuadernos | Precisión. Cargar los archivos con su nombre neutro; no usar el nombre como evidencia de clase |
+| DIF-104 (antes DIF-E90-06) (actualización v2) | §6.3.1; IA-D01/08 | Los 12 CUIT de medición tienen el reporte ARCA del equipo («No existe», 22/10/2026). Se agregan 6 CUIT de ajuste y 18 razones sociales ficticias verosímiles, pendientes de verificación manual | Pendiente expreso. Verificar antes de congelar; si alguno existe, reemplazar y regenerar |
+| DIF-105 (antes DIF-E90-07) (actualización v2) | §6.3.1; IA-D02/03/07 | La v2 se generó con LibreOffice 24.2.7.2; los DOCX son reproducibles byte a byte, pero los PDF que produce LibreOffice cambian en bytes entre ejecuciones con el mismo código | Precisión. Los hashes identifican la generación registrada; una regeneración exige actualizar hashes y repetir la validación |
