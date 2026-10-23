@@ -445,7 +445,7 @@ Grupo **medicion** · clase esperada **contrato** · familia **CTR-MED_D** · 3 
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
@@ -756,7 +756,7 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-MED_D** ·
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
@@ -1144,7 +1144,7 @@ Grupo **medicion** · clase esperada **orden_compra** · familia **OC-MED_D** ·
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
@@ -1506,7 +1506,7 @@ Grupo **medicion** · clase esperada **factura** · familia **FAC-MED_C** · 2 p
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
@@ -1569,7 +1569,7 @@ Grupo **medicion** · clase esperada **factura** · familia **FAC-MED_D** · 2 p
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
@@ -1948,7 +1948,7 @@ Trámite E90-CONTEXTO-T4; cita: factura 0004-00013478 (E90-M-FAC-04).
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
+- Observaciones del autor 1: parte 2 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Observaciones del autor 2: parte 2 del muestreo (Lucca Salerno, 23/10/2026, informado en el chat): clase esperada y caso difícil confirmados, sin observaciones. La casilla queda sin marcar porque los campos y localizadores no entraban en esa parte.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.

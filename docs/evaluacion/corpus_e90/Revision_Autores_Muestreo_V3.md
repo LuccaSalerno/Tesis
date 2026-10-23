@@ -57,8 +57,8 @@ Archivo: el mismo [Cuaderno_Revision_Documentos_E90.md](Cuaderno_Revision_Docume
 
 Completar cuando terminen las tres partes:
 
-- Revisó la parte 1: **Lucca Salerno (autor 2), 23/10/2026**, informado en el chat: las 30 preguntas correctas, sin observaciones; de acuerdo con las variantes admitidas de Q11 y Q12. Autor 1: pendiente.
-- Revisó la parte 2: **Lucca Salerno (autor 2), 23/10/2026**, informado en el chat: los 6 casos difíciles con la clase esperada correcta, sin observaciones. Autor 1: pendiente.
+- Revisó la parte 1: **Ivo Gonsé (autor 1) y Lucca Salerno (autor 2), en conjunto, 23/10/2026**, informado en el chat: las 30 preguntas correctas, sin observaciones; de acuerdo con las variantes admitidas de Q11 y Q12.
+- Revisó la parte 2: **Ivo Gonsé (autor 1) y Lucca Salerno (autor 2), en conjunto, 23/10/2026**, informado en el chat: los 6 casos difíciles con la clase esperada correcta, sin observaciones.
 - Revisó la parte 3: …… (nombre y fecha)
 - Observaciones que exigen corregir y regenerar: …… (o «ninguna»)
 - Aprobación de la congelación de la v3: …… (ambos autores)
