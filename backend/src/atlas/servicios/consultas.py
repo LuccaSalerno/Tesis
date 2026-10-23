@@ -123,6 +123,50 @@ def renderizar(pregunta: str, recuperados: list[FragmentoRecuperado]) -> str:
     return "\n".join(partes)
 
 
+@dataclass(frozen=True)
+class Generada:
+    afirmaciones: tuple[Afirmacion, ...]
+    motivo: MotivoAbstencion | None
+    # (modelo, versión de instrucciones, tokens de entrada, tokens de salida)
+    uso: tuple[str | None, str | None, int | None, int | None]
+
+
+def generar(
+    pregunta: str,
+    recuperados: list[FragmentoRecuperado],
+    modelo: ModeloGenerativo,
+    max_tokens: int,
+) -> Generada:
+    """Pasos 3 de la consulta, sin base: lo usan la API y el arnés de §6.3.1
+    (DO-2026-10-23-E90-MEDICION P6), para medir exactamente la lógica de producción."""
+    if not recuperados:
+        # Sin evidencia autorizada no se invoca el modelo.
+        return Generada((), MotivoAbstencion.SIN_FRAGMENTOS, (None, None, None, None))
+    respuesta = modelo.invocar_herramienta(
+        instrucciones=esquemas.instrucciones(esquemas.VERSION_INSTRUCCIONES_CONSULTA),
+        contenido=renderizar(pregunta, recuperados),
+        herramienta=esquemas.herramienta_consulta(),
+        max_tokens=max_tokens,
+    )
+    uso = (
+        respuesta.modelo,
+        esquemas.VERSION_INSTRUCCIONES_CONSULTA,
+        respuesta.tokens_entrada,
+        respuesta.tokens_salida,
+    )
+    suficiente, propuestas = _validar(respuesta.entrada)
+    if not suficiente:
+        return Generada((), MotivoAbstencion.EVIDENCIA_INSUFICIENTE, uso)
+    por_etiqueta = {f.etiqueta: f for f in recuperados}
+    afirmaciones = []
+    for texto_afirmacion, etiquetas in propuestas:
+        citas = tuple(dict.fromkeys(por_etiqueta[e] for e in etiquetas if e in por_etiqueta))
+        if texto_afirmacion and citas:  # P3: sin cita válida, se descarta
+            afirmaciones.append(Afirmacion(texto_afirmacion, citas))
+    motivo = None if afirmaciones else MotivoAbstencion.SIN_CITAS_VALIDAS
+    return Generada(tuple(afirmaciones), motivo, uso)
+
+
 def _validar(entrada: Any) -> tuple[bool, list[tuple[str, list[str]]]]:
     if not isinstance(entrada, dict) or set(entrada) != {"suficiente", "afirmaciones"}:
         raise ErrorPermanente("respuesta_invalida")
@@ -158,38 +202,8 @@ def consultar(
     inicio = time.perf_counter()
     vector = embeddings.embeber([pregunta], "search_query")[0]
     recuperados = recuperar(sesion, tramite.id, vector, limite, versiones)
-    por_etiqueta = {f.etiqueta: f for f in recuperados}
-
-    afirmaciones: list[Afirmacion] = []
-    motivo: MotivoAbstencion | None = None
-    uso: tuple[str | None, str | None, int | None, int | None] = (None, None, None, None)
-    if not recuperados:
-        motivo = MotivoAbstencion.SIN_FRAGMENTOS  # sin evidencia autorizada: no se invoca
-    else:
-        respuesta = modelo.invocar_herramienta(
-            instrucciones=esquemas.instrucciones(esquemas.VERSION_INSTRUCCIONES_CONSULTA),
-            contenido=renderizar(pregunta, recuperados),
-            herramienta=esquemas.herramienta_consulta(),
-            max_tokens=max_tokens,
-        )
-        uso = (
-            respuesta.modelo,
-            esquemas.VERSION_INSTRUCCIONES_CONSULTA,
-            respuesta.tokens_entrada,
-            respuesta.tokens_salida,
-        )
-        suficiente, propuestas = _validar(respuesta.entrada)
-        if not suficiente:
-            motivo = MotivoAbstencion.EVIDENCIA_INSUFICIENTE
-        else:
-            for texto_afirmacion, etiquetas in propuestas:
-                citas = tuple(
-                    dict.fromkeys(por_etiqueta[e] for e in etiquetas if e in por_etiqueta)
-                )
-                if texto_afirmacion and citas:  # P3: sin cita válida, se descarta
-                    afirmaciones.append(Afirmacion(texto_afirmacion, citas))
-            if not afirmaciones:
-                motivo = MotivoAbstencion.SIN_CITAS_VALIDAS
+    generada = generar(pregunta, recuperados, modelo, max_tokens)
+    afirmaciones, motivo, uso = list(generada.afirmaciones), generada.motivo, generada.uso
 
     citados = {f.fragmento_id for a in afirmaciones for f in a.referencias}
     consulta = ConsultaAsistida(

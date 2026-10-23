@@ -23,7 +23,11 @@ from atlas.procesamiento.valores import ClaseValor, cuit_valido, normalizar
         ("un millón", ClaseValor.IMPORTE, "un millón"),
         ("pesos argentinos", ClaseValor.MONEDA, "ARS"),
         ("U$S", ClaseValor.MONEDA, "USD"),
-        ("euros", ClaseValor.MONEDA, "euros"),
+        ("euros", ClaseValor.MONEDA, "EUR"),  # ISO 4217 (DIF-109)
+        ("€", ClaseValor.MONEDA, "EUR"),
+        ("reales", ClaseValor.MONEDA, "reales"),  # moneda no reconocida: sin normalizar
+        ("€ 2.242,86", ClaseValor.IMPORTE, "2242.86"),
+        ("2.242,86 euros", ClaseValor.IMPORTE, "2242.86"),
         ("  Servicios   Integrales  ", ClaseValor.TEXTO, "Servicios Integrales"),
     ],
 )

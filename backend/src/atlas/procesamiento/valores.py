@@ -43,6 +43,7 @@ _MESES: Final = {
 _MONEDAS: Final = {
     "ARS": ("ars", "$", "pesos", "peso", "pesos argentinos", "peso argentino"),
     "USD": ("usd", "u$s", "us$", "dólares", "dolares", "dólar", "dolar", "dólares estadounidenses"),
+    "EUR": ("eur", "€", "euros", "euro"),
 }
 _PESOS_CUIT: Final = (5, 4, 3, 2, 7, 6, 5, 4, 3, 2)
 
@@ -94,7 +95,8 @@ def _fecha(valor: str) -> str | None:
 
 
 def _importe(valor: str) -> str | None:
-    texto = re.sub(r"(?i)(ars|usd|u\$s|us\$|\$|pesos?|d[oó]lares?)", "", valor).strip()
+    # Las variantes largas van primero: «euros» no debe dejar «os» al quitar «eur».
+    texto = re.sub(r"(?i)(euros?|ars|usd|eur|u\$s|us\$|\$|€|pesos?|d[oó]lares?)", "", valor).strip()
     texto = texto.replace(" ", "")
     if not re.fullmatch(r"-?[\d.,]+", texto):
         return None

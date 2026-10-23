@@ -100,26 +100,8 @@ class EmbeddingsCohereBedrock:
         vectores: list[list[float]] = []
         for inicio in range(0, len(textos), LOTE_MAXIMO):
             lote = textos[inicio : inicio + LOTE_MAXIMO]
-            cuerpo = json.dumps({"texts": lote, "input_type": tipo, "truncate": "NONE"})
-            try:
-                respuesta = self._cliente.invoke_model(
-                    modelId=self.identificador,
-                    body=cuerpo,
-                    contentType="application/json",
-                    accept="application/json",
-                )
-                datos = json.loads(respuesta["body"].read())
-            except ClientError as error:
-                codigo = error.response.get("Error", {}).get("Code", "")
-                if codigo in _TRANSITORIOS:
-                    raise ErrorTransitorio(f"embeddings_{codigo}") from None
-                raise ErrorPermanente(f"embeddings_{codigo or 'error'}") from None
-            except ParamValidationError:
-                raise ErrorPermanente("embeddings_parametros_invalidos") from None
-            except BotoCoreError:
-                raise ErrorTransitorio("embeddings_conexion") from None
-            except ValueError:
-                raise ErrorPermanente("embeddings_respuesta_invalida") from None
+            cuerpo = {"texts": lote, "input_type": tipo, "truncate": "NONE"}
+            datos = _invocar_json(self._cliente, self.identificador, cuerpo)
             obtenidos = datos.get("embeddings") if isinstance(datos, dict) else None
             if (
                 not isinstance(obtenidos, list)
@@ -129,3 +111,48 @@ class EmbeddingsCohereBedrock:
                 raise ErrorPermanente("embeddings_respuesta_invalida")
             vectores.extend([float(x) for x in v] for v in obtenidos)
         return vectores
+
+
+class EmbeddingsTitanBedrock:
+    """Amazon Titan Text Embeddings V2 vía `InvokeModel`, alternativa de comparación
+    (RC-P07.3, DO-2026-10-23-E90-MEDICION P12): 1024 dimensiones y normalización fijadas
+    explícitamente. Titan no distingue documentos de consultas: `tipo` no cambia la solicitud.
+    Un texto por invocación, como admite el modelo."""
+
+    def __init__(self, cliente: Any, modelo: str) -> None:
+        self._cliente = cliente
+        self.identificador = modelo
+
+    def embeber(self, textos: list[str], tipo: str) -> list[list[float]]:
+        vectores: list[list[float]] = []
+        for texto in textos:
+            cuerpo = {"inputText": texto, "dimensions": DIMENSIONES, "normalize": True}
+            datos = _invocar_json(self._cliente, self.identificador, cuerpo)
+            vector = datos.get("embedding") if isinstance(datos, dict) else None
+            if not isinstance(vector, list) or len(vector) != DIMENSIONES:
+                raise ErrorPermanente("embeddings_respuesta_invalida")
+            vectores.append([float(x) for x in vector])
+        return vectores
+
+
+def _invocar_json(cliente: Any, modelo: str, cuerpo: dict[str, Any]) -> Any:
+    """`InvokeModel` con cuerpo JSON; los errores se traducen a códigos técnicos."""
+    try:
+        respuesta = cliente.invoke_model(
+            modelId=modelo,
+            body=json.dumps(cuerpo),
+            contentType="application/json",
+            accept="application/json",
+        )
+        return json.loads(respuesta["body"].read())
+    except ClientError as error:
+        codigo = error.response.get("Error", {}).get("Code", "")
+        if codigo in _TRANSITORIOS:
+            raise ErrorTransitorio(f"embeddings_{codigo}") from None
+        raise ErrorPermanente(f"embeddings_{codigo or 'error'}") from None
+    except ParamValidationError:
+        raise ErrorPermanente("embeddings_parametros_invalidos") from None
+    except BotoCoreError:
+        raise ErrorTransitorio("embeddings_conexion") from None
+    except ValueError:
+        raise ErrorPermanente("embeddings_respuesta_invalida") from None
