@@ -577,6 +577,30 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 13. **F13 — CI:** job de frontend sin AWS (lint, tipos, pruebas y build).
 14. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-E90-MEDICION — Arnés de medición de §6.3
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** §6.3.1–§6.3.4, IA-M01 a IA-M12, RC-P06.2, RC-P07, DO-2026-10-21-E90-CORPUS, DO-2026-10-22-CORPUS-REVISION. **Principio:** se mide el código de producción; ningún resultado de la partición de medición se observa antes de congelar los oráculos.
+
+1. **P1 — Corpus:** `codex/corpus-e90` se integra por *merge* en `fundacion/local-backend`; DIF-E90-01 a 10 pasan a DIF-99 a DIF-108, con el alias anterior.
+2. **P2 — Ubicación:** paquete `atlas.evaluacion` en `backend/src`, con pruebas en la CI (≥ 90 % por módulo) y excluido del paquete Lambda.
+3. **P3 — Modos:** *directo* (Textract y Bedrock desde la máquina del operador) para la calidad de §6.3.1; *API* (ATLAS desplegado) para la latencia IA-M08 y la carga §6.3.4 (fase 2).
+4. **P4 — Compuerta:** el modo `oficial` exige oráculos `CONGELADO` y revisados por los autores, y registra sus hashes; el modo `ensayo` solo admite la partición de ajuste y PD-07.
+5. **P5 — Bucket:** raíz Terraform `evaluacion` con un único bucket (TLS, cifrado, bloqueo público, ciclo de vida de 2 días) para Textract asíncrono; se crea y destruye por campaña con aprobación del operador.
+6. **P6 — Pipeline:** `analisis.clasificar`/`extraer`, `desde_textract`/`desde_docx`, `segmentar` y las instrucciones de consulta de producción, con el modelo como parámetro y temperatura 0. OCR una vez por documento, reutilizado en repeticiones y modelos.
+7. **P7 — Tipo de extracción:** el tipo **sugerido**, como en producción; si difiere del esperado, los campos esperados cuentan como omitidos.
+8. **P8 — Comparación:** normalizadores de `atlas.procesamiento.valores` y `comparable()` para textos; correcto, incorrecto (FP y FN), omitido e inventado según IA-M02.
+9. **P9 — Campos críticos:** importe (`monto_total`, `importe_total`, `importe`), fecha (`fecha_celebracion`, `fecha`, `fecha_emision`), número (`numero`; el contrato no lo tiene) y CUIT de la contraparte (`cuit_contraparte`, `cuit_proveedor`, `cuit_emisor`).
+10. **P10 — Procedencia:** PDF, página informada igual a la del oráculo (ausente es error); DOCX, el bloque informado contiene el párrafo del oráculo, sin umbral.
+11. **P11 — Recuperación:** un índice congelado por modelo de embeddings, misma segmentación, coseno exacto en memoria, k = 5 y filtro por documentos autorizados. Un *chunk* es relevante si contiene el texto normalizado de un fragmento relevante del oráculo. Recall@5 = fracción de fragmentos relevantes cubiertos en los cinco primeros, promedio sobre las 24 respondibles; MRR con el primer *chunk* relevante.
+12. **P12 — Alternativas:** adaptador de Titan Text Embeddings V2 (1024 dimensiones, normalización explícita); perfil de Sonnet 4.6 verificado con `list-inference-profiles` antes de la campaña.
+13. **P13 — Repeticiones:** tres, alternando el orden Haiku/Sonnet (H→S, S→H, H→S); métricas por repetición, promedio y dispersión; la regla de sustitución se calcula sobre promedios y la decisión la registra el equipo.
+14. **P14 — RAG:** el arnés genera respuestas con citas y una planilla por autor; las respuestas idénticas se agrupan; una herramienta consolida conservando calificaciones individuales y consenso. Sin juez automático.
+15. **P15 — Adversariales:** la clasificación y la extracción no deben coincidir con los objetivos del ataque cuando difieren de lo esperado; se evalúan Q05 y Q10; la salida está forzada al esquema y no hay acciones disponibles.
+16. **P16 — Evidencia:** `evaluacion/campanas/<id>/` con manifiesto (commit, modelos y perfiles, hashes de corpus, oráculos, instrucciones y segmentación), JSONL por llamada, métricas e informe; versionado (datos sintéticos). Los registros técnicos solo llevan identificadores.
+17. **P17 — Fase 2:** cargador del corpus en ATLAS desplegado, latencia IA-M08 (90 consultas por modelo) y carga OP-01/OP-02 con concurrencias 1, 5 y 10.
+18. **P18 — Fuera de este hito:** §6.3.3 (matriz de la Tabla 3.II en AWS y marcadores en CloudWatch) y §6.3.2 (depende del reconciliador RC-P08).
+19. No modifica RF, RN, RNF, umbrales ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso
