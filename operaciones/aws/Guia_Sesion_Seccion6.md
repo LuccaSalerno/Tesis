@@ -6,6 +6,8 @@ Reglas que no cambian: todo lo ejecutás vos, con tus credenciales; nada desde G
 
 Tiempo total estimado: **6 a 8 horas** (la primera vez en una cuenta nueva, más). Costo: ver [RC-P10-13_Cotizacion_Sesion_E90A.md](../../docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md) más la medición de §6.3.1 (≈ USD 12–16, ver evaluacion/README.md). La facturación empieza al aplicar `persistent`.
 
+> **Cuenta elegida para la sesión del 24/10/2026: la ya preparada (`014574285566`, perfil `tesis`).** La cuenta nueva quedó descartada por ahora: estaba en verificación y con cuotas de Bedrock casi nulas. Con la cuenta preparada, **se saltea la Parte 0** (hecha el 21/10) y de la Parte 1 solo se hacen 1.1 y la reinicialización de `demo`; los `terraform.tfvars` ya están preparados para la sesión `e90-2026-10-24`. La cuota de Lambda de esa cuenta es **10**: el límite de procesamiento de ATLAS se bajó a **3** (`limite_concurrencia` en `demo`), §6.3.2 corre con `--limite 3` y §6.3.4 se informa con esa limitación mientras no se apruebe el aumento.
+
 ---
 
 ## Parte 0 — Cuenta AWS nueva (una sola vez por cuenta)
@@ -66,7 +68,14 @@ git status --short          # debe quedar vacío
 
 - [ ] Commiteá o descartá `operaciones/aws/README_CONFIGURACION_ETAPA_0.md` (está modificado en tu copia). **La medición oficial de §6.3.1 se niega a correr con cambios sin commit.**
 
-### 1.2 Archivar el estado de la cuenta anterior
+### 1.2 Archivar el estado de la cuenta anterior (solo si cambiás de cuenta)
+
+Con la cuenta ya preparada, en lugar de 1.2 a 1.4 alcanza con:
+
+```bash
+(cd infra/terraform/demo && terraform init -backend-config=../backend.hcl)
+```
+
 
 El estado de `bootstrap` es local y apunta al bucket de la cuenta vieja; las demás raíces tienen inicializado el backend viejo. Guardalos fuera del repositorio y empezá de cero:
 
@@ -286,6 +295,7 @@ Latencia en bloques **H1, S1 │ S2, H2 │ H3, S3**. Entre bloques de distinto 
 .venv/bin/python -m atlas.evaluacion.operacion latencia --campana $L --modelo sonnet --repeticion 3
 #   → demo con Haiku (producción) antes de seguir
 .venv/bin/python -m atlas.evaluacion.operacion carga --campana $L     # niveles 1, 5 y 10
+# Con la cuota de Lambda en 10, el nivel 10 puede recibir 429: se informa tal cual, como limitación.
 .venv/bin/python -m atlas.evaluacion.operacion metricas --campana $L
 ```
 
@@ -293,7 +303,7 @@ Latencia en bloques **H1, S1 │ S2, H2 │ H3, S3**. Entre bloques de distinto 
 
 ```bash
 .venv/bin/python -m atlas.evaluacion.confiabilidad --campana e90-confiabilidad-1 --url-api "$URL" \
-  --cliente-cognito "$CLIENTE" --limite 10
+  --cliente-cognito "$CLIENTE" --limite 3          # el límite desplegado en demo
 ```
 
 Puede tardar decenas de minutos (el reconciliador corre cada 5).
