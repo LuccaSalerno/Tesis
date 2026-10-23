@@ -69,9 +69,16 @@
 - Retiro completo el 23/10/2026; verificación de residuos sin recursos salvo el bucket de estado. Sin datos ni documentos cargados.
 - Paquete local `dist/atlas-lambda.zip` de `002c5bd` (SHA-256 `4ec77e9d…4a64b060`). `rds.force_ssl` con `pending-reboot` (sin diferencia perpetua en los planes).
 
+## Sesión AWS e90-ensayo-2 (23/10/2026, operador humano)
+
+- Creadas `persistent` (42), `runtime` (8) y `demo` (35); `inicializar_base` y `migrar` completos (`0010`, `al_dia: true`): DIF-95 verificada en RDS real.
+- Fallas halladas y corregidas en la sesión, cada una con su commit: TLS hacia RDS Proxy con raíces de Amazon Trust (DIF-96, `75d2084`); ARN de la máquina en todas las Lambda (`9ca42d1`); firma `s3v4` solo para S3, Bedrock la rechazaba (DIF-97, `9b6c58b`); verificación previa de CORS respondida por el backend con ruta `OPTIONS` sin autorizador (DIF-98, `b9bc012`). Ensayo de CI limpio de `b9bc012`: 701 aprobadas, 4 omitidas, 76 módulos ≥ 90 %.
+- **Verificado con servicios reales:** semilla EVD-B completa con Textract y Haiku 4.5 (las 22 sugerencias de C-v1, O-v1 y F-v2 coincidieron con el oráculo candidato; no es métrica de §6.3); nivel B 2/2 (extracción, y RAG con cita y abstención); aplicación web local contra API Gateway con Cognito, evidencia de la decisión, visor del PDF y consulta asistida.
+- Residuos de la sesión: trámites 1 a 3 de intentos fallidos sin sugerencias; el 1 con trabajos abiertos (sin reconciliador, DIF-50), que impedirán `drenado: true`.
+
 ## Próximo paso
 
-**1.1 (equipo, manual):** nueva sesión desde `persistent` (bootstrap ya existe) con el paquete de `002c5bd`; `inicializar_base` una sola vez y verificar `al_dia: true` antes de seguir con cuentas, `active`, semilla y pruebas de nivel B.
+**1.1 (equipo, manual):** sesión de demo con el paquete de `b9bc012` o posterior; mismo procedimiento que e90-ensayo-2 sin los tropiezos. Después: diseño del corpus E90 y del arnés de §6.3 (requiere aprobación).
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
