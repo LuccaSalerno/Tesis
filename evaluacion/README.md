@@ -108,7 +108,7 @@ respuestas usan los fragmentos que recupera Cohere, idénticos para ambos modelo
 ## Qué no hace
 
 - No congela ni revisa oráculos: eso es de los autores.
-- No mide §6.3.2 ni §6.3.3 (P18).
+- No mide §6.3.2 (depende del reconciliador RC-P08). §6.3.3 tiene su propio ejecutor (abajo).
 - No decide sustituciones: calcula las reglas sobre promedios y la decisión la registra el equipo.
 - No usa juez automático para las respuestas.
 
@@ -173,3 +173,48 @@ frío. Mediana y p95 por rango más cercano, sin excluir observaciones.
 
 En modo `ensayo`, la latencia usa tres preguntas genéricas sobre el ajuste: sirve para probar
 el ejecutor y **no es IA-M08**.
+
+## Seguridad §6.3.3 (SEG-01 a SEG-04)
+
+Decisión **DO-2026-10-23-SEG**. Código: `atlas.evaluacion.seguridad`. La misma matriz de la
+Tabla 3.II corre en la CI contra la aplicación local (nivel A, `tests/test_evaluacion_seguridad.py`)
+y en una sesión AWS contra la API desplegada (nivel B). Tolerancia cero: un solo caso fuera de
+lo esperado es «No cumple».
+
+Qué verifica:
+
+- **SEG-01:** cada operación implementada de la Tabla 3.II con ocho actores (dueño, responsable
+  ajeno, revisor con y sin tarea, aprobador, administrador, cuenta deshabilitada y sin token);
+  acceso directo por identificador; consulta asistida cruzada entre trámites. Después de cada
+  rechazo de una operación que modifica, la huella de los trámites no cambia.
+- **SEG-02:** configuración de solo lectura (cifrado y solo TLS en S3, RDS cifrado y
+  `rds.force_ssl`, variables de Lambda sin secretos, registro de invocaciones de Bedrock
+  desactivado, retención de registros, sin endpoint de Secrets Manager).
+- **SEG-03:** no hay operación para modificar ni borrar el historial; se lee idéntico.
+- **SEG-04:** los marcadores sintéticos (contenido, títulos, nombres de archivo, preguntas y un
+  procesamiento fallido) no aparecen en CloudWatch Logs ni en Step Functions, y sí los
+  identificadores de correlación.
+- **RNF-08:** una consulta adversarial y un documento con instrucciones no cambian roles,
+  tareas ni estados.
+
+Las operaciones no implementadas (RF-06, RN-14, RF-23, supresión de RF-25 y RF-24) se informan
+como tales, nunca como cumplidas.
+
+**Nivel B (operador, sesión E90A en `active`, de ensayo):** agrega trámites y cuentas, así que no
+conviene correrlo antes de una demo. Requiere tres cuentas ficticias más en Cognito
+(`atlas-responsable-2`, `atlas-revisor-2`, `atlas-deshabilitada`), creadas como las de la
+semilla, y la clave de las siete en `ATLAS_SEED_CLAVE_<CUENTA>` (RESPONSABLE, RESPONSABLE_2,
+REVISOR, REVISOR_2, APROBADOR, ADMINISTRADOR, DESHABILITADA).
+
+```bash
+python -m atlas.evaluacion.seguridad iniciar --campana <id> --url-api "$URL" \
+  --cliente-cognito <cliente> --bucket "$BUCKET" --maquina <arn de la máquina>
+python -m atlas.evaluacion.seguridad escenario --campana <id>     # procesamiento real
+python -m atlas.evaluacion.seguridad matriz --campana <id>
+python -m atlas.evaluacion.seguridad configuracion --campana <id> # solo lectura
+python -m atlas.evaluacion.seguridad marcadores --campana <id>    # esperar unos minutos antes
+python -m atlas.evaluacion.seguridad informe --campana <id>
+```
+
+En la CI no hay procesamiento asíncrono: la consulta cruzada no recupera fragmentos y el
+camino de error no se ejecuta. Esas dos verificaciones solo son concluyentes en el nivel B.

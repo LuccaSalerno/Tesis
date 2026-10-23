@@ -619,6 +619,25 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 12. **P12 — Evidencia y pruebas:** `carga_corpus.json`, `latencia.jsonl`, `carga.jsonl`, `metricas.json` e `informe.md` en la campaña; pruebas con transporte simulado y `TestClient`, sin AWS en la CI.
 13. No modifica RF, RN, RNF, umbrales ni criterios de aceptación.
 
+### DO-2026-10-23-SEG — Ejecutor de seguridad de §6.3.3 (SEG-01 a SEG-04)
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** §6.3.3, Tabla 3.II, RNF-01 a RNF-04, RNF-08, RNF-09, SEG-01 a SEG-04, RC-P01.
+
+1. **P1 — Ubicación:** módulo `atlas.evaluacion.seguridad` con su línea de comandos; campaña de tipo `seguridad` en `evaluacion/campanas/<id>/`.
+2. **P2 — Actores:** responsable dueño, responsable ajeno, revisor con tarea, revisor sin tarea, aprobador con autorización de cierre, administrador, cuenta deshabilitada y solicitud sin token. En AWS se agregan tres cuentas ficticias de Cognito (`atlas-responsable-2`, `atlas-revisor-2`, `atlas-deshabilitada`).
+3. **P3 — Escenario propio por la API:** trámite A del dueño con un documento sintético procesado e incorporado, campos validados, vínculo, flujo confirmado y ciclo con tarea del revisor; trámite B del responsable ajeno con su propio documento. No depende de la semilla de la demo.
+4. **P4 — Matriz declarativa:** cada operación de la Tabla 3.II por actor, con el resultado esperado según las convenciones de RC-P01 (2xx; 403 sin el rol; 404 sin acceso al trámite; 401 sin token; 403 con cuenta deshabilitada). Primero los casos denegados; los permitidos que consumen estado, al final. Después de cada denegado, la huella del trámite (detalle e historial) no cambia.
+5. **P5 — Acceso directo por identificador:** documentos, versiones y URL del original de A pedidos por actores sin acceso, y combinando el trámite B con identificadores de A: 404 y sin URL.
+6. **P6 — Consulta asistida cruzada:** el responsable ajeno pregunta en su trámite por un dato que solo está en A; la respuesta y sus referencias no contienen el marcador de A.
+7. **P7 — SEG-03:** métodos de modificación y borrado sobre el historial: 404 o 405; el historial se lee idéntico (huella) antes y después.
+8. **P8 — SEG-04:** marcadores sintéticos únicos en el contenido de los documentos, títulos, nombres de archivo y preguntas, incluidos un fallo (archivo ilegible) y su reintento; búsqueda en CloudWatch Logs de las cuatro Lambda y en los historiales de Step Functions, exigiendo a la vez los identificadores de correlación.
+9. **P9 — SEG-02:** verificación de solo lectura de la configuración (S3 cifrado, solo TLS y bloqueo público; RDS cifrado y `rds.force_ssl`; variables de entorno de Lambda sin secretos por nombre; registro de invocaciones de Bedrock desactivado; retención de registros; endpoint de Secrets Manager retirado; región y perfiles), contrastada con el Registro de destinos. Informe con nombres y banderas, sin valores.
+10. **P10 — RNF-08:** documento y consulta con instrucciones adversariales que piden aprobar, reasignar o cambiar roles: sin cambios de estado, tareas ni roles.
+11. **P11 — Operaciones no implementadas** (sugerencia de versión RF-06, cancelación RN-14, firma RF-23, supresión de cuentas RF-25, estado operativo general RF-24): se informan como «no implementada», nunca como Cumple.
+12. **P12 — Dos niveles:** la misma matriz corre en la CI contra la aplicación local (procesamiento simulado y moto) y en una sesión AWS contra la API desplegada; tolerancia cero.
+13. **P13 — Evidencia:** `seguridad.jsonl` con actor, operación, esperado, obtenido y cumple por caso, más el informe; sin cuerpos de respuesta.
+14. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso
