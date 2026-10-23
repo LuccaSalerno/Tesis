@@ -120,7 +120,7 @@
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar la candidata v3 del corpus E90 y congelarla (las verificaciones manuales ya están); aplicar a la tesis los borradores del resumen del registro.
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar por muestreo la candidata v3 del corpus E90 ([lista](../evaluacion/corpus_e90/Revision_Autores_Muestreo_V3.md), DO-2026-10-23-E90-MUESTREO) y congelarla; aplicar a la tesis los borradores del resumen del registro.
 
 ## Preguntas abiertas al equipo
 

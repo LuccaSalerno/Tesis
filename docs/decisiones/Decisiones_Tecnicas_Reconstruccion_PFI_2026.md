@@ -726,6 +726,15 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 7. **DIF-84:** el oráculo PD-07 v2 se congela. Consulta manual del equipo en ARCA (23/10/2026): el CUIT `30-96472518-3` no existe. Como advierte PD-07, el control no garantiza al 100 % la inexistencia de una asignación futura.
 8. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-E90-MUESTREO — Revisión de los autores por muestreo antes de congelar la v3
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno), sobre la recomendación del agente. **Estado:** cerrada; la revisión está pendiente de ejecución por los autores. **Base:** DO-2026-10-22-CORPUS-REVISION (revisión de autores antes de congelar), DO-2026-10-23-CIERRE (D5), [Revision_Autores_Muestreo_V3.md](../evaluacion/corpus_e90/Revision_Autores_Muestreo_V3.md).
+
+1. La revisión de los autores previa a la congelación de la candidata v3 se hace por muestreo: las 30 preguntas de RAG con sus respuestas de referencia, los 6 casos difíciles (3 adversariales y 4 ambiguos, uno compartido) y 10 documentos contra su original, incluidos los cambios de la v3.
+2. El resto de las referencias queda validado por los controles automáticos y por la revisión de contraste sobre 25 documentos; el alcance se declara como limitación en §6.6.
+3. Los autores marcan las casillas de los cuadernos y completan el cierre del documento de muestreo; el agente no marca revisiones. Una observación que exija corregir una referencia se resuelve en el generador y se regenera la candidata completa.
+4. Con la revisión completa y la aprobación de ambos autores, la v3 se congela.
+
 ---
 
 ## 2. Decisiones en curso
