@@ -193,3 +193,14 @@ Las entradas DIF-E90-* se renumeran al integrar y se mantienen pendientes de rev
 - **Procedencia/precisión:** adaptación del CPAU MEPAU A-301, 9.ª ed., 2023, con atribución, cambios y CC BY-NC-SA 4.0; uso no comercial y CompartirIgual para las adaptaciones correspondientes. Verificación documental de licencia, sin dictamen jurídico. No se extiende esa licencia al código ni a otras familias. Se explicitan honorarios, roles y etapas para evitar confundir monto del encargo con costo de obra. No es un modelo jurídicamente validado para Argentina.
 - **Decisión:** aprobación expresa del equipo para ese reemplazo y sus controles; se conserva el estado candidato y revisión humana pendiente.
 - **Acción sugerida:** revisar contenido, fuente, ground truth y adecuación metodológica con ambos autores antes de congelar; no inferir representatividad argentina ni resultados de IA del único caso. Renumerar el ID al integrar.
+
+## Corpus E90 candidato v2 — DO-2026-10-22-CORPUS-REVISION (IDs provisionales)
+
+La v2 reemplaza los documentos y oráculos v1 sin cambiar cantidades, particiones, tipos, formatos, plantillas, adversariales, reparto de preguntas ni umbrales. Detalle en `docs/evaluacion/corpus_e90/Informe_Revision_V2.md`.
+
+| ID provisional | Sección / requisito | Implementación o precisión | Tipo y acción pendiente |
+|---|---|---|---|
+| DIF-E90-09 | §6.3.1; IA-D04, IA-M02/03/04 | Cada familia de plantilla imprime fechas, importes, moneda y CUIT con un perfil de formato propio y etiquetas distintas. El oráculo guarda el valor normalizado, la representación y la etiqueta impresas, y localiza por etiqueta y valor contiguos | Precisión. Al medir IA-M02, normalizar como prevé el contrato; describir los perfiles al informar resultados |
+| DIF-E90-10 | §6.3.1; IA-D07 | Los archivos de entrada usan nombres neutros (`doc-<8 hex>`) y metadatos sin el ID; la correspondencia con el ID de inventario está solo en el inventario y los cuadernos | Precisión. Cargar los archivos con su nombre neutro; no usar el nombre como evidencia de clase |
+| DIF-E90-06 (actualización v2) | §6.3.1; IA-D01/08 | Los 12 CUIT de medición tienen el reporte ARCA del equipo («No existe», 22/10/2026). Se agregan 6 CUIT de ajuste y 18 razones sociales ficticias verosímiles, pendientes de verificación manual | Pendiente expreso. Verificar antes de congelar; si alguno existe, reemplazar y regenerar |
+| DIF-E90-07 (actualización v2) | §6.3.1; IA-D02/03/07 | La v2 se generó con LibreOffice 24.2.7.2; los DOCX son reproducibles byte a byte, pero los PDF que produce LibreOffice cambian en bytes entre ejecuciones con el mismo código | Precisión. Los hashes identifican la generación registrada; una regeneración exige actualizar hashes y repetir la validación |

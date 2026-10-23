@@ -19,7 +19,7 @@ Los archivos y sus familias se identifican en `oraculos/e90/inventario_candidato
 
 ## Condiciones específicas de ARG_A — CPAU
 
-E90-M-CTR-03 y sus auxiliares DOCX/PDF son una adaptación académica no comercial del modelo argentino A-301. Atribución: Consejo Profesional de Arquitectura y Urbanismo (CPAU), Buenos Aires, MEPAU, 9.ª edición, 2023. Fuente y licencia: enlaces de la tabla. Adaptación por el equipo de construcción del corpus ATLAS con asistencia del agente, 22/10/2026.
+E90-M-CTR-03 (archivo `medicion/doc-c4507e4a.pdf` desde la v2) y sus auxiliares DOCX/PDF son una adaptación académica no comercial del modelo argentino A-301. Atribución: Consejo Profesional de Arquitectura y Urbanismo (CPAU), Buenos Aires, MEPAU, 9.ª edición, 2023. Fuente y licencia: enlaces de la tabla. Adaptación por el equipo de construcción del corpus ATLAS con asistencia del agente, 22/10/2026.
 
 Cambios: selección y abreviación de las nueve cláusulas numeradas; conservación de comitente/arquitecto/a, etapas, honorarios y dirección; incorporación de datos y condiciones ficticios; reemplazo de referencias a anexos no incorporados; omisión de logotipos, firmas y matrículas. No hubo traducción. El contrato no es jurídicamente validado para Argentina y no cuenta con aval del CPAU. Se conserva la ausencia de garantías de la licencia.
 

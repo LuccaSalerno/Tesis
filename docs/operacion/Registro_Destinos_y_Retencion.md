@@ -66,3 +66,5 @@ DO-2026-10-22-CORPUS-CONSTRUCCION. Este incremento no añade destinos AWS ni mod
 | CI sin AWS | Valida archivos y referencias ya construidos; no genera ni invoca modelos | Copia efímera del runner/ensayo local y archivos sintéticos del repositorio. No cambia retención de servicios AWS ni sube artefactos nuevos | Pruebas de render omitidas explícitamente en CI; se ejecutan localmente con dependencias aprobadas |
 
 Los hashes y el resumen de verificación se conservan en `docs/evaluacion/corpus_e90/`. Los PDF/DOCX y las referencias contienen datos ficticios y no son registros de observabilidad. La consulta ARCA está reservada al equipo y no fue ejecutada por el agente.
+
+**Actualización v2 (DO-2026-10-22-CORPUS-REVISION):** la regeneración del corpus usó los mismos componentes locales (LibreOffice 24.2.7.2 y pdftoppm 24.02.0 del sistema) y un entorno virtual temporal fuera del repositorio. No se agregan destinos, no se envió contenido a servicios externos ni se invocó AWS, Textract o Bedrock. La v1 se conserva en Git y su manifiesto en `docs/evaluacion/corpus_e90/v1/`.

@@ -110,3 +110,7 @@ Ninguna de las propuestas cambia cantidades, particiones, tipos, formatos, adver
 - **Pruebas:** 46 aprobadas, una omitida explícitamente; validador sin errores.
 - **Pendientes o bloqueos:** decidir y aplicar la revisión candidata v2 (REV-E90-01 a 13); luego revisión de ambos autores, congelación y campañas RC-P07.
 - **Preguntas para el equipo:** ¿esta revisión cuenta como la revisión técnica independiente de P6? ¿Se aprueba la regeneración v2 con el alcance descrito?
+
+## Seguimiento
+
+REV-E90-01 a REV-E90-15 se abordaron en la revisión candidata v2 (`2082a6e`); ver [Informe_Revision_V2.md](Informe_Revision_V2.md). Las rutas y recuentos de este documento corresponden a la v1.

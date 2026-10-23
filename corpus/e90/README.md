@@ -1,9 +1,17 @@
-# Corpus sintético E90 candidato
+# Corpus sintético E90 candidato (v2)
 
-50 documentos de medición y 15 de ajuste. Estado: **CANDIDATO_NO_CONGELADO**. El equipo informó consulta manual ARCA del 22/10/2026, «No existe» para los doce CUIT; evidencia en `docs/evaluacion/corpus_e90/Verificacion_Manual_CUIT_ARCA_2026-10-22.md`. Referencias y preguntas no revisadas por los autores. Los archivos generados antes de ese reporte conservan su leyenda histórica de consulta pendiente.
+50 documentos de medición y 15 de ajuste. Versión **e90-candidato-v2** (DO-2026-10-22-CORPUS-REVISION). Estado: **CANDIDATO_NO_CONGELADO**; referencias y preguntas sin revisión de autores.
 
-Los únicos archivos de entrada de la muestra están en `medicion/` y `ajuste/`, enumerados en `oraculos/e90/inventario_candidato.csv`. Los DOCX fuente y PDF de referencia de las otras carpetas son auxiliares reproducibles y no aumentan el N de medición. Las transformaciones de los PDF de imágenes son simulaciones digitales declaradas, con parámetros y semilla por documento.
+Los únicos archivos de entrada están en `medicion/` y `ajuste/`, con nombres neutros (`doc-<8 hex>`). La correspondencia con el ID de inventario (E90-M-CTR-01, etc.) figura solo en `oraculos/e90/inventario_candidato.csv` y en los cuadernos de revisión: ni el contenido, ni los metadatos, ni el nombre del archivo la revelan. Los DOCX de `fuentes_docx/` y los PDF de `pdf_referencia/` son auxiliares reproducibles y no aumentan el N. Los PDF escaneados y fotografiados son simulaciones digitales declaradas, con parámetros y semilla por documento.
 
-Registros previos: `registros_fuente.json`. Herramientas, dependencias, comandos de validación y procedimiento de revisión: `herramientas/corpus_e90/README.md`. No usar esta muestra como inventario de PD-07 ni como evidencia de validación operativa real.
+Contenido de la v2:
 
-DO-2026-10-22-CORPUS-ARG-A: E90-M-CTR-03 usa la familia argentina CPAU, exclusiva de medición, en reemplazo de una repetición de BASE_A. Los otros 64 documentos conservan sus hashes. ARG_A y sus adaptaciones/extractos se distribuyen bajo CC BY-NC-SA 4.0 para uso no comercial: ver `ATRIBUCIONES.md`. No se modifica la licencia del código ni de las otras fuentes.
+- Razones sociales ficticias verosímiles, 12 en medición y 6 en ajuste, sin repetirse entre particiones; un comprador ficticio común. Los 12 CUIT de medición son los del reporte ARCA del equipo del 22/10/2026; los 6 de ajuste están pendientes de consulta. Las razones sociales también deben verificarse a mano: ver `docs/evaluacion/corpus_e90/Verificaciones_Pendientes_V2.md`.
+- Formatos por familia de plantilla: fechas `dd/mm/aaaa`, `dd-mm-aaaa`, `dd/mm/aa` o en letras; importes con o sin símbolo; moneda por código, símbolo o nombre; CUIT con o sin guiones; numeración documental propia de cada tipo.
+- Estructuras distintas por familia: tabla (BASE_A), lista (BASE_B), detalle de ítems con neto, IVA y total (MED_C) y carta con los datos en la prosa (MED_D). 20 documentos no contractuales de medición tienen más de una página.
+- Cuatro trámites coherentes (mismo proveedor y moneda, importes relacionados, referencias por número); T3 tiene una diferencia deliberada entre orden y factura.
+- Cuatro casos de ambigüedad de contenido con justificación previa y tres adversariales con objetivos que contradicen el oráculo.
+
+Registros previos: `registros_fuente.json`. Herramientas y comandos: `herramientas/corpus_e90/README.md`. La v1 queda en Git (`e871a59`) y su manifiesto en `docs/evaluacion/corpus_e90/v1/`. No usar esta muestra como inventario de PD-07 ni como evidencia de validación operativa real.
+
+ARG_A (E90-M-CTR-03) y sus extractos se distribuyen bajo CC BY-NC-SA 4.0 para uso no comercial: ver `ATRIBUCIONES.md`.

@@ -139,3 +139,12 @@ No se modificaron corpus, oráculos, código ni hashes; no se ejecutó AWS ni se
 ## Aprobaciones posteriores a la revisión de contraste — 22/10/2026
 
 DO-2026-10-22-CORPUS-REVISION: el equipo aprobó que la revisión de contraste cuente como revisión técnica independiente (P6) y aprobó en principio la regeneración v2. Se agregan REV-E90-14 (plantillas exclusivas de medición casi idénticas a las compartidas en tipos no contractuales) y REV-E90-15 (entidades y CUIT compartidos entre ajuste y medición; ID E90 en nombres de archivo y metadatos). Diseño v2 propuesto en `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`, **pendiente de aprobación**; no se regeneró nada. Referencia Git: commit con mensaje `DO-2026-10-22-CORPUS-REVISION: aprobaciones y propuesta de corpus v2`.
+
+
+## Corpus E90 candidato v2 — 22/10/2026
+
+DO-2026-10-22-CORPUS-REVISION, diseño P0–P16 aprobado por el equipo. Construido por Claude Code (P0). **Commit de datos y código: `2082a6e`**; documentación en el commit siguiente. Resuelve REV-E90-01 a 15 sin cambiar cantidades, particiones, plantillas, adversariales, reparto de preguntas ni umbrales: sujetos verosímiles y disjuntos por partición, formatos por familia, nombres de archivo neutros, estructuras propias de MED_C/MED_D, 20 no contractuales de medición con dos páginas, cuatro ambigüedades justificadas, adversariales contrastables, cuatro trámites coherentes y 30 preguntas sin IDs (cinco sobre cláusulas, abstenciones en seis contextos). Manifiesto e inventario v1 en `docs/evaluacion/corpus_e90/v1/`.
+
+Verificación: validador sin errores; inventario válido; suite raíz 60 aprobadas y una omitida (58 con render local); ruff sin hallazgos; hoja de contactos de las 121 páginas. Detalle y límites en `docs/evaluacion/corpus_e90/Informe_Revision_V2.md`; cuadernos y guía de autores regenerados para la v2. Diferencias: DIF-E90-09 y 10, actualización de 06 y 07. Ninguna decisión delegada.
+
+**Próximo paso:** el equipo verifica a mano las 18 razones sociales y los 6 CUIT de ajuste (`Verificaciones_Pendientes_V2.md`); revisión de contraste de la v2 por el otro agente; revisión de ambos autores y congelación. Campañas RC-P07 pendientes.

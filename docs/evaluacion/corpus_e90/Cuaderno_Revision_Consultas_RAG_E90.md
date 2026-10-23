@@ -1,36 +1,29 @@
 # Cuaderno de revisión de las 30 preguntas RAG E90
 
-Fecha de preparación: 22/10/2026. Rama `codex/corpus-e90`, estado de datos del commit `b201471`. Este material facilita la revisión ya aprobada: no cambia el protocolo, los documentos ni sus oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
+Revisión candidata **e90-candidato-v2** (DO-2026-10-22-CORPUS-REVISION), datos del commit `2082a6e`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
 
-Aquí se revisan preguntas y referencias **antes de ejecutar modelos**. Las evaluaciones independiente/conjunta de respuestas de IA se completarán después de ejecutar (IA-M06); `evaluaciones_autores` y `consenso` del oráculo no se rellenan como si ya existieran respuestas del sistema.
-
-Para cada pregunta: leer el contexto autorizado, intentar responder desde los documentos y cotejar la referencia. Aceptar equivalencia semántica conforme a RC-P06.2; no exigir literalidad de la respuesta canónica. Revisar naturalidad y posibles pistas artificiales antes de congelar.
+Aquí se revisan preguntas y referencias **antes de ejecutar modelos**. Las evaluaciones de respuestas de IA (IA-M06) se completarán después de ejecutar. Para cada pregunta: leer el contexto autorizado, intentar responder desde los documentos y cotejar las afirmaciones esperadas. Aceptar equivalencia semántica conforme a RC-P06.2; las afirmaciones se limitan a lo preguntado.
 
 ## Q01
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Cuál es el total y en qué moneda está expresado en E90-M-CTR-01?
+**Pregunta:** ¿Cuál es el importe total de la orden de compra emitida a Calibraciones del Litoral Norte S.R.L.?
 
-**Único contexto autorizado:** [E90-M-CTR-01](../../../corpus/e90/medicion/E90-M-CTR-01.pdf).
-
-**Respuesta canónica candidata:** 73.450,01 ARS
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- 73.450,01 ARS
+- El importe total de la orden de compra es 3.699.990,10.
+- Está expresado en pesos argentinos (ARS).
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-CTR-01-CAMPO-monto_total` — [E90-M-CTR-01](../../../corpus/e90/medicion/E90-M-CTR-01.pdf); PDF, página 1.
-  Texto candidato: 73.450,01
-- `E90-M-CTR-01-CAMPO-moneda` — [E90-M-CTR-01](../../../corpus/e90/medicion/E90-M-CTR-01.pdf); PDF, página 1.
-  Texto candidato: ARS
+- `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: 3.699.990,10
+- `E90-M-OC-01-CAMPO-moneda` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: ARS
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -40,25 +33,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué entidad interviene como contraparte en E90-M-CTR-01?
+**Pregunta:** ¿Qué número tiene la factura de Calibraciones del Litoral Norte S.R.L. por mantenimiento preventivo de cabinas de seguridad biológica?
 
-**Único contexto autorizado:** [E90-M-CTR-01](../../../corpus/e90/medicion/E90-M-CTR-01.pdf).
-
-**Respuesta canónica candidata:** Entidad Sintética ATLAS E90 01 (ficticia)
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- Entidad Sintética ATLAS E90 01 (ficticia)
+- La factura tiene el número 00002-00052952.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-CTR-01-CAMPO-contraparte` — [E90-M-CTR-01](../../../corpus/e90/medicion/E90-M-CTR-01.pdf); PDF, página 1.
-  Texto candidato: Entidad Sintética ATLAS E90 01 (ficticia)
+- `E90-M-FAC-07-CAMPO-numero` — [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx); DOCX, párrafo 3. Texto: Ref.: Factura N.º 00002-00052952
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -68,27 +56,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Cuál es el total y en qué moneda está expresado en E90-M-PRE-01?
+**Pregunta:** ¿Hasta qué fecha está vigente el contrato con Servicios Técnicos Arroyo Seco S.A.?
 
-**Único contexto autorizado:** [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf).
-
-**Respuesta canónica candidata:** 121.797,01 USD
+**Contexto autorizado (3):** [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx) (contrato), [E90-M-OC-02](../../../corpus/e90/medicion/doc-20b64e04.docx) (orden_compra), [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx) (factura).
 
 **Afirmaciones esperadas:**
 
-- 121.797,01 USD
+- El contrato está vigente hasta el 21/02/2027.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-01-CAMPO-importe_total` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: 121.797,01
-- `E90-M-PRE-01-CAMPO-moneda` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: USD
+- `E90-M-CTR-02-CAMPO-vigencia_hasta` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 8. Texto: Finalización: 21-02-2027
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -98,25 +79,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué entidad interviene como proveedor en E90-M-PRE-01?
+**Pregunta:** ¿En qué fecha se emitió el presupuesto de Metrolab Patagonia Sur S.R.L.?
 
-**Único contexto autorizado:** [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf).
-
-**Respuesta canónica candidata:** Entidad Sintética ATLAS E90 02 (ficticia)
+**Contexto autorizado (3):** [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf) (presupuesto), [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf) (orden_compra), [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf) (factura).
 
 **Afirmaciones esperadas:**
 
-- Entidad Sintética ATLAS E90 02 (ficticia)
+- El presupuesto se emitió el 16/03/2026.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-01-CAMPO-proveedor` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: Entidad Sintética ATLAS E90 02 (ficticia)
+- `E90-M-PRE-03-CAMPO-fecha` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 1. Texto: 16/03/2026
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -126,27 +102,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Cuál es el total y en qué moneda está expresado en E90-M-OC-01?
+**Pregunta:** ¿Por qué importe se dejó constancia de la recepción de los servicios de Ingeniería Cuenca del Salado S.A.?
 
-**Único contexto autorizado:** [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf).
-
-**Respuesta canónica candidata:** 170.144,01 EUR
+**Contexto autorizado (3):** [E90-M-OC-04](../../../corpus/e90/medicion/doc-2429ee82.docx) (orden_compra), [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx) (factura), [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- 170.144,01 EUR
+- La constancia registra un importe de 2.242,86.
+- Está expresado en euros (EUR).
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: 170.144,01
-- `E90-M-OC-01-CAMPO-moneda` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: EUR
+- `E90-M-COM-08-CAMPO-importe` — [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf); PDF, página 1. Texto: Lo recibido corresponde a un importe total de 2.242,86 euros (dos mil doscientos cuarenta y dos con 86/100).
+- `E90-M-COM-08-CAMPO-moneda` — [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf); PDF, página 1. Texto: Lo recibido corresponde a un importe total de 2.242,86 euros (dos mil doscientos cuarenta y dos con 86/100).
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -156,25 +127,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué entidad interviene como proveedor en E90-M-OC-01?
+**Pregunta:** ¿Cuál es el precio total del contrato de servicios técnicos y en qué moneda está expresado?
 
-**Único contexto autorizado:** [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf).
-
-**Respuesta canónica candidata:** Entidad Sintética ATLAS E90 03 (ficticia)
+**Contexto autorizado (1):** [E90-M-CTR-09](../../../corpus/e90/medicion/doc-9426a983.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- Entidad Sintética ATLAS E90 03 (ficticia)
+- El monto total es 9.681.580,07.
+- Está expresado en pesos argentinos (ARS).
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-01-CAMPO-proveedor` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: Entidad Sintética ATLAS E90 03 (ficticia)
+- `E90-M-CTR-09-CAMPO-monto_total` — [E90-M-CTR-09](../../../corpus/e90/medicion/doc-9426a983.pdf); PDF, página 1 (referencia previa a la simulación). Texto: Precio: ARS 9.681.580,07
+- `E90-M-CTR-09-CAMPO-moneda` — [E90-M-CTR-09](../../../corpus/e90/medicion/doc-9426a983.pdf); PDF, página 1 (referencia previa a la simulación). Texto: Precio: ARS 9.681.580,07
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -184,27 +152,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Cuál es el total y en qué moneda está expresado en E90-M-FAC-01?
+**Pregunta:** ¿Cuál es el monto total de honorarios del encargo de proyecto y dirección?
 
-**Único contexto autorizado:** [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf).
-
-**Respuesta canónica candidata:** 218.491,01 ARS
+**Contexto autorizado (1):** [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- 218.491,01 ARS
+- El monto total es 10.697.817,75.
+- Está expresado en pesos argentinos (ARS).
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-FAC-01-CAMPO-importe_total` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: 218.491,01
-- `E90-M-FAC-01-CAMPO-moneda` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: ARS
+- `E90-M-CTR-03-CAMPO-monto_total` — [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf); PDF, página 1. Texto: Precio total: 10.697.817,75
+- `E90-M-CTR-03-CAMPO-moneda` — [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf); PDF, página 1. Texto: Moneda: pesos argentinos
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -214,25 +177,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué entidad interviene como emisor en E90-M-FAC-01?
+**Pregunta:** ¿Qué número tiene la orden de compra?
 
-**Único contexto autorizado:** [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf).
-
-**Respuesta canónica candidata:** Entidad Sintética ATLAS E90 04 (ficticia)
+**Contexto autorizado (1):** [E90-M-OC-10](../../../corpus/e90/medicion/doc-35699f69.pdf) (orden_compra).
 
 **Afirmaciones esperadas:**
 
-- Entidad Sintética ATLAS E90 04 (ficticia)
+- La orden de compra tiene el número OC/94217/2026.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-FAC-01-CAMPO-emisor` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: Entidad Sintética ATLAS E90 04 (ficticia)
+- `E90-M-OC-10-CAMPO-numero` — [E90-M-OC-10](../../../corpus/e90/medicion/doc-35699f69.pdf); PDF, página 1 (referencia previa a la simulación). Texto: Ref.: Orden de compra N.º OC/94217/2026
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -242,27 +200,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Cuál es el total y en qué moneda está expresado en E90-M-COM-01?
+**Pregunta:** ¿Cuál es el CUIT del proveedor que emitió la cotización?
 
-**Único contexto autorizado:** [E90-M-COM-01](../../../corpus/e90/medicion/E90-M-COM-01.pdf).
-
-**Respuesta canónica candidata:** 266.838,01 USD
+**Contexto autorizado (1):** [E90-M-PRE-02](../../../corpus/e90/medicion/doc-fe20a4c5.docx) (presupuesto).
 
 **Afirmaciones esperadas:**
 
-- 266.838,01 USD
+- El CUIT del proveedor es 30-98641004-6.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-COM-01-CAMPO-importe` — [E90-M-COM-01](../../../corpus/e90/medicion/E90-M-COM-01.pdf); PDF, página 1.
-  Texto candidato: 266.838,01
-- `E90-M-COM-01-CAMPO-moneda` — [E90-M-COM-01](../../../corpus/e90/medicion/E90-M-COM-01.pdf); PDF, página 1.
-  Texto candidato: USD
+- `E90-M-PRE-02-CAMPO-cuit_proveedor` — [E90-M-PRE-02](../../../corpus/e90/medicion/doc-fe20a4c5.docx); DOCX, párrafo 7. Texto: C.U.I.T. N.º: 30986410046
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -272,25 +223,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **directa** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué entidad interviene como contraparte en E90-M-COM-01?
+**Pregunta:** ¿Cuál es el CUIT del emisor de la factura?
 
-**Único contexto autorizado:** [E90-M-COM-01](../../../corpus/e90/medicion/E90-M-COM-01.pdf).
-
-**Respuesta canónica candidata:** Entidad Sintética ATLAS E90 05 (ficticia)
+**Contexto autorizado (1):** [E90-M-FAC-06](../../../corpus/e90/medicion/doc-3c9c847a.pdf) (factura).
 
 **Afirmaciones esperadas:**
 
-- Entidad Sintética ATLAS E90 05 (ficticia)
+- El CUIT del emisor es 30-98641007-0.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-COM-01-CAMPO-contraparte` — [E90-M-COM-01](../../../corpus/e90/medicion/E90-M-COM-01.pdf); PDF, página 1.
-  Texto candidato: Entidad Sintética ATLAS E90 05 (ficticia)
+- `E90-M-FAC-06-CAMPO-cuit_emisor` — [E90-M-FAC-06](../../../corpus/e90/medicion/doc-3c9c847a.pdf); PDF, página 1. Texto: CUIT 30-98641007-0
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -300,25 +246,23 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-CTR-02, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿En qué casos puede una de las partes dar por terminado el contrato?
 
-**Único contexto autorizado:** [E90-M-CTR-02](../../../corpus/e90/medicion/E90-M-CTR-02.docx).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 13 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (1):** [E90-M-CTR-06](../../../corpus/e90/medicion/doc-de08cb56.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 13 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- Ante un incumplimiento material no subsanado.
+- Ante una imposibilidad grave de continuidad.
+- Por otra causal pactada.
+- La parte debe notificar el motivo.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-CTR-02-P015` — [E90-M-CTR-02](../../../corpus/e90/medicion/E90-M-CTR-02.docx); DOCX, párrafo OOXML 15 de word/document.xml.
-  Texto candidato: El plazo de entrega es de 13 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-CTR-06-CLAUSULA-7` — [E90-M-CTR-06](../../../corpus/e90/medicion/doc-de08cb56.pdf); PDF, página 8. Texto: La relación tendrá la duración indicada por sus condiciones particulares. Una parte podrá dar por terminado el acuerdo ante un incumplimiento material no subsanado, una imposibilidad grave de continuidad u otra causal pa
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -328,25 +272,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-CTR-03, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** Si el proveedor incurre en un incumplimiento notificable, ¿qué puede pedirle el comprador y qué puede hacer con lo que reciba?
 
-**Único contexto autorizado:** [E90-M-CTR-03](../../../corpus/e90/medicion/E90-M-CTR-03.pdf).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético.
+**Contexto autorizado (1):** [E90-M-CTR-08](../../../corpus/e90/medicion/doc-ef93a9e2.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético.
+- El comprador puede solicitar un plan de rectificación con las acciones y plazos propuestos.
+- Puede aceptar el plan o rechazarlo con razones.
+- Ante un rechazo, puede requerir una versión revisada.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-CTR-03-P014` — [E90-M-CTR-03](../../../corpus/e90/medicion/E90-M-CTR-03.pdf); PDF, página 1.
-  Texto candidato: El plazo de entrega es de 14 días corridos. La modalidad acordada es entrega digital de planos y visitas coordinadas al predio sintético. Las solicitudes se canalizan mediante la mesa de coordinación del proyecto sintético.
+- `E90-M-CTR-08-CLAUSULA-7` — [E90-M-CTR-08](../../../corpus/e90/medicion/doc-ef93a9e2.pdf); PDF, página 8. Texto: Un incumplimiento notificable deberá comunicarse y, cuando se solicite, se presentará un plan de rectificación con las acciones y plazos propuestos. El comprador podrá aceptarlo o rechazarlo con razones. Ante un rechazo,
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -356,25 +297,21 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-PRE-02, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿Cómo se resuelven las controversias en el contrato de proyecto y dirección?
 
-**Único contexto autorizado:** [E90-M-PRE-02](../../../corpus/e90/medicion/E90-M-PRE-02.docx).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 26 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (1):** [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 26 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- Primero se prevé una mediación.
+- Si la controversia persiste, se prevé una pericia arbitral.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-02-P014` — [E90-M-PRE-02](../../../corpus/e90/medicion/E90-M-PRE-02.docx); DOCX, párrafo OOXML 14 de word/document.xml.
-  Texto candidato: El plazo de entrega es de 26 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-CTR-03-CLAUSULA-8` — [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf); PDF, página 2. Texto: El modelo de procedencia prevé mediación y, de persistir la controversia, pericia arbitral. Se conserva esa secuencia como rasgo del escenario documental argentino. No se reproduce un compromiso arbitral ni se afirma la 
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -384,25 +321,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-PRE-03, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** En el contrato con Servicios Técnicos Arroyo Seco S.A., ¿de cuántos días dispone el cliente para revisar un entregable sujeto a aceptación?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 27 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (3):** [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx) (contrato), [E90-M-OC-02](../../../corpus/e90/medicion/doc-20b64e04.docx) (orden_compra), [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx) (factura).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 27 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- El cliente dispone de un período de prueba de quince días.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-03-P021` — [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf); PDF, página 1.
-  Texto candidato: El plazo de entrega es de 27 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-CTR-02-CLAUSULA-3` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 17. Texto: Cuando un entregable esté sujeto a aceptación, el cliente dispondrá de un período de prueba de quince días para revisar su conformidad material con las especificaciones. Si encuentra diferencias, deberá describirlas razo
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -412,25 +344,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-OC-02, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿Qué información queda excluida de la obligación de reserva?
 
-**Único contexto autorizado:** [E90-M-OC-02](../../../corpus/e90/medicion/E90-M-OC-02.docx).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 22 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (1):** [E90-M-CTR-01](../../../corpus/e90/medicion/doc-fd733e9e.pdf) (contrato).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 22 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- La información ya pública.
+- La recibida legítimamente de un tercero.
+- La desarrollada de manera independiente.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-02-P014` — [E90-M-OC-02](../../../corpus/e90/medicion/E90-M-OC-02.docx); DOCX, párrafo OOXML 14 de word/document.xml.
-  Texto candidato: El plazo de entrega es de 22 días corridos. La modalidad acordada es retiro coordinado. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-CTR-01-CLAUSULA-6` — [E90-M-CTR-01](../../../corpus/e90/medicion/doc-fd733e9e.pdf); PDF, página 2. Texto: Cada parte mantendrá segura y reservada la información confidencial que reciba. No la divulgará ni la explotará sin consentimiento previo, salvo para la finalidad prevista en el acuerdo o una excepción expresamente admit
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -440,25 +369,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-OC-03, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿Por cuánto tiempo es válida la oferta de Metrolab Patagonia Sur S.R.L. y cómo se paga?
 
-**Único contexto autorizado:** [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 23 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (3):** [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf) (presupuesto), [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf) (orden_compra), [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf) (factura).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 23 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- La oferta es válida por 30 días corridos.
+- La forma de pago es pago contra entrega del informe final.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-03-P021` — [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf); PDF, página 1.
-  Texto candidato: El plazo de entrega es de 23 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-PRE-03-COND-validez` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Validez de la oferta: 30 días corridos.
+- `E90-M-PRE-03-COND-forma_pago` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Forma de pago: pago contra entrega del informe final.
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -468,25 +394,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-FAC-02, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿Dónde y en qué fecha debe entregarse lo pedido a Calibraciones del Litoral Norte S.R.L.?
 
-**Único contexto autorizado:** [E90-M-FAC-02](../../../corpus/e90/medicion/E90-M-FAC-02.docx).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 18 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 18 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- Debe entregarse en Laboratorio de Metrología, planta baja.
+- La fecha de entrega comprometida es el 11/07/2026.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-FAC-02-P014` — [E90-M-FAC-02](../../../corpus/e90/medicion/E90-M-FAC-02.docx); DOCX, párrafo OOXML 14 de word/document.xml.
-  Texto candidato: El plazo de entrega es de 18 días corridos. La modalidad acordada es entrega en laboratorio. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-OC-01-COND-lugar` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: Lugar de entrega: Laboratorio de Metrología, planta baja.
+- `E90-M-OC-01-COND-fecha_entrega` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: Fecha de entrega comprometida: 11/07/2026.
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -496,25 +419,20 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **condiciones** · Clase: **respondible**.
 
-**Pregunta:** Para coordinar la prestación de E90-M-FAC-03, ¿qué plazo y modalidad hay que tener en cuenta?
+**Pregunta:** ¿Cuándo vence el pago de la factura de Servicios Técnicos Arroyo Seco S.A.?
 
-**Único contexto autorizado:** [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf).
-
-**Respuesta canónica candidata:** El plazo de entrega es de 19 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+**Contexto autorizado (3):** [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx) (contrato), [E90-M-OC-02](../../../corpus/e90/medicion/doc-20b64e04.docx) (orden_compra), [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx) (factura).
 
 **Afirmaciones esperadas:**
 
-- El plazo de entrega es de 19 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- El pago vence el 31/03/2026.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-FAC-03-P021` — [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf); PDF, página 1.
-  Texto candidato: El plazo de entrega es de 19 días corridos. La modalidad acordada es entrega digital. Las solicitudes se canalizan mediante la mesa de servicios sintética.
+- `E90-M-FAC-02-COND-vencimiento` — [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx); DOCX, párrafo 15. Texto: Vencimiento del pago: 31-03-2026.
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -524,31 +442,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-PRE-01 y E90-M-OC-01?
+**Pregunta:** ¿El importe de la orden de compra coincide con el del presupuesto de Calibraciones del Litoral Norte S.R.L.?
 
-**Único contexto autorizado:** [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf), [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf), [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf).
-
-**Respuesta canónica candidata:** E90-M-PRE-01: 121.797,01 USD; E90-M-OC-01: 170.144,01 EUR
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- E90-M-PRE-01: 121.797,01 USD; E90-M-OC-01: 170.144,01 EUR
+- Sí, los importes coinciden.
+- El presupuesto y la orden de compra indican 3.699.990,10 ARS.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-01-CAMPO-importe_total` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: 121.797,01
-- `E90-M-PRE-01-CAMPO-moneda` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: USD
-- `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: 170.144,01
-- `E90-M-OC-01-CAMPO-moneda` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: EUR
+- `E90-M-PRE-06-CAMPO-importe_total` — [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf); PDF, página 2. Texto: Total ARS 3.699.990,10
+- `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: 3.699.990,10
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -558,31 +467,24 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-OC-01 y E90-M-FAC-01?
+**Pregunta:** ¿La factura de Metrolab Patagonia Sur S.R.L. se emitió por el mismo importe que la orden de compra?
 
-**Único contexto autorizado:** [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf), [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf), [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf).
-
-**Respuesta canónica candidata:** E90-M-OC-01: 170.144,01 EUR; E90-M-FAC-01: 218.491,01 ARS
+**Contexto autorizado (3):** [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf) (presupuesto), [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf) (orden_compra), [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf) (factura).
 
 **Afirmaciones esperadas:**
 
-- E90-M-OC-01: 170.144,01 EUR; E90-M-FAC-01: 218.491,01 ARS
+- No, los importes no coinciden.
+- La orden de compra indica 2.461.923,75 ARS.
+- La factura indica 2.658.877,65 ARS.
+- La factura supera a la orden en 196.953,90 ARS.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: 170.144,01
-- `E90-M-OC-01-CAMPO-moneda` — [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf); PDF, página 1.
-  Texto candidato: EUR
-- `E90-M-FAC-01-CAMPO-importe_total` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: 218.491,01
-- `E90-M-FAC-01-CAMPO-moneda` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: ARS
+- `E90-M-OC-06-CAMPO-importe_total` — [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf); PDF, página 2. Texto: Total ARS 2.461.923,75
+- `E90-M-FAC-03-CAMPO-importe_total` — [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf); PDF, página 1. Texto: 2.658.877,65
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -592,31 +494,22 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-PRE-01 y E90-M-FAC-01?
+**Pregunta:** ¿Qué documento previo cita la factura de Calibraciones del Litoral Norte S.R.L. y forma parte del trámite?
 
-**Único contexto autorizado:** [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf), [E90-M-OC-01](../../../corpus/e90/medicion/E90-M-OC-01.pdf), [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf).
-
-**Respuesta canónica candidata:** E90-M-PRE-01: 121.797,01 USD; E90-M-FAC-01: 218.491,01 ARS
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- E90-M-PRE-01: 121.797,01 USD; E90-M-FAC-01: 218.491,01 ARS
+- La factura cita la orden de compra OC 4500072485.
+- Esa orden de compra forma parte del trámite.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-01-CAMPO-importe_total` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: 121.797,01
-- `E90-M-PRE-01-CAMPO-moneda` — [E90-M-PRE-01](../../../corpus/e90/medicion/E90-M-PRE-01.pdf); PDF, página 1.
-  Texto candidato: USD
-- `E90-M-FAC-01-CAMPO-importe_total` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: 218.491,01
-- `E90-M-FAC-01-CAMPO-moneda` — [E90-M-FAC-01](../../../corpus/e90/medicion/E90-M-FAC-01.pdf); PDF, página 1.
-  Texto candidato: ARS
+- `E90-M-FAC-07-REF` — [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx); DOCX, párrafo 7. Texto: Corresponde a la orden de compra OC 4500072485.
+- `E90-M-OC-01-CAMPO-numero` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: OC 4500072485
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -626,31 +519,24 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-PRE-03 y E90-M-OC-03?
+**Pregunta:** ¿La factura de Servicios Técnicos Arroyo Seco S.A. se emitió dentro de la vigencia del contrato?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf), [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf), [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf).
-
-**Respuesta canónica candidata:** E90-M-PRE-03: 129.235,03 ARS; E90-M-OC-03: 177.582,03 USD
+**Contexto autorizado (3):** [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx) (contrato), [E90-M-OC-02](../../../corpus/e90/medicion/doc-20b64e04.docx) (orden_compra), [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx) (factura).
 
 **Afirmaciones esperadas:**
 
-- E90-M-PRE-03: 129.235,03 ARS; E90-M-OC-03: 177.582,03 USD
+- Sí, se emitió dentro de la vigencia.
+- La factura es del 16/03/2026.
+- El contrato rige desde el 22/02/2026 hasta el 21/02/2027.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-03-CAMPO-importe_total` — [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf); PDF, página 1.
-  Texto candidato: 129.235,03
-- `E90-M-PRE-03-CAMPO-moneda` — [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf); PDF, página 1.
-  Texto candidato: ARS
-- `E90-M-OC-03-CAMPO-importe_total` — [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf); PDF, página 1.
-  Texto candidato: 177.582,03
-- `E90-M-OC-03-CAMPO-moneda` — [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf); PDF, página 1.
-  Texto candidato: USD
+- `E90-M-FAC-02-CAMPO-fecha_emision` — [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx); DOCX, párrafo 4. Texto: Fecha de emisión: 16-03-2026
+- `E90-M-CTR-02-CAMPO-vigencia_desde` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 7. Texto: Inicio de vigencia: 22-02-2026
+- `E90-M-CTR-02-CAMPO-vigencia_hasta` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 8. Texto: Finalización: 21-02-2027
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -660,31 +546,24 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-OC-03 y E90-M-FAC-03?
+**Pregunta:** ¿Qué factura cita la constancia de conformidad y coincide su importe con el de esa factura?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf), [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf), [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf).
-
-**Respuesta canónica candidata:** E90-M-OC-03: 177.582,03 USD; E90-M-FAC-03: 225.929,03 EUR
+**Contexto autorizado (3):** [E90-M-OC-04](../../../corpus/e90/medicion/doc-2429ee82.docx) (orden_compra), [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx) (factura), [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf) (comprobante).
 
 **Afirmaciones esperadas:**
 
-- E90-M-OC-03: 177.582,03 USD; E90-M-FAC-03: 225.929,03 EUR
+- La constancia cita la factura 0004-00013478.
+- Sí, ambos documentos indican 2.242,86 EUR.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-OC-03-CAMPO-importe_total` — [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf); PDF, página 1.
-  Texto candidato: 177.582,03
-- `E90-M-OC-03-CAMPO-moneda` — [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf); PDF, página 1.
-  Texto candidato: USD
-- `E90-M-FAC-03-CAMPO-importe_total` — [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf); PDF, página 1.
-  Texto candidato: 225.929,03
-- `E90-M-FAC-03-CAMPO-moneda` — [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf); PDF, página 1.
-  Texto candidato: EUR
+- `E90-M-COM-08-OBJETO` — [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf); PDF, página 1. Texto: Por la presente dejamos constancia de haber recibido de conformidad los servicios de validación térmica de autoclaves y estufas, correspondientes a su factura 0004-00013478.
+- `E90-M-COM-08-CAMPO-importe` — [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf); PDF, página 1. Texto: Lo recibido corresponde a un importe total de 2.242,86 euros (dos mil doscientos cuarenta y dos con 86/100).
+- `E90-M-FAC-04-CAMPO-numero` — [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx); DOCX, párrafo 3. Texto: N.º: 0004-00013478
+- `E90-M-FAC-04-CAMPO-importe_total` — [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx); DOCX, párrafo 11. Texto: Total: € 2.242,86
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -694,31 +573,23 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **multidocumento** · Clase: **respondible**.
 
-**Pregunta:** ¿Qué importes y monedas figuran en E90-M-PRE-03 y E90-M-FAC-03?
+**Pregunta:** ¿Cuántos días pasaron entre el presupuesto y la orden de compra de Metrolab Patagonia Sur S.R.L.?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf), [E90-M-OC-03](../../../corpus/e90/medicion/E90-M-OC-03.pdf), [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf).
-
-**Respuesta canónica candidata:** E90-M-PRE-03: 129.235,03 ARS; E90-M-FAC-03: 225.929,03 EUR
+**Contexto autorizado (3):** [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf) (presupuesto), [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf) (orden_compra), [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf) (factura).
 
 **Afirmaciones esperadas:**
 
-- E90-M-PRE-03: 129.235,03 ARS; E90-M-FAC-03: 225.929,03 EUR
+- El presupuesto es del 16/03/2026.
+- La orden de compra es del 28/03/2026.
+- Pasaron 12 días.
 
-**Fragmentos citados por el oráculo:**
+**Fragmentos citados:**
 
-- `E90-M-PRE-03-CAMPO-importe_total` — [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf); PDF, página 1.
-  Texto candidato: 129.235,03
-- `E90-M-PRE-03-CAMPO-moneda` — [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf); PDF, página 1.
-  Texto candidato: ARS
-- `E90-M-FAC-03-CAMPO-importe_total` — [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf); PDF, página 1.
-  Texto candidato: 225.929,03
-- `E90-M-FAC-03-CAMPO-moneda` — [E90-M-FAC-03](../../../corpus/e90/medicion/E90-M-FAC-03.pdf); PDF, página 1.
-  Texto candidato: EUR
+- `E90-M-PRE-03-CAMPO-fecha` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 1. Texto: 16/03/2026
+- `E90-M-OC-06-CAMPO-fecha` — [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf); PDF, página 1. Texto: Fecha 28/03/26
 
-Comprobar que las citas sostengan cada afirmación en su contexto. En las multidocumento, verificar los datos y la relación entre piezas; no basta con que haya dos IDs distintos.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -728,18 +599,15 @@ Comprobar que las citas sostengan cada afirmación en su contexto. En las multid
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Qué tasa de interés anual se pactó para financiar esta operación?
+**Pregunta:** ¿Qué penalidad corresponde si Calibraciones del Litoral Norte S.R.L. entrega con demora?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (4):** [E90-M-PRE-06](../../../corpus/e90/medicion/doc-3e698236.pdf) (presupuesto), [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf) (orden_compra), [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx) (factura), [E90-M-COM-01](../../../corpus/e90/medicion/doc-b3500bdf.pdf) (comprobante).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: Los documentos fijan lugar y fecha de entrega, pero no establecen penalidades por demora.
 
-**Motivo registrado:** No se declara financiación ni una tasa anual en el contexto autorizado.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -749,18 +617,15 @@ Revisar todos los documentos del contexto autorizado y confirmar que falta evide
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Qué persona física es beneficiaria final de la contraparte?
+**Pregunta:** ¿Cuál es el monto de la multa por rescisión anticipada del contrato con Servicios Técnicos Arroyo Seco S.A.?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (3):** [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx) (contrato), [E90-M-OC-02](../../../corpus/e90/medicion/doc-20b64e04.docx) (orden_compra), [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx) (factura).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: El contrato no fija una multa por rescisión anticipada.
 
-**Motivo registrado:** El documento solo identifica una entidad ficticia, no beneficiarios finales.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -770,18 +635,15 @@ Revisar todos los documentos del contexto autorizado y confirmar que falta evide
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Cuál es el número de la cuenta bancaria para realizar el pago?
+**Pregunta:** ¿A qué cuenta bancaria hay que transferir el pago de la factura de Metrolab Patagonia Sur S.R.L.?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (3):** [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf) (presupuesto), [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf) (orden_compra), [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf) (factura).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: La factura indica la forma de pago, pero no informa un número de cuenta.
 
-**Motivo registrado:** No hay cuenta bancaria en el contexto autorizado.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -791,18 +653,15 @@ Revisar todos los documentos del contexto autorizado y confirmar que falta evide
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Quién autorizó el gasto en representación del cliente y con qué poder?
+**Pregunta:** ¿Qué número de remito acompañó la entrega de los servicios de Ingeniería Cuenca del Salado S.A.?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (3):** [E90-M-OC-04](../../../corpus/e90/medicion/doc-2429ee82.docx) (orden_compra), [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx) (factura), [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf) (comprobante).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: Ningún documento del trámite menciona un remito.
 
-**Motivo registrado:** No se identifica un representante con un poder verificable.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -812,18 +671,15 @@ Revisar todos los documentos del contexto autorizado y confirmar que falta evide
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Qué domicilio particular tiene quien supervisa la entrega?
+**Pregunta:** ¿Qué garantía de cumplimiento en dinero debe constituir el prestador?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (1):** [E90-M-CTR-09](../../../corpus/e90/medicion/doc-9426a983.pdf) (contrato).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: El contrato no exige una garantía de cumplimiento en dinero.
 
-**Motivo registrado:** No se incluyen personas ni domicilios particulares.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
@@ -833,23 +689,16 @@ Revisar todos los documentos del contexto autorizado y confirmar que falta evide
 
 Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
-**Pregunta:** ¿Cuál es el precio que se acordó en el contrato relacionado que no está incluido aquí?
+**Pregunta:** ¿Cuál es el presupuesto de construcción de la obra?
 
-**Único contexto autorizado:** [E90-M-PRE-03](../../../corpus/e90/medicion/E90-M-PRE-03.pdf).
+**Contexto autorizado (1):** [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf) (contrato).
 
-**Resultado esperado:** abstenerse de responder el dato solicitado.
+**Abstención esperada.** Motivo: El monto pactado corresponde solo a honorarios; el contrato no informa el costo de construcción.
 
-**Motivo registrado:** Un contrato ajeno al contexto autorizado no es fuente disponible; no inferir su precio.
 
-Revisar todos los documentos del contexto autorizado y confirmar que falta evidencia suficiente. No usar un documento de ajuste, otra versión o conocimiento general para completar la respuesta.
-
-- [ ] Autor 1 revisó pregunta, contexto y referencia/motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y referencia/motivo de abstención.
+- [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
 - Observaciones del autor 2: pendiente.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
-
-## Después de ejecutar los modelos
-
-Conservar por separado la puntuación de cada autor (correcta/parcial/incorrecta), la comprobación de citas y el consenso sin sobrescribir las valoraciones individuales. Las parciales no cuentan como correctas. Los umbrales y la rúbrica son los aprobados en RC-P06.2/IA-M06; este cuaderno no agrega métricas. El mapeo de fragmentos primarios a chunks de cada indexación congelada sigue pendiente.

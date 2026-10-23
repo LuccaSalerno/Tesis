@@ -1,70 +1,76 @@
 # Construcción y validación local del corpus E90
 
-Decisión: **DO-2026-10-22-CORPUS-CONSTRUCCION**. Estado: candidato, no congelado, sin oráculos revisados por los autores. No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
+Decisiones: **DO-2026-10-22-CORPUS-CONSTRUCCION** y **DO-2026-10-22-CORPUS-REVISION** (versión candidata **v2**, diseño P0–P16 en `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`). Estado: candidato, no congelado, sin oráculos revisados por los autores. No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
 
 ## Qué contiene
 
-- `corpus/e90/registros_fuente.json`: 65 registros fijados antes de generar archivos (50 de medición y 15 de ajuste). No se obtuvieron de resultados de IA.
-- `corpus/e90/medicion/` y `ajuste/`: exactamente un archivo de entrada por registro; 45 PDF y 20 DOCX en total. Fuentes DOCX y PDF de referencia están separados en `fuentes_docx/` y `pdf_referencia/`: son auxiliares, no documentos adicionales de medición.
-- `oraculos/e90/inventario_candidato.csv`: inventario real compatible con el validador existente, con hashes de los archivos construidos.
-- `artefactos_candidatos.json`: versiones de herramientas, referencias a fuentes, tamaño/páginas, hashes y parámetros/semilla de las simulaciones. La repetibilidad binaria exige el entorno de render y las fuentes tipográficas registrados; no se promete igualdad entre versiones de LibreOffice.
-- `campos_candidatos.json` y `fragmentos_candidatos.json`: 403 referencias de campos y fragmentos primarios. No son respuestas de un modelo ni revisión humana. Para campos ausentes se conserva `presente=false`, valor y localizador nulos; no se confunden con campos no aplicables.
-- `consultas_candidatas.json`: 30 borradores de preguntas, referencias y abstenciones sobre documentos ya construidos; 10 directas, 8 de condiciones, 6 multidocumento y 6 sin evidencia. Evaluaciones individuales de los autores vacías. El mapeo a chunks de una indexación congelada queda pendiente.
-- `cuit_candidatos.json`: 12 CUIT de dígito correcto, con consulta manual ARCA del 22/10/2026 informada por el equipo: «No existe» en los doce casos. Se registra fecha/resultado/evidencia del reporte; no hay garantía absoluta de inexistencia ni asignación futura. Los artefactos anteriores conservan su leyenda histórica y no se regeneran por esta actualización.
+- `corpus/e90/registros_fuente.json`: 65 registros fijados antes de generar archivos (50 de medición y 15 de ajuste), con contextos de trámite, ambigüedades justificadas, adversariales y condiciones. No se obtuvieron de resultados de IA.
+- `corpus/e90/medicion/` y `ajuste/`: un archivo de entrada por registro, con nombre neutro; 45 PDF y 20 DOCX. `fuentes_docx/` y `pdf_referencia/` son auxiliares, no documentos adicionales de medición.
+- `oraculos/e90/`: inventario, manifiesto de artefactos, 403 campos, 727 fragmentos, 30 consultas y 18 CUIT candidatos (ver su README).
+- `docs/evaluacion/corpus_e90/Cuaderno_Revision_*.md`: vistas para los autores, generadas con `cuadernos.py` a partir de los JSON.
 
-Las familias BASE_A/BASE_B son compartidas; MED_C/MED_D se usan exclusivamente en medición, por tipo. DO-2026-10-22-CORPUS-ARG-A agrega CTR-ARG_A exclusivamente a E90-M-CTR-03, en reemplazo de una repetición de BASE_A: hay cinco familias en contratos y cuatro en los demás tipos. No cambian los 65 casos ni sus formatos. Cada registro/archivo es independiente. Los tres adversariales pertenecen a los 50 de medición. PD-07 permanece separado y sin modificaciones.
+Módulos:
+
+| Módulo | Función |
+|---|---|
+| `comun.py` | Campos por tipo, perfiles de formato por familia (P4), importes en letras, patrones prohibidos (ID de inventario, pistas de construcción). |
+| `preparar.py` | Registros fuente v2: sujetos por partición (P2/P3), importes y números sin relación con el ID (P5), trámites (P13), ambigüedad (P10) y adversariales (P11). |
+| `generar.py` | DOCX por familia (P6/P8/P9/P12), render con LibreOffice, simulación de capturas, localizadores por etiqueta y valor, manifiesto e inventario. |
+| `consultas.py` | 30 preguntas sin IDs (P14), escritas sobre lo ya construido. |
+| `validar.py` | Comprobaciones estructurales y de archivos, incluidas las de P16. Nunca regenera. |
+| `cuadernos.py` | Cuadernos de revisión de documentos y preguntas. |
+
+Las familias BASE_A/BASE_B son compartidas; MED_C/MED_D se usan exclusivamente en medición, y CTR-ARG_A solo en E90-M-CTR-03. Los tres adversariales pertenecen a los 50 de medición. PD-07 permanece separado.
 
 ## Dependencias
 
-Usar un entorno exclusivo y `pip install -r herramientas/corpus_e90/requisitos.txt`. No instalar estas dependencias en el backend ni en el paquete Lambda. Las versiones fijadas se corresponden con el runtime utilizado; pypdf ya es una dependencia del proyecto y se fija aquí para este entorno independiente.
+Usar un entorno exclusivo y `pip install -r herramientas/corpus_e90/requisitos.txt`. No instalar estas dependencias en el backend ni en el paquete Lambda.
 
-Generación: LibreOffice headless y pdftoppm locales. Pillow realiza las degradaciones; ImageMagick se registra como herramienta disponible, pero no intervino en la generación. En esta sesión se usó LibreOfficeDev 26.8.0.0.alpha0 del runtime incluido, pdftoppm 26.05.0 e ImageMagick 6.9.12-98. Las versiones completas están en el manifiesto. Por ser un renderer alpha, la revisión visual y la reproducibilidad están acotadas a este entorno; comparar antes de cambiarlo.
+Generación: LibreOffice headless y pdftoppm locales; Pillow hace las degradaciones. La v2 se generó con **LibreOffice 24.2.7.2** y **pdftoppm 24.02.0** (la v1 había usado LibreOfficeDev 26.8 alpha); las versiones completas están en el manifiesto. No se promete igualdad binaria con otro renderer: inspeccionar antes de cambiar el entorno.
 
 ## Comandos
 
-Desde la raíz del repositorio:
+Desde la raíz del repositorio, sobre los artefactos existentes (no regeneran):
 
 ```bash
-# Sobre los artefactos existentes: no regenera ni instala herramientas.
 python -m herramientas.corpus_e90.validar
 python herramientas/validar_inventario_e90.py --inventario oraculos/e90/inventario_candidato.csv
 python -m pytest -q tests
 ```
 
-El primer comando requiere pypdf para inspeccionar PDF. `--solo-estructura` comprueba únicamente relaciones y metadatos; no sustituye la verificación de archivos/localizadores.
+`--solo-estructura` comprueba únicamente relaciones y metadatos; `--evidencia <ruta>` guarda el resultado.
 
-Para una raíz NUEVA de revisión, con una copia del plan, las plantillas aprobadas y las herramientas:
+Los comandos de construcción se niegan a sobrescribir registros, archivos o manifiestos existentes. Una revisión nueva se construye en una raíz limpia que contenga `docs/evaluacion/plan_diseno_corpus_e90.csv`, `docs/evaluacion/corpus_e90/fuentes/` y `herramientas/corpus_e90/`:
 
 ```bash
 python -m herramientas.corpus_e90.preparar --raiz /ruta/nueva_revision
-python -m herramientas.corpus_e90.generar --raiz /ruta/nueva_revision --libreoffice /ruta/soffice --pdftoppm /ruta/pdftoppm
+python -m herramientas.corpus_e90.generar --raiz /ruta/nueva_revision --libreoffice soffice --pdftoppm pdftoppm
 python -m herramientas.corpus_e90.consultas --raiz /ruta/nueva_revision
 python -m herramientas.corpus_e90.validar --raiz /ruta/nueva_revision
 ```
 
-`preparar` crea candidatos por defecto: para reemplazar CUIT se editan en la raíz nueva tanto su registro como los registros fuente antes de `generar`. No copiar un inventario o unas referencias del resultado anterior como si correspondieran a los archivos nuevos. Los comandos se niegan a sobrescribir registros o generaciones existentes. Se conserva la revisión anterior. La raíz nueva debe contener `docs/evaluacion/plan_diseno_corpus_e90.csv`, `herramientas/corpus_e90/plantillas/contratos.json` y los dos archivos de procedencia `docs/evaluacion/corpus_e90/fuentes/ARG_A_CPAU_verificacion.json` y `ARG_A_CPAU_avisos.html`; copiar esas referencias y herramientas, sin claves ni datos operativos. Para una revisión posterior con cambios autorizados en otros casos, actualizar su evidencia de revisión en vez de atribuirle la preservación de 64 archivos que se verifica específicamente en esta incorporación ARG_A.
+Después de revisar el resultado, se reemplazan en el repositorio `corpus/e90/{registros_fuente.json,medicion,ajuste,fuentes_docx,pdf_referencia}` y los archivos de `oraculos/e90/`, conservando antes el manifiesto anterior (como en `docs/evaluacion/corpus_e90/v1/`). Así se instaló la v2. Luego, con el commit de los datos:
 
-Una generación interrumpida deja archivos parciales y no acredita el conjunto completo: utilizar otra raíz limpia de revisión. El validador informa entradas incompletas; no las rellena ni cuenta auxiliares para llegar a 65.
+```bash
+python -m herramientas.corpus_e90.cuadernos --commit <commit_de_los_datos>
+```
+
+Si cambia una razón social o un CUIT por la verificación manual, se edita `preparar.py` y se regenera todo: no se corrigen archivos ni oráculos a mano. Una generación interrumpida deja archivos parciales y no acredita el conjunto: usar otra raíz limpia.
 
 ## CI e integración
 
-La CI existente ejecuta `python -m pytest -q tests`, incluyendo las comprobaciones del corpus ya construido. No se modifica el workflow. Las pruebas estructurales y de archivos corren con biblioteca estándar y pypdf, que el backend ya instala. Las pruebas de creación/render solo se habilitan localmente con `E90_PRUEBAS_RENDER=1` y dependen de python-docx, Pillow y LibreOffice: se omiten con motivo explícito en la CI. Una omisión no se registra como prueba aprobada.
+La CI ejecuta `python -m pytest -q tests`, incluidas las comprobaciones del corpus ya construido. No se modifica el workflow. Las pruebas estructurales y de archivos usan biblioteca estándar y pypdf. Las pruebas de creación/render solo se habilitan localmente y se omiten con motivo explícito en la CI:
 
 ```bash
-E90_PRUEBAS_RENDER=1 E90_LIBREOFFICE=/ruta/soffice python -m unittest discover -s tests/corpus_e90 -q
+E90_PRUEBAS_RENDER=1 E90_LIBREOFFICE=soffice python -m pytest -q tests/corpus_e90
 ```
 
-Los mensajes del validador contienen códigos e identificadores, sin preguntas, valores esperados ni fragmentos. El resultado `sin_inconsistencias_estructurales` no significa aceptación académica, calidad de IA ni corpus congelado.
+Los mensajes del validador contienen códigos e identificadores, sin preguntas, valores ni fragmentos. `sin_inconsistencias_estructurales` no significa aceptación académica, calidad de IA ni corpus congelado.
 
-## Revisión independiente y pendientes
+## Pendientes antes de congelar
 
-1. Contrastar inventario y plan; distinguir entradas finales de sus auxiliares.
-2. Revisar procedencia, avisos de licencia, traducciones y cambios de las cinco fuentes contractuales en `plantillas/contratos.json`.
-3. Inspeccionar PDFs/DOCX y cotejar el contenido de cada registro, no solo los hashes. Las imágenes degradadas son simulaciones digitales, no capturas físicas.
-4. Revisar las referencias de campos y las 30 consultas; sus textos y fuentes siguen candidatos. La clasificación de casos ambiguos y la dificultad de la muestra requieren revisión de autores.
-5. Conservar el reporte de consulta manual ARCA del 22/10/2026 (doce resultados «No existe») antes de la generación definitiva. Una preparación desde cero crea registros pendientes por defecto; si conserva los mismos números, trasladar la evidencia existente sin simular otra consulta. Si cambia un identificador, realizar su control manual y regenerar en una revisión nueva, verificando hashes/localizadores otra vez.
-6. Conservar las revisiones de ambos autores; no marcar los oráculos como revisados desde una prueba automatizada. No medir ni congelar en este incremento.
+1. Verificación manual de las 18 razones sociales y de los 6 CUIT de ajuste (`docs/evaluacion/corpus_e90/Verificaciones_Pendientes_V2.md`).
+2. Revisión técnica de contraste de la v2 por el agente que no la construyó (P0).
+3. Revisión de ambos autores con los cuadernos; no marcar oráculos como revisados desde una prueba automatizada.
 
-La demo principal sigue siendo PD-07, contrato de mantenimiento y sus inconsistencias fijadas. Las familias de E90 no reemplazan esa historia ni su oráculo. Las diferencias provisionales DIF-E90-* se renumerarán al integrar.
-
-ARG_A conserva licencia CC BY-NC-SA 4.0 sobre su adaptación y extractos; uso no comercial, atribución y CompartirIgual. Ver `corpus/e90/ATRIBUCIONES.md` y `docs/evaluacion/corpus_e90/Incorporacion_ARG_A_CPAU.md`. Los otros 64 archivos de entrada y sus 128 auxiliares conservan sus hashes; la evidencia está en `Revision_ARG_A.json`. La reconstrucción desde una raíz nueva prepara también los datos particulares de ARG_A antes de generar.
+ARG_A conserva licencia CC BY-NC-SA 4.0 sobre su adaptación y extractos; ver `corpus/e90/ATRIBUCIONES.md`. Las diferencias provisionales DIF-E90-* se renumerarán al integrar.
