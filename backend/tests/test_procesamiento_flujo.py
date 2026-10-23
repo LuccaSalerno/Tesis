@@ -63,7 +63,8 @@ def test_rf_08_rf_10_rf_11_docx_produce_sugerencias_con_procedencia(entorno: Any
     respuesta = ctx.cliente.get(
         f"/tramites/{tramite['id']}/archivos/{archivo['id']}/sugerencias", headers=ctx.encabezados
     ).json()
-    assert respuesta["trabajo"] == {"estado": "completado", "intento": 1}
+    assert respuesta["trabajo"]["estado"] == "completado" and respuesta["trabajo"]["intento"] == 1
+    assert respuesta["trabajo"]["actualizado_en"] >= respuesta["trabajo"]["creado_en"]  # OP-02
     assert respuesta["clasificacion"]["valor"] == "contrato"
     assert respuesta["clasificacion"]["motivo_sin_fuente"] == "no_aplica"
     campos = {c["campo"]: c for c in respuesta["campos"]}
@@ -214,7 +215,7 @@ def test_dt_proc_fallo_tecnico_no_modifica_el_tramite(entorno: Any) -> None:
     (listado,) = ctx.cliente.get(
         f"/tramites/{tramite['id']}/archivos", headers=ctx.encabezados
     ).json()
-    assert listado["trabajo"] == {"estado": "fallido", "intento": 1}
+    assert listado["trabajo"]["estado"] == "fallido" and listado["trabajo"]["intento"] == 1
     assert listado["estado_incorporacion"] == "pendiente"
     assert (
         ctx.cliente.get(f"/tramites/{tramite['id']}", headers=ctx.encabezados).json()["estado"]

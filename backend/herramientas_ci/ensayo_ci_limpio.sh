@@ -35,7 +35,7 @@ docker run --rm --network "$red" -v "$copia/repo":/repo -w /repo/backend \
   -e ATLAS_BD_HOST="$base" -e ATLAS_BD_PUERTO=5432 -e ATLAS_BD_NOMBRE=atlas_tests \
   -e ATLAS_BD_USUARIO=atlas_tests_app -e ATLAS_BD_USUARIO_MIGRACION=atlas_tests_migracion \
   -e ATLAS_PRUEBAS_PG_SUPERUSUARIO="host=$base user=postgres" \
-  python:3.12-slim bash -euc '
+  python:3.12-slim bash -euo pipefail -c '
     apt-get update -qq >/dev/null 2>&1 && apt-get install -y -qq postgresql-client >/dev/null 2>&1
     until pg_isready -q; do sleep 1; done
     python -m pip install -q --root-user-action=ignore --upgrade pip >/dev/null 2>&1
