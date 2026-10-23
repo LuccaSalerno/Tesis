@@ -61,7 +61,7 @@ export function useArchivos(t: number) {
     queryFn: () => exigir(api.GET("/tramites/{tramite_id}/archivos", ruta(t))),
     refetchInterval: (consulta) =>
       consulta.state.data?.some(
-        (a) => a.trabajo && (a.trabajo.estado === "pendiente" || a.trabajo.estado === "en_ejecucion"),
+        (a) => a.trabajo && ["pendiente", "en_espera", "en_ejecucion"].includes(a.trabajo.estado),
       )
         ? 4000
         : false,
@@ -247,6 +247,20 @@ export function useIncorporar(t: number) {
         }),
       ),
     onSuccess: () => invalidar(["tramite", t], [...claves.tramites]),
+  });
+}
+
+/** Intento nuevo tras una falla técnica, por decisión del responsable (RNF-06, RC-P08.4). */
+export function useReintentar(t: number) {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (archivo: number) =>
+      exigir(
+        api.POST("/tramites/{tramite_id}/archivos/{archivo_id}/reintento", {
+          params: { path: { tramite_id: t, archivo_id: archivo } },
+        }),
+      ),
+    onSuccess: () => invalidar([...claves.archivos(t)]),
   });
 }
 

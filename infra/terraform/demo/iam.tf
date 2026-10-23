@@ -13,8 +13,8 @@ data "aws_iam_policy_document" "confianza_lambda" {
 
 locals {
   bucket_arn = local.p.bucket_documentos_arn
-  roles      = toset(["api", "procesamiento", "persistencia", "operaciones"])
-  en_vpc     = toset(["api", "persistencia", "operaciones"])
+  roles      = toset(["api", "procesamiento", "persistencia", "operaciones", "reconciliador"])
+  en_vpc     = toset(["api", "persistencia", "operaciones", "reconciliador"])
 
   bedrock_generativo = concat(
     ["arn:aws:bedrock:${var.region}:${local.cuenta}:inference-profile/${var.perfil_generativo}"],
@@ -139,12 +139,37 @@ data "aws_iam_policy_document" "operaciones" {
   }
 }
 
+# --- Reconciliador (en la VPC): estado real de las ejecuciones e inicio idempotente -------
+
+data "aws_iam_policy_document" "reconciliador" {
+  statement {
+    sid       = "IniciarEjecucion" # nombre determinista por intento: nunca una segunda
+    actions   = ["states:StartExecution"]
+    resources = [local.arn_maquina]
+  }
+  statement {
+    sid       = "ConsultarEjecucion"
+    actions   = ["states:DescribeExecution"]
+    resources = ["${replace(local.arn_maquina, ":stateMachine:", ":execution:")}:*"]
+  }
+  statement {
+    sid       = "LeerMantenimiento" # no actúa fuera de `active` (RC-P08.12)
+    actions   = ["s3:GetObject"]
+    resources = ["${local.bucket_arn}/control/mantenimiento.json"]
+  }
+  statement {
+    actions   = ["rds-db:connect"]
+    resources = [local.usuario_proxy_app]
+  }
+}
+
 locals {
   politicas = {
     api           = data.aws_iam_policy_document.api.json
     procesamiento = data.aws_iam_policy_document.procesamiento.json
     persistencia  = data.aws_iam_policy_document.persistencia.json
     operaciones   = data.aws_iam_policy_document.operaciones.json
+    reconciliador = data.aws_iam_policy_document.reconciliador.json
   }
 }
 

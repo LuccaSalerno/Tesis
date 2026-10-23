@@ -105,6 +105,14 @@ Limites = Annotated[LimitesCarga, Depends(obtener_limites)]
 VigenciaPendiente = Annotated[int, Depends(obtener_vigencia_pendiente)]
 
 
+def obtener_limite_concurrencia(request: Request) -> int:
+    limite: int = request.app.state.limite_concurrencia
+    return limite
+
+
+LimiteConcurrencia = Annotated[int, Depends(obtener_limite_concurrencia)]
+
+
 class NuevoTramite(BaseModel):
     titulo: Annotated[str, Field(min_length=1, max_length=200, pattern=r"\S")]
     descripcion: str | None = Field(default=None, max_length=5000)
@@ -317,6 +325,35 @@ def autorizar_carga(
 
 
 @enrutador.post(
+    "/{tramite_id}/archivos/{archivo_id}/reintento",
+    response_model=ArchivoRespuesta,
+    responses={409: {"description": "El procesamiento no está fallido"}},
+)
+def reintentar_procesamiento(
+    tramite_id: int,
+    archivo_id: int,
+    usuario: Responsable,
+    sesion: Sesion,
+    orquestador: Orquestador,
+    vigencia: VigenciaPendiente,
+    limite_concurrencia: LimiteConcurrencia,
+    solicitud_id: SolicitudId,
+) -> ArchivoRespuesta:
+    """Intento nuevo tras un fallo definitivo (RNF-06, RC-P08.4; DO-2026-10-23-REC P6)."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
+    archivo, trabajo = cargas.reintentar(
+        sesion,
+        orquestador,
+        tramite=tramite,
+        archivo_id=archivo_id,
+        usuario_id=usuario.id,
+        limite_concurrencia=limite_concurrencia,
+        solicitud_id=solicitud_id,
+    )
+    return ArchivoRespuesta.desde(archivo, trabajo, vigencia)
+
+
+@enrutador.post(
     "/{tramite_id}/cargas/{carga_id}/confirmacion",
     response_model=ArchivoRespuesta,
     status_code=status.HTTP_201_CREATED,
@@ -331,6 +368,7 @@ def confirmar_carga(
     orquestador: Orquestador,
     limites: Limites,
     vigencia: VigenciaPendiente,
+    limite_concurrencia: LimiteConcurrencia,
     solicitud_id: SolicitudId,
     response: Response,
 ) -> ArchivoRespuesta:
@@ -344,6 +382,7 @@ def confirmar_carga(
         autorizacion_id=carga_id,
         usuario_id=usuario.id,
         vigencia_pendiente_s=vigencia,
+        limite_concurrencia=limite_concurrencia,
         solicitud_id=solicitud_id,
     )
     if not confirmada.nueva:

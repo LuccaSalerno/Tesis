@@ -638,6 +638,23 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 13. **P13 — Evidencia:** `seguridad.jsonl` con actor, operación, esperado, obtenido y cumple por caso, más el informe; sin cuerpos de respuesta.
 14. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-REC — Reconciliador, «En espera», intento manual y pruebas de §6.3.2
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** RC-P08 (1 a 13), RNF-05, RNF-06, §5.3.1, §5.4.4, §6.3.2 (AS-01 a AS-04), RC-P10.
+
+1. **P1 — Admisión:** estado `en_espera` (migración 0011). Al confirmar una carga, un *lock* transaccional (`pg_advisory_xact_lock`) cuenta los trabajos en curso: con cupo, `pendiente` e inicio; sin cupo, `en_espera`. Límite por despliegue: 10 en demo, 5 en pruebas.
+2. **P2 — En curso:** `pendiente` y `en_ejecucion`; el cupo se libera al completar o fallar.
+3. **P3 — Reconciliador:** quinta Lambda en la VPC, cada 5 minutos: (a) `pendiente` con más de 2 minutos: busca la ejecución por su nombre determinista y la reconoce o la inicia, sin crear una segunda; (b) admite `en_espera` por antigüedad mientras haya cupo; (c) marca fallido un `en_ejecucion` cuya ejecución terminó (FAILED, TIMED_OUT, ABORTED) o que supera 30 minutos. Solo identificadores en los registros.
+4. **P4 — Programación:** EventBridge Scheduler `rate(5 minutes)` en la raíz `demo`, con rol mínimo y una variable que lo apaga.
+5. **P5 — Mantenimiento:** el reconciliador no actúa fuera de `active`; al volver, recupera los pendientes en orden.
+6. **P6 — Intento manual:** `POST /tramites/{t}/archivos/{a}/reintento`, solo el responsable y solo con el trabajo fallido; incrementa el intento, pasa por la admisión y se audita (RNF-06, RC-P08.4).
+7. **P7 — Interfaz:** «En espera de capacidad», sin presentarlo como error, y «Reintentar procesamiento» en los trabajos fallidos, solo para el responsable.
+8. **P8 — Nivel A (CI):** AS-01 a AS-04 con fallos inyectados y la admisión con 12 confirmaciones simultáneas y límite 10.
+9. **P9 — Nivel B (AWS):** `python -m atlas.evaluacion.confiabilidad` en una sesión de ensayo: espera y admisión, fallo permanente e intento manual, eventos técnicos. El inicio fallido se cubre en el nivel A.
+10. **P10 — Límites:** `TimeoutSeconds` 2400 como tope duro de la máquina; el reconciliador aplica los 30 minutos de RC-P08.2.
+11. **P11 — Evidencia:** `confiabilidad.jsonl` e informe en la campaña, sin contenido.
+12. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

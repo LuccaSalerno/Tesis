@@ -53,7 +53,7 @@ from atlas.persistencia.modelos import (
     VersionDocumental,
 )
 from atlas.registro import registrar_evento
-from atlas.servicios import ciclos, tramites
+from atlas.servicios import admision, ciclos, tramites
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, NoEncontrado
 
@@ -137,6 +137,7 @@ def confirmar(
     autorizacion_id: int,
     usuario_id: int,
     vigencia_pendiente_s: int,
+    limite_concurrencia: int,
     solicitud_id: uuid.UUID | None = None,
 ) -> CargaConfirmada:
     """Verifica el objeto, registra archivo y trabajo, confirma la transacción e inicia
@@ -158,7 +159,7 @@ def confirmar(
         trabajo = _trabajo_de(sesion, archivo.id)
         sesion.commit()
         if trabajo.estado == EstadoTrabajo.PENDIENTE:
-            _iniciar_procesamiento(sesion, orquestador, trabajo)
+            iniciar_procesamiento(sesion, orquestador, trabajo)
         return CargaConfirmada(archivo=archivo, trabajo=trabajo, nueva=False)
 
     tramites.exigir_no_terminal(tramite)
@@ -190,7 +191,8 @@ def confirmar(
     trabajo = TrabajoProcesamiento(archivo_id=archivo.id, intento=1)
     sesion.add(trabajo)
     autorizacion.archivo_id = archivo.id
-    sesion.flush()
+    # RC-P08.8: sin cupo queda «en espera»; el reconciliador lo admite después.
+    admision.admitir(sesion, trabajo, limite_concurrencia)
     registrar_evento_auditoria(
         sesion,
         accion=AccionAuditoria.CARGA_CONFIRMADA,
@@ -201,7 +203,8 @@ def confirmar(
         solicitud_id=solicitud_id,
     )
     sesion.commit()  # §5.3.1: archivo y trabajo quedan registrados antes de iniciar
-    _iniciar_procesamiento(sesion, orquestador, trabajo)
+    if trabajo.estado == EstadoTrabajo.PENDIENTE:
+        iniciar_procesamiento(sesion, orquestador, trabajo)
     sesion.refresh(archivo)
     return CargaConfirmada(archivo=archivo, trabajo=trabajo, nueva=True)
 
@@ -215,7 +218,7 @@ def _trabajo_de(sesion: Session, archivo_id: int) -> TrabajoProcesamiento:
     return trabajo
 
 
-def _iniciar_procesamiento(
+def iniciar_procesamiento(
     sesion: Session, orquestador: OrquestadorProcesamiento, trabajo: TrabajoProcesamiento
 ) -> None:
     try:
@@ -234,6 +237,53 @@ def _iniciar_procesamiento(
     trabajo.ejecucion_iniciada_en = datetime.now(UTC)
     sesion.commit()
     sesion.refresh(trabajo)
+
+
+def reintentar(
+    sesion: Session,
+    orquestador: OrquestadorProcesamiento,
+    *,
+    tramite: Tramite,
+    archivo_id: int,
+    usuario_id: int,
+    limite_concurrencia: int,
+    solicitud_id: uuid.UUID | None = None,
+) -> tuple[Archivo, TrabajoProcesamiento]:
+    """Intento nuevo tras un fallo definitivo, por decisión explícita del responsable
+    (RNF-06, RC-P08.4). Pasa por la admisión: puede quedar en espera de cupo."""
+    tramites.exigir_no_terminal(tramite)
+    archivo = sesion.get(Archivo, archivo_id)
+    if archivo is None or archivo.tramite_id != tramite.id:
+        raise NoEncontrado("El archivo no existe")
+    trabajo = sesion.scalar(
+        select(TrabajoProcesamiento)
+        .where(TrabajoProcesamiento.archivo_id == archivo.id)
+        .with_for_update()
+    )
+    if trabajo is None or trabajo.estado != EstadoTrabajo.FALLIDO:
+        raise Conflicto("Solo se reintenta un procesamiento fallido")
+    anterior = trabajo.intento
+    trabajo.intento = anterior + 1  # el intento anterior queda descartado (RC-P08.6)
+    trabajo.codigo_error = None
+    trabajo.ejecucion_iniciada_en = None
+    admitido = admision.admitir(sesion, trabajo, limite_concurrencia)
+    registrar_evento_auditoria(
+        sesion,
+        accion=AccionAuditoria.PROCESAMIENTO_REINTENTADO,
+        entidad_tipo="archivo",
+        entidad_id=archivo.id,
+        actor_id=usuario_id,
+        tramite_id=tramite.id,
+        solicitud_id=solicitud_id,
+    )
+    registrar_evento(
+        _registrador, "procesamiento_reintentado", trabajo_id=trabajo.id, intento=anterior + 1
+    )
+    sesion.commit()
+    if admitido == EstadoTrabajo.PENDIENTE:
+        iniciar_procesamiento(sesion, orquestador, trabajo)
+    sesion.refresh(archivo)
+    return archivo, trabajo
 
 
 def listar_archivos(

@@ -245,6 +245,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/tramites/{tramite_id}/archivos/{archivo_id}/reintento": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reintentar Procesamiento
+         * @description Intento nuevo tras un fallo definitivo (RNF-06, RC-P08.4; DO-2026-10-23-REC P6).
+         */
+        post: operations["reintentar_procesamiento_tramites__tramite_id__archivos__archivo_id__reintento_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tramites/{tramite_id}/archivos/{archivo_id}/sugerencias": {
         parameters: {
             query?: never;
@@ -1082,11 +1102,11 @@ export interface components {
          * EstadoTrabajo
          * @description Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).
          *
-         *     Es independiente del estado funcional del trámite. «En espera» (RC-P08.8)
-         *     llega con el control de admisión y el reconciliador (Etapa 3).
+         *     Es independiente del estado funcional del trámite. «En espera» (RC-P08.8): registrado
+         *     sin cupo de procesamiento; lo admite el reconciliador (DO-2026-10-23-REC).
          * @enum {string}
          */
-        EstadoTrabajo: "pendiente" | "en_ejecucion" | "completado" | "fallido";
+        EstadoTrabajo: "pendiente" | "en_espera" | "en_ejecucion" | "completado" | "fallido";
         /**
          * EstadoTramite
          * @description Los siete estados funcionales del trámite (§3.2.1, Figura 3.5).
@@ -2321,6 +2341,45 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DocumentoRespuesta"];
                 };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reintentar_procesamiento_tramites__tramite_id__archivos__archivo_id__reintento_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+                archivo_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArchivoRespuesta"];
+                };
+            };
+            /** @description El procesamiento no está fallido */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Validation Error */
             422: {

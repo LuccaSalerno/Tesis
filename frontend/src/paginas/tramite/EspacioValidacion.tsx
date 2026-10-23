@@ -9,6 +9,7 @@ import { type FormEvent, useState } from "react";
 import { Link, useParams } from "react-router";
 
 import { useArchivos, useRegistrarValidacion, useValidaciones } from "@/api/consultas";
+import { ReintentarProcesamiento } from "@/componentes/reintento";
 import type { DatoValidacion, MotivoAusencia, TipoDocumental } from "@/api/tipos";
 import { BotonFuente, InsigniaEstado, TextoLocalizador, ValorSugerido, ValorValidado } from "@/componentes/dominio";
 import { VisorDocumento, type Fuente } from "@/componentes/visor";
@@ -218,8 +219,18 @@ export function EspacioValidacion() {
       {trabajo && (trabajo.estado === "pendiente" || trabajo.estado === "en_ejecucion") ? (
         <Aviso tono="info" className="mb-4" titulo="El documento se está procesando">Las sugerencias aparecerán al terminar; podés registrar valores igualmente.</Aviso>
       ) : null}
+      {trabajo?.estado === "en_espera" ? (
+        <Aviso tono="neutro" className="mb-4" titulo="En espera de capacidad de procesamiento">El procesamiento empezará solo cuando haya capacidad; podés registrar valores igualmente.</Aviso>
+      ) : null}
       {trabajo?.estado === "fallido" ? (
-        <Aviso tono="advertencia" className="mb-4" titulo="El procesamiento automático falló">No hay sugerencias: los datos se registran manualmente con su fuente en el documento.</Aviso>
+        <Aviso tono="advertencia" className="mb-4" titulo="El procesamiento automático falló">
+          No hay sugerencias: los datos se registran manualmente con su fuente en el documento.
+          {esResponsable ? (
+            <span className="mt-2 flex flex-wrap gap-2">
+              <ReintentarProcesamiento tramiteId={id} archivoId={datos.version.archivo_id} />
+            </span>
+          ) : null}
+        </Aviso>
       ) : null}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(22rem,1fr)]">
         <div className="h-[calc(100vh-14rem)] min-h-[32rem] rounded-lg border border-borde bg-superficie p-4 lg:sticky lg:top-4">

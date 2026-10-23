@@ -36,6 +36,16 @@ METADATOS_PERMITIDOS: Final = frozenset(
         "versiones_eliminadas",
         "multipartes_abortadas",
         "diferidas",
+        # Reconciliador (DO-2026-10-23-REC): estados técnicos e intentos, sin contenido.
+        "intento",
+        "estado",
+        "estado_ejecucion",
+        "iniciados",
+        "reconocidos",
+        "interrumpidos",
+        "vencidos",
+        "admitidos",
+        "sin_resolver",
     }
 )
 

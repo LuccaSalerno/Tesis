@@ -67,6 +67,9 @@ def configuracion_sin_base(**campos: Any) -> Configuracion:
 
 def cargar_configuracion_tests() -> Configuracion:
     configuracion = Configuracion(_env_file=RAIZ_BACKEND / ".env.tests")  # type: ignore[call-arg]
+    # La base de pruebas es compartida y acumula trabajos: la admisión (RC-P08.5) se prueba
+    # con límites explícitos en test_reconciliador, no con el límite del despliegue.
+    configuracion = configuracion.model_copy(update={"procesamiento_limite_concurrencia": 10_000})
     if configuracion.entorno != "tests" or not configuracion.bd_nombre.endswith("_tests"):
         raise ErrorConfiguracion(
             "Las pruebas de integración solo corren con ATLAS_ENTORNO=tests sobre una base *_tests"

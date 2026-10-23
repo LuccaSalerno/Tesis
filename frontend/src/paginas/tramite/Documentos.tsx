@@ -6,6 +6,7 @@ import { type Etapa, useCargarArchivo } from "@/api/cargas";
 import { useArchivos, useIncorporar } from "@/api/consultas";
 import type { Archivo } from "@/api/tipos";
 import { InsigniaEstado } from "@/componentes/dominio";
+import { ReintentarProcesamiento } from "@/componentes/reintento";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { Entrada } from "@/componentes/ui/campos";
@@ -72,6 +73,7 @@ function Pendiente({ archivo, tramiteId }: { archivo: Archivo; tramiteId: number
         <p className="text-xs text-tenue">Cargado {fechaHora(archivo.cargado_en)} · vence {fechaHora(archivo.vence_en)}</p>
       </div>
       {trabajo ? <InsigniaEstado catalogo={ESTADO_TRABAJO} valor={trabajo.estado} /> : null}
+      {trabajo?.estado === "fallido" ? <ReintentarProcesamiento tramiteId={tramiteId} archivoId={archivo.id} /> : null}
       <label className="sr-only" htmlFor={`nombre-${archivo.id}`}>Nombre del documento</label>
       <Entrada id={`nombre-${archivo.id}`} value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-64" />
       <Boton variante="secundario" disabled={!nombre.trim() || incorporar.isPending} onClick={() => incorporar.mutate({ archivo: archivo.id, nombre: nombre.trim() })}>

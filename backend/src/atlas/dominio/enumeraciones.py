@@ -78,11 +78,12 @@ class ResultadoAuditoria(StrEnum):
 class EstadoTrabajo(StrEnum):
     """Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).
 
-    Es independiente del estado funcional del trámite. «En espera» (RC-P08.8)
-    llega con el control de admisión y el reconciliador (Etapa 3).
+    Es independiente del estado funcional del trámite. «En espera» (RC-P08.8): registrado
+    sin cupo de procesamiento; lo admite el reconciliador (DO-2026-10-23-REC).
     """
 
     PENDIENTE = "pendiente"  # registrado; inicio de la ejecución no confirmado
+    EN_ESPERA = "en_espera"  # registrado; sin cupo de procesamiento todavía
     EN_EJECUCION = "en_ejecucion"
     COMPLETADO = "completado"
     FALLIDO = "fallido"
@@ -213,6 +214,7 @@ class AccionAuditoria(StrEnum):
     TRAMITE_CREADO = "tramite_creado"
     CARGA_CONFIRMADA = "carga_confirmada"
     CARGA_VENCIDA = "carga_vencida"
+    PROCESAMIENTO_REINTENTADO = "procesamiento_reintentado"  # RNF-06, RC-P08.4
     DOCUMENTO_INCORPORADO = "documento_incorporado"
     TRAMITE_VUELVE_A_BORRADOR = "tramite_vuelve_a_borrador"
     CLASIFICACION_CONFIRMADA = "clasificacion_confirmada"

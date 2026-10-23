@@ -58,6 +58,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     )
     aplicacion.state.vigencia_url_carga_s = configuracion_efectiva.carga_vigencia_url_s
     aplicacion.state.vigencia_carga_pendiente_s = configuracion_efectiva.carga_vigencia_pendiente_s
+    aplicacion.state.limite_concurrencia = configuracion_efectiva.procesamiento_limite_concurrencia
     bedrock = crear_cliente(configuracion_efectiva, "bedrock-runtime")
     aplicacion.state.embeddings = EmbeddingsCohereBedrock(
         bedrock, configuracion_efectiva.bedrock_modelo_embeddings

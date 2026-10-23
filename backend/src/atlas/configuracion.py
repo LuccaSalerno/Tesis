@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlparse
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -92,6 +92,9 @@ class Configuracion(BaseSettings):
     procesamiento_max_tokens_clasificacion: int = 256
     procesamiento_max_tokens_extraccion: int = 2048
     procesamiento_caracteres_maximos: int = 400_000
+    # RC-P08.5: trabajos completos simultáneos por despliegue (demo 10; el entorno AWS
+    # `tests` fija 5 con su variable de Terraform).
+    procesamiento_limite_concurrencia: int = Field(default=10, ge=1)
     # Consulta asistida (hito 1.6, DO-2026-10-22-RAG, RC-P07.3).
     bedrock_modelo_embeddings: str = "cohere.embed-multilingual-v3"
     consulta_fragmentos_recuperados: int = 5

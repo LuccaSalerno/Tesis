@@ -195,3 +195,22 @@ class OrquestadorStepFunctions:
             raise ErrorIntegracion("sfn_inicio_rechazado") from error
         except BotoCoreError as error:
             raise ErrorIntegracion("sfn_inicio_incierto") from error
+
+    def estado(self, trabajo_id: int, intento: int) -> str:
+        """Estado real de la ejecución del intento (RC-P08.3): `inexistente`, `RUNNING`,
+        `SUCCEEDED`, `FAILED`, `TIMED_OUT`, `ABORTED` o `PENDING_REDRIVE`."""
+        arn = (
+            self._maquina_arn.replace(":stateMachine:", ":execution:", 1)
+            + ":"
+            + nombre_ejecucion(trabajo_id, intento)
+        )
+        try:
+            respuesta = self._cliente.describe_execution(executionArn=arn)
+        except ClientError as error:
+            if error.response.get("Error", {}).get("Code") == "ExecutionDoesNotExist":
+                return "inexistente"
+            raise ErrorIntegracion("sfn_consulta_fallida") from error
+        except BotoCoreError as error:
+            raise ErrorIntegracion("sfn_consulta_incierta") from error
+        estado: str = respuesta["status"]
+        return estado

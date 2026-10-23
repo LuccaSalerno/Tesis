@@ -85,3 +85,15 @@ variable "retencion_registros_dias" {
   type    = number
   default = 7
 }
+
+variable "limite_concurrencia" {
+  description = "Trabajos de procesamiento simultáneos (RC-P08.5: 10 en demo, 5 en tests)"
+  type        = number
+  default     = 10
+}
+
+variable "reconciliador_habilitado" {
+  description = "Programación del reconciliador cada 5 minutos (RC-P08.3); false la pausa"
+  type        = bool
+  default     = true
+}

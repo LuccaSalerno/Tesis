@@ -48,6 +48,8 @@ export const ESTADO_CICLO: Catalogo<EstadoCiclo> = {
 
 export const ESTADO_TRABAJO: Catalogo<EstadoTrabajo> = {
   pendiente: { rotulo: "En cola", tono: "neutro" },
+  // RC-P08.13: la espera por capacidad no es un error.
+  en_espera: { rotulo: "En espera de capacidad", tono: "neutro" },
   en_ejecucion: { rotulo: "Procesando", tono: "info" },
   completado: { rotulo: "Procesado", tono: "exito" },
   fallido: { rotulo: "Falla técnica", tono: "peligro" },

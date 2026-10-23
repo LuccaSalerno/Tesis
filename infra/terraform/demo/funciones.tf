@@ -6,19 +6,20 @@ data "http" "jwks" {
 
 locals {
   comun = {
-    ATLAS_ENTORNO                   = local.p.entorno
-    ATLAS_NIVEL_REGISTRO            = "INFO"
-    ATLAS_AWS_REGION                = var.region
-    ATLAS_BD_HOST                   = local.r.proxy_direccion
-    ATLAS_BD_NOMBRE                 = var.base_datos
-    ATLAS_BD_USUARIO                = var.usuario_bd_aplicacion
-    ATLAS_BD_AUTENTICACION          = "iam"
-    ATLAS_BD_CA_CERTIFICADOS        = "/var/task/certificados/ca-bd.pem" # RDS + Amazon Root CA (DIF-96)
-    ATLAS_S3_BUCKET_DOCUMENTOS      = local.p.bucket_documentos
-    ATLAS_MANTENIMIENTO_FUENTE      = "s3"
-    ATLAS_BEDROCK_PERFIL_GENERATIVO = var.perfil_generativo
-    ATLAS_BEDROCK_MODELO_EMBEDDINGS = var.modelo_embeddings
-    ATLAS_VERSION_CODIGO            = var.version_codigo
+    ATLAS_ENTORNO                           = local.p.entorno
+    ATLAS_NIVEL_REGISTRO                    = "INFO"
+    ATLAS_AWS_REGION                        = var.region
+    ATLAS_BD_HOST                           = local.r.proxy_direccion
+    ATLAS_BD_NOMBRE                         = var.base_datos
+    ATLAS_BD_USUARIO                        = var.usuario_bd_aplicacion
+    ATLAS_BD_AUTENTICACION                  = "iam"
+    ATLAS_BD_CA_CERTIFICADOS                = "/var/task/certificados/ca-bd.pem" # RDS + Amazon Root CA (DIF-96)
+    ATLAS_S3_BUCKET_DOCUMENTOS              = local.p.bucket_documentos
+    ATLAS_MANTENIMIENTO_FUENTE              = "s3"
+    ATLAS_BEDROCK_PERFIL_GENERATIVO         = var.perfil_generativo
+    ATLAS_BEDROCK_MODELO_EMBEDDINGS         = var.modelo_embeddings
+    ATLAS_VERSION_CODIGO                    = var.version_codigo
+    ATLAS_PROCESAMIENTO_LIMITE_CONCURRENCIA = tostring(var.limite_concurrencia)
     # crear_cliente exige el bucket y la máquina en toda función que use AWS (validar_servicios_aws).
     ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN = local.arn_maquina
   }
@@ -47,6 +48,13 @@ locals {
       memoria   = 512
       tiempo    = 60
       sg        = local.p.sg_lambda_aplicacion
+      entorno   = local.comun
+    }
+    reconciliador = {
+      manejador = "atlas.operacion.lambda_reconciliador.manejar"
+      memoria   = 512
+      tiempo    = 120
+      sg        = local.p.sg_lambda_aplicacion # proxy, endpoint de Step Functions y S3
       entorno   = local.comun
     }
     operaciones = {
