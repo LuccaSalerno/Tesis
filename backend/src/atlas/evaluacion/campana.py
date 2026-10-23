@@ -69,17 +69,24 @@ def huellas_configuracion() -> dict[str, str]:
 
 
 def _commit(raiz: Path) -> dict[str, Any]:
-    def git(*args: str) -> str:
-        return subprocess.run(  # noqa: S603
-            ["git", "-C", str(raiz), *args],  # noqa: S607
-            capture_output=True,
-            text=True,
-            check=False,
-        ).stdout.strip()
+    """Commit del repositorio y si hay cambios sin registrar; sin git, ambos desconocidos."""
 
+    def git(*args: str) -> str | None:
+        try:
+            resultado = subprocess.run(  # noqa: S603
+                ["git", "-C", str(raiz), *args],  # noqa: S607
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        except FileNotFoundError:
+            return None
+        return resultado.stdout.strip() if resultado.returncode == 0 else None
+
+    estado = git("status", "--porcelain")
     return {
         "commit": git("rev-parse", "HEAD"),
-        "cambios_sin_commit": bool(git("status", "--porcelain")),
+        "cambios_sin_commit": None if estado is None else bool(estado),
     }
 
 
@@ -103,8 +110,9 @@ def iniciar(
     documentos = seleccionar(oraculos, modo)  # compuerta P4
     consultas = consultas_de(oraculos, modo)
     origen = _commit(raiz)
-    if modo is Modo.OFICIAL and origen["cambios_sin_commit"]:
-        raise ErrorCampana("cambios_sin_commit")
+    # Una campaña oficial se repite desde un commit identificado y sin cambios (RC-P07.7).
+    if modo is Modo.OFICIAL and (not origen["commit"] or origen["cambios_sin_commit"] is not False):
+        raise ErrorCampana("commit_no_identificado_o_con_cambios")
     manifiesto = {
         "campana": identificador,
         "modo": modo.value,

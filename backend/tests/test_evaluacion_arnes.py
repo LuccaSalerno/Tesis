@@ -54,8 +54,12 @@ class ModeloDocumentos:
 
 
 @pytest.fixture
-def raiz(tmp_path: Path) -> Path:
+def raiz(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     fijo.construir(tmp_path, congelado=True)
+    # El commit se toma de git; aquí se fija para no depender del entorno de la prueba.
+    monkeypatch.setattr(
+        cmp, "_commit", lambda _: {"commit": "abc1234", "cambios_sin_commit": False}
+    )
     return tmp_path
 
 
@@ -677,3 +681,43 @@ def test_p16_cli_valida_pares_y_elige_adaptadores(
     campana, _ = cmp.abrir(raiz / "campanas", "c6", raiz)
     fuente = principal._fuente(campana, con_servicios=True)
     assert fuente._analizador is not None and fuente._almacen is not None
+
+
+def test_rc_p07_7_oficial_exige_commit_identificado(
+    raiz: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def iniciar(identificador: str) -> None:
+        cmp.iniciar(
+            raiz / "c",
+            identificador=identificador,
+            modo=Modo.OFICIAL,
+            generativos={"h": "h"},
+            embeddings={"e": "e"},
+            repeticiones=1,
+            region="r",
+            bucket=None,
+            raiz=raiz,
+        )
+
+    monkeypatch.setattr(cmp, "_commit", lambda _: {"commit": "abc", "cambios_sin_commit": True})
+    with pytest.raises(cmp.ErrorCampana, match="commit_no_identificado"):
+        iniciar("x1")
+    monkeypatch.setattr(cmp, "_commit", lambda _: {"commit": None, "cambios_sin_commit": None})
+    with pytest.raises(cmp.ErrorCampana, match="commit_no_identificado"):
+        iniciar("x2")
+
+
+def test_rc_p07_7_commit_sin_git_o_fuera_del_repositorio(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import subprocess
+
+    from atlas.evaluacion.campana import _commit
+
+    assert _commit(tmp_path) == {"commit": None, "cambios_sin_commit": None}  # no es un repositorio
+
+    def sin_git(*_: Any, **__: Any) -> Any:
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(subprocess, "run", sin_git)
+    assert _commit(tmp_path) == {"commit": None, "cambios_sin_commit": None}
