@@ -1,6 +1,6 @@
 # Cuaderno de revisión de las 30 preguntas RAG E90
 
-Revisión candidata **e90-candidato-v2** (DO-2026-10-22-CORPUS-REVISION), datos del commit `2082a6e`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
+Revisión candidata **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION), datos del commit `5388569`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
 
 Aquí se revisan preguntas y referencias **antes de ejecutar modelos**. Las evaluaciones de respuestas de IA (IA-M06) se completarán después de ejecutar. Para cada pregunta: leer el contexto autorizado, intentar responder desde los documentos y cotejar las afirmaciones esperadas. Aceptar equivalencia semántica conforme a RC-P06.2; las afirmaciones se limitan a lo preguntado.
 
@@ -260,6 +260,7 @@ Categoría: **condiciones** · Clase: **respondible**.
 **Fragmentos citados:**
 
 - `E90-M-CTR-06-CLAUSULA-7` — [E90-M-CTR-06](../../../corpus/e90/medicion/doc-de08cb56.pdf); PDF, página 8. Texto: La relación tendrá la duración indicada por sus condiciones particulares. Una parte podrá dar por terminado el acuerdo ante un incumplimiento material no subsanado, una imposibilidad grave de continuidad u otra causal pa
+- `E90-M-CTR-06-ORIGEN-7` — [E90-M-CTR-06](../../../corpus/e90/medicion/doc-de08cb56.pdf); PDF, página 8. Texto: Term & TerminationTerm. This Agreement will start on the Effective Date and continue until 12 months have elapsed since the end of the latest SOW Term end date.Termination.Either party may terminate this Agreement or an 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
@@ -285,6 +286,7 @@ Categoría: **condiciones** · Clase: **respondible**.
 **Fragmentos citados:**
 
 - `E90-M-CTR-08-CLAUSULA-7` — [E90-M-CTR-08](../../../corpus/e90/medicion/doc-ef93a9e2.pdf); PDF, página 8. Texto: Un incumplimiento notificable deberá comunicarse y, cuando se solicite, se presentará un plan de rectificación con las acciones y plazos propuestos. El comprador podrá aceptarlo o rechazarlo con razones. Ante un rechazo,
+- `E90-M-CTR-08-ORIGEN-7` — [E90-M-CTR-08](../../../corpus/e90/medicion/doc-ef93a9e2.pdf); PDF, página 8. Texto: If there is a Notifiable Default, the Supplier must notify the Buyer within three (3) Working Days of the Supplier becoming aware of the Notifiable Default and the Buyer may request that the Supplier provide a Rectificat
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
@@ -376,12 +378,12 @@ Categoría: **condiciones** · Clase: **respondible**.
 **Afirmaciones esperadas:**
 
 - La oferta es válida por 30 días corridos.
-- La forma de pago es pago contra entrega del informe final.
+- La forma de pago es pago a 14 días desde la entrega.
 
 **Fragmentos citados:**
 
 - `E90-M-PRE-03-COND-validez` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Validez de la oferta: 30 días corridos.
-- `E90-M-PRE-03-COND-forma_pago` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Forma de pago: pago contra entrega del informe final.
+- `E90-M-PRE-03-COND-forma_pago` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Forma de pago: pago a 14 días desde la entrega.
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.

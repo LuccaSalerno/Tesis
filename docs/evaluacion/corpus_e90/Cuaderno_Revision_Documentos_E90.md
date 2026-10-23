@@ -1,6 +1,6 @@
 # Cuaderno de revisión de los 65 documentos E90
 
-Revisión candidata **e90-candidato-v2** (DO-2026-10-22-CORPUS-REVISION), datos del commit `2082a6e`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
+Revisión candidata **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION), datos del commit `5388569`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
 
 Los archivos de entrada tienen nombres neutros (`doc-…`); la correspondencia con el ID de inventario solo figura aquí y en `oraculos/e90/inventario_candidato.csv`. Para cada ficha: abrir el archivo, comprobar que el contenido sostiene la clase esperada sin pistas de construcción, y cotejar cada campo con su etiqueta impresa, representación y localizador. En DOCX, el índice cuenta los elementos `w:p` de `word/document.xml`, incluidas celdas de tablas.
 
@@ -271,13 +271,21 @@ Grupo **medicion** · clase esperada **contrato** · familia **CTR-MED_C** · 10
 
 - `OBJETO` (PDF, página 1): Objeto: verificación de termómetros y registradores de temperatura.
 - `CLAUSULA-1` (PDF, página 2): El cliente y el prestador podrán acordar declaraciones de trabajo que describan los servicios, los resultados y las condiciones particulares. Cada declaración se leerá junto con las condiciones generales del instrumento.…
+- `ORIGEN-1` (PDF, página 2): Providing Services. Customer or its Affiliates may enter SOWs with Provider. Provider will perform the Services as detailed in an applicable SOW. Each SOW together with the Key Terms and Standard Terms will constitute a …
 - `CLAUSULA-2` (PDF, página 3): Las modificaciones de una declaración de trabajo requerirán una orden de cambio que ambas partes acepten por escrito. La parte que recibe una propuesta la examinará de buena fe y responderá en un plazo razonable. El anál…
+- `ORIGEN-2` (PDF, página 3): Change Orders. Provider or Customer may amend any SOW by entering a Change Order. If a party requests a Change Order, the other party will review and consider the proposed changes in good faith and respond to the Change …
 - `CLAUSULA-3` (PDF, página 4): Cuando la declaración sujete un entregable a revisión, el cliente indicará las razones concretas de un rechazo y el prestador corregirá y volverá a presentar el resultado dentro del período acordado. Los subcontratistas …
+- `ORIGEN-3` (PDF, página 4): Acceptance. If according to the SOW Deliverables are subject to this section, Customer will be deemed to have approved a Deliverable if Customer does not reject the Deliverable within the Rejection Period. If Customer re…
 - `CLAUSULA-4` (PDF, página 5): Los derechos sobre entregables, materiales preexistentes y elementos de terceros se distinguen expresamente. La cesión de un resultado no implica la cesión de todas las herramientas que el prestador ya poseía. El cliente…
+- `ORIGEN-4` (PDF, página 5): Intellectual PropertyDeliverables. Except for Pre-Existing Materials and Third-Party Materials, Provider assigns all right, title, and interest in the Deliverables (if any) to Customer at the Time of Assignment. Upon the…
 - `CLAUSULA-5` (PDF, página 6): Si las partes acordaron condiciones específicas de tratamiento de datos, estas prevalecerán respecto de esa materia. El prestador cumplirá la política de seguridad prevista para la prestación. En este documento solo se u…
+- `ORIGEN-5` (PDF, página 6): Privacy & SecurityPersonal Data. If the parties have a DPA, each party will comply with its obligations in the DPA, the terms of the DPA will control each party’s rights and obligations as to Personal Data, and the terms…
 - `CLAUSULA-6` (PDF, página 7): Los honorarios, la moneda y el plazo de pago se definirán en la declaración de trabajo. El cliente podrá objetar de buena fe un cargo, identificando el desacuerdo y pagando los conceptos no discutidos. Las partes procura…
+- `ORIGEN-6` (PDF, página 7): Payment & TaxesFees and Invoices. Unless the currency is specified in the SOW, all Fees are in U.S. Dollars and are exclusive of taxes. Except for the prorated refund of prepaid Fees allowed with specific termination rig…
 - `CLAUSULA-7` (PDF, página 8): La relación tendrá la duración indicada por sus condiciones particulares. Una parte podrá dar por terminado el acuerdo ante un incumplimiento material no subsanado, una imposibilidad grave de continuidad u otra causal pa…
+- `ORIGEN-7` (PDF, página 8): Term & TerminationTerm. This Agreement will start on the Effective Date and continue until 12 months have elapsed since the end of the latest SOW Term end date.Termination.Either party may terminate this Agreement or an …
 - `CLAUSULA-8` (PDF, página 9): El receptor protegerá la información confidencial con medidas razonables y la utilizará únicamente para la finalidad del acuerdo. Las revelaciones necesarias a colaboradores exigirán una obligación de protección equivale…
+- `ORIGEN-8` (PDF, página 9): ConfidentialityNon-Use and Non-Disclosure. Unless otherwise authorized in the Agreement, Recipient will (a) only use Discloser’s Confidential Information to fulfill its obligations or exercise its rights under this Agree…
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -341,15 +349,25 @@ Grupo **medicion** · clase esperada **contrato** · familia **CTR-MED_D** · 11
 **Fragmentos de condiciones, cláusulas y referencias:**
 
 - `CLAUSULA-1` (PDF, página 2): El proveedor ejecutará los entregables conforme a las especificaciones y al acuerdo, con cuidado razonable, calidad y buenas prácticas. Cuando se haya previsto trabajo colaborativo, coordinará métodos, terminología y rec…
+- `ORIGEN-1` (PDF, página 2): What needs to be deliveredAll deliverablesThe Supplier must provide Deliverables:that comply with the Specification, the Tender Response and this Contract;using reasonable skill and care;using Good Industry Practice;usin…
 - `CLAUSULA-2` (PDF, página 3): El proveedor cooperará en los aspectos relacionados con la prestación y atenderá instrucciones razonables de coordinación. Aportará a su riesgo y costo el equipamiento necesario, asignará recursos suficientes y personal …
+- `ORIGEN-2` (PDF, página 3): Services clausesLate Delivery of the Services will be a Default of this Contract. The Supplier must co-operate with the Buyer and third party suppliers on all aspects connected with the Delivery of the Services and ensur…
 - `CLAUSULA-3` (PDF, página 4): El comprador revisará la documentación de los cargos frente al detalle de entregables y hitos realizados. Las referencias deberán permitir vincular la factura con la operación y las prestaciones correspondientes. Si una …
+- `ORIGEN-3` (PDF, página 4): Pricing and paymentsIn exchange for the Deliverables, the Supplier must invoice the Buyer for the Charges in the Award Form. All Charges:exclude VAT, which is payable on provision of a valid VAT invoice; andinclude all c…
 - `CLAUSULA-4` (PDF, página 5): El proveedor participará en reuniones de seguimiento y aportará informes cuando se prevean en la ficha de adjudicación. Mantendrá registros completos y exactos de las actuaciones y de su situación frente a los compromiso…
+- `ORIGEN-4` (PDF, página 5): Record keeping and reporting The Supplier must attend Progress Meetings with the Buyer and provide Progress Reports when specified in the Award Form.The Supplier must keep and maintain full and accurate records and accou…
 - `CLAUSULA-5` (PDF, página 6): El comprador o un auditor designado podrá revisar los registros y los medios vinculados a la prestación dentro del alcance acordado. La revisión se organizará sin perturbaciones irrazonables y con cooperación del proveed…
+- `ORIGEN-5` (PDF, página 6): The Buyer or an Auditor can Audit the Supplier.The Supplier must allow any Auditor access to their premises and the Buyer will use reasonable endeavours to ensure that any Auditor: complies with the Supplier’s operating …
 - `CLAUSULA-6` (PDF, página 7): El proveedor administrará a sus subcontratistas conforme a buenas prácticas y conservará la responsabilidad por la ejecución. La participación de un tercero no lo libera de las obligaciones frente al comprador. Los compr…
+- `ORIGEN-6` (PDF, página 7): Appointing SubcontractorsThe Supplier must exercise due skill and care when it selects and appoints Subcontractors to ensure that the Supplier is able to:manage Subcontractors in accordance with Good Industry Practice;co…
 - `CLAUSULA-7` (PDF, página 8): Un incumplimiento notificable deberá comunicarse y, cuando se solicite, se presentará un plan de rectificación con las acciones y plazos propuestos. El comprador podrá aceptarlo o rechazarlo con razones. Ante un rechazo,…
+- `ORIGEN-7` (PDF, página 8): If there is a Notifiable Default, the Supplier must notify the Buyer within three (3) Working Days of the Supplier becoming aware of the Notifiable Default and the Buyer may request that the Supplier provide a Rectificat…
 - `CLAUSULA-8` (PDF, página 9): El proveedor mantendrá las coberturas previstas y tratará los datos únicamente conforme al acuerdo. Protegerá los sistemas utilizados para la prestación, incluidos los de subcontratistas autorizados. Si sospecha pérdida …
+- `ORIGEN-8` (PDF, página 9): InsuranceThe Supplier must, at its own cost, obtain and maintain the Required Insurances in Schedule 22 (Insurance Requirements).Data protection and securityThe Supplier must process Personal Data and ensure that Supplie…
 - `CLAUSULA-9` (PDF, página 10): Cada parte conservará segura la información confidencial recibida y avisará ante sospechas de acceso o divulgación no autorizados. Podrá revelarse lo estrictamente exigido por una autoridad competente, con aviso cuando c…
+- `ORIGEN-9` (PDF, página 10): What you must keep confidentialEach Party must:keep all Confidential Information it receives confidential and secure;not disclose, use or exploit the Disclosing Party’s Confidential Information without the Disclosing Par…
 - `CLAUSULA-10` (PDF, página 11): Una variación será eficaz cuando conste por escrito y sea aceptada por ambas partes. El proveedor presentará una evaluación de impacto sobre entregables, costos, calendario y riesgos. Si no hay acuerdo, las partes podrán…
+- `ORIGEN-10` (PDF, página 11): Changing the ContractEither Party can request a Variation to this Contract which is only effective if agreed in writing, including where it is set out in the Variation Form, and signed by both Parties.The Supplier must p…
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -614,7 +632,7 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-BASE_A** �
 
 - `OBJETO` (PDF, página 1): Servicio: revisión de instalaciones de gases de laboratorio.
 - `COND-validez` (PDF, página 2): Validez de la oferta: 30 días corridos.
-- `COND-forma_pago` (PDF, página 2): Forma de pago: pago contra entrega del informe final.
+- `COND-forma_pago` (PDF, página 2): Forma de pago: pago a 14 días desde la entrega.
 - `COND-plazo` (PDF, página 2): Plazo de ejecución: 24 días hábiles desde la aceptación.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -701,7 +719,7 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-MED_C** ·
 
 - `OBJETO` (PDF, página 1): Concepto: mantenimiento preventivo de cabinas de seguridad biológica.
 - `COND-validez` (PDF, página 2): Validez de la oferta: 15 días corridos.
-- `COND-forma_pago` (PDF, página 2): Forma de pago: pago contra entrega del informe final.
+- `COND-forma_pago` (PDF, página 2): Forma de pago: pago a 18 días desde la recepción conforme.
 - `COND-plazo` (PDF, página 2): Plazo de ejecución: 17 días hábiles desde la aceptación.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -940,7 +958,7 @@ Trámite E90-CONTEXTO-T1; cita: presupuesto P-052003 (E90-M-PRE-06).
 - `REF` (PDF, página 1): Según presupuesto P-052003.
 - `COND-lugar` (PDF, página 1): Lugar de entrega: Laboratorio de Metrología, planta baja.
 - `COND-fecha_entrega` (PDF, página 1): Fecha de entrega comprometida: 11/07/2026.
-- `COND-pago` (PDF, página 1): Condición de pago: 15 días desde la recepción conforme.
+- `COND-pago` (PDF, página 1): Condición de pago: 18 días desde la recepción conforme.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -972,7 +990,7 @@ Trámite E90-CONTEXTO-T2; cita: contrato 2026-02-17 (E90-M-CTR-02).
 - `REF` (DOCX, párrafo 12): Emitida en el marco del contrato de servicios celebrado el 17-02-2026.
 - `COND-lugar` (DOCX, párrafo 15): Lugar de entrega: Laboratorio de Metrología, planta baja.
 - `COND-fecha_entrega` (DOCX, párrafo 16): Fecha de entrega comprometida: 17-03-2026.
-- `COND-pago` (DOCX, párrafo 17): Condición de pago: contado contra entrega.
+- `COND-pago` (DOCX, párrafo 17): Condición de pago: 14 días desde la entrega.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -1030,7 +1048,7 @@ Grupo **medicion** · clase esperada **orden_compra** · familia **OC-BASE_B** �
 - `OBJETO` (DOCX, párrafo 10): Se contempla validación térmica de autoclaves y estufas en las instalaciones del cliente.
 - `COND-lugar` (DOCX, párrafo 14): Lugar de entrega: Laboratorio de Metrología, planta baja.
 - `COND-fecha_entrega` (DOCX, párrafo 15): Fecha de entrega comprometida: 26-05-2026.
-- `COND-pago` (DOCX, párrafo 16): Condición de pago: contado contra entrega.
+- `COND-pago` (DOCX, párrafo 16): Condición de pago: 2 días desde la recepción conforme.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -1091,7 +1109,7 @@ Trámite E90-CONTEXTO-T3; cita: presupuesto PRES-2026-67059 (E90-M-PRE-03).
 - `REF` (PDF, página 1): Según presupuesto PRES-2026-67059.
 - `COND-lugar` (PDF, página 2): Lugar de entrega: Sede Ensayos Norte, recepción de materiales.
 - `COND-fecha_entrega` (PDF, página 2): Fecha de entrega comprometida: 14/04/26.
-- `COND-pago` (PDF, página 2): Condición de pago: 15 días desde la recepción conforme.
+- `COND-pago` (PDF, página 2): Condición de pago: 14 días desde la entrega.
 
 - [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
 - [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
@@ -1106,11 +1124,11 @@ Archivo de entrada: [doc-6084b5de](../../../corpus/e90/medicion/doc-6084b5de.doc
 
 Grupo **medicion** · clase esperada **orden_compra** · familia **OC-MED_D** · 1 página(s) · servicio: mantenimiento de equipos de cromatografía líquida.
 
-**Ambigüedad diseñada:** pedido que reproduce ítems, precios y validez de la cotización aceptada; puede parecer **presupuesto**. Justificación previa: La emite el comprador, tiene número de orden e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto.
+**Ambigüedad diseñada:** pedido que reproduce ítems, precios y validez de la cotización aceptada; puede parecer **presupuesto**. Justificación previa: La emite el comprador e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto. Su número es neutro, sin prefijo de orden (REV-E90-18).
 
 | Campo | Valor normalizado | Representación impresa | Etiqueta | Presencia | Localizador |
 |---|---|---|---|---|---|
-| numero | OC/55372/2026 | OC/55372/2026 | Ref.: Pedido de servicios N.º | Presente | DOCX, párrafo 3 |
+| numero | 55372/2026 | 55372/2026 | Ref.: Pedido de servicios N.º | Presente | DOCX, párrafo 3 |
 | fecha | 2026-06-08 | 8 de junio de 2026 | Buenos Aires, | Presente | DOCX, párrafo 2 |
 | proveedor | Servicios de Laboratorio Cerro Azul S.A. | Servicios de Laboratorio Cerro Azul S.A. | Señores | Presente | DOCX, párrafo 4 |
 | cuit_proveedor | 30-98641013-5 | 30986410135 | CUIT | Presente | DOCX, párrafo 5 |
