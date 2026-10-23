@@ -6,10 +6,12 @@ base de desarrollo o de demo (RC-P10, regla 8 de AGENTS.md).
 """
 
 import json
+import os
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
+import psycopg
 import pytest
 from alembic import command
 from alembic.config import Config
@@ -167,9 +169,28 @@ def conexion_migracion(
     yield from _conexion_revertida(motor_migracion)
 
 
+def _sin_transacciones_abiertas(configuracion: Configuracion) -> None:
+    """Recrear el esquema espera los *locks* de cualquier transacción abierta: si una prueba
+    anterior dejó una, se informa cuál en lugar de quedar esperando (con el superusuario
+    efímero de la CI, que ve las consultas de todos los usuarios)."""
+    superusuario = os.environ.get("ATLAS_PRUEBAS_PG_SUPERUSUARIO")
+    if not superusuario:
+        return
+    with psycopg.connect(f"{superusuario} dbname={configuracion.bd_nombre}") as conexion:
+        abiertas = conexion.execute(
+            "SELECT pid, usename, application_name, state, wait_event_type,"
+            " (now() - xact_start)::text, left(query, 300)"
+            " FROM pg_stat_activity WHERE datname = current_database()"
+            " AND pid <> pg_backend_pid() AND xact_start IS NOT NULL"
+        ).fetchall()
+    if abiertas:
+        pytest.fail(f"Transacciones abiertas antes de recrear el esquema: {abiertas}")
+
+
 @pytest.fixture
 def base_reiniciada(configuracion_tests: Configuracion) -> Configuracion:
     """Esquema recreado desde cero: para operaciones que exigen una base sin cuentas."""
+    _sin_transacciones_abiertas(configuracion_tests)
     config = configuracion_alembic(configuracion_tests)
     command.downgrade(config, "base")
     command.upgrade(config, "head")
