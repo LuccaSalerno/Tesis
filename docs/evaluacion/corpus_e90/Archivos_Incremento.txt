@@ -219,6 +219,8 @@ docs/evaluacion/corpus_e90/Pedido_Revision_Contraste_V2.md
 docs/evaluacion/corpus_e90/Propuesta_Construccion_Aislada.md
 docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md
 docs/evaluacion/corpus_e90/Revision_ARG_A.json
+docs/evaluacion/corpus_e90/Revision_Contraste_V2_2026-10-23.json
+docs/evaluacion/corpus_e90/Revision_Contraste_V2_2026-10-23.md
 docs/evaluacion/corpus_e90/Revision_Independiente.md
 docs/evaluacion/corpus_e90/Revision_Tecnica_Agente_2026-10-22.json
 docs/evaluacion/corpus_e90/Revision_Tecnica_Agente_2026-10-22.md

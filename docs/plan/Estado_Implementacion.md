@@ -148,3 +148,14 @@ DO-2026-10-22-CORPUS-REVISION, diseño P0–P16 aprobado por el equipo. Construi
 Verificación: validador sin errores; inventario válido; suite raíz 60 aprobadas y una omitida (58 con render local); ruff sin hallazgos; hoja de contactos de las 121 páginas. Detalle y límites en `docs/evaluacion/corpus_e90/Informe_Revision_V2.md`; cuadernos y guía de autores regenerados para la v2. Diferencias: DIF-E90-09 y 10, actualización de 06 y 07. Ninguna decisión delegada.
 
 **Próximo paso:** el equipo verifica a mano las 18 razones sociales y los 6 CUIT de ajuste (`Verificaciones_Pendientes_V2.md`); revisión de contraste de la v2 por el otro agente; revisión de ambos autores y congelación. Campañas RC-P07 pendientes.
+
+
+## Contraste técnico del corpus E90 v2 — 23/10/2026
+
+P0 de DO-2026-10-22-CORPUS-REVISION: Codex revisó la v2 construida por Claude Code (`2082a6e`, documentación `d5f20ba`, base inspeccionada `f121f68`). Codex había construido la v1; la independencia declarada se limita a la construcción de la v2. **Dictamen: apto para revisión de autores, con observaciones; no congelado ni aprobado por autores.**
+
+Reproducidos validadores e inventario sin errores; suite raíz 60 aprobadas/una omitida; render primero falló dentro del sandbox (57 aprobadas/una fallida, salida conservada) y pasó fuera con el mismo LibreOffice (58 aprobadas). Ruff y formato sin hallazgos. Cotejo separado: 403 campos, 727 fragmentos, 30 consultas y 121 páginas de referencia; muestra visual de 25 documentos/43 páginas, incluidas capturas finales y DOCX. Los 195 artefactos y 213 archivos protegidos en total mantienen sus hashes; corpus, oráculos y herramientas se conservaron en solo lectura.
+
+Los quince hallazgos anteriores están sustantivamente abordados; persisten límites de dificultad/coherencia que se precisan en REV-E90-16 a REV-E90-19: IVA residual con diferencia de un centavo en PRE-05/PRE-09; condiciones de pago no conciliadas en T1/T2/T4; prefijo OC en el ambiguo OC-07; alcance de las referencias inglesas para Q11/Q12. Informe y evidencia: `docs/evaluacion/corpus_e90/Revision_Contraste_V2_2026-10-23.md` y su JSON. Se proponen correcciones sin aplicarlas ni cambiar umbrales.
+
+Próximo paso: revisión de ambos autores y resolución/justificación de observaciones, verificaciones manuales de razones sociales/seis CUIT de ajuste; después, congelación y campañas RC-P07 aún pendientes. Sin consultas manuales simuladas, métricas de modelos, AWS, Terraform, frontend ni revisión humana marcada. Referencia Git: commit con mensaje `IA-D/RC-P06.2: contrastar corpus E90 v2 y documentar observaciones`.
