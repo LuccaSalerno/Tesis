@@ -128,3 +128,12 @@ def test_dt_aws_01_preparar_aws_local_con_configuracion_incompleta(
     monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: incompleta)
     assert preparar_aws_local.main() == 1
     assert "No se preparó" in capsys.readouterr().err
+
+
+def test_dif_97_firma_s3_solo_para_s3() -> None:
+    """Bedrock rechaza la firma de S3 con ID de modelo que llevan «:» (sesión e90-ensayo-2)."""
+    configuracion = configuracion_sin_base(entorno="demo", aws_endpoint_url=None)
+    assert crear_cliente(configuracion, "s3").meta.config.signature_version == "s3v4"
+    for servicio in ("bedrock-runtime", "textract", "stepfunctions"):
+        firma = crear_cliente(configuracion, servicio).meta.config.signature_version
+        assert firma != "s3v4", servicio
