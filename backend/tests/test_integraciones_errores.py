@@ -100,6 +100,14 @@ class ClienteS3Sustituto:
             lambda a: a.eliminar_definitivamente("k"),
             "s3_eliminacion_incompleta",
         ),
+        (
+            {
+                "list_object_versions": [{"Versions": [{"Key": "r/k", "VersionId": "v1"}]}],
+                "delete_objects": {"Errors": [{"Key": "r/k", "Code": "AccessDenied"}]},
+            },
+            lambda a: a.eliminar_prefijo("r/"),
+            "s3_eliminacion_incompleta",
+        ),
     ],
     ids=[
         "url",
@@ -112,6 +120,7 @@ class ClienteS3Sustituto:
         "listar_prefijo",
         "multipartes",
         "borrado_parcial",
+        "borrado_parcial_prefijo",
     ],
 )
 def test_dt_aws_01_errores_de_s3_son_codigos_tecnicos(

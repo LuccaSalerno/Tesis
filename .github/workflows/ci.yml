@@ -63,14 +63,7 @@ jobs:
       - name: Análisis estático
         run: mypy
       - name: Pruebas del backend con cobertura
-        # Diagnóstico de cuelgues: el límite se aplica dentro de la máquina (un job cancelado no
-        # guarda registros). A los 9 minutos, `timeout` envía SIGABRT y faulthandler vuelca la
-        # pila de todos los hilos; también vuelca la de una prueba que supere 3 minutos.
-        timeout-minutes: 11
-        run: >-
-          timeout -s ABRT -k 30 540
-          pytest -v -o faulthandler_timeout=180
-          --cov --cov-report=term --cov-report=xml --cov-report=json
+        run: pytest --cov --cov-report=term --cov-report=xml --cov-report=json
       - name: Cobertura mínima del 90 % por módulo
         run: python -m herramientas_ci.verificar_cobertura coverage.json --minimo 90
       - name: Pruebas de herramientas del corpus

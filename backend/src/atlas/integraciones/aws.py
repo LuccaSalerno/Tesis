@@ -114,17 +114,26 @@ class AlmacenS3:
             raise ErrorIntegracion("s3_escritura_fallida") from error
 
     def eliminar_prefijo(self, prefijo: str) -> int:
+        # Una sola enumeración y borrado por lotes: listar por clave hacía el costo cuadrático
+        # en la cantidad de objetos del prefijo.
         try:
-            claves = {
-                v["Key"]
+            versiones = [
+                {"Key": v["Key"], "VersionId": v["VersionId"]}
                 for pagina in self._cliente.get_paginator("list_object_versions").paginate(
                     Bucket=self._bucket, Prefix=prefijo
                 )
                 for v in pagina.get("Versions", []) + pagina.get("DeleteMarkers", [])
-            }
+            ]
+            for inicio in range(0, len(versiones), 1000):
+                respuesta = self._cliente.delete_objects(
+                    Bucket=self._bucket,
+                    Delete={"Objects": versiones[inicio : inicio + 1000], "Quiet": True},
+                )
+                if respuesta.get("Errors"):
+                    raise ErrorIntegracion("s3_eliminacion_incompleta")
         except (BotoCoreError, ClientError) as error:
             raise ErrorIntegracion("s3_eliminacion_fallida") from error
-        return sum(self.eliminar_definitivamente(clave) for clave in sorted(claves))
+        return len(versiones)
 
     def copiar(self, origen: str, destino: str) -> None:
         try:
