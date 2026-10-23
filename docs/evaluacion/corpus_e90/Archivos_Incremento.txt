@@ -215,6 +215,7 @@ docs/evaluacion/corpus_e90/Incorporacion_ARG_A_CPAU.md
 docs/evaluacion/corpus_e90/Informe_Cierre_Incremento.md
 docs/evaluacion/corpus_e90/Informe_Revision_V2.md
 docs/evaluacion/corpus_e90/Modelos_Publicos_Candidatos.md
+docs/evaluacion/corpus_e90/Pedido_Revision_Contraste_V2.md
 docs/evaluacion/corpus_e90/Propuesta_Construccion_Aislada.md
 docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md
 docs/evaluacion/corpus_e90/Revision_ARG_A.json
