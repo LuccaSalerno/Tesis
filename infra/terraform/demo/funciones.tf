@@ -19,6 +19,8 @@ locals {
     ATLAS_BEDROCK_PERFIL_GENERATIVO = var.perfil_generativo
     ATLAS_BEDROCK_MODELO_EMBEDDINGS = var.modelo_embeddings
     ATLAS_VERSION_CODIGO            = var.version_codigo
+    # crear_cliente exige el bucket y la máquina en toda función que use AWS (validar_servicios_aws).
+    ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN = local.arn_maquina
   }
 
   funciones = {
@@ -28,10 +30,9 @@ locals {
       tiempo    = 29 # API Gateway corta a los 30 s
       sg        = local.p.sg_lambda_aplicacion
       entorno = merge(local.comun, {
-        ATLAS_JWT_EMISOR                    = local.p.cognito_emisor
-        ATLAS_JWT_CLIENTE                   = local.p.cognito_cliente_id
-        ATLAS_JWT_JWKS                      = data.http.jwks.response_body
-        ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN = local.arn_maquina
+        ATLAS_JWT_EMISOR  = local.p.cognito_emisor
+        ATLAS_JWT_CLIENTE = local.p.cognito_cliente_id
+        ATLAS_JWT_JWKS    = data.http.jwks.response_body
       })
     }
     procesamiento = {
@@ -54,11 +55,10 @@ locals {
       tiempo    = 300
       sg        = local.p.sg_lambda_operaciones
       entorno = merge(local.comun, {
-        ATLAS_BD_HOST_MIGRACION             = local.p.rds_direccion
-        ATLAS_BD_USUARIO_MIGRACION          = var.usuario_bd_migracion
-        ATLAS_OPS_SECRETO_MAESTRO_ARN       = local.p.rds_secreto_maestro_arn
-        ATLAS_OPS_DIRECTORIO_MIGRACIONES    = "/var/task/migraciones"
-        ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN = local.arn_maquina
+        ATLAS_BD_HOST_MIGRACION          = local.p.rds_direccion
+        ATLAS_BD_USUARIO_MIGRACION       = var.usuario_bd_migracion
+        ATLAS_OPS_SECRETO_MAESTRO_ARN    = local.p.rds_secreto_maestro_arn
+        ATLAS_OPS_DIRECTORIO_MIGRACIONES = "/var/task/migraciones"
       })
     }
   }
