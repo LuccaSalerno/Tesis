@@ -27,7 +27,9 @@ from atlas.api.dependencias import (
 )
 from atlas.dominio.enumeraciones import (
     ClaseSugerencia,
+    CriterioVersion,
     EstadoIncorporacion,
+    EstadoSugerenciaVersion,
     EstadoTrabajo,
     EstadoTramite,
     FormatoArchivo,
@@ -54,7 +56,7 @@ from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["tramites"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion)]
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
 Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
 SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
@@ -190,6 +192,20 @@ class TrabajoRespuesta(BaseModel):
         )
 
 
+class SugerenciaVersionRespuesta(BaseModel):
+    """RF-06: relación de versión sugerida con su criterio explicable; es solo una sugerencia
+    hasta que el responsable la confirma, la rechaza o descarta el archivo (RF-07)."""
+
+    documento_id: int
+    documento_nombre: str
+    criterio: CriterioVersion = Field(
+        description="`numero` (número documental) o `cuit` (CUIT de la contraparte, el "
+        "proveedor o el emisor), comparados con los valores validados del documento"
+    )
+    campo: str
+    estado: EstadoSugerenciaVersion
+
+
 class ArchivoRespuesta(BaseModel):
     id: int
     nombre: str
@@ -202,10 +218,15 @@ class ArchivoRespuesta(BaseModel):
         description="Límite para incorporar una carga pendiente (DO-2026-10-22-CARGAS)"
     )
     trabajo: TrabajoRespuesta | None
+    sugerencia_version: SugerenciaVersionRespuesta | None = None
 
     @classmethod
     def desde(
-        cls, archivo: Archivo, trabajo: TrabajoProcesamiento | None, vigencia_s: int
+        cls,
+        archivo: Archivo,
+        trabajo: TrabajoProcesamiento | None,
+        vigencia_s: int,
+        sugerencia: SugerenciaVersionRespuesta | None = None,
     ) -> "ArchivoRespuesta":
         pendiente = archivo.estado_incorporacion == EstadoIncorporacion.PENDIENTE
         return cls(
@@ -218,6 +239,7 @@ class ArchivoRespuesta(BaseModel):
             estado_incorporacion=archivo.estado_incorporacion,
             cargado_en=archivo.cargado_en,
             trabajo=(None if trabajo is None else TrabajoRespuesta.desde(trabajo)),
+            sugerencia_version=sugerencia,
         )
 
 
@@ -396,8 +418,18 @@ def listar_archivos(
 ) -> list[ArchivoRespuesta]:
     acceso = _consulta(sesion, tramite_id, usuario)
     permitidos = _archivos_permitidos(sesion, acceso)
+    sugeridas = {
+        s.archivo_id: SugerenciaVersionRespuesta(
+            documento_id=d.id,
+            documento_nombre=d.nombre,
+            criterio=s.criterio,
+            campo=s.campo,
+            estado=s.estado,
+        )
+        for s, d in cargas.sugerencias_version(sesion, acceso.tramite.id)
+    }
     return [
-        ArchivoRespuesta.desde(a, t, vigencia)
+        ArchivoRespuesta.desde(a, t, vigencia, sugeridas.get(a.id))
         for a, t in cargas.listar_archivos(sesion, acceso.tramite.id)
         if permitidos is None or a.id in permitidos
     ]
@@ -443,6 +475,68 @@ def incorporar_archivo(
             id=version.id, numero=version.numero, archivo_id=version.archivo_id
         ),
     )
+
+
+@enrutador.post(
+    "/{tramite_id}/archivos/{archivo_id}/version",
+    response_model=DocumentoRespuesta,
+    status_code=status.HTTP_201_CREATED,
+)
+def incorporar_version(
+    tramite_id: int,
+    archivo_id: int,
+    usuario: Responsable,
+    sesion: Sesion,
+    almacen: Almacen,
+    vigencia: VigenciaPendiente,
+    solicitud_id: SolicitudId,
+) -> DocumentoRespuesta:
+    """RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la
+    nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
+    (DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
+    documento, version = cargas.incorporar_como_version(
+        sesion,
+        almacen,
+        tramite=tramite,
+        archivo_id=archivo_id,
+        usuario_id=usuario.id,
+        vigencia_pendiente_s=vigencia,
+        solicitud_id=solicitud_id,
+    )
+    return DocumentoRespuesta(
+        id=documento.id,
+        nombre=documento.nombre,
+        tipo=documento.tipo,
+        version_vigente=VersionResumen(
+            id=version.id, numero=version.numero, archivo_id=version.archivo_id
+        ),
+    )
+
+
+@enrutador.post("/{tramite_id}/archivos/{archivo_id}/descarte", response_model=ArchivoRespuesta)
+def descartar_archivo(
+    tramite_id: int,
+    archivo_id: int,
+    usuario: Responsable,
+    sesion: Sesion,
+    vigencia: VigenciaPendiente,
+    solicitud_id: SolicitudId,
+) -> ArchivoRespuesta:
+    """RF-07: descarta el archivo pendiente sin crear documento ni versión; el conjunto
+    documental y el estado del trámite no cambian."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
+    archivo = cargas.descartar(
+        sesion,
+        tramite=tramite,
+        archivo_id=archivo_id,
+        usuario_id=usuario.id,
+        solicitud_id=solicitud_id,
+    )
+    trabajo = sesion.scalar(
+        select(TrabajoProcesamiento).where(TrabajoProcesamiento.archivo_id == archivo.id)
+    )
+    return ArchivoRespuesta.desde(archivo, trabajo, vigencia)
 
 
 async def responder_archivo_rechazado(_: Request, error: Exception) -> JSONResponse:

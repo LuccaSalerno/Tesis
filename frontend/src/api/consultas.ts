@@ -22,6 +22,7 @@ export const claves = {
   ciclos: (t: number) => ["tramite", t, "ciclos"] as const,
   flujo: (t: number) => ["tramite", t, "flujo"] as const,
   lineaTiempo: (t: number) => ["tramite", t, "linea-tiempo"] as const,
+  firma: (t: number) => ["tramite", t, "firma"] as const,
   consultas: (t: number) => ["tramite", t, "consultas"] as const,
   tareas: ["tareas"] as const,
   tarea: (id: number) => ["tarea", id] as const,
@@ -191,6 +192,15 @@ export function useCuentas(habilitado: boolean) {
   });
 }
 
+/** Firma simulada del trámite cerrado (RF-23, V11); sin firma, la API responde 404. */
+export function useFirma(t: number, habilitado: boolean) {
+  return useQuery({
+    queryKey: claves.firma(t),
+    enabled: habilitado,
+    queryFn: () => exigir(api.GET("/tramites/{tramite_id}/firma", ruta(t))),
+  });
+}
+
 /** URL de lectura breve del original de una versión (WEB F4): se pide al abrir el visor. */
 export function useArchivoVersion(t: number, version: number | undefined) {
   return useQuery({
@@ -247,6 +257,44 @@ export function useIncorporar(t: number) {
         }),
       ),
     onSuccess: () => invalidar(["tramite", t], [...claves.tramites]),
+  });
+}
+
+/** RF-07: confirma la relación de versión sugerida (RF-06); RN-12 lo aplica la API. */
+export function useIncorporarVersion(t: number) {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (archivo: number) =>
+      exigir(
+        api.POST("/tramites/{tramite_id}/archivos/{archivo_id}/version", {
+          params: { path: { tramite_id: t, archivo_id: archivo } },
+        }),
+      ),
+    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], [...claves.tareas]),
+  });
+}
+
+/** RF-07: descarta el archivo pendiente sin crear documento ni versión. */
+export function useDescartar(t: number) {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (archivo: number) =>
+      exigir(
+        api.POST("/tramites/{tramite_id}/archivos/{archivo_id}/descarte", {
+          params: { path: { tramite_id: t, archivo_id: archivo } },
+        }),
+      ),
+    onSuccess: () => invalidar([...claves.archivos(t)], [...claves.lineaTiempo(t)]),
+  });
+}
+
+/** RF-23: firma simulada de una versión del ciclo aprobado; el trámite queda Cerrado. */
+export function useFirmar(t: number) {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (version: number) =>
+      exigir(api.POST("/tramites/{tramite_id}/firma", { ...ruta(t), body: { version_id: version } })),
+    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], ["evidencia"]),
   });
 }
 

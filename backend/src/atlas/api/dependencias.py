@@ -81,7 +81,7 @@ def _denegar(request: Request, codigo: str, usuario_id: int | None = None) -> HT
 def obtener_usuario_actual(
     request: Request,
     credenciales: Annotated[HTTPAuthorizationCredentials | None, Depends(_portador)],
-    sesion: Annotated[Session, Depends(obtener_sesion)],
+    sesion: Annotated[Session, Depends(obtener_sesion, scope="function")],
 ) -> UsuarioActual:
     """RF-01 y RN-01: token válido y cuenta registrada y habilitada en cada solicitud,
     aunque el token todavía no haya vencido (§5.4.3)."""

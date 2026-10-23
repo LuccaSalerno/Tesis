@@ -24,6 +24,7 @@ from sqlalchemy.orm import Session
 from atlas.dominio.enumeraciones import (
     AccionAuditoria,
     EstadoIncorporacion,
+    EstadoSugerenciaVersion,
     EstadoTrabajo,
     EstadoTramite,
     FormatoArchivo,
@@ -48,6 +49,7 @@ from atlas.persistencia.modelos import (
     Archivo,
     AutorizacionCarga,
     Documento,
+    SugerenciaVersion,
     TrabajoProcesamiento,
     Tramite,
     VersionDocumental,
@@ -298,6 +300,105 @@ def listar_archivos(
     return [(archivo, trabajo) for archivo, trabajo in filas]
 
 
+def sugerencias_version(
+    sesion: Session, tramite_id: int
+) -> list[tuple[SugerenciaVersion, Documento]]:
+    """RF-06: relaciones de versión sugeridas para los archivos del trámite."""
+    filas = sesion.execute(
+        select(SugerenciaVersion, Documento)
+        .join(Documento, Documento.id == SugerenciaVersion.documento_id)
+        .where(Documento.tramite_id == tramite_id)
+    ).all()
+    return [(sugerencia, documento) for sugerencia, documento in filas]
+
+
+def _archivo_incorporable(
+    sesion: Session,
+    almacen: AlmacenDocumental,
+    tramite: Tramite,
+    archivo_id: int,
+    vigencia_pendiente_s: int,
+) -> Archivo:
+    """Archivo pendiente, vigente y movido al prefijo definitivo con su huella verificada."""
+    tramites.exigir_no_terminal(tramite)
+    archivo = sesion.get(Archivo, archivo_id, with_for_update=True)
+    if archivo is None or archivo.tramite_id != tramite.id:
+        raise NoEncontrado("El archivo no existe en este trámite")
+    if archivo.estado_incorporacion != EstadoIncorporacion.PENDIENTE:
+        raise Conflicto("El archivo ya fue incorporado, descartado o venció")
+    if _vencida(archivo.cargado_en, vigencia_pendiente_s):
+        raise Conflicto("La carga venció: pasaron más de 24 horas sin incorporarla.")
+    # El original pasa al prefijo definitivo, fuera de la limpieza de temporales, y se
+    # comprueba que la copia conserve la huella registrada (§5.4.3).
+    destino = clave_definitiva(archivo.clave_objeto)
+    almacen.copiar(archivo.clave_objeto, destino)
+    if hashlib.sha256(almacen.leer(destino)).hexdigest() != archivo.huella:
+        raise ErrorIntegracion("s3_copia_inconsistente")
+    archivo.estado_incorporacion = EstadoIncorporacion.INCORPORADO
+    archivo.clave_objeto = destino
+    return archivo
+
+
+def _nuevo_id_version(sesion: Session) -> int:
+    return int(
+        sesion.scalar(
+            text("SELECT nextval(pg_get_serial_sequence('atlas.version_documental', 'id'))")
+        )
+    )
+
+
+def _cambio_documental(
+    sesion: Session,
+    tramite: Tramite,
+    *,
+    usuario_id: int,
+    version_id: int,
+    solicitud_id: uuid.UUID | None,
+) -> None:
+    """RN-12, PD-05.1: el ciclo en curso queda desplazado, sus tareas abiertas anuladas y el
+    trámite vuelve a Borrador, en la misma transacción que la incorporación."""
+    ciclos.desplazar_en_curso(
+        sesion,
+        tramite_id=tramite.id,
+        usuario_id=usuario_id,
+        version_id=version_id,
+        solicitud_id=solicitud_id,
+    )
+    if tramite.estado != EstadoTramite.BORRADOR:
+        tramite.estado = EstadoTramite.BORRADOR
+        registrar_evento_auditoria(
+            sesion,
+            accion=AccionAuditoria.TRAMITE_VUELVE_A_BORRADOR,
+            entidad_tipo="tramite",
+            entidad_id=tramite.id,
+            actor_id=usuario_id,
+            tramite_id=tramite.id,
+            version_id=version_id,
+            solicitud_id=solicitud_id,
+        )
+    tramite.actualizado_en = func.now()
+    sesion.flush()
+
+
+def _resolver_sugerencia(
+    sesion: Session, archivo_id: int, estado: EstadoSugerenciaVersion, usuario_id: int
+) -> SugerenciaVersion | None:
+    sugerencia = sesion.scalar(
+        select(SugerenciaVersion)
+        .where(
+            SugerenciaVersion.archivo_id == archivo_id,
+            SugerenciaVersion.estado == EstadoSugerenciaVersion.PENDIENTE,
+        )
+        .with_for_update()
+    )
+    if sugerencia is not None:
+        sugerencia.estado = estado
+        sugerencia.resuelta_por_id = usuario_id
+        sugerencia.resuelta_en = datetime.now(UTC)
+        sesion.flush()
+    return sugerencia
+
+
 def incorporar_como_documento_nuevo(
     sesion: Session,
     almacen: AlmacenDocumental,
@@ -310,39 +411,15 @@ def incorporar_como_documento_nuevo(
     solicitud_id: uuid.UUID | None = None,
 ) -> tuple[Documento, VersionDocumental]:
     """RF-07: el archivo pendiente pasa a ser un documento nuevo con su versión inicial
-    vigente. El trámite (bloqueado por el llamador) vuelve a Borrador (Tabla 3.VI).
-
-    PD-05.1: cuando existan ciclos de revisión, en esta misma transacción se cerrará
-    el ciclo y se anularán sus tareas abiertas (hito 1.8 / Etapa 2).
-    """
-    tramites.exigir_no_terminal(tramite)
-    archivo = sesion.get(Archivo, archivo_id, with_for_update=True)
-    if archivo is None or archivo.tramite_id != tramite.id:
-        raise NoEncontrado("El archivo no existe en este trámite")
-    if archivo.estado_incorporacion != EstadoIncorporacion.PENDIENTE:
-        raise Conflicto("El archivo ya fue incorporado, descartado o venció")
-    if _vencida(archivo.cargado_en, vigencia_pendiente_s):
-        raise Conflicto("La carga venció: pasaron más de 24 horas sin incorporarla.")
-
-    # El original pasa al prefijo definitivo, fuera de la limpieza de temporales, y se
-    # comprueba que la copia conserve la huella registrada (§5.4.3).
-    destino = clave_definitiva(archivo.clave_objeto)
-    almacen.copiar(archivo.clave_objeto, destino)
-    if hashlib.sha256(almacen.leer(destino)).hexdigest() != archivo.huella:
-        raise ErrorIntegracion("s3_copia_inconsistente")
-
-    version_id = int(
-        sesion.scalar(
-            text("SELECT nextval(pg_get_serial_sequence('atlas.version_documental', 'id'))")
-        )
-    )
+    vigente. Si había una relación de versión sugerida, queda rechazada: el archivo es un
+    documento independiente del candidato (RF-07). El trámite (bloqueado por el llamador)
+    vuelve a Borrador (Tabla 3.VI, RN-12)."""
+    archivo = _archivo_incorporable(sesion, almacen, tramite, archivo_id, vigencia_pendiente_s)
+    version_id = _nuevo_id_version(sesion)
     documento = Documento(
         tramite_id=tramite.id, nombre=nombre or archivo.nombre, version_vigente_id=version_id
     )
     sesion.add(documento)
-    sesion.flush()
-    archivo.estado_incorporacion = EstadoIncorporacion.INCORPORADO
-    archivo.clave_objeto = destino
     sesion.flush()
     version = VersionDocumental(
         id=version_id,
@@ -363,29 +440,119 @@ def incorporar_como_documento_nuevo(
         version_id=version.id,
         solicitud_id=solicitud_id,
     )
-    # RN-12, PD-05.1: el ciclo en curso queda desplazado y sus tareas abiertas, anuladas.
-    ciclos.desplazar_en_curso(
-        sesion,
-        tramite_id=tramite.id,
-        usuario_id=usuario_id,
-        version_id=version.id,
-        solicitud_id=solicitud_id,
+    rechazada = _resolver_sugerencia(
+        sesion, archivo.id, EstadoSugerenciaVersion.RECHAZADA, usuario_id
     )
-    if tramite.estado != EstadoTramite.BORRADOR:
-        tramite.estado = EstadoTramite.BORRADOR
+    if rechazada is not None:
         registrar_evento_auditoria(
             sesion,
-            accion=AccionAuditoria.TRAMITE_VUELVE_A_BORRADOR,
-            entidad_tipo="tramite",
-            entidad_id=tramite.id,
+            accion=AccionAuditoria.SUGERENCIA_VERSION_RECHAZADA,
+            entidad_tipo="sugerencia_version",
+            entidad_id=rechazada.id,
             actor_id=usuario_id,
             tramite_id=tramite.id,
             version_id=version.id,
             solicitud_id=solicitud_id,
         )
-    tramite.actualizado_en = func.now()
-    sesion.flush()
+    _cambio_documental(
+        sesion, tramite, usuario_id=usuario_id, version_id=version.id, solicitud_id=solicitud_id
+    )
     return documento, version
+
+
+def incorporar_como_version(
+    sesion: Session,
+    almacen: AlmacenDocumental,
+    *,
+    tramite: Tramite,
+    archivo_id: int,
+    usuario_id: int,
+    vigencia_pendiente_s: int,
+    solicitud_id: uuid.UUID | None = None,
+) -> tuple[Documento, VersionDocumental]:
+    """RF-07: confirma la relación de versión sugerida (RF-06). El archivo se incorpora al
+    historial del documento candidato como su nueva versión vigente; la anterior queda
+    inmutable con sus validaciones. RN-12: ciclo desplazado, tareas anuladas y trámite a
+    Borrador (DO-2026-10-23-VER P4). La versión nueva empieza sin valores validados: sus
+    controles dejan de usar la anterior y se ejecutan al validarla (RN-02, RN-06)."""
+    tramites.exigir_no_terminal(tramite)
+    existente = sesion.get(Archivo, archivo_id)
+    if existente is None or existente.tramite_id != tramite.id:
+        raise NoEncontrado("El archivo no existe en este trámite")
+    sugerencia = sesion.scalar(
+        select(SugerenciaVersion).where(
+            SugerenciaVersion.archivo_id == archivo_id,
+            SugerenciaVersion.estado == EstadoSugerenciaVersion.PENDIENTE,
+        )
+    )
+    if sugerencia is None:
+        raise Conflicto("El archivo no tiene una relación de versión sugerida pendiente")
+    documento = sesion.get(Documento, sugerencia.documento_id, with_for_update=True)
+    if documento is None or documento.tramite_id != tramite.id:
+        raise Conflicto("El documento candidato ya no pertenece al trámite")
+    archivo = _archivo_incorporable(sesion, almacen, tramite, archivo_id, vigencia_pendiente_s)
+    anterior = sesion.get_one(VersionDocumental, documento.version_vigente_id)
+    version = VersionDocumental(
+        id=_nuevo_id_version(sesion),
+        documento_id=documento.id,
+        archivo_id=archivo.id,
+        numero=anterior.numero + 1,
+        version_previa_id=anterior.id,
+        creado_por_id=usuario_id,
+    )
+    sesion.add(version)
+    sesion.flush()
+    documento.version_vigente_id = version.id
+    # `tipo` refleja la clasificación validada de la versión vigente (P3 del modelo): la
+    # nueva todavía no la tiene y no hereda la de la anterior (RN-02).
+    documento.tipo = None
+    sesion.flush()
+    _resolver_sugerencia(sesion, archivo.id, EstadoSugerenciaVersion.CONFIRMADA, usuario_id)
+    registrar_evento_auditoria(
+        sesion,
+        accion=AccionAuditoria.VERSION_INCORPORADA,
+        entidad_tipo="documento",
+        entidad_id=documento.id,
+        actor_id=usuario_id,
+        tramite_id=tramite.id,
+        version_id=version.id,
+        solicitud_id=solicitud_id,
+    )
+    _cambio_documental(
+        sesion, tramite, usuario_id=usuario_id, version_id=version.id, solicitud_id=solicitud_id
+    )
+    return documento, version
+
+
+def descartar(
+    sesion: Session,
+    *,
+    tramite: Tramite,
+    archivo_id: int,
+    usuario_id: int,
+    solicitud_id: uuid.UUID | None = None,
+) -> Archivo:
+    """RF-07: el archivo pendiente se descarta sin crear documento ni versión; no cambia el
+    conjunto documental ni el estado del trámite."""
+    tramites.exigir_no_terminal(tramite)
+    archivo = sesion.get(Archivo, archivo_id, with_for_update=True)
+    if archivo is None or archivo.tramite_id != tramite.id:
+        raise NoEncontrado("El archivo no existe en este trámite")
+    if archivo.estado_incorporacion != EstadoIncorporacion.PENDIENTE:
+        raise Conflicto("El archivo ya fue incorporado, descartado o venció")
+    archivo.estado_incorporacion = EstadoIncorporacion.DESCARTADO
+    _resolver_sugerencia(sesion, archivo.id, EstadoSugerenciaVersion.DESCARTADA, usuario_id)
+    registrar_evento_auditoria(
+        sesion,
+        accion=AccionAuditoria.ARCHIVO_DESCARTADO,
+        entidad_tipo="archivo",
+        entidad_id=archivo.id,
+        actor_id=usuario_id,
+        tramite_id=tramite.id,
+        solicitud_id=solicitud_id,
+    )
+    sesion.flush()
+    return archivo
 
 
 @dataclass

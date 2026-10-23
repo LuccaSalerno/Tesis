@@ -23,7 +23,7 @@ from atlas.servicios.errores import NoPermitido
 
 enrutador = APIRouter(prefix="/tramites", tags=["consultas"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion)]
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
 Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 
 

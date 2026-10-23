@@ -63,7 +63,11 @@ def exportar(cliente: ClienteApi, manifiesto: dict[str, Any], salida: Path) -> d
                 cliente.get(f"/tramites/{t}/documentos/{documento_id}/validaciones", rol),
                 indice,
             )
-        for decision_id in registro.get("decisiones", []):
+        if "firma" in registro:  # RF-23, V11
+            _escribir(
+                salida, f"{base}/firma.json", cliente.get(f"/tramites/{t}/firma", rol), indice
+            )
+        for decision_id in [*registro.get("decisiones", []), *registro.get("decisiones_2", [])]:
             _escribir(
                 salida,
                 f"{base}/evidencia/decision-{decision_id}.json",

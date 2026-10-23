@@ -8,15 +8,18 @@ Uso (operador, con la API en `active` y solo cuentas ficticias):
         --cliente-cognito <id> --usuarios admin=… responsable=… revisor=… aprobador=… \\
         --manifiesto operaciones/sesiones/<sesion>/manifiesto_seed.json
 
-Deja dos trámites con el escenario EVD-B de PD-07 (DO-2026-10-22-WEB F8):
+Deja tres trámites con el escenario EVD-B de PD-07 (DO-2026-10-22-WEB F8,
+DO-2026-10-23-VER P9):
 
 1. **observado** (puntos de demo A a D): C-v1, O-v1 y F-v2 procesados, validados contra el
    oráculo y vinculados (R3 advierte que la orden está fuera de la vigencia); flujo
    confirmado; la revisión legal aprueba y la aprobación final observa con motivo.
 2. **en vivo**: C-v1 procesado e incorporado, en Borrador, para recorrer A a D en vivo
-   (validar, consultar, incorporar O-v1 y F-v2, decidir).
-
-Los pasos siguientes de la historia (O-v2, nuevo ciclo, firma) dependen de RF-06 y RF-23.
+   (validar, consultar, incorporar O-v1 y F-v2, decidir, cargar O-v2 como versión nueva).
+3. **cerrado**: la historia completa. Tras la observación, O-v2 se carga, el sistema sugiere
+   que es una versión nueva de O-v1 (RF-06) y el responsable la confirma (RF-07); se valida,
+   R3 vuelve a ejecutarse, el ciclo 2 aprueba y el aprobador aplica la firma simulada sobre
+   C-v1 (RF-23): el trámite queda Cerrado.
 
 Cada dato se valida como lo haría una persona: si la sugerencia coincide con el oráculo se
 confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Nada se
@@ -46,6 +49,7 @@ ARCHIVOS: Final = {
     "C-v1": "C-v1_Contrato_Mantenimiento_ATLAS.pdf",
     "O-v1": "O-v1_Orden_Compra.pdf",
     "F-v2": "F-v2_Factura.pdf",
+    "O-v2": "O-v2_Orden_Compra.pdf",
 }
 NOMBRES: Final = {
     "C-v1": "Contrato de mantenimiento",
@@ -72,7 +76,7 @@ RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
 
 def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
     """Tipo validado y valores esperados por documento, con los nombres del esquema."""
-    c, o, f = (oraculo["documentos"][k] for k in ("C-v1", "O-v1", "F-v2"))
+    c, o, f, o2 = (oraculo["documentos"][k] for k in ("C-v1", "O-v1", "F-v2", "O-v2"))
     return {
         "C-v1": {
             "tipo_documental": "contrato",
@@ -97,6 +101,15 @@ def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
             "cuit_proveedor": o["cuit_proveedor"],
             "importe_total": o["total"],
             "moneda": o["moneda"],
+        },
+        "O-v2": {
+            "tipo_documental": "orden_compra",
+            "numero": "O-v2",
+            "fecha": o2["fecha_emision"],
+            "proveedor": RAZON_SOCIAL_PROVEEDOR,
+            "cuit_proveedor": o2["cuit_proveedor"],
+            "importe_total": o2["total"],
+            "moneda": o2["moneda"],
         },
         "F-v2": {
             "tipo_documental": "factura",
@@ -225,6 +238,21 @@ class Sembrador:
 
     # --- Documentos -----------------------------------------------------------------
 
+    def _cargar(self, tramite_id: int, codigo: str) -> int:
+        archivo = ARCHIVOS[codigo]
+        datos = (CORPUS / archivo).read_bytes()
+        carga = self.api.post(
+            f"/tramites/{tramite_id}/cargas",
+            "responsable",
+            {"nombre": archivo, "formato": "pdf", "tamano_bytes": len(datos)},
+        )
+        self.api.transferir(carga["url"], carga["encabezados"], datos)
+        confirmado = self.api.post(
+            f"/tramites/{tramite_id}/cargas/{carga['id']}/confirmacion", "responsable"
+        )
+        archivo_id: int = confirmado["id"]
+        return archivo_id
+
     def cargar_documentos(
         self, clave: str, titulo: str, codigos: tuple[str, ...]
     ) -> dict[str, Any]:
@@ -232,18 +260,7 @@ class Sembrador:
         registro: dict[str, Any] = {"id": tramite["id"], "documentos": {}, "archivos": {}}
         self.m.tramites[clave] = registro
         for codigo in codigos:
-            archivo = ARCHIVOS[codigo]
-            datos = (CORPUS / archivo).read_bytes()
-            carga = self.api.post(
-                f"/tramites/{tramite['id']}/cargas",
-                "responsable",
-                {"nombre": archivo, "formato": "pdf", "tamano_bytes": len(datos)},
-            )
-            self.api.transferir(carga["url"], carga["encabezados"], datos)
-            confirmado = self.api.post(
-                f"/tramites/{tramite['id']}/cargas/{carga['id']}/confirmacion", "responsable"
-            )
-            registro["archivos"][codigo] = confirmado["id"]
+            registro["archivos"][codigo] = self._cargar(tramite["id"], codigo)
         self.esperar(self.api, tramite["id"], list(registro["archivos"].values()))
         for codigo, archivo_id in registro["archivos"].items():
             documento = self.api.post(
@@ -272,26 +289,33 @@ class Sembrador:
         tipo: str = registrada["tipo"]
         return tipo
 
-    def validar(self, registro: dict[str, Any]) -> None:
+    def _validar_documento(self, tramite_id: int, documento_id: int, codigo: str) -> dict[str, str]:
         """Clasificación primero (DO-2026-10-22-VAL P3) y después cada campo del esquema."""
-        tramite_id = registro["id"]
-        registro["validaciones"] = {}
-        for codigo, documento_id in registro["documentos"].items():
-            ruta = f"/tramites/{tramite_id}/documentos/{documento_id}/validaciones"
-            valores = self.valores[codigo]
-            tipos = {
-                "tipo_documental": self._validar_dato(
-                    tramite_id,
-                    documento_id,
-                    self.api.get(ruta, "responsable")["clasificacion"],
-                    valores["tipo_documental"],
-                )
-            }
-            for dato in self.api.get(ruta, "responsable")["campos"]:
-                tipos[dato["campo"]] = self._validar_dato(
-                    tramite_id, documento_id, dato, valores[dato["campo"]]
-                )
-            registro["validaciones"][codigo] = tipos
+        ruta = f"/tramites/{tramite_id}/documentos/{documento_id}/validaciones"
+        valores = self.valores[codigo]
+        tipos = {
+            "tipo_documental": self._validar_dato(
+                tramite_id,
+                documento_id,
+                self.api.get(ruta, "responsable")["clasificacion"],
+                valores["tipo_documental"],
+            )
+        }
+        for dato in self.api.get(ruta, "responsable")["campos"]:
+            tipos[dato["campo"]] = self._validar_dato(
+                tramite_id, documento_id, dato, valores[dato["campo"]]
+            )
+        return tipos
+
+    def validar(self, registro: dict[str, Any]) -> None:
+        registro["validaciones"] = {
+            codigo: self._validar_documento(registro["id"], documento_id, codigo)
+            for codigo, documento_id in registro["documentos"].items()
+        }
+
+    def _controles(self, tramite_id: int) -> dict[str, str]:
+        controles = self.api.get(f"/tramites/{tramite_id}/controles", "responsable")["vigentes"]
+        return {c["codigo_regla"][:2]: c["resultado"] for c in controles}
 
     def vincular(self, registro: dict[str, Any]) -> None:
         """RF-15: confirma el vínculo sugerido; si no lo hay, lo crea (RF-14)."""
@@ -324,14 +348,12 @@ class Sembrador:
                     },
                 )
             registro["vinculos"].append(vinculo["id"])
-        controles = self.api.get(f"/tramites/{tramite_id}/controles", "responsable")["vigentes"]
-        registro["controles"] = {c["codigo_regla"][:2]: c["resultado"] for c in controles}
+        registro["controles"] = self._controles(tramite_id)
 
-    def revisar(self, registro: dict[str, Any]) -> None:
-        tramite_id = registro["id"]
+    def _ciclo(self, tramite_id: int) -> dict[str, Any]:
         self.api.post(f"/tramites/{tramite_id}/envio-a-validacion", "responsable")
         sugerido = self.api.get(f"/tramites/{tramite_id}/flujo-sugerido", "responsable")
-        ciclo = self.api.post(
+        ciclo: dict[str, Any] = self.api.post(
             f"/tramites/{tramite_id}/ciclos",
             "responsable",
             {
@@ -339,6 +361,11 @@ class Sembrador:
                 "version_plantilla": sugerido["version_plantilla"],
             },
         )
+        return ciclo
+
+    def revisar(self, registro: dict[str, Any]) -> None:
+        tramite_id = registro["id"]
+        ciclo = self._ciclo(tramite_id)
         registro["ciclo"] = ciclo["id"]
         legal, final = ciclo["tareas"]
         aprobacion = self.api.post(
@@ -350,6 +377,58 @@ class Sembrador:
             {"tipo": "observacion", "motivo": MOTIVO_OBSERVACION},
         )
         registro["decisiones"] = [aprobacion["id"], observacion["id"]]
+        registro["estado"] = self.api.get(f"/tramites/{tramite_id}", "responsable")["estado"]
+
+    def corregir_con_version(self, registro: dict[str, Any]) -> None:
+        """EVD-B 3: O-v2 como versión nueva confirmada de O-v1. Solo se confirma la relación
+        que sugiere el sistema (RF-06); si no la sugiere, la semilla se detiene."""
+        tramite_id = registro["id"]
+        archivo_id = self._cargar(tramite_id, "O-v2")
+        registro["archivos"]["O-v2"] = archivo_id
+        self.esperar(self.api, tramite_id, [archivo_id])
+        archivo = next(
+            a
+            for a in self.api.get(f"/tramites/{tramite_id}/archivos", "responsable")
+            if a["id"] == archivo_id
+        )
+        sugerencia = archivo.get("sugerencia_version") or {}
+        if sugerencia.get("documento_id") != registro["documentos"]["O-v1"]:
+            raise RuntimeError("RF-06 no sugirió O-v2 como versión nueva de O-v1")
+        registro["criterio_version"] = sugerencia["criterio"]
+        documento = self.api.post(
+            f"/tramites/{tramite_id}/archivos/{archivo_id}/version", "responsable"
+        )
+        registro["version_nueva"] = documento["version_vigente"]["id"]
+        registro["validaciones"]["O-v2"] = self._validar_documento(
+            tramite_id, documento["id"], "O-v2"
+        )
+        registro["controles_corregidos"] = self._controles(tramite_id)
+
+    def cerrar(self, registro: dict[str, Any]) -> None:
+        """EVD-B 4 y V11: ciclo 2 aprobado por las dos tareas y firma simulada de C-v1."""
+        tramite_id = registro["id"]
+        ciclo = self._ciclo(tramite_id)
+        registro["ciclo_2"] = ciclo["id"]
+        legal, final = ciclo["tareas"]
+        registro["decisiones_2"] = [
+            self.api.post(f"/tareas/{legal['id']}/decision", "revisor", {"tipo": "aprobacion"})[
+                "id"
+            ],
+            self.api.post(f"/tareas/{final['id']}/decision", "aprobador", {"tipo": "aprobacion"})[
+                "id"
+            ],
+        ]
+        contrato = next(
+            v for v in ciclo["versiones"] if v["documento_id"] == registro["documentos"]["C-v1"]
+        )
+        firma = self.api.post(
+            f"/tramites/{tramite_id}/firma", "aprobador", {"version_id": contrato["version_id"]}
+        )
+        registro["firma"] = {
+            "id": firma["id"],
+            "version_id": firma["version_id"],
+            "referencia_integridad": firma["referencia_integridad"],
+        }
         registro["estado"] = self.api.get(f"/tramites/{tramite_id}", "responsable")["estado"]
 
     # --- Recorrido completo ---------------------------------------------------------
@@ -370,6 +449,16 @@ class Sembrador:
             "en_vivo", "Servicio de mantenimiento de laboratorio (en vivo)", ("C-v1",)
         )
         en_vivo["estado"] = self.api.get(f"/tramites/{en_vivo['id']}", "responsable")["estado"]
+        cerrado = self.cargar_documentos(
+            "cerrado",
+            "Servicio de mantenimiento de laboratorio (historia completa)",
+            ("C-v1", "O-v1", "F-v2"),
+        )
+        self.validar(cerrado)
+        self.vincular(cerrado)
+        self.revisar(cerrado)
+        self.corregir_con_version(cerrado)
+        self.cerrar(cerrado)
         self.m.resultado = "completado"
         self.m.terminado_en = datetime.now(UTC).isoformat()
         return self.m

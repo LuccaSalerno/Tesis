@@ -2,7 +2,7 @@
 
 **Propósito:** que cualquier persona o agente pueda retomar el trabajo sin el historial de conversaciones. Se actualiza en el mismo commit que cierra cada hito (AGENTS.md §6). El plan está en `Plan_Implementacion_por_Etapas.md`; este documento solo registra dónde estamos.
 
-**Actualización:** 22/10/2026, después de la aplicación web (DO-2026-10-22-WEB). La Etapa 1 queda completa en local; nada se desplegó.
+**Actualización:** 23/10/2026, después de DO-2026-10-23-VER (versión nueva, descarte y firma simulada). Nada nuevo se desplegó.
 **Rama de trabajo:** `fundacion/local-backend` (no se hace merge a `main` sin revisión del equipo).
 **Último commit con CI en verde en GitHub:** `2bb4dff` (hito 1.0; 677 pruebas aprobadas, 4 omitidas, cobertura total 98 % y los 73 módulos ≥ 90 %).
 **Hito 1.0, ensayo de CI limpio local:** 677 pruebas aprobadas, 4 omitidas (EVD-A, EVD-B y las dos de nivel B de AWS), cobertura total 98 % y los 73 módulos ≥ 90 %; incluye la inicialización privilegiada contra el superusuario efímero de PostgreSQL.
@@ -89,13 +89,23 @@
 - **Confiabilidad §6.3.2 (DO-2026-10-23-REC):** migración 0011 (`en_espera`), admisión transaccional, reconciliador (quinta Lambda y EventBridge Scheduler en `demo`), intento manual `POST …/reintento`, interfaz sin presentar la espera como error. **Nivel A ejecutado en la CI: AS-01 a AS-04 y admisión sin sobreasignación.** Nivel B (`python -m atlas.evaluacion.confiabilidad`) sin ejecutar. DIF-50 implementada en código, DIF-113.
 - **Frontend hospedado (DO-2026-10-23-WEB-HOST):** raíz Terraform `web` (bucket privado, CloudFront con OAC, encabezados de seguridad), `configuracion.json` leído al iniciar y `infra/web/publicar.sh`. Validado sin AWS (`terraform validate`, pruebas del frontend y simulación del script); sin aplicar. DIF-114.
 
+## Versión nueva, descarte y firma simulada — 23/10/2026 (DO-2026-10-23-VER)
+
+- **RF-06/RF-07:** al persistir el procesamiento se sugiere, con criterio explicable (número documental o CUIT contra los valores validados), que un archivo es versión nueva de un documento del trámite (`servicios/versiones.py`, tabla `sugerencia_version`, migración 0012). Rutas para confirmar la versión, rechazar la relación (incorporar como documento nuevo) y descartar (RC-P01-013). RN-12 con versión nueva en la misma transacción; prueba de concurrencia. Resuelve DIF-48 y DIF-49; DIF-115.
+- **RF-23/RN-15:** `POST /tramites/{t}/firma` y `GET` (tabla `firma_simulada`, inmutable): revisor/aprobador con autorización de cierre y tarea en el ciclo aprobado, versión vigente del ciclo, referencia SHA-256 de un registro canónico, trámite Cerrado; la evidencia de la decisión incluye la firma (PD-06-002). Batería RN-15 de operaciones rechazadas. DIF-116.
+- **Interfaz:** sugerencia con criterio y tres acciones en Documentos; «Firmar (simulación)» para el aprobador; firma con la leyenda «sin validez jurídica» en Resumen y Evidencia; rótulos del historial. Verificado en el navegador contra el stack local.
+- **Semilla (P9):** tercer trámite «cerrado» con EVD-B completo (O-v2 sugerida por CUIT, R3 pasa a cumplimiento, ciclo 2 aprobado, firma de C-v1); la exportación guarda la firma y las decisiones del ciclo 2.
+- **EVD-01:** EVD-A y EVD-B dejan de omitirse: los cuatro recorridos se ejecutan en la CI. No acreditan EVD-01 sin el oráculo congelado y la evidencia conservada.
+- **Corrección transversal:** la sesión se confirma antes de responder (DIF-117).
+- Sin probar contra AWS: corresponde a la sesión única de la sección 6.
+
 ## Próximo paso
 
 **1.1 (equipo, manual):** sesión de demo con el paquete de `b9bc012` o posterior; mismo procedimiento que e90-ensayo-2 sin los tropiezos. Después: diseño del corpus E90 y del arnés de §6.3 (requiere aprobación).
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Agente, cuando el equipo lo decida: Etapa 2 (RF-06, que habilita EVD-A y EVD-B y la versión nueva en la interfaz).
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla ya deja el trámite cerrado con firma). Fuera de alcance de DO-2026-10-23-VER: RF-24 (panel del administrador), RF-25 (supresión de cuentas) y RF-26/RN-14 (cancelación).
 
 ## Preguntas abiertas al equipo
 

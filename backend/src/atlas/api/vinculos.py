@@ -39,7 +39,7 @@ from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["vinculos"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion)]
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
 Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
 SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]

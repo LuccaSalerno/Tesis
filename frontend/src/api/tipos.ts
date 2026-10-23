@@ -48,3 +48,6 @@ export type Cuenta = S["CuentaRespuesta"];
 export type Yo = S["YoRespuesta"];
 export type Salud = S["RespuestaSalud"];
 export type ArchivoVersion = S["ArchivoVersionRespuesta"];
+export type CriterioVersion = S["CriterioVersion"];
+export type SugerenciaVersion = S["SugerenciaVersionRespuesta"];
+export type Firma = S["FirmaRespuesta"];

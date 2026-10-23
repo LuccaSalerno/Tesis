@@ -16,6 +16,7 @@ from atlas.persistencia.modelos import (
     Decision,
     Documento,
     EventoAuditoria,
+    FirmaSimulada,
     ReferenciaFuente,
     Tarea,
     Tramite,
@@ -23,7 +24,7 @@ from atlas.persistencia.modelos import (
     ValorSugerido,
     VersionDocumental,
 )
-from atlas.servicios import ciclos, reglas, tareas
+from atlas.servicios import ciclos, firma, reglas, tareas
 from atlas.servicios.errores import NoEncontrado
 
 
@@ -49,6 +50,7 @@ class Evidencia:
     validaciones: list[ValidacionConsiderada]
     controles: list[reglas.DetalleEjecucion]
     eventos: list[EventoAuditoria]
+    firma: FirmaSimulada | None
 
 
 def _validaciones(
@@ -120,6 +122,9 @@ def obtener(sesion: Session, decision_id: int, usuario_id: int, *, revisor: bool
     versiones = ciclos.versiones(sesion, ciclo.id)
     validaciones = _validaciones(sesion, versiones, decision)
     controles = tareas.controles_de_la_decision(sesion, decision.id)
+    aplicada = firma.de_tramite(sesion, tramite.id)
+    if aplicada is not None and aplicada.ciclo_revision_id != ciclo.id:
+        aplicada = None
     decisiones = sesion.scalars(
         select(Decision.id).where(Decision.tarea_id.in_([t.id for t in del_ciclo]))
     ).all()
@@ -129,6 +134,7 @@ def obtener(sesion: Session, decision_id: int, usuario_id: int, *, revisor: bool
         + [("decision", d) for d in decisiones]
         + [("validacion_humana", v.validacion.id) for v in validaciones]
         + [("ejecucion_regla", c.ejecucion.id) for c in controles]
+        + ([] if aplicada is None else [("firma_simulada", aplicada.id)])
     )
     eventos = list(
         sesion.scalars(
@@ -150,6 +156,7 @@ def obtener(sesion: Session, decision_id: int, usuario_id: int, *, revisor: bool
         validaciones=validaciones,
         controles=controles,
         eventos=eventos,
+        firma=aplicada,
     )
 
 

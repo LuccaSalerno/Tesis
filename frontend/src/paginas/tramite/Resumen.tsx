@@ -1,14 +1,16 @@
 import { ArrowRight, Scale, Send, Wrench } from "lucide-react";
 import { Link } from "react-router";
 
-import { useCiclos, useControles, useTransicion } from "@/api/consultas";
+import { useCiclos, useControles, useFirma, useTransicion } from "@/api/consultas";
 import { InsigniaEstado, Persona } from "@/componentes/dominio";
+import { FirmaAplicada, Firmar } from "@/componentes/firma";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { Cargando, mensajeDeError } from "@/componentes/ui/estados";
 import { Dato, Panel } from "@/componentes/ui/panel";
 import { DECISION, ESTADO_CICLO, ESTADO_TAREA, TIPO_DOCUMENTAL } from "@/lib/dominio";
 import { fechaHora } from "@/lib/formatos";
+import { useSesion } from "@/lib/sesion";
 
 import { useContextoTramite, useIdTramite } from "./MarcoTramite";
 
@@ -17,8 +19,8 @@ const PROXIMA = {
   pendiente_validacion: "Completá la validación de cada documento y confirmá el flujo de revisión sugerido.",
   pendiente_aprobacion: "Los revisores asignados están resolviendo sus tareas.",
   observado: "Un revisor registró una observación. Revisá el motivo y subsaná el trámite.",
-  aprobado: "Trámite aprobado.",
-  cerrado: "Trámite cerrado.",
+  aprobado: "Trámite aprobado. Un revisor/aprobador con autorización de cierre aplica la firma simulada y lo cierra.",
+  cerrado: "Trámite cerrado con firma simulada. La historia sigue disponible.",
   cancelado: "Trámite cancelado.",
 } as const;
 
@@ -28,8 +30,18 @@ export function Resumen() {
   const ciclos = useCiclos(id);
   const controles = useControles(id);
   const transicion = useTransicion(id);
+  const { yo, tiene } = useSesion();
+  const cerrado = tramite.estado === "cerrado";
+  const firma = useFirma(id, cerrado);
   const advertencias = controles.data?.vigentes.filter((c) => c.resultado === "advertencia") ?? [];
   const ultimo = ciclos.data?.at(-1);
+  const puedeFirmar =
+    tramite.estado === "aprobado" &&
+    ultimo?.estado === "aprobado" &&
+    !!yo?.autorizacion_cierre &&
+    tiene("revisor_aprobador") &&
+    ultimo.tareas.some((t) => t.asignada_a_id === yo.id);
+  const firmado = firma.data;
 
   return (
     <div className="grid gap-6 xl:grid-cols-3">
@@ -59,6 +71,20 @@ export function Resumen() {
           ) : null}
           {transicion.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(transicion.error)} /> : null}
         </Panel>
+
+        {puedeFirmar && ultimo ? (
+          <Panel titulo="Firma y cierre" descripcion="RF-23: firma digital simulada de una versión del ciclo aprobado.">
+            <Firmar tramiteId={id} ciclo={ultimo} />
+          </Panel>
+        ) : null}
+        {cerrado ? (
+          <Panel titulo="Firma digital simulada">
+            {firma.isPending ? <Cargando /> : null}
+            {firmado ? (
+              <FirmaAplicada firma={firmado} documento={tramite.documentos.find((d) => d.id === firmado.documento_id)?.nombre} />
+            ) : null}
+          </Panel>
+        ) : null}
 
         <Panel titulo="Documentación vigente" acciones={<Link to="../documentos" className="text-sm text-primario hover:underline">Ver documentos</Link>}>
           {tramite.documentos.length === 0 ? <p className="text-sm text-tenue">Sin documentos incorporados.</p> : null}

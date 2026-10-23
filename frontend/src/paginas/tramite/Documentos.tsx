@@ -1,9 +1,9 @@
-import { CheckCircle2, FileUp, Loader2, PencilLine, TriangleAlert } from "lucide-react";
+import { CheckCircle2, FileUp, Layers, Loader2, PencilLine, Trash2, TriangleAlert } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "react-router";
 
 import { type Etapa, useCargarArchivo } from "@/api/cargas";
-import { useArchivos, useIncorporar } from "@/api/consultas";
+import { useArchivos, useDescartar, useIncorporar, useIncorporarVersion } from "@/api/consultas";
 import type { Archivo } from "@/api/tipos";
 import { InsigniaEstado } from "@/componentes/dominio";
 import { ReintentarProcesamiento } from "@/componentes/reintento";
@@ -13,7 +13,7 @@ import { Entrada } from "@/componentes/ui/campos";
 import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Panel } from "@/componentes/ui/panel";
-import { ESTADO_TRABAJO, TIPO_DOCUMENTAL } from "@/lib/dominio";
+import { CRITERIO_VERSION, ESTADO_TRABAJO, rotuloCampo, TIPO_DOCUMENTAL } from "@/lib/dominio";
 import { fechaHora } from "@/lib/formatos";
 
 import { useContextoTramite, useIdTramite } from "./MarcoTramite";
@@ -65,7 +65,12 @@ function Carga({ tramiteId }: { tramiteId: number }) {
 function Pendiente({ archivo, tramiteId }: { archivo: Archivo; tramiteId: number }) {
   const [nombre, setNombre] = useState(archivo.nombre.replace(/\.(pdf|docx)$/i, ""));
   const incorporar = useIncorporar(tramiteId);
+  const comoVersion = useIncorporarVersion(tramiteId);
+  const descartar = useDescartar(tramiteId);
   const trabajo = archivo.trabajo;
+  const sugerida = archivo.sugerencia_version?.estado === "pendiente" ? archivo.sugerencia_version : null;
+  const ocupado = incorporar.isPending || comoVersion.isPending || descartar.isPending;
+  const error = incorporar.error ?? comoVersion.error ?? descartar.error;
   return (
     <li className="flex flex-wrap items-center gap-3 py-3">
       <div className="min-w-48 flex-1">
@@ -74,12 +79,31 @@ function Pendiente({ archivo, tramiteId }: { archivo: Archivo; tramiteId: number
       </div>
       {trabajo ? <InsigniaEstado catalogo={ESTADO_TRABAJO} valor={trabajo.estado} /> : null}
       {trabajo?.estado === "fallido" ? <ReintentarProcesamiento tramiteId={tramiteId} archivoId={archivo.id} /> : null}
+      {sugerida ? (
+        <Aviso
+          className="w-full"
+          tono="info"
+          titulo={`Posible versión nueva de «${sugerida.documento_nombre}»`}
+          accion={
+            <Boton tamano="chico" disabled={ocupado} onClick={() => comoVersion.mutate(archivo.id)}>
+              <Layers /> Incorporar como versión nueva
+            </Boton>
+          }
+        >
+          Sugerencia del sistema: {CRITERIO_VERSION[sugerida.criterio]} ({rotuloCampo(sugerida.campo)}) con el valor validado del
+          documento. Si es un documento distinto, incorporalo como documento nuevo. Confirmar la versión devuelve el trámite a
+          Borrador y desplaza el ciclo en curso (RN-12).
+        </Aviso>
+      ) : null}
       <label className="sr-only" htmlFor={`nombre-${archivo.id}`}>Nombre del documento</label>
       <Entrada id={`nombre-${archivo.id}`} value={nombre} onChange={(e) => setNombre(e.target.value)} className="w-64" />
-      <Boton variante="secundario" disabled={!nombre.trim() || incorporar.isPending} onClick={() => incorporar.mutate({ archivo: archivo.id, nombre: nombre.trim() })}>
+      <Boton variante="secundario" disabled={!nombre.trim() || ocupado} onClick={() => incorporar.mutate({ archivo: archivo.id, nombre: nombre.trim() })}>
         Incorporar como documento nuevo
       </Boton>
-      {incorporar.isError ? <Aviso className="w-full" tono="peligro" titulo={mensajeDeError(incorporar.error)} /> : null}
+      <Boton variante="sutil" disabled={ocupado} onClick={() => descartar.mutate(archivo.id)}>
+        <Trash2 /> Descartar
+      </Boton>
+      {error ? <Aviso className="w-full" tono="peligro" titulo={mensajeDeError(error)} /> : null}
     </li>
   );
 }

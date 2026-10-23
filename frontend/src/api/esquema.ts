@@ -222,6 +222,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/tramites/{tramite_id}/archivos/{archivo_id}/descarte": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Descartar Archivo
+         * @description RF-07: descarta el archivo pendiente sin crear documento ni versión; el conjunto
+         *     documental y el estado del trámite no cambian.
+         */
+        post: operations["descartar_archivo_tramites__tramite_id__archivos__archivo_id__descarte_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tramites/{tramite_id}/archivos/{archivo_id}/incorporacion": {
         parameters: {
             query?: never;
@@ -280,6 +301,28 @@ export interface paths {
         get: operations["consultar_sugerencias_tramites__tramite_id__archivos__archivo_id__sugerencias_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tramites/{tramite_id}/archivos/{archivo_id}/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Incorporar Version
+         * @description RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la
+         *     nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
+         *     (DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo.
+         */
+        post: operations["incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -444,6 +487,31 @@ export interface paths {
          * @description Borrador → Pendiente de validación, con al menos un documento incorporado.
          */
         post: operations["enviar_a_validacion_tramites__tramite_id__envio_a_validacion_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tramites/{tramite_id}/firma": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consultar Firma
+         * @description V11: la firma sigue consultable con el trámite Cerrado (RN-15).
+         */
+        get: operations["consultar_firma_tramites__tramite_id__firma_get"];
+        put?: never;
+        /**
+         * Firmar
+         * @description RF-23: firma simulada de una versión del ciclo aprobado; el trámite queda Cerrado.
+         *     Solo el revisor/aprobador con autorización de cierre y una tarea en ese ciclo.
+         */
+        post: operations["firmar_tramites__tramite_id__firma_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -796,6 +864,7 @@ export interface components {
             id: number;
             /** Nombre */
             nombre: string;
+            sugerencia_version?: components["schemas"]["SugerenciaVersionRespuesta"] | null;
             /** Tamano Bytes */
             tamano_bytes: number;
             trabajo: components["schemas"]["TrabajoRespuesta"] | null;
@@ -982,6 +1051,12 @@ export interface components {
             /** Vigentes */
             vigentes: components["schemas"]["ControlRespuesta"][];
         };
+        /**
+         * CriterioVersion
+         * @description Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1).
+         * @enum {string}
+         */
+        CriterioVersion: "numero" | "cuit";
         /** CuentaRespuesta */
         CuentaRespuesta: {
             /** Autorizacion Cierre */
@@ -1093,6 +1168,12 @@ export interface components {
          */
         EstadoOperativo: "active" | "draining" | "offline";
         /**
+         * EstadoSugerenciaVersion
+         * @description Resolución de la relación de versión sugerida por el responsable (RF-07).
+         * @enum {string}
+         */
+        EstadoSugerenciaVersion: "pendiente" | "confirmada" | "rechazada" | "descartada";
+        /**
          * EstadoTarea
          * @description Estado de una tarea; no es un estado del trámite (PD-05.4).
          * @enum {string}
@@ -1162,6 +1243,8 @@ export interface components {
             decision: components["schemas"]["DecisionRespuesta"];
             /** Eventos */
             eventos: components["schemas"]["EventoRespuesta"][];
+            /** @description Firma simulada aplicada a una versión de este ciclo (V11) */
+            firma?: components["schemas"]["FirmaRespuesta"] | null;
             tarea: components["schemas"]["TareaResumen"];
             /** Tareas Del Ciclo */
             tareas_del_ciclo: components["schemas"]["TareaResumen"][];
@@ -1170,6 +1253,62 @@ export interface components {
             validaciones: components["schemas"]["ValidacionEvidencia"][];
             /** Versiones */
             versiones: components["schemas"]["VersionCicloRespuesta"][];
+        };
+        /**
+         * FirmaRespuesta
+         * @description V11: firmante, instante, versión, ciclo y referencia de integridad recalculable. Es
+         *     una simulación sin validez jurídica.
+         */
+        FirmaRespuesta: {
+            /**
+             * Algoritmo
+             * @default SHA-256
+             */
+            algoritmo: string;
+            /** Ciclo Numero */
+            ciclo_numero: number;
+            /** Ciclo Revision Id */
+            ciclo_revision_id: number;
+            /** Documento Id */
+            documento_id: number;
+            /**
+             * Firmada En
+             * Format: date-time
+             */
+            firmada_en: string;
+            /** Firmante Id */
+            firmante_id: number;
+            /**
+             * Huella Archivo
+             * @description SHA-256 del archivo de la versión firmada
+             */
+            huella_archivo: string;
+            /** Id */
+            id: number;
+            /**
+             * Leyenda
+             * @description Rótulo obligatorio en la interfaz
+             * @default Firma digital simulada — sin validez jurídica
+             */
+            leyenda: string;
+            /** Referencia Integridad */
+            referencia_integridad: string;
+            /**
+             * Registro Canonico
+             * @description JSON cuyo SHA-256 es la referencia de integridad (claves ordenadas)
+             */
+            registro_canonico: string;
+            /**
+             * Simulada
+             * @default true
+             */
+            simulada: boolean;
+            /** Tramite Id */
+            tramite_id: number;
+            /** Version Id */
+            version_id: number;
+            /** Version Numero */
+            version_numero: number;
         };
         /** FlujoSugeridoRespuesta */
         FlujoSugeridoRespuesta: {
@@ -1291,6 +1430,14 @@ export interface components {
             /** Motivo */
             motivo?: string | null;
             tipo: components["schemas"]["TipoDecision"];
+        };
+        /** NuevaFirma */
+        NuevaFirma: {
+            /**
+             * Version Id
+             * @description Versión vigente comprendida en el ciclo aprobado
+             */
+            version_id: number;
         };
         /** NuevaPlantilla */
         NuevaPlantilla: {
@@ -1479,6 +1626,22 @@ export interface components {
             version_esquema: string;
             /** Version Instrucciones */
             version_instrucciones: string;
+        };
+        /**
+         * SugerenciaVersionRespuesta
+         * @description RF-06: relación de versión sugerida con su criterio explicable; es solo una sugerencia
+         *     hasta que el responsable la confirma, la rechaza o descarta el archivo (RF-07).
+         */
+        SugerenciaVersionRespuesta: {
+            /** Campo */
+            campo: string;
+            /** @description `numero` (número documental) o `cuit` (CUIT de la contraparte, el proveedor o el emisor), comparados con los valores validados del documento */
+            criterio: components["schemas"]["CriterioVersion"];
+            /** Documento Id */
+            documento_id: number;
+            /** Documento Nombre */
+            documento_nombre: string;
+            estado: components["schemas"]["EstadoSugerenciaVersion"];
         };
         /** SugerenciasRespuesta */
         SugerenciasRespuesta: {
@@ -2317,6 +2480,38 @@ export interface operations {
             };
         };
     };
+    descartar_archivo_tramites__tramite_id__archivos__archivo_id__descarte_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+                archivo_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArchivoRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     incorporar_archivo_tramites__tramite_id__archivos__archivo_id__incorporacion_post: {
         parameters: {
             query?: never;
@@ -2411,6 +2606,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SugerenciasRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+                archivo_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentoRespuesta"];
                 };
             };
             /** @description Validation Error */
@@ -2781,6 +3008,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TramiteRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    consultar_firma_tramites__tramite_id__firma_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FirmaRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    firmar_tramites__tramite_id__firma_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NuevaFirma"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FirmaRespuesta"];
                 };
             };
             /** @description Validation Error */

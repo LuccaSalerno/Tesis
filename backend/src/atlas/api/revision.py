@@ -45,14 +45,17 @@ from atlas.persistencia.modelos import (
     CicloRevision,
     Decision,
     EventoAuditoria,
+    FirmaSimulada,
     ReferenciaFuente,
     Tarea,
+    VersionDocumental,
 )
-from atlas.servicios import ciclos, evidencia, plantillas, reglas, tareas, tramites
+from atlas.servicios import ciclos, evidencia, firma, plantillas, reglas, tareas, tramites
+from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(tags=["revision"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion)]
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
 Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
 Revisor = Annotated[UsuarioActual, Depends(exigir_rol(Rol.REVISOR_APROBADOR))]
@@ -629,6 +632,60 @@ def consultar_linea_de_tiempo(
     ]
 
 
+# --- Firma digital simulada (RF-23, RN-11, RN-15, DO-2026-10-23-VER P5 y P6) -----------
+
+
+class NuevaFirma(BaseModel):
+    version_id: int = Field(description="Versión vigente comprendida en el ciclo aprobado")
+
+
+class FirmaRespuesta(BaseModel):
+    """V11: firmante, instante, versión, ciclo y referencia de integridad recalculable. Es
+    una simulación sin validez jurídica."""
+
+    id: int
+    leyenda: str = Field(default=firma.LEYENDA, description="Rótulo obligatorio en la interfaz")
+    simulada: bool = True
+    tramite_id: int
+    ciclo_revision_id: int
+    ciclo_numero: int
+    documento_id: int
+    version_id: int
+    version_numero: int
+    firmante_id: int
+    firmada_en: datetime
+    huella_archivo: str = Field(description="SHA-256 del archivo de la versión firmada")
+    algoritmo: str = "SHA-256"
+    registro_canonico: str = Field(
+        description="JSON cuyo SHA-256 es la referencia de integridad (claves ordenadas)"
+    )
+    referencia_integridad: str
+
+    @classmethod
+    def desde(cls, sesion: Session, aplicada: FirmaSimulada) -> "FirmaRespuesta":
+        version = sesion.get_one(VersionDocumental, aplicada.version_id)
+        huella = firma.huella(sesion, aplicada)
+        return cls(
+            id=aplicada.id,
+            tramite_id=aplicada.tramite_id,
+            ciclo_revision_id=aplicada.ciclo_revision_id,
+            ciclo_numero=sesion.get_one(CicloRevision, aplicada.ciclo_revision_id).numero,
+            documento_id=version.documento_id,
+            version_id=version.id,
+            version_numero=version.numero,
+            firmante_id=aplicada.firmante_id,
+            firmada_en=aplicada.firmada_en,
+            huella_archivo=huella,
+            registro_canonico=firma.registro_canonico(
+                version_id=version.id,
+                huella=huella,
+                firmante_id=aplicada.firmante_id,
+                firmada_en=aplicada.firmada_en,
+            ),
+            referencia_integridad=aplicada.referencia_integridad,
+        )
+
+
 # --- Evidencia de la decisión (PD-03, PD-06, P12) ---------------------------------------
 
 
@@ -663,6 +720,9 @@ class EvidenciaRespuesta(BaseModel):
     validaciones: list[ValidacionEvidencia]
     controles: list[EjecucionRespuesta]
     eventos: list[EventoRespuesta]
+    firma: FirmaRespuesta | None = Field(
+        default=None, description="Firma simulada aplicada a una versión de este ciclo (V11)"
+    )
 
 
 def _localizador(fuente: ReferenciaFuente | None) -> Localizador | None:
@@ -709,4 +769,45 @@ def consultar_evidencia(
         ],
         controles=[EjecucionRespuesta.desde(c) for c in actual.controles],
         eventos=[EventoRespuesta.desde(e) for e in actual.eventos],
+        firma=None if actual.firma is None else FirmaRespuesta.desde(sesion, actual.firma),
     )
+
+
+@enrutador.post(
+    "/tramites/{tramite_id}/firma",
+    response_model=FirmaRespuesta,
+    status_code=status.HTTP_201_CREATED,
+)
+def firmar(
+    tramite_id: int,
+    nueva: NuevaFirma,
+    usuario: Revisor,
+    sesion: Sesion,
+    solicitud_id: SolicitudId,
+) -> FirmaRespuesta:
+    """RF-23: firma simulada de una versión del ciclo aprobado; el trámite queda Cerrado.
+    Solo el revisor/aprobador con autorización de cierre y una tarea en ese ciclo."""
+    acceso = tramites.obtener_para_consulta(sesion, tramite_id, usuario.id, revisor=True)
+    # PD-05.2: bloquea el trámite; una incorporación simultánea espera o ya terminó.
+    sesion.refresh(acceso.tramite, with_for_update=True)
+    aplicada = firma.firmar(
+        sesion,
+        tramite=acceso.tramite,
+        version_id=nueva.version_id,
+        usuario_id=usuario.id,
+        autorizacion_cierre=usuario.autorizacion_cierre,
+        solicitud_id=solicitud_id,
+    )
+    return FirmaRespuesta.desde(sesion, aplicada)
+
+
+@enrutador.get("/tramites/{tramite_id}/firma", response_model=FirmaRespuesta)
+def consultar_firma(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> FirmaRespuesta:
+    """V11: la firma sigue consultable con el trámite Cerrado (RN-15)."""
+    acceso = tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )
+    aplicada = firma.de_tramite(sesion, acceso.tramite.id)
+    if aplicada is None or not acceso.permite(aplicada.version_id):
+        raise NoEncontrado("El trámite no tiene una firma simulada")
+    return FirmaRespuesta.desde(sesion, aplicada)

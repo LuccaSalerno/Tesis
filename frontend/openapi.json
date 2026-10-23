@@ -86,6 +86,16 @@
             "title": "Nombre",
             "type": "string"
           },
+          "sugerencia_version": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SugerenciaVersionRespuesta"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "tamano_bytes": {
             "title": "Tamano Bytes",
             "type": "integer"
@@ -598,6 +608,15 @@
         "title": "ControlesRespuesta",
         "type": "object"
       },
+      "CriterioVersion": {
+        "description": "Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1).",
+        "enum": [
+          "numero",
+          "cuit"
+        ],
+        "title": "CriterioVersion",
+        "type": "string"
+      },
       "CuentaRespuesta": {
         "properties": {
           "autorizacion_cierre": {
@@ -915,6 +934,17 @@
         "title": "EstadoOperativo",
         "type": "string"
       },
+      "EstadoSugerenciaVersion": {
+        "description": "Resolución de la relación de versión sugerida por el responsable (RF-07).",
+        "enum": [
+          "pendiente",
+          "confirmada",
+          "rechazada",
+          "descartada"
+        ],
+        "title": "EstadoSugerenciaVersion",
+        "type": "string"
+      },
       "EstadoTarea": {
         "description": "Estado de una tarea; no es un estado del trámite (PD-05.4).",
         "enum": [
@@ -1065,6 +1095,17 @@
             "title": "Eventos",
             "type": "array"
           },
+          "firma": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FirmaRespuesta"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Firma simulada aplicada a una versión de este ciclo (V11)"
+          },
           "tarea": {
             "$ref": "#/components/schemas/TareaResumen"
           },
@@ -1105,6 +1146,94 @@
           "eventos"
         ],
         "title": "EvidenciaRespuesta",
+        "type": "object"
+      },
+      "FirmaRespuesta": {
+        "description": "V11: firmante, instante, versión, ciclo y referencia de integridad recalculable. Es\nuna simulación sin validez jurídica.",
+        "properties": {
+          "algoritmo": {
+            "default": "SHA-256",
+            "title": "Algoritmo",
+            "type": "string"
+          },
+          "ciclo_numero": {
+            "title": "Ciclo Numero",
+            "type": "integer"
+          },
+          "ciclo_revision_id": {
+            "title": "Ciclo Revision Id",
+            "type": "integer"
+          },
+          "documento_id": {
+            "title": "Documento Id",
+            "type": "integer"
+          },
+          "firmada_en": {
+            "format": "date-time",
+            "title": "Firmada En",
+            "type": "string"
+          },
+          "firmante_id": {
+            "title": "Firmante Id",
+            "type": "integer"
+          },
+          "huella_archivo": {
+            "description": "SHA-256 del archivo de la versión firmada",
+            "title": "Huella Archivo",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "leyenda": {
+            "default": "Firma digital simulada — sin validez jurídica",
+            "description": "Rótulo obligatorio en la interfaz",
+            "title": "Leyenda",
+            "type": "string"
+          },
+          "referencia_integridad": {
+            "title": "Referencia Integridad",
+            "type": "string"
+          },
+          "registro_canonico": {
+            "description": "JSON cuyo SHA-256 es la referencia de integridad (claves ordenadas)",
+            "title": "Registro Canonico",
+            "type": "string"
+          },
+          "simulada": {
+            "default": true,
+            "title": "Simulada",
+            "type": "boolean"
+          },
+          "tramite_id": {
+            "title": "Tramite Id",
+            "type": "integer"
+          },
+          "version_id": {
+            "title": "Version Id",
+            "type": "integer"
+          },
+          "version_numero": {
+            "title": "Version Numero",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "tramite_id",
+          "ciclo_revision_id",
+          "ciclo_numero",
+          "documento_id",
+          "version_id",
+          "version_numero",
+          "firmante_id",
+          "firmada_en",
+          "huella_archivo",
+          "registro_canonico",
+          "referencia_integridad"
+        ],
+        "title": "FirmaRespuesta",
         "type": "object"
       },
       "FlujoSugeridoRespuesta": {
@@ -1504,6 +1633,20 @@
           "tipo"
         ],
         "title": "NuevaDecision",
+        "type": "object"
+      },
+      "NuevaFirma": {
+        "properties": {
+          "version_id": {
+            "description": "Versión vigente comprendida en el ciclo aprobado",
+            "title": "Version Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version_id"
+        ],
+        "title": "NuevaFirma",
         "type": "object"
       },
       "NuevaPlantilla": {
@@ -2058,6 +2201,39 @@
           "version_esquema"
         ],
         "title": "SugerenciaRespuesta",
+        "type": "object"
+      },
+      "SugerenciaVersionRespuesta": {
+        "description": "RF-06: relación de versión sugerida con su criterio explicable; es solo una sugerencia\nhasta que el responsable la confirma, la rechaza o descarta el archivo (RF-07).",
+        "properties": {
+          "campo": {
+            "title": "Campo",
+            "type": "string"
+          },
+          "criterio": {
+            "$ref": "#/components/schemas/CriterioVersion",
+            "description": "`numero` (número documental) o `cuit` (CUIT de la contraparte, el proveedor o el emisor), comparados con los valores validados del documento"
+          },
+          "documento_id": {
+            "title": "Documento Id",
+            "type": "integer"
+          },
+          "documento_nombre": {
+            "title": "Documento Nombre",
+            "type": "string"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoSugerenciaVersion"
+          }
+        },
+        "required": [
+          "documento_id",
+          "documento_nombre",
+          "criterio",
+          "campo",
+          "estado"
+        ],
+        "title": "SugerenciaVersionRespuesta",
         "type": "object"
       },
       "SugerenciasRespuesta": {
@@ -3936,6 +4112,63 @@
         ]
       }
     },
+    "/tramites/{tramite_id}/archivos/{archivo_id}/descarte": {
+      "post": {
+        "description": "RF-07: descarta el archivo pendiente sin crear documento ni versión; el conjunto\ndocumental y el estado del trámite no cambian.",
+        "operationId": "descartar_archivo_tramites__tramite_id__archivos__archivo_id__descarte_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tramite_id",
+            "required": true,
+            "schema": {
+              "title": "Tramite Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "archivo_id",
+            "required": true,
+            "schema": {
+              "title": "Archivo Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchivoRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Descartar Archivo",
+        "tags": [
+          "tramites"
+        ]
+      }
+    },
     "/tramites/{tramite_id}/archivos/{archivo_id}/incorporacion": {
       "post": {
         "description": "RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.\n\nLa carga debe estar vigente (24 h, DO-2026-10-22-CARGAS); el original se traslada\nal prefijo definitivo de S3 antes de registrar la versión.",
@@ -4122,6 +4355,63 @@
           }
         ],
         "summary": "Consultar Sugerencias",
+        "tags": [
+          "tramites"
+        ]
+      }
+    },
+    "/tramites/{tramite_id}/archivos/{archivo_id}/version": {
+      "post": {
+        "description": "RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la\nnueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción\n(DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo.",
+        "operationId": "incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tramite_id",
+            "required": true,
+            "schema": {
+              "title": "Tramite Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "archivo_id",
+            "required": true,
+            "schema": {
+              "title": "Archivo Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Incorporar Version",
         "tags": [
           "tramites"
         ]
@@ -4738,6 +5028,110 @@
           }
         ],
         "summary": "Enviar A Validacion",
+        "tags": [
+          "revision"
+        ]
+      }
+    },
+    "/tramites/{tramite_id}/firma": {
+      "get": {
+        "description": "V11: la firma sigue consultable con el trámite Cerrado (RN-15).",
+        "operationId": "consultar_firma_tramites__tramite_id__firma_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tramite_id",
+            "required": true,
+            "schema": {
+              "title": "Tramite Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirmaRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Consultar Firma",
+        "tags": [
+          "revision"
+        ]
+      },
+      "post": {
+        "description": "RF-23: firma simulada de una versión del ciclo aprobado; el trámite queda Cerrado.\nSolo el revisor/aprobador con autorización de cierre y una tarea en ese ciclo.",
+        "operationId": "firmar_tramites__tramite_id__firma_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tramite_id",
+            "required": true,
+            "schema": {
+              "title": "Tramite Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaFirma"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirmaRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Firmar",
         "tags": [
           "revision"
         ]

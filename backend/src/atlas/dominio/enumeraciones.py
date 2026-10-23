@@ -215,6 +215,11 @@ class AccionAuditoria(StrEnum):
     CARGA_CONFIRMADA = "carga_confirmada"
     CARGA_VENCIDA = "carga_vencida"
     PROCESAMIENTO_REINTENTADO = "procesamiento_reintentado"  # RNF-06, RC-P08.4
+    VERSION_INCORPORADA = "version_incorporada"  # RF-07: relación de versión confirmada
+    SUGERENCIA_VERSION_RECHAZADA = "sugerencia_version_rechazada"  # RF-07
+    ARCHIVO_DESCARTADO = "archivo_descartado"  # RF-07
+    FIRMA_SIMULADA_APLICADA = "firma_simulada_aplicada"  # RF-23, RN-11
+    TRAMITE_CERRADO = "tramite_cerrado"  # RF-23
     DOCUMENTO_INCORPORADO = "documento_incorporado"
     TRAMITE_VUELVE_A_BORRADOR = "tramite_vuelve_a_borrador"
     CLASIFICACION_CONFIRMADA = "clasificacion_confirmada"
@@ -246,3 +251,19 @@ class AccionAuditoria(StrEnum):
     TRAMITE_SUBSANADO = "tramite_subsanado"
     CICLO_DESPLAZADO = "ciclo_desplazado"
     CUENTA_NOMBRE_CAMBIADO = "cuenta_nombre_cambiado"
+
+
+class CriterioVersion(StrEnum):
+    """Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1)."""
+
+    NUMERO = "numero"  # mismo tipo y mismo número documental
+    CUIT = "cuit"  # mismo tipo y mismo CUIT de la contraparte, proveedor o emisor
+
+
+class EstadoSugerenciaVersion(StrEnum):
+    """Resolución de la relación de versión sugerida por el responsable (RF-07)."""
+
+    PENDIENTE = "pendiente"
+    CONFIRMADA = "confirmada"
+    RECHAZADA = "rechazada"  # incorporado como documento independiente
+    DESCARTADA = "descartada"  # el archivo se descartó

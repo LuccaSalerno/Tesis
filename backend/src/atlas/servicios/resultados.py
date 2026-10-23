@@ -24,6 +24,7 @@ from atlas.procesamiento.analisis import Clasificacion, Extraccion
 from atlas.procesamiento.errores import ErrorPermanente
 from atlas.procesamiento.esquemas import CAMPO_CLASIFICACION
 from atlas.registro import registrar_evento
+from atlas.servicios import versiones
 
 _registrador = logging.getLogger("atlas.procesamiento")
 
@@ -134,6 +135,10 @@ def persistir(
                 version_segmentacion=indexacion["version_segmentacion"],
             )
         )
+    sesion.flush()
+    # RF-06: con los resultados ya registrados, se busca un documento del que el archivo
+    # pueda ser versión nueva (DO-2026-10-23-VER P1, P2).
+    versiones.detectar(sesion, trabajo.archivo_id, intento)
     trabajo.estado = EstadoTrabajo.COMPLETADO
     trabajo.codigo_error = None
     sesion.flush()

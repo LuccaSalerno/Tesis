@@ -669,6 +669,23 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 8. **P8 — Pruebas:** `terraform validate`, pruebas del frontend de la carga de configuración, `bash -n` y simulación del script; en la sesión, el E2E contra CloudFront.
 9. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-VER — Versión nueva, descarte y firma digital simulada
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** RF-05 a RF-07, RF-23, RN-11, RN-12, RN-15, PD-05, RC-P03.2, Figura 5.4 (`FIRMA_SIMULADA`), EVD-A, EVD-B.
+
+1. **P1 — Detección (RF-06):** reglas explicables, sin IA adicional. Candidato: documento del trámite cuya versión vigente tiene tipo validado igual al tipo sugerido del archivo y coincide en número documental o, si no, en el CUIT de la contraparte, proveedor o emisor. Prioridad número sobre CUIT; empate, el más reciente. Una sola candidata con su criterio.
+2. **P2 — Persistencia:** tabla técnica `sugerencia_version` (migración 0012) con archivo, documento candidato, criterio, estado (pendiente, confirmada, rechazada) y resolución; se calcula en la persistencia del procesamiento y se revalida al confirmar.
+3. **P3 — Rutas de RF-07 (solo responsable):** `POST …/archivos/{a}/version` confirma la relación y crea la versión nueva; la incorporación como documento nuevo registra el rechazo; `POST …/archivos/{a}/descarte` descarta sin crear documento ni versión.
+4. **P4 — Versión nueva:** número siguiente, predecesora y cambio de vigencia en una transacción con el trámite bloqueado (PD-05); la anterior conserva sus validaciones; RN-12 con el mismo mecanismo que DIF-72.
+5. **P5 — Firma (RF-23, RN-11):** `POST /tramites/{t}/firma {version_id}`: revisor con autorización de cierre y tarea en el ciclo aprobado; trámite Aprobado; versión vigente del ciclo. Tabla `firma_simulada` (Figura 5.4) con clave foránea compuesta a la versión del ciclo, una por trámite; el trámite pasa a Cerrado y se audita; RN-15 en todas las rutas de escritura.
+6. **P6 — Integridad:** SHA-256 de un registro canónico (versión, huella del archivo, firmante, instante), visible y recalculable, rotulado «Firma digital simulada — sin validez jurídica».
+7. **P7 — Interfaz:** sugerencia con criterio y tres acciones en Documentos; «Firmar (simulación)» para el aprobador; firma visible en resumen, evidencia e historial.
+8. **P8 — Evidencia:** la evidencia de la decisión y la línea de tiempo incluyen la firma; EVD-A y EVD-B dejan de omitirse (V8 a V11).
+9. **P9 — Semilla:** tercer trámite con EVD-B completo hasta la firma; el trámite en vivo admite RF-06 con O-v2.
+10. **P10 — Fuera de alcance:** cancelación (RF-26, RN-14), panel del administrador (RF-24), supresión de cuentas (RF-25).
+11. **P11 — Pruebas:** detección, rutas con negativos de autorización, RN-12 con versión nueva y concurrencia, firma, BDD de EVD-A y EVD-B, interfaz.
+12. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

@@ -25,7 +25,7 @@ from atlas.servicios import cuentas
 
 enrutador = APIRouter(prefix="/usuarios", tags=["cuentas"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion)]
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
 Administrador = Annotated[UsuarioActual, Depends(exigir_rol(Rol.ADMINISTRADOR_OPERATIVO))]
 SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
 

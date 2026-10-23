@@ -34,9 +34,11 @@ from sqlalchemy.orm import Mapped, mapped_column
 from atlas.dominio.enumeraciones import (
     AlcancePlantilla,
     ClaseSugerencia,
+    CriterioVersion,
     DisparadorRegla,
     EstadoCiclo,
     EstadoIncorporacion,
+    EstadoSugerenciaVersion,
     EstadoTarea,
     EstadoTrabajo,
     EstadoTramite,
@@ -686,3 +688,50 @@ class DecisionControl(Base):
     ejecucion_regla_id: Mapped[int] = mapped_column(
         ForeignKey("ejecucion_regla.id"), primary_key=True
     )
+
+
+class SugerenciaVersion(Base):
+    """Técnica (+): relación de versión sugerida al procesar un archivo (RF-06, RF-07)."""
+
+    __tablename__ = "sugerencia_version"
+    __table_args__ = (
+        CheckConstraint("(estado = 'pendiente') = (resuelta_en IS NULL)", name="resolucion"),
+    )
+
+    id: Mapped[int] = _id()
+    archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, unique=True)
+    documento_id: Mapped[int] = mapped_column(
+        ForeignKey("documento.id"), nullable=False, index=True
+    )
+    criterio: Mapped[CriterioVersion] = mapped_column(catalogo(CriterioVersion, 20), nullable=False)
+    campo: Mapped[str] = mapped_column(String(60), nullable=False)
+    estado: Mapped[EstadoSugerenciaVersion] = mapped_column(
+        catalogo(EstadoSugerenciaVersion, 20),
+        nullable=False,
+        server_default=EstadoSugerenciaVersion.PENDIENTE.value,
+    )
+    resuelta_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
+    resuelta_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    creado_en: Mapped[datetime] = _instante()
+
+
+class FirmaSimulada(Base):
+    """Figura 5.4: firma digital simulada sobre una versión del ciclo aprobado (RF-23, RN-11)."""
+
+    __tablename__ = "firma_simulada"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["ciclo_revision_id", "version_id"],
+            ["ciclo_revision_version.ciclo_revision_id", "ciclo_revision_version.version_id"],
+            name="fk_firma_simulada_ciclo_revision_version",
+        ),
+        CheckConstraint("referencia_integridad ~ '^[0-9a-f]{64}$'", name="referencia_integridad"),
+    )
+
+    id: Mapped[int] = _id()
+    tramite_id: Mapped[int] = mapped_column(ForeignKey("tramite.id"), nullable=False, unique=True)
+    ciclo_revision_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    version_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    firmante_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
+    referencia_integridad: Mapped[str] = mapped_column(String(64), nullable=False)
+    firmada_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

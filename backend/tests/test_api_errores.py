@@ -61,3 +61,30 @@ def test_rc_p01_002_falla_de_s3_responde_503_sin_efectos(contexto: tuple[Any, Co
     assert respuesta.json() == {
         "detalle": "Servicio no disponible momentáneamente. Reintentá en unos minutos."
     }
+
+
+@pytest.mark.integracion
+def test_rc_p01_002_la_respuesta_espera_la_confirmacion_de_la_sesion(
+    contexto: tuple[Any, Contexto], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """La sesión se confirma antes de responder: una confirmación fallida no llega al cliente
+    como un 201 y el pedido siguiente siempre ve lo confirmado."""
+    from sqlalchemy.orm import Session
+
+    _, ctx = contexto
+    original = Session.commit
+
+    def commit_fallido(sesion: Session) -> None:
+        raise RuntimeError("commit_fallido")
+
+    monkeypatch.setattr(Session, "commit", commit_fallido)
+    with TestClient(ctx.cliente.app, raise_server_exceptions=False) as cliente:
+        respuesta = cliente.post(
+            "/tramites", json={"titulo": "No confirmado"}, headers=ctx.encabezados
+        )
+    monkeypatch.setattr(Session, "commit", original)
+    assert respuesta.status_code == 500
+    assert all(
+        t["titulo"] != "No confirmado"
+        for t in ctx.cliente.get("/tramites", headers=ctx.encabezados).json()
+    )

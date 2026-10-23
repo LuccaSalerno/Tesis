@@ -1,11 +1,11 @@
 """Escenarios EVD-01 de `cadena_evidencia.feature` (DO-2026-10-22-BDD, DO-2026-10-22-TAR).
 
-EVD-C (RN-13) y EVD-N12 (RN-12) se ejecutan contra la API autenticada y PostgreSQL real.
-En EVD-N12 el cambio del conjunto documental es la incorporación de un documento nuevo,
-que RN-12 también contempla. EVD-A y EVD-B requieren confirmar una **versión nueva**
-(RF-06, Etapa 2) y se **omiten con motivo explícito**: pytest los informa como omitidos,
-nunca como aprobados. Ejecutar un escenario no acredita por sí solo el cumplimiento de
-EVD-01: eso exige el oráculo congelado y la evidencia conservada (AGENTS.md §7).
+Los cuatro recorridos se ejecutan contra la API autenticada y PostgreSQL real. En EVD-A y
+EVD-B el cambio es una **versión nueva** sugerida por el sistema y confirmada por el
+responsable (RF-06, RF-07, DO-2026-10-23-VER); el procesamiento usa respuestas fijas. En
+EVD-N12 es la incorporación de un documento nuevo, que RN-12 también contempla. Ejecutar
+un escenario no acredita por sí solo el cumplimiento de EVD-01: eso exige el oráculo
+congelado y la evidencia conservada (AGENTS.md §7).
 """
 
 from collections.abc import Iterator
@@ -22,6 +22,8 @@ from atlas.servicios.tareas import TAREA_DESACTUALIZADA
 from tests import archivos
 from tests.flujo_api import cargar, incorporar
 from tests.flujo_revision import (
+    F_COMPLETO,
+    O_COMPLETO,
     Equipo,
     ciclos,
     decidida,
@@ -34,16 +36,12 @@ from tests.flujo_revision import (
     tramite,
     tramite_con_conjunto,
 )
+from tests.flujo_versiones import archivo, como_version, procesado
 from tests.flujo_vinculos import validar
 
 pytestmark = pytest.mark.integracion
 
 scenarios("cadena_evidencia.feature")
-
-PENDIENTE_RF_06 = (
-    "EVD-01 pendiente: requiere confirmar una versión nueva (RF-06, Etapa 2); "
-    "no acredita cumplimiento"
-)
 
 
 @pytest.fixture
@@ -70,10 +68,212 @@ def _versiones(e: Equipo, tramite_id: int) -> set[int]:
     return {d["version_vigente"]["id"] for d in tramite(e.responsable, tramite_id)["documentos"]}
 
 
+# --- EVD-A y EVD-B: versión nueva confirmada (RN-12, DO-2026-10-23-VER) -----------------
+
+F_V2 = {**F_COMPLETO, "importe_total": "1250000.00"}
+O_V2 = {**O_COMPLETO, "fecha": "2026-09-15"}
+MOTIVO = "La fecha de la orden de compra está fuera de la vigencia del contrato"
+
+
+def _validaciones(datos: dict[str, Any], documento_id: int) -> set[int]:
+    return {v["validacion_id"] for v in datos["validaciones"] if v["documento_id"] == documento_id}
+
+
+def _version_nueva(
+    aplicacion: Any,
+    e: Equipo,
+    estado: dict[str, Any],
+    tipo: str,
+    documento: str,
+    valores: dict[str, str],
+) -> None:
+    """Carga el archivo corregido, confirma la versión sugerida (RF-06, RF-07) y la valida."""
+    tramite_id = estado["ids"]["tramite"]
+    previo = tramite(e.responsable, tramite_id)["estado"]
+    sugeridos = {
+        k: v for k, v in valores.items() if k in ("numero", "cuit_proveedor", "cuit_emisor")
+    }
+    nuevo = procesado(aplicacion, e.responsable, tramite_id, tipo, sugeridos)
+    # Pendiente: todavía no altera el conjunto ni el estado (RF-04).
+    assert tramite(e.responsable, tramite_id)["estado"] == previo
+    assert _versiones(e, tramite_id) == estado["versiones"]
+    sugerencia = archivo(e.responsable, tramite_id, nuevo["id"])["sugerencia_version"]
+    assert sugerencia["documento_id"] == estado["ids"][documento]
+    respuesta = como_version(e.responsable, tramite_id, nuevo["id"])
+    assert respuesta.status_code == 201, respuesta.text
+    estado["version_nueva"] = respuesta.json()["version_vigente"]["id"]
+    assert tramite(e.responsable, tramite_id)["estado"] == "borrador"
+    documento_id = estado["ids"][documento]
+    validar(e.responsable, tramite_id, documento_id, "tipo_documental", tipo)
+    for campo, valor in valores.items():
+        validar(e.responsable, tramite_id, documento_id, campo, valor)
+
+
 @given("un trámite con un conjunto documental validado y un primer ciclo aprobado")
+def primer_ciclo_aprobado(e: Equipo, estado: dict[str, Any]) -> None:
+    ids = tramite_con_conjunto(e)
+    ciclo = iniciar_ciclo(e.responsable, ids["tramite"])
+    legal, final = (t["id"] for t in ciclo["tareas"])
+    decidida(e.revisor, legal)
+    aprobacion = decidida(e.aprobador, final)
+    assert tramite(e.responsable, ids["tramite"])["estado"] == "aprobado"
+    estado.update(
+        ids=ids,
+        ciclo_1=ciclo,
+        decision_1=aprobacion,
+        versiones=_versiones(e, ids["tramite"]),
+        evidencia_1=evidencia(e.responsable, aprobacion["id"]),
+    )
+
+
+@when("se confirma la incorporación de una nueva versión antes del cierre")
+def version_antes_del_cierre(aplicacion: Any, e: Equipo, estado: dict[str, Any]) -> None:
+    _version_nueva(aplicacion, e, estado, "factura", "factura", F_V2)
+
+
+@then("la decisión del primer ciclo sigue asociada a las versiones que consideró")
+def decision_1_intacta(e: Equipo, estado: dict[str, Any]) -> None:
+    tramite_id = estado["ids"]["tramite"]
+    actual = evidencia(e.responsable, estado["decision_1"]["id"])
+    assert actual["ciclo"]["id"] == estado["ciclo_1"]["id"]
+    assert actual["ciclo"]["estado"] == "aprobado"  # RN-12: un ciclo concluido no cambia
+    assert {v["version_id"] for v in actual["versiones"]} == estado["versiones"]
+    assert estado["version_nueva"] not in {v["version_id"] for v in actual["versiones"]}
+    assert actual["validaciones"] == estado["evidencia_1"]["validaciones"]
+    assert actual["controles"] == estado["evidencia_1"]["controles"]
+    assert ciclos(e.responsable, tramite_id)[0]["estado"] == "aprobado"
+
+
+@then("el nuevo conjunto documental requiere la revisión y decisión que correspondan")
+def nuevo_ciclo_con_decision(e: Equipo, estado: dict[str, Any]) -> None:
+    tramite_id, ids = estado["ids"]["tramite"], estado["ids"]
+    ciclo_2 = iniciar_ciclo(e.responsable, tramite_id)
+    assert ciclo_2["numero"] == 2
+    vigentes = _versiones(e, tramite_id)
+    assert {v["version_id"] for v in ciclo_2["versiones"]} == vigentes
+    assert estado["version_nueva"] in vigentes and len(vigentes - estado["versiones"]) == 1
+    decision_2 = decidida(e.revisor, ciclo_2["tareas"][0]["id"])
+    datos = evidencia(e.responsable, decision_2["id"])
+    assert datos["ciclo"]["id"] == ciclo_2["id"]
+    previa = estado["evidencia_1"]
+    # V8: C-v1 y O-v1 conservan sus validaciones; F-v2 no hereda las de F-v1.
+    for documento in ("contrato", "orden"):
+        assert _validaciones(datos, ids[documento]) == _validaciones(previa, ids[documento])
+    assert _validaciones(datos, ids["factura"]).isdisjoint(_validaciones(previa, ids["factura"]))
+    importes = {
+        v["valor_validado"]
+        for v in datos["validaciones"]
+        if v["documento_id"] == ids["factura"] and v["campo"] == "importe_total"
+    }
+    assert importes == {"1250000.00"}
+    # Los controles de la factura se ejecutaron de nuevo con F-v2.
+    con_factura = [
+        c
+        for c in datos["controles"]
+        if estado["version_nueva"] in {v["version_id"] for v in c["versiones"]}
+    ]
+    assert con_factura and {c["id"] for c in con_factura}.isdisjoint(
+        {c["id"] for c in previa["controles"]}
+    )
+    estado.update(ciclo_2=ciclo_2, decision_2=decision_2)
+
+
+@then("la aprobación anterior no se transfiere automáticamente al nuevo ciclo")
+def sin_transferencia(e: Equipo, estado: dict[str, Any]) -> None:
+    tramite_id = estado["ids"]["tramite"]
+    _, ciclo_2 = ciclos(e.responsable, tramite_id)
+    assert [(t["estado"], t["decision_id"]) for t in ciclo_2["tareas"]] == [
+        ("aprobada", estado["decision_2"]["id"]),
+        ("pendiente", None),
+    ]
+    assert estado["decision_1"]["id"] not in {t["decision_id"] for t in ciclo_2["tareas"]}
+    assert tramite(e.responsable, tramite_id)["estado"] == "pendiente_aprobacion"
+    # Sin el nuevo ciclo aprobado no hay firma posible (RF-23).
+    respuesta = e.cliente.post(
+        f"/tramites/{tramite_id}/firma",
+        json={"version_id": estado["version_nueva"]},
+        headers=e.aprobador.encabezados,
+    )
+    assert respuesta.status_code == 409
+
+
 @given("un primer ciclo con una observación motivada")
-def requiere_version_nueva() -> None:
-    pytest.skip(PENDIENTE_RF_06)
+def primer_ciclo_observado(e: Equipo, estado: dict[str, Any]) -> None:
+    ids = tramite_con_conjunto(e)
+    ciclo = iniciar_ciclo(e.responsable, ids["tramite"])
+    observacion = decidida(e.revisor, ciclo["tareas"][0]["id"], "observacion", MOTIVO)
+    assert tramite(e.responsable, ids["tramite"])["estado"] == "observado"
+    estado.update(
+        ids=ids,
+        ciclo_1=ciclo,
+        decision_1=observacion,
+        versiones=_versiones(e, ids["tramite"]),
+        evidencia_1=evidencia(e.responsable, observacion["id"]),
+    )
+
+
+@when("se confirma una versión corregida del documento observado")
+def version_corregida(aplicacion: Any, e: Equipo, estado: dict[str, Any]) -> None:
+    _version_nueva(aplicacion, e, estado, "orden_compra", "orden", O_V2)
+
+
+@then("la observación anterior conserva su contexto documental")
+def observacion_intacta(e: Equipo, estado: dict[str, Any]) -> None:
+    actual = evidencia(e.responsable, estado["decision_1"]["id"])
+    assert actual["decision"]["motivo"] == MOTIVO
+    assert actual["ciclo"]["id"] == estado["ciclo_1"]["id"]
+    assert actual["ciclo"]["estado"] == "observado"
+    assert {v["version_id"] for v in actual["versiones"]} == estado["versiones"]
+    assert actual["validaciones"] == estado["evidencia_1"]["validaciones"]
+    assert actual["controles"] == estado["evidencia_1"]["controles"]
+    r3 = next(c for c in actual["controles"] if c["codigo_regla"].startswith("R3"))
+    assert r3["resultado"] == "advertencia"
+
+
+@then("se crea el ciclo correspondiente al conjunto documental actualizado")
+def ciclo_actualizado(e: Equipo, estado: dict[str, Any]) -> None:
+    tramite_id = estado["ids"]["tramite"]
+    ciclo_2 = iniciar_ciclo(e.responsable, tramite_id)
+    assert ciclo_2["numero"] == 2
+    versiones = {v["version_id"] for v in ciclo_2["versiones"]}
+    assert estado["version_nueva"] in versiones
+    assert versiones - {estado["version_nueva"]} < estado["versiones"]
+    assert [(t["estado"], t["decision_id"]) for t in ciclo_2["tareas"]] == [
+        ("pendiente", None),
+        ("en_espera", None),
+    ]
+    estado["ciclo_2"] = ciclo_2
+
+
+@then("el resultado de la revisión posterior queda ligado a ese nuevo ciclo")
+def revision_posterior(e: Equipo, estado: dict[str, Any]) -> None:
+    tramite_id, ciclo_2 = estado["ids"]["tramite"], estado["ciclo_2"]
+    legal, final = (t["id"] for t in ciclo_2["tareas"])
+    decidida(e.revisor, legal)
+    decision_2 = decidida(e.aprobador, final)
+    datos = evidencia(e.responsable, decision_2["id"])
+    assert datos["ciclo"]["id"] == ciclo_2["id"] and datos["ciclo"]["estado"] == "aprobado"
+    r3 = next(c for c in datos["controles"] if c["codigo_regla"].startswith("R3"))
+    assert r3["resultado"] == "cumplimiento"
+    assert estado["version_nueva"] in {v["version_id"] for v in r3["versiones"]}
+    # V11: la firma simulada cierra la historia; después no se admiten versiones nuevas.
+    contrato = next(
+        v for v in ciclo_2["versiones"] if v["documento_id"] == estado["ids"]["contrato"]
+    )
+    respuesta = e.cliente.post(
+        f"/tramites/{tramite_id}/firma",
+        json={"version_id": contrato["version_id"]},
+        headers=e.aprobador.encabezados,
+    )
+    assert respuesta.status_code == 201, respuesta.text
+    assert tramite(e.responsable, tramite_id)["estado"] == "cerrado"
+    assert evidencia(e.responsable, decision_2["id"])["firma"]["id"] == respuesta.json()["id"]
+    respuesta = e.cliente.post(
+        f"/tramites/{tramite_id}/cargas",
+        json={"nombre": "O-v3.pdf", "formato": "pdf", "tamano_bytes": 1000},
+        headers=e.responsable.encabezados,
+    )
+    assert respuesta.status_code == 409
 
 
 # --- EVD-C: subsanación sin nuevo archivo (RN-13) ---------------------------------------

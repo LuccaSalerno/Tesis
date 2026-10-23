@@ -11,6 +11,7 @@ import { Link, useParams } from "react-router";
 import { useEvidencia } from "@/api/consultas";
 import type { Ejecucion, Evidencia as TipoEvidencia, ValidacionEvidencia } from "@/api/tipos";
 import { BotonFuente, InsigniaEstado, Persona, ResultadoControl, TextoLocalizador } from "@/componentes/dominio";
+import { FirmaAplicada } from "@/componentes/firma";
 import { DialogoFuente, type Fuente } from "@/componentes/visor";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
@@ -243,6 +244,12 @@ export function Evidencia() {
           ))}
         </div>
       </Panel>
+
+      {e.firma ? (
+        <Panel titulo="Firma digital simulada" descripcion="Aplicada a una versión de este ciclo aprobado (RF-23, V11).">
+          <FirmaAplicada firma={e.firma} documento={e.versiones.find((v) => v.version_id === e.firma?.version_id)?.documento_nombre} />
+        </Panel>
+      ) : null}
 
       <Panel titulo="Eventos relacionados" descripcion="Registros de auditoría del ciclo, sus tareas y decisiones, y de los datos y controles listados.">
         <ol className="space-y-1.5 text-sm">

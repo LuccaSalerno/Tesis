@@ -4,6 +4,7 @@
  * una sugerencia de la IA con un valor validado o una advertencia con una decisión.
  */
 import type {
+  CriterioVersion,
   EstadoCiclo,
   EstadoTarea,
   EstadoTrabajo,
@@ -150,7 +151,22 @@ export const ACCION: Record<string, string> = {
   tramite_observado: "Trámite observado",
   tramite_subsanado: "Observación subsanada",
   ciclo_desplazado: "Ciclo desplazado por cambio documental",
+  procesamiento_reintentado: "Procesamiento reintentado",
+  version_incorporada: "Versión nueva incorporada",
+  sugerencia_version_rechazada: "Relación de versión rechazada",
+  archivo_descartado: "Archivo descartado",
+  firma_simulada_aplicada: "Firma digital simulada aplicada",
+  tramite_cerrado: "Trámite cerrado",
 };
+
+/** Criterio explicable de la versión nueva sugerida (RF-06, DO-2026-10-23-VER P1). */
+export const CRITERIO_VERSION: Record<CriterioVersion, string> = {
+  numero: "coincide el número documental",
+  cuit: "coincide el CUIT",
+};
+
+/** Rótulo obligatorio de la firma (RF-23, P6): nunca se presenta como firma jurídica. */
+export const LEYENDA_FIRMA = "Firma digital simulada — sin validez jurídica";
 
 export function rotuloAccion(accion: string): string {
   return ACCION[accion] ?? accion.replaceAll("_", " ");

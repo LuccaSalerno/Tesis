@@ -112,8 +112,8 @@ aprobados. Procedimiento completo: [infra/terraform/README.md](../infra/terrafor
 La CI exige al menos un 90 % de cobertura en **cada módulo**, no solo en el total.
 
 Los escenarios de aceptación en Gherkin (`tests/acceptance/features/`, en la raíz) se ejecutan con
-`pytest-bdd` como parte de la misma corrida; sus pasos están en `tests/aceptacion/`. Los escenarios
-EVD-01 aparecen como omitidos, con el motivo, hasta que existan sus capacidades.
+`pytest-bdd` como parte de la misma corrida; sus pasos están en `tests/aceptacion/`. Los cuatro
+recorridos EVD-01 se ejecutan; ejecutarlos no acredita EVD-01 sin el oráculo congelado.
 
 Las pruebas marcadas `integracion` usan la base real `atlas_tests` y fallan (no se omiten) si
 no está disponible. Solo corren con `ATLAS_ENTORNO=tests` sobre una base `*_tests`.

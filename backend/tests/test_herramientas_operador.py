@@ -13,9 +13,10 @@ from typing import Any
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import Engine
+from sqlalchemy import Engine, text
 
 from atlas.configuracion import Configuracion
+from atlas.dominio.enumeraciones import TipoDocumental
 from atlas.herramientas import exportar_evidencia, sembrar_demo, vaciar_bucket_versionado
 from atlas.herramientas.cliente_api import (
     ClienteApi,
@@ -26,6 +27,7 @@ from atlas.herramientas.cliente_api import (
 )
 from atlas.integraciones.aws import crear_cliente
 from atlas.principal import crear_aplicacion
+from atlas.procesamiento import esquemas
 from tests.conftest import CLAVES_PRUEBA, configuracion_sin_base
 from tests.datos import crear_cuenta
 from tests.flujo_procesamiento import (
@@ -36,6 +38,7 @@ from tests.flujo_procesamiento import (
     recorrer,
     trabajo_de,
 )
+from tests.procesamiento_fijo import ModeloFijo, dato
 
 ORACULO = json.loads(sembrar_demo.ORACULO.read_text(encoding="utf-8"))
 
@@ -67,12 +70,30 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
 
         def procesar(_: ClienteApi, __: int, archivos: list[int]) -> None:
             # Todo se procesa con el contrato fijo: O-v1 y F-v2 quedan sugeridos como
-            # contrato y la semilla los corrige al tipo del oráculo.
+            # contrato y la semilla los corrige al tipo del oráculo. O-v2 se sugiere como
+            # orden con el CUIT del proveedor, para que RF-06 la relacione con O-v1.
             for archivo in archivos:
+                with motor_aplicacion.connect() as conexion:
+                    nombre = conexion.execute(
+                        text("SELECT nombre FROM atlas.archivo WHERE id = :a"), {"a": archivo}
+                    ).scalar_one()
+                modelo = modelo_contrato(extraccion_c_v1_pdf())
+                if nombre.startswith("O-v2"):
+                    modelo = ModeloFijo(
+                        {
+                            esquemas.HERRAMIENTA_CLASIFICACION: {"tipo": "orden_compra"},
+                            esquemas.HERRAMIENTA_EXTRACCION: {
+                                c.nombre: dato(
+                                    "30-96472518-3" if c.nombre == "cuit_proveedor" else None
+                                )
+                                for c in esquemas.CAMPOS[TipoDocumental.ORDEN_COMPRA]
+                            },
+                        }
+                    )
                 recorrer(
                     aplicacion,
                     trabajo_de(motor_aplicacion, archivo),
-                    modelo_contrato(extraccion_c_v1_pdf()),
+                    modelo,
                     AnalizadorFijo(PAGINAS_C_V1),
                 )
 
@@ -100,6 +121,14 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     observado, en_vivo = manifiesto.tramites["observado"], manifiesto.tramites["en_vivo"]
     assert observado["estado"] == "observado" and len(observado["decisiones"]) == 2
     assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"C-v1"}
+    # DO-2026-10-23-VER P9: EVD-B completo hasta la firma.
+    cerrado = manifiesto.tramites["cerrado"]
+    assert cerrado["estado"] == "cerrado" and cerrado["criterio_version"] == "cuit"
+    assert cerrado["controles"]["R3"] == "advertencia"
+    assert cerrado["controles_corregidos"]["R3"] == "cumplimiento"
+    assert cerrado["validaciones"]["O-v2"]["fecha"] == "sin_sugerencia"
+    assert cerrado["firma"]["version_id"] != cerrado["version_nueva"]
+    assert len(cerrado["decisiones_2"]) == 2
     # PD-07, conjunto C-v1 + O-v1 + F-v2: solo R3 advierte.
     assert observado["controles"] == {
         "R1": "cumplimiento",
@@ -116,8 +145,13 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert "token" not in json.dumps(manifiesto.__dict__).lower()
 
     resumen = exportar_evidencia.exportar(entorno["api"], manifiesto.__dict__, tmp_path)
-    evidencias = [n for n in resumen["archivos"] if "/evidencia/" in n]
+    evidencias = [n for n in resumen["archivos"] if "/evidencia/" in n and "observado-" in n]
     assert len(evidencias) == 2
+    assert len([n for n in resumen["archivos"] if "/evidencia/" in n]) == 6
+    firma = next(n for n in resumen["archivos"] if n.endswith("/firma.json"))
+    assert json.loads((tmp_path / firma).read_text())["leyenda"].startswith(
+        "Firma digital simulada"
+    )
     indice = json.loads((tmp_path / "indice.json").read_text())
     assert indice["sesion"] == "e90-pruebas"
     primera, segunda = (json.loads((tmp_path / n).read_text()) for n in sorted(evidencias))
