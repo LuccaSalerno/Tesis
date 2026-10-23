@@ -75,6 +75,7 @@
 - Fallas halladas y corregidas en la sesión, cada una con su commit: TLS hacia RDS Proxy con raíces de Amazon Trust (DIF-96, `75d2084`); ARN de la máquina en todas las Lambda (`9ca42d1`); firma `s3v4` solo para S3, Bedrock la rechazaba (DIF-97, `9b6c58b`); verificación previa de CORS respondida por el backend con ruta `OPTIONS` sin autorizador (DIF-98, `b9bc012`). Ensayo de CI limpio de `b9bc012`: 701 aprobadas, 4 omitidas, 76 módulos ≥ 90 %.
 - **Verificado con servicios reales:** semilla EVD-B completa con Textract y Haiku 4.5 (las 22 sugerencias de C-v1, O-v1 y F-v2 coincidieron con el oráculo candidato; no es métrica de §6.3); nivel B 2/2 (extracción, y RAG con cita y abstención); aplicación web local contra API Gateway con Cognito, evidencia de la decisión, visor del PDF y consulta asistida.
 - Residuos de la sesión: trámites 1 a 3 de intentos fallidos sin sugerencias; el 1 con trabajos abiertos (sin reconciliador, DIF-50), que impedirán `drenado: true`.
+- Retiro el 23/10/2026 por decisión del operador con `trabajos_abiertos: 3` (residuo sintético del trámite 1): evidencia exportada y nivel B en `operaciones/sesiones/e90-ensayo-2/` (local, no versionado); verificación de residuos sin recursos salvo el bucket de estado.
 
 ## Próximo paso
 
