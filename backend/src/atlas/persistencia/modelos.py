@@ -256,7 +256,11 @@ class TrabajoProcesamiento(Base):
     """Técnica (+): trabajo de procesamiento de un archivo (§5.3.1, RC-P08)."""
 
     __tablename__ = "trabajo_procesamiento"
-    __table_args__ = (CheckConstraint("intento > 0", name="intento_positivo"),)
+    __table_args__ = (
+        CheckConstraint("intento > 0", name="intento_positivo"),
+        # Admisión y reconciliador: trabajos por estado y antigüedad (migración 0011).
+        Index("ix_trabajo_procesamiento_estado_creado_en", "estado", "creado_en"),
+    )
 
     id: Mapped[int] = _id()
     archivo_id: Mapped[int] = mapped_column(ForeignKey("archivo.id"), nullable=False, unique=True)
