@@ -83,7 +83,8 @@
 - Paquete `atlas.evaluacion` (fuera del paquete Lambda): compuerta P4 (oficial exige oráculos congelados; ensayo solo ajuste), OCR una vez con caché, clasificación y extracción con el código de producción y tipo sugerido, recuperación con índice congelado por modelo de embeddings (Cohere y Titan), respuestas con `consultas.generar`, planillas de los autores con consolidación, métricas IA-M01 a M07 y reglas de sustitución sobre promedios, informe y CLI (`python -m atlas.evaluacion`).
 - Nuevo: adaptador de Titan V2, `consultas.generar`, `crear_cliente_region`, raíz Terraform `evaluacion` (un bucket), guía `evaluacion/README.md`. Corregida la normalización de EUR antes de medir (DIF-109). DIF-110 precisa la tolerancia del 80 % para la relevancia.
 - Verificado sin AWS: pruebas del arnés con corpus en miniatura y modelos fijos; en el corpus real, los 124 campos DOCX encuentran su bloque y los 11 fragmentos relevantes en DOCX quedan cubiertos por algún *chunk*. **Ninguna medición ejecutada.**
-- Pendientes del equipo antes de la campaña oficial: REV-E90-16 a 19, verificaciones manuales de razones sociales y CUIT de ajuste, revisión de ambos autores, congelación y confirmación de la tolerancia del 80 %. Pendientes del agente: fase 2 (latencia y carga, P17), §6.3.3 y §6.3.2 (P18).
+- Pendientes del equipo antes de la campaña oficial: REV-E90-16 a 19, verificaciones manuales de razones sociales y CUIT de ajuste, revisión de ambos autores, congelación y confirmación de la tolerancia del 80 %. Pendientes del agente: §6.3.3 y §6.3.2 (P18).
+- **Fase 2 (DO-2026-10-23-E90-API):** `Server-Timing` en la consulta y tiempos del trabajo en la API (RC-P01-011); cargador del corpus por la API (un trámite por contexto), latencia IA-M08 por bloques (modelo, repetición) con verificación del perfil, línea de base de red y carga con concurrencias 1, 5 y 10 sobre el ajuste (`python -m atlas.evaluacion.operacion`). DIF-111. Sin ejecutar contra AWS.
 
 ## Próximo paso
 

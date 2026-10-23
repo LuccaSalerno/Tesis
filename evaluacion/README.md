@@ -4,7 +4,8 @@ Decisión: **DO-2026-10-23-E90-MEDICION**. Código: `backend/src/atlas/evaluacio
 paquete Lambda). Mide **el código de producción** de ATLAS (clasificación, extracción,
 procedencia, segmentación, recuperación y respuestas) llamando directamente a Textract y a
 Bedrock desde la máquina del operador. La latencia IA-M08 y la carga §6.3.4 se miden contra
-la API desplegada en la fase 2 (P17), todavía no implementada.
+la API desplegada con `python -m atlas.evaluacion.operacion` (DO-2026-10-23-E90-API; ver
+«Fase 2» al final).
 
 **Lo ejecuta solo el operador autorizado**, con el plan y el costo aprobados (DO-2026-10-21).
 Ningún agente, push ni GitHub Action lo corre contra AWS.
@@ -107,6 +108,68 @@ respuestas usan los fragmentos que recupera Cohere, idénticos para ambos modelo
 ## Qué no hace
 
 - No congela ni revisa oráculos: eso es de los autores.
-- No mide la latencia ni la carga (fase 2) ni §6.3.2/§6.3.3 (P18).
+- No mide §6.3.2 ni §6.3.3 (P18).
 - No decide sustituciones: calcula las reglas sobre promedios y la decisión la registra el equipo.
 - No usa juez automático para las respuestas.
+
+## Fase 2: latencia IA-M08 y carga §6.3.4 contra la API
+
+Decisión **DO-2026-10-23-E90-API**. Requiere una sesión E90A en `active`, con la semilla ya
+corrida (cuentas de Cognito y de ATLAS) y `ATLAS_SEED_CLAVE_RESPONSABLE` exportada.
+
+**Fase 0 adicional:** la concurrencia de Lambda de la cuenta (las cuentas nuevas pueden tener
+10). Si no alcanza para el nivel 10, se informa; no se cambia sin aprobación (P10).
+
+```bash
+aws lambda get-account-settings --query "AccountLimit.ConcurrentExecutions"
+aws bedrock get-inference-profile --inference-profile-identifier <perfil de Sonnet 4.6> --query "models[].modelArn" --output text
+```
+
+La segunda consulta da el `modelo_generativo` que acompaña al perfil de Sonnet en `demo` (las
+políticas IAM autorizan el perfil y sus modelos de destino).
+
+**Pasos**, desde `backend/`:
+
+```bash
+python -m atlas.evaluacion.operacion iniciar --campana <id> --modo oficial \
+  --url-api "$URL" --version-codigo <commit desplegado> --cliente-cognito <cliente> \
+  --generativos haiku=us.anthropic.claude-haiku-4-5-20251001-v1:0 sonnet=<perfil de Sonnet 4.6>
+python -m atlas.evaluacion.operacion cargar --campana <id>    # un trámite por contexto (12)
+python -m atlas.evaluacion.operacion red --campana <id>       # 30 GET /salud
+```
+
+Latencia, un bloque por modelo y repetición, en el orden **H1, S1 │ S2, H2 │ H3, S3**. Antes de
+cada bloque de otro modelo, reaplicar `demo` con `perfil_generativo` y `modelo_generativo`
+de ese modelo (plan esperado: 4 Lambda y 1 política en el lugar):
+
+```bash
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo haiku --repeticion 1
+# reaplicar demo con Sonnet
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo sonnet --repeticion 1
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo sonnet --repeticion 2
+# reaplicar demo con Haiku
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo haiku --repeticion 2
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo haiku --repeticion 3
+# reaplicar demo con Sonnet
+python -m atlas.evaluacion.operacion latencia --campana <id> --modelo sonnet --repeticion 3
+# volver a Haiku (producción) antes de seguir usando la demo
+```
+
+Cada respuesta trae el perfil que la generó: si no coincide con el declarado, el informe lo
+cuenta como «perfil distinto» (despliegue equivocado). Un bloque ya medido no se repite.
+
+Carga (usa la partición de ajuste; se puede correr antes de congelar, también en una campaña
+`ensayo`) y métricas:
+
+```bash
+python -m atlas.evaluacion.operacion carga --campana <id>     # niveles 1, 5 y 10
+python -m atlas.evaluacion.operacion metricas --campana <id>
+```
+
+La latencia se mide en el cliente: incluye la red hasta us-east-1, que se informa aparte con
+la línea de base de `GET /salud`. El encabezado `Server-Timing` de cada respuesta da los
+componentes del servidor (embeddings, recuperación, generación, total) y si fue un arranque en
+frío. Mediana y p95 por rango más cercano, sin excluir observaciones.
+
+En modo `ensayo`, la latencia usa tres preguntas genéricas sobre el ajuste: sirve para probar
+el ejecutor y **no es IA-M08**.
