@@ -166,6 +166,20 @@ class CargaRespuesta(BaseModel):
 class TrabajoRespuesta(BaseModel):
     estado: EstadoTrabajo
     intento: int
+    # OP-02: duración del trabajo con tiempos del servidor (DO-2026-10-23-E90-API P4).
+    creado_en: datetime
+    ejecucion_iniciada_en: datetime | None
+    actualizado_en: datetime
+
+    @classmethod
+    def desde(cls, trabajo: TrabajoProcesamiento) -> "TrabajoRespuesta":
+        return cls(
+            estado=trabajo.estado,
+            intento=trabajo.intento,
+            creado_en=trabajo.creado_en,
+            ejecucion_iniciada_en=trabajo.ejecucion_iniciada_en,
+            actualizado_en=trabajo.actualizado_en,
+        )
 
 
 class ArchivoRespuesta(BaseModel):
@@ -195,11 +209,7 @@ class ArchivoRespuesta(BaseModel):
             huella=archivo.huella,
             estado_incorporacion=archivo.estado_incorporacion,
             cargado_en=archivo.cargado_en,
-            trabajo=(
-                None
-                if trabajo is None
-                else TrabajoRespuesta(estado=trabajo.estado, intento=trabajo.intento)
-            ),
+            trabajo=(None if trabajo is None else TrabajoRespuesta.desde(trabajo)),
         )
 
 
@@ -427,11 +437,7 @@ def consultar_sugerencias(
     sugerencias = {valor.id: _sugerencia(valor, fuente) for valor, fuente in filas}
     clases = {valor.id: valor.clase for valor, _ in filas}
     return SugerenciasRespuesta(
-        trabajo=(
-            None
-            if trabajo is None
-            else TrabajoRespuesta(estado=trabajo.estado, intento=trabajo.intento)
-        ),
+        trabajo=(None if trabajo is None else TrabajoRespuesta.desde(trabajo)),
         clasificacion=next(
             (s for i, s in sugerencias.items() if clases[i] == ClaseSugerencia.CLASIFICACION), None
         ),

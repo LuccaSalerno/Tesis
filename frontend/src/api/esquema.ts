@@ -1599,6 +1599,18 @@ export interface components {
         TipoVinculo: "referencia" | "campos";
         /** TrabajoRespuesta */
         TrabajoRespuesta: {
+            /**
+             * Actualizado En
+             * Format: date-time
+             */
+            actualizado_en: string;
+            /**
+             * Creado En
+             * Format: date-time
+             */
+            creado_en: string;
+            /** Ejecucion Iniciada En */
+            ejecucion_iniciada_en: string | null;
             estado: components["schemas"]["EstadoTrabajo"];
             /** Intento */
             intento: number;

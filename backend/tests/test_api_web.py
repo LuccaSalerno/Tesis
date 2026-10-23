@@ -283,9 +283,15 @@ def test_f6_historial_de_consultas_propias(aplicacion: Any, motor_aplicacion: En
         tramite_id = procesado["tramite"]["id"]
         ruta = f"/tramites/{tramite_id}/consultas"
         assert obtener(ctx, ruta) == []
-        nueva = cliente.post(
+        respuesta = cliente.post(
             ruta, json={"pregunta": "¿Vigencia hasta cuándo?"}, headers=ctx.encabezados
-        ).json()
+        )
+        nueva = respuesta.json()
+        # IA-M08: duraciones por componente y arranque, sin contenido (DO-2026-10-23-E90-API P4).
+        tiempos = respuesta.headers["server-timing"]
+        for componente in ("embeddings", "recuperacion", "generacion", "total"):
+            assert f"{componente};dur=" in tiempos
+        assert 'arranque;desc="desconocido"' in tiempos and "Vigencia" not in tiempos
         (registrada,) = obtener(ctx, ruta)
         assert (
             registrada["id"] == nueva["id"] and registrada["pregunta"] == "¿Vigencia hasta cuándo?"

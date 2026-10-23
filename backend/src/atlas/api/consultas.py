@@ -6,14 +6,16 @@ asignada (Tabla 3.II); para este, el alcance son las versiones vigentes de sus c
 solicitud solo trae la pregunta.
 """
 
+import time
 from collections.abc import Iterable
 from datetime import datetime
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from atlas.api import arranque
 from atlas.api.dependencias import UsuarioActual, es_revisor, obtener_sesion, obtener_usuario_actual
 from atlas.dominio.enumeraciones import MotivoAbstencion, Rol
 from atlas.servicios import consultas, tramites
@@ -129,7 +131,9 @@ def consultar(
     usuario: Autenticado,
     sesion: Sesion,
     request: Request,
+    response: Response,
 ) -> ConsultaRespuesta:
+    inicio = time.perf_counter()
     acceso = _acceso(sesion, tramite_id, usuario)
     resultado = consultas.consultar(
         sesion,
@@ -144,4 +148,13 @@ def consultar(
     )
     consulta = resultado.consulta
     sesion.refresh(consulta)
+    response.headers["Server-Timing"] = server_timing(
+        resultado.tiempos, round((time.perf_counter() - inicio) * 1000)
+    )
     return _respuesta(consulta, resultado.afirmaciones, len(resultado.recuperados))
+
+
+def server_timing(tiempos: dict[str, int], total_ms: int) -> str:
+    """Solo duraciones y la marca de arranque (DO-2026-10-23-E90-API P4): sin contenido."""
+    partes = [f"{nombre};dur={ms}" for nombre, ms in tiempos.items()]
+    return ", ".join([*partes, f"total;dur={total_ms}", f'arranque;desc="{arranque.estado()}"'])

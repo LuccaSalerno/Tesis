@@ -57,6 +57,11 @@ def ctx(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Contexto]:
 # --- RF-03: crear, listar y abrir --------------------------------------------------
 
 
+def estado_trabajo(archivo: dict[str, Any]) -> dict[str, Any]:
+    """Estado e intento; los tiempos del servidor (OP-02) se comprueban aparte."""
+    return {k: archivo["trabajo"][k] for k in ("estado", "intento")}
+
+
 def test_rf_03_crear_tramite_en_borrador_y_auditado(ctx: Contexto) -> None:
     respuesta = ctx.cliente.post(
         "/tramites",
@@ -146,7 +151,8 @@ def test_rf_04_carga_confirmada_queda_pendiente_con_trabajo_iniciado(
     assert archivo["estado_incorporacion"] == "pendiente"
     assert archivo["huella"] == hashlib.sha256(datos).hexdigest()
     assert archivo["tamano_bytes"] == len(datos)
-    assert archivo["trabajo"] == {"estado": "en_ejecucion", "intento": 1}
+    assert estado_trabajo(archivo) == {"estado": "en_ejecucion", "intento": 1}
+    assert archivo["trabajo"]["creado_en"] and archivo["trabajo"]["ejecucion_iniciada_en"]
 
     # La carga no modifica el conjunto documental ni el estado del trámite (RF-04).
     abierto = ctx.cliente.get(f"/tramites/{tramite['id']}", headers=ctx.encabezados).json()
@@ -315,7 +321,8 @@ def test_rc_p08_inicio_fallido_deja_el_trabajo_pendiente_y_registrado(
     transferir(carga, datos)
     respuesta = confirmar(ctx, tramite["id"], carga["id"])
     assert respuesta.status_code == 201
-    assert respuesta.json()["trabajo"] == {"estado": "pendiente", "intento": 1}
+    assert estado_trabajo(respuesta.json()) == {"estado": "pendiente", "intento": 1}
+    assert respuesta.json()["trabajo"]["ejecucion_iniciada_en"] is None
     assert visibles == [True]
     registros = lineas_registro(capsys.readouterr().out)
     assert any(
@@ -328,7 +335,7 @@ def test_rc_p08_inicio_fallido_deja_el_trabajo_pendiente_y_registrado(
     aplicacion.state.orquestador = orquestador_real
     repetida = confirmar(ctx, tramite["id"], carga["id"])
     assert repetida.status_code == 200
-    assert repetida.json()["trabajo"] == {"estado": "en_ejecucion", "intento": 1}
+    assert estado_trabajo(repetida.json()) == {"estado": "en_ejecucion", "intento": 1}
 
 
 def test_rnf_03_registros_de_la_carga_sin_contenido_ni_urls(

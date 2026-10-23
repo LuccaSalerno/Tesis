@@ -223,11 +223,15 @@ def test_do_ops_p5_la_api_responde_eventos_de_api_gateway(
         lambda_api, "crear_manejador", lambda: crear_manejador(configuracion_sin_base())
     )
     asyncio.set_event_loop(None)  # como tras cerrarse un bucle anterior
+    from atlas.api import arranque
+
+    monkeypatch.setattr(arranque, "_invocaciones", 0)
     respuesta = lambda_api.manejar(evento_http_api("GET", "/salud"), None)
+    assert arranque.estado() == "frio"  # IA-M08: primera invocación del contenedor
     assert respuesta["statusCode"] == 200
     assert json.loads(respuesta["body"])["entorno"] == "tests"
     no_autenticado = lambda_api.manejar(evento_http_api("GET", "/tramites"), None)
-    assert no_autenticado["statusCode"] == 401
+    assert no_autenticado["statusCode"] == 401 and arranque.estado() == "caliente"
     lambda_api._manejador.cache_clear()
 
 

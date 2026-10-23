@@ -2423,6 +2423,28 @@
       },
       "TrabajoRespuesta": {
         "properties": {
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "ejecucion_iniciada_en": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ejecucion Iniciada En"
+          },
           "estado": {
             "$ref": "#/components/schemas/EstadoTrabajo"
           },
@@ -2433,7 +2455,10 @@
         },
         "required": [
           "estado",
-          "intento"
+          "intento",
+          "creado_en",
+          "ejecucion_iniciada_en",
+          "actualizado_en"
         ],
         "title": "TrabajoRespuesta",
         "type": "object"

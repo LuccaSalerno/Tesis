@@ -601,6 +601,24 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 18. **P18 — Fuera de este hito:** §6.3.3 (matriz de la Tabla 3.II en AWS y marcadores en CloudWatch) y §6.3.2 (depende del reconciliador RC-P08).
 19. No modifica RF, RN, RNF, umbrales ni criterios de aceptación.
 
+### DO-2026-10-23-E90-API — Latencia y carga contra la API desplegada (fase 2)
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** IA-M08, §6.3.4 (OP-01 a OP-03), RC-P07.4, DO-2026-10-23-E90-MEDICION P17.
+
+1. **P1 — Ubicación:** módulos `cargador`, `latencia` y `carga` en `atlas.evaluacion`; campaña de tipo `api` con manifiesto propio (URL, `version_codigo`, perfil declarado, región).
+2. **P2 — Corpus en ATLAS:** por la API, como la semilla, un trámite por contexto autorizado (12 contextos disjuntos, 21 documentos): carga prefirmada, confirmación, espera e incorporación, sin validación. La medición se carga solo después de congelar.
+3. **P3 — Latencia IA-M08:** 30 preguntas × 3 repeticiones por modelo, secuenciales; el cliente cronometra cada `POST` completo; errores, 429, *timeouts* y reintentos se registran aparte; se verifica que `modelo_generacion` coincida con el perfil declarado.
+4. **P4 — Instrumentación:** encabezado `Server-Timing` en la consulta (embeddings, recuperación, generación, total y arranque en frío) y `creado_en`, `ejecucion_iniciada_en` y `actualizado_en` en `TrabajoRespuesta`. Solo metadatos técnicos.
+5. **P5 — Haiku y Sonnet:** cambio de `perfil_generativo` y `modelo_generativo` en Terraform, con el orden H, S │ S, H │ H, S.
+6. **P6 — Estadísticos:** mediana y p95 por rango más cercano sobre todas las respuestas completadas, sin excluir observaciones lentas ni arranques en frío.
+7. **P7 — Red:** 30 `GET /salud` como línea de base del tiempo de red, informada junto a la latencia.
+8. **P8 — Carga OP-01/OP-02:** concurrencias 1, 5 y 10; interactiva (`POST` de consulta y `GET /tramites/{id}`, 30 solicitudes por nivel) y asíncrona (k documentos distintos, duración del trabajo con tiempos del servidor), con la partición de ajuste y 3 preguntas genéricas fijas.
+9. **P9 — OP-03:** los umbrales de IA-M08, sin un segundo umbral.
+10. **P10 — Cuenta:** la fase 0 verifica la concurrencia de Lambda; no se cambia la reservada sin aprobación.
+11. **P11 — Ensayo:** modo `ensayo` sobre el ajuste con las preguntas genéricas, no reportable.
+12. **P12 — Evidencia y pruebas:** `carga_corpus.json`, `latencia.jsonl`, `carga.jsonl`, `metricas.json` e `informe.md` en la campaña; pruebas con transporte simulado y `TestClient`, sin AWS en la CI.
+13. No modifica RF, RN, RNF, umbrales ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

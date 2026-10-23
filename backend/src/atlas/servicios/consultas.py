@@ -11,7 +11,7 @@
 
 import logging
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from sqlalchemy import func, select, text
@@ -74,6 +74,8 @@ class Resultado:
     consulta: ConsultaAsistida
     afirmaciones: tuple[Afirmacion, ...]
     recuperados: tuple[FragmentoRecuperado, ...]
+    # Duración en ms de cada componente (IA-M08, DO-2026-10-23-E90-API P4).
+    tiempos: dict[str, int] = field(default_factory=dict)
 
 
 def recuperar(
@@ -201,8 +203,15 @@ def consultar(
 ) -> Resultado:
     inicio = time.perf_counter()
     vector = embeddings.embeber([pregunta], "search_query")[0]
+    tras_embeddings = time.perf_counter()
     recuperados = recuperar(sesion, tramite.id, vector, limite, versiones)
+    tras_recuperacion = time.perf_counter()
     generada = generar(pregunta, recuperados, modelo, max_tokens)
+    tiempos = {
+        "embeddings": round((tras_embeddings - inicio) * 1000),
+        "recuperacion": round((tras_recuperacion - tras_embeddings) * 1000),
+        "generacion": round((time.perf_counter() - tras_recuperacion) * 1000),
+    }
     afirmaciones, motivo, uso = list(generada.afirmaciones), generada.motivo, generada.uso
 
     citados = {f.fragmento_id for a in afirmaciones for f in a.referencias}
@@ -246,7 +255,10 @@ def consultar(
         codigo_error=motivo.value if motivo else None,
     )
     return Resultado(
-        consulta=consulta, afirmaciones=tuple(afirmaciones), recuperados=tuple(recuperados)
+        consulta=consulta,
+        afirmaciones=tuple(afirmaciones),
+        recuperados=tuple(recuperados),
+        tiempos=tiempos,
     )
 
 

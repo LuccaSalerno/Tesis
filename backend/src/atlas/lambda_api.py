@@ -11,6 +11,7 @@ from typing import Any
 
 from mangum import Mangum
 
+from atlas.api import arranque
 from atlas.configuracion import Configuracion
 from atlas.principal import crear_aplicacion
 
@@ -35,5 +36,6 @@ def _asegurar_bucle() -> None:
 
 def manejar(evento: dict[str, Any], contexto: Any) -> dict[str, Any]:
     _asegurar_bucle()
+    arranque.marcar_invocacion()
     respuesta: dict[str, Any] = _manejador()(evento, contexto)
     return respuesta
