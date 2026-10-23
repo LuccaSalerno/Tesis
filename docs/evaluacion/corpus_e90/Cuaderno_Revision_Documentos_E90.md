@@ -287,10 +287,10 @@ Grupo **medicion** · clase esperada **contrato** · familia **CTR-MED_C** · 10
 - `CLAUSULA-8` (PDF, página 9): El receptor protegerá la información confidencial con medidas razonables y la utilizará únicamente para la finalidad del acuerdo. Las revelaciones necesarias a colaboradores exigirán una obligación de protección equivale…
 - `ORIGEN-8` (PDF, página 9): ConfidentialityNon-Use and Non-Disclosure. Unless otherwise authorized in the Agreement, Recipient will (a) only use Discloser’s Confidential Information to fulfill its obligations or exercise its rights under this Agree…
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -369,10 +369,10 @@ Grupo **medicion** · clase esperada **contrato** · familia **CTR-MED_D** · 11
 - `CLAUSULA-10` (PDF, página 11): Una variación será eficaz cuando conste por escrito y sea aceptada por ambas partes. El proveedor presentará una evaluación de impacto sobre entregables, costos, calendario y riesgos. Si no hay acuerdo, las partes podrán…
 - `ORIGEN-10` (PDF, página 11): Changing the ContractEither Party can request a Variation to this Contract which is only effective if agreed in writing, including where it is set out in the Variation Form, and signed by both Parties.The Supplier must p…
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -693,10 +693,10 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-MED_C** ·
 - `COND-forma_pago` (PDF, página 1 (referencia previa a la simulación)): Forma de pago: 50 % de anticipo y saldo contra entrega del informe.
 - `COND-plazo` (PDF, página 1 (referencia previa a la simulación)): Plazo de ejecución: 14 días hábiles desde la aceptación.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ajuste por redondeo de un centavo impreso; las cuentas cierran. Resuelto: es deliberado (REV-E90-16), porque ningún neto alcanza el total de referencia con el IVA del 21 % redondeado; no se cambia.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ajuste por redondeo de un centavo impreso; las cuentas cierran. Resuelto: es deliberado (REV-E90-16), porque ningún neto alcanza el total de referencia con el IVA del 21 % redondeado; no se cambia.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -722,10 +722,10 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-MED_C** ·
 - `COND-forma_pago` (PDF, página 2): Forma de pago: pago a 18 días desde la recepción conforme.
 - `COND-plazo` (PDF, página 2): Plazo de ejecución: 17 días hábiles desde la aceptación.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -812,10 +812,10 @@ Grupo **medicion** · clase esperada **presupuesto** · familia **PRE-MED_C** ·
 - `COND-forma_pago` (PDF, página 1 (referencia previa a la simulación)): Forma de pago: pago a 30 días de la fecha de factura.
 - `COND-plazo` (PDF, página 1 (referencia previa a la simulación)): Plazo de ejecución: 15 días hábiles desde la aceptación.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -928,10 +928,10 @@ Grupo **ajuste** · clase esperada **presupuesto** · familia **PRE-BASE_A** · 
 - `COND-forma_pago` (PDF, página 1 (referencia previa a la simulación)): Forma de pago: 50 % de anticipo y saldo contra entrega del informe.
 - `COND-plazo` (PDF, página 1 (referencia previa a la simulación)): Plazo de ejecución: 13 días hábiles desde la aceptación.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -960,10 +960,10 @@ Trámite E90-CONTEXTO-T1; cita: presupuesto P-052003 (E90-M-PRE-06).
 - `COND-fecha_entrega` (PDF, página 1): Fecha de entrega comprometida: 11/07/2026.
 - `COND-pago` (PDF, página 1): Condición de pago: 18 días desde la recepción conforme.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -992,10 +992,10 @@ Trámite E90-CONTEXTO-T2; cita: contrato 2026-02-17 (E90-M-CTR-02).
 - `COND-fecha_entrega` (DOCX, párrafo 16): Fecha de entrega comprometida: 17-03-2026.
 - `COND-pago` (DOCX, párrafo 17): Condición de pago: 14 días desde la entrega.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -1377,10 +1377,10 @@ Trámite E90-CONTEXTO-T2; cita: orden_compra OC-2026-87055 (E90-M-OC-02).
 - `COND-forma_pago` (DOCX, párrafo 16): Forma de pago: cheque a la orden del emisor.
 - `COND-periodo` (DOCX, párrafo 17): Período facturado: 03/2026.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -1625,10 +1625,10 @@ Grupo **medicion** · clase esperada **factura** · familia **FAC-MED_D** · 1 p
 - `COND-forma_pago` (PDF, página 1 (referencia previa a la simulación)): Forma de pago: cheque a la orden del emisor.
 - `COND-periodo` (PDF, página 1 (referencia previa a la simulación)): Período facturado: 03/2026.
 
-- [ ] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- [ ] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
-- Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- [x] Autor 1 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- [x] Autor 2 revisó clase, campos, ausencias, localizadores y casos difíciles.
+- Observaciones del autor 1: parte 3 del muestreo (Ivo Gonsé, 23/10/2026, revisión conjunta informada en el chat): ninguna.
+- Observaciones del autor 2: parte 3 del muestreo (Lucca Salerno, 23/10/2026, revisión conjunta informada en el chat): ninguna.
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
