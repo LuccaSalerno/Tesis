@@ -197,8 +197,8 @@ Qué verifica:
 - **RNF-08:** una consulta adversarial y un documento con instrucciones no cambian roles,
   tareas ni estados.
 
-Las operaciones no implementadas (RF-06, RN-14, RF-23, supresión de RF-25 y RF-24) se informan
-como tales, nunca como cumplidas.
+Desde DO-2026-10-23-VER y DO-2026-10-23-CIERRE no quedan operaciones sin implementar: la matriz
+verifica también versión, descarte, cancelación, firma, estado general y supresión (DIF-112).
 
 **Nivel B (operador, sesión E90A en `active`, de ensayo):** agrega trámites y cuentas, así que no
 conviene correrlo antes de una demo. Requiere tres cuentas ficticias más en Cognito

@@ -1,5 +1,7 @@
 # Terraform de ATLAS — procedimiento manual de una sesión E90A
 
+> **Guía completa de la próxima sesión:** [operaciones/aws/Guia_Sesion_Seccion6.md](../../operaciones/aws/Guia_Sesion_Seccion6.md). Este README sigue siendo la referencia de cada raíz.
+
 **Estado:** código preparado y validado sin AWS (`terraform validate -backend=false`,
 22/10/2026). **Nunca se aplicó ni se planificó contra una cuenta.** Base: RC-P10,
 DO-2026-10-21, DO-2026-10-21-E90A y DO-2026-10-22-OPS.

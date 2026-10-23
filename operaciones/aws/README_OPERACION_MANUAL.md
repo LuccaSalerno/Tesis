@@ -2,6 +2,8 @@
 
 **Fecha:** 21/10/2026. **Estado:** diseño del procedimiento, **no implementado ni probado**. **Autoridad:** DO-2026-10-21-E90A (decisiones técnicas), RC-P10, AGENTS.md. [Versión anterior histórica](../../docs/operacion/Runbook_RDS_Detenido_HISTORICO_2026-10-21.md) — no ejecutar.
 
+> **Para la próxima sesión, seguí la [guía paso a paso de la sección 6](Guia_Sesion_Seccion6.md)** (23/10/2026): reúne la cuenta nueva, el encendido, la demo, los ejecutores de §6.3 y el retiro.
+
 ## Procedimiento concreto (DO-2026-10-22-OPS, 22/10/2026)
 
 Los comandos de cada paso, las raíces de Terraform, la Lambda privada de operaciones, la semilla, la exportación de evidencia y el vaciado de buckets están en [infra/terraform/README.md](../../infra/terraform/README.md). Cotización por sesión: [RC-P10-13_Cotizacion_Sesion_E90A.md](../../docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md). Todo está **preparado y validado sin AWS**; nada se ejecutó contra una cuenta.
