@@ -6,13 +6,15 @@ import argparse
 import csv
 import importlib.util
 import re
+import zipfile
 from collections import Counter
 from pathlib import Path
 
 from .comun import (
     CAMPOS,
     ESTADO,
-    ETIQUETAS,
+    PATRON_ID,
+    PISTAS_PROHIBIDAS,
     cuit_valido,
     leer_json,
     normalizar,
@@ -81,7 +83,13 @@ def validar_estructura(data: dict) -> list[str]:
         errores.append(problema("E90_ADVERSARIALES"))
     pool = data["cuit"]["candidatos"]
     cuitids = {r["id"]: r for r in pool}
-    if len(pool) != 12 or len(cuitids) != 12 or len({r["cuit"] for r in pool}) != 12:
+    if (
+        len(pool) != 18
+        or len(cuitids) != 18
+        or len({r["cuit"] for r in pool}) != 18
+        or Counter(r.get("particion") for r in pool)
+        != Counter({"medicion": 12, "ajuste": 6})
+    ):
         errores.append(problema("E90_CUIT_RECUENTO"))
     for candidate in pool:
         if not cuit_valido(candidate["cuit"]):
@@ -125,6 +133,28 @@ def validar_estructura(data: dict) -> list[str]:
             if k.startswith("cuit")
         ):
             errores.append(problema("E90_CUIT_REFERENCIA", ident))
+        elif candidate.get("particion") != r["grupo"]:
+            # REV-E90-15: sujetos disjuntos entre ajuste y medición.
+            errores.append(problema("E90_SUJETOS_PARTICION", ident))
+        if r["tipo"] == "contrato" and r.get("fuente_contractual") != family:
+            errores.append(problema("E90_FUENTE_CONTRACTUAL", ident))
+        if "ambiguo_entre_categorias" in r.get("casos_dificiles", []) and not (
+            r.get("ambiguedad") or {}
+        ).get("justificacion"):
+            errores.append(problema("E90_AMBIGUO_SIN_JUSTIFICACION", ident))
+        adv = r.get("adversarial")
+        if r["prompt_injection"]:
+            objetivos = (adv or {}).get("objetivos") or {}
+            esperado = dict(r["valores"], clasificacion=r["clasificacion_esperada"])
+            if not objetivos or any(
+                k in esperado and esperado[k] == valor for k, valor in objetivos.items()
+            ):
+                # REV-E90-10: el ataque debe pedir algo que contradiga el oráculo.
+                errores.append(problema("E90_ADVERSARIAL_NO_CONTRASTABLE", ident))
+            if any(p in (adv or {}).get("texto", "") for p in PISTAS_PROHIBIDAS):
+                errores.append(problema("E90_ADVERSARIAL_NEUTRALIZADO", ident))
+        elif adv:
+            errores.append(problema("E90_ADVERSARIALES", ident))
         capture = r["captura"]
         if r["formato"] in {"pdf_escaneado", "pdf_fotografiado"}:
             if (
@@ -136,6 +166,19 @@ def validar_estructura(data: dict) -> list[str]:
                 errores.append(problema("E90_SIMULACION_NO_DECLARADA", ident))
         elif capture is not None:
             errores.append(problema("E90_CAPTURA_FORMATO", ident))
+    partes = {
+        grupo: {
+            v
+            for r in records
+            if r["grupo"] == grupo
+            for k, v in r["valores"].items()
+            if k in {"contraparte", "proveedor", "emisor"}
+        }
+        for grupo in ("medicion", "ajuste")
+    }
+    if partes["medicion"] & partes["ajuste"]:
+        errores.append(problema("E90_SUJETOS_PARTICION"))
+    errores.extend(validar_tramites(data["registros"].get("contextos", {}), byid))
     for tipo in CAMPOS:
         families = {
             r["plantilla_id"].split("-", 1)[-1]
@@ -178,6 +221,13 @@ def validar_estructura(data: dict) -> list[str]:
         ids = [r["doc_id"] for r in values]
         if set(ids) != set(byid) or len(ids) != len(byid):
             errores.append(problema("E90_ARTEFACTOS_RECUENTO", key))
+    for a in data["artefactos"]["artefactos"]:
+        rutas = (a["ruta"], a["fuente_docx"], a["pdf_referencia"])
+        if any(PATRON_ID.search(ruta) for ruta in rutas) or any(
+            a.get("archivo_id", "\0") not in ruta for ruta in rutas
+        ):
+            # P7: nombres de archivo neutros.
+            errores.append(problema("E90_ID_EN_NOMBRE_ARCHIVO", a["doc_id"]))
     hashes = [r["sha256"] for r in data["artefactos"]["artefactos"]]
     if len(set(hashes)) != len(hashes):
         errores.append(problema("E90_ARCHIVO_DUPLICADO"))
@@ -217,9 +267,15 @@ def validar_estructura(data: dict) -> list[str]:
             row["localizador"] is not None or row["representacion"] is not None
         ):
             errores.append(problema("E90_AUSENCIA_CON_LOCALIZADOR", ident))
+        familia = r["plantilla_id"].split("-", 1)[-1]
         if presente and (
             not row["localizador"]
-            or row["representacion"] != representacion(campo, r["valores"][campo])
+            or not row.get("etiqueta")
+            or row.get("modo_localizacion") not in {"contiguo", "tabla"}
+            or row["representacion"]
+            != representacion(
+                campo, r["valores"][campo], familia, r["valores"].get("moneda")
+            )
         ):
             errores.append(problema("E90_LOCALIZADOR_FALTANTE", ident))
         if row["estado"] != ESTADO or row["revisado_por_autores"]:
@@ -278,6 +334,81 @@ def validar_estructura(data: dict) -> list[str]:
                 cited.add(f["doc_id"])
         if q["categoria"] == "multidocumento" and len(cited) < 2:
             errores.append(problema("E90_MULTIDOCUMENTO_INCOMPLETO", ident))
+        if PATRON_ID.search(q["pregunta"]) or "E90" in q["pregunta"]:
+            errores.append(problema("E90_CONSULTA_CON_ID", ident))
+        textos = {fragmap[ref]["texto"] for ref in refs if ref in fragmap}
+        if not negative and any(
+            not a.strip() or a in textos for a in q["afirmaciones_esperadas"]
+        ):
+            # REV-E90-01/05: afirmaciones propias, no el fragmento completo.
+            errores.append(problema("E90_AFIRMACION_NO_ATOMICA", ident))
+    adversariales = {r["doc_id"] for r in records if r["prompt_injection"]}
+    if not any(adversariales & set(q["documentos_autorizados"]) for q in queries):
+        errores.append(problema("E90_ADVERSARIAL_FUERA_DE_RAG"))
+    abstenciones = {
+        tuple(q["documentos_autorizados"])
+        for q in queries
+        if q["categoria"] == "sin_evidencia"
+    }
+    if len(abstenciones) < 4:
+        errores.append(problema("E90_ABSTENCIONES_CONCENTRADAS"))
+    clausulas = [
+        q
+        for q in queries
+        if q["categoria"] == "condiciones"
+        and any("-CLAUSULA-" in ref for ref in q["fragmentos_relevantes"])
+    ]
+    if len(clausulas) < 5:
+        errores.append(problema("E90_CONDICIONES_SIN_CLAUSULAS"))
+    medidos = [
+        row
+        for row in data["campos"]["campos"]
+        if row["presente"] and byid.get(row["doc_id"], {}).get("grupo") == "medicion"
+    ]
+    for campo, minimo in (("fecha", 3), ("importe_total", 2), ("moneda", 3)):
+        patrones = {
+            re.sub(r"\d", "9", row["representacion"] or "")
+            for row in medidos
+            if row["campo"].startswith(campo)
+        }
+        if len(patrones) < minimo:
+            # REV-E90-07: formatos variados dentro de la medición.
+            errores.append(problema("E90_FORMATOS_UNIFORMES", campo))
+    return errores
+
+
+def validar_tramites(contextos: dict, byid: dict) -> list[str]:
+    """P13 / REV-E90-12: trámites con el mismo sujeto, moneda e importes relacionados."""
+    errores = []
+    for nombre, ctx in contextos.items():
+        docs = [byid.get(d) for d in ctx["docs"]]
+        if (
+            len(docs) < 3
+            or any(r is None or r["grupo"] != "medicion" for r in docs)
+            or any(r["contexto_rag"] != nombre for r in docs)
+        ):
+            errores.append(problema("E90_TRAMITE_INCOHERENTE", nombre))
+            continue
+        cuits = {
+            v for r in docs for k, v in r["valores"].items() if k.startswith("cuit")
+        }
+        monedas = {r["valores"]["moneda"] for r in docs}
+        importes = {
+            r["tipo"]: r["valores"].get("importe_total", r["valores"].get("importe"))
+            for r in docs
+            if r["tipo"] != "contrato"
+        }
+        orden = importes.get("orden_compra")
+        factura = next(r for r in docs if r["tipo"] == "factura")
+        coherente = len(cuits) == 1 and len(monedas) == 1
+        if "presupuesto" in importes and importes["presupuesto"] != orden:
+            coherente = False
+        if factura["discrepancia_documentada"] is None and importes["factura"] != orden:
+            coherente = False
+        if "comprobante" in importes and importes["comprobante"] != importes["factura"]:
+            coherente = False
+        if not coherente:
+            errores.append(problema("E90_TRAMITE_INCOHERENTE", nombre))
     return errores
 
 
@@ -305,10 +436,17 @@ def comprobar_localizador(
         if normalizar(target) not in normalizar(paragraphs[i - 1]):
             return [problema("E90_PARrafo_SIN_RESPALDO", ident)]
         if "campo" in row:
-            etiqueta = normalizar(ETIQUETAS[row["campo"]])
-            if etiqueta + ":" not in normalizar(paragraphs[i - 1]) and (
-                i < 2 or normalizar(paragraphs[i - 2]) != etiqueta
-            ):
+            etiqueta = normalizar(row["etiqueta"])
+            texto = normalizar(paragraphs[i - 1])
+            if row["modo_localizacion"] == "tabla":
+                correcto = (
+                    i > 1
+                    and texto == normalizar(target)
+                    and normalizar(paragraphs[i - 2]) == etiqueta
+                )
+            else:
+                correcto = etiqueta + normalizar(target) in texto
+            if not correcto:
                 return [problema("E90_PARrafo_CAMPO_INCORRECTO", ident)]
     elif loc["tipo"] == "pagina":
         i = loc["pagina"]
@@ -324,7 +462,13 @@ def comprobar_localizador(
         if str(path) not in caches:
             caches[str(path)] = [p.extract_text() or "" for p in PdfReader(path).pages]
         pages = caches[str(path)]
-        if i > len(pages) or normalizar(target) not in normalizar(pages[i - 1]):
+        objetivo = normalizar(target)
+        if "campo" in row:
+            objetivo = normalizar(row["etiqueta"]) + objetivo
+        else:
+            # Un fragmento extenso puede continuar en la página siguiente: se ubica su inicio.
+            objetivo = objetivo[:60]
+        if i > len(pages) or objetivo not in normalizar(pages[i - 1]):
             return [problema("E90_PAGINA_SIN_RESPALDO", ident)]
         if (
             "referencia_sha256" in loc
@@ -399,6 +543,21 @@ def validar_archivos(root: Path, data: dict) -> list[str]:
             or final.stat().st_size > 20 * 1024 * 1024
         ):
             errores.append(problema("E90_TAMANO", ident))
+        auxiliar = ruta_segura(root, a["fuente_docx"], "corpus/e90")
+        contenido = " ".join(parrafos_docx(auxiliar)) + " ".join(
+            p.extract_text() or "" for p in PdfReader(reference).pages
+        )
+        if PATRON_ID.search(contenido):
+            errores.append(problema("E90_ID_EN_CONTENIDO", ident))
+        if any(pista in contenido for pista in PISTAS_PROHIBIDAS):
+            errores.append(problema("E90_PISTA_DE_CONSTRUCCION", ident))
+        titulos = [str((PdfReader(reference).metadata or {}).get("/Title", ""))]
+        if a["formato"] != "docx":
+            titulos.append(str((PdfReader(final).metadata or {}).get("/Title", "")))
+        with zipfile.ZipFile(auxiliar) as z:
+            titulos.append(z.read("docProps/core.xml").decode("utf-8"))
+        if any(PATRON_ID.search(t) for t in titulos):
+            errores.append(problema("E90_ID_EN_METADATOS", ident))
         if a["formato"] == "docx":
             paragraphs = parrafos_docx(final)
             if not any("DOCUMENTO FICTICIO" in p for p in paragraphs):
@@ -439,6 +598,15 @@ def validar_archivos(root: Path, data: dict) -> list[str]:
             errores.append(problema("E90_CAPTURA_DISCREPANTE", ident))
         if records[ident]["caso_dificil"] == "contrato_extenso" and a["paginas"] < 8:
             errores.append(problema("E90_CONTRATO_NO_EXTENSO", ident))
+    multipagina = sum(
+        records[a["doc_id"]]["tipo"] != "contrato"
+        and records[a["doc_id"]]["grupo"] == "medicion"
+        and a["paginas"] >= 2
+        for a in byid.values()
+    )
+    if multipagina < 15:
+        # REV-E90-13: procedencia por página no trivial.
+        errores.append(problema("E90_PAGINAS_INSUFICIENTES"))
     for row in data["campos"]["campos"] + data["fragmentos"]["fragmentos"]:
         if row["doc_id"] in byid:
             errores.extend(

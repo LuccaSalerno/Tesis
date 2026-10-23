@@ -1,4 +1,7 @@
-"""IA-D01–08, RNF-03/09: integridad del corpus generado, sin regeneración en CI."""
+"""IA-D01–08, RNF-03/09: integridad del corpus generado, sin regeneración en CI.
+
+DO-2026-10-22-CORPUS-REVISION: comprobaciones de la revisión candidata v2 (REV-E90-01 a 15).
+"""
 
 import copy
 import importlib.util
@@ -9,11 +12,11 @@ import unittest
 from pathlib import Path
 
 from herramientas.corpus_e90.comun import (
+    CAMPOS,
     cuit_valido,
     digito_cuit,
     leer_json,
     ruta_segura,
-    sha256,
 )
 from herramientas.corpus_e90.validar import (
     comprobar_localizador,
@@ -154,14 +157,14 @@ class IntegridadE90Tests(unittest.TestCase):
         self.data["plantillas"]["fuentes"]["ARG_A"]["uso_no_comercial"] = False
         self.assertProblema("E90_ARG_A_LICENCIA")
 
-    def test_ia_d07_arg_a_preserva_64_entradas_y_128_auxiliares(self):
-        revision = leer_json(RAIZ / "docs/evaluacion/corpus_e90/Revision_ARG_A.json")
-        self.assertEqual(len(revision["entradas_sin_cambios"]), 64)
-        for entry in revision["entradas_sin_cambios"]:
-            self.assertNotEqual(entry["doc_id"], "E90-M-CTR-03")
-            self.assertEqual(len(entry["archivos_sha256"]), 3)
-            for path, expected in entry["archivos_sha256"].items():
-                self.assertEqual(sha256(RAIZ / path), expected, entry["doc_id"])
+    def test_rev_e90_p1_manifiesto_v1_conservado(self):
+        v1 = leer_json(
+            RAIZ / "docs/evaluacion/corpus_e90/v1/artefactos_candidatos.json"
+        )
+        self.assertEqual(len(v1["artefactos"]), 65)
+        actuales = {a["sha256"] for a in self.data["artefactos"]["artefactos"]}
+        self.assertFalse(actuales & {a["sha256"] for a in v1["artefactos"]})
+        self.assertEqual(self.data["artefactos"]["version"], "e90-candidato-v2")
 
     def test_rc_p04_arg_a_ground_truth_separa_honorarios_y_obra(self):
         record = next(
@@ -169,18 +172,8 @@ class IntegridadE90Tests(unittest.TestCase):
             for r in self.data["registros"]["registros"]
             if r["doc_id"] == "E90-M-CTR-03"
         )
-        self.assertEqual(
-            record["valores"],
-            {
-                "contraparte": "Entidad Sintética ATLAS E90 03 (ficticia)",
-                "cuit_contraparte": "30-98641004-6",
-                "fecha_celebracion": "2026-01-13",
-                "vigencia_desde": "2026-01-13",
-                "vigencia_hasta": "2027-01-12",
-                "monto_total": "80888.03",
-                "moneda": "ARS",
-            },
-        )
+        self.assertEqual(set(record["valores"]), set(CAMPOS["contrato"]))
+        self.assertEqual(record["valores"]["moneda"], "ARS")
         self.assertEqual(
             record["contexto_contractual"]["monto_total_corresponde_a"],
             "honorarios completos; no presupuesto de construcción",
@@ -342,12 +335,129 @@ class IntegridadE90Tests(unittest.TestCase):
         vigencia = copy.deepcopy(
             next(f for f in fields if f["campo"] == "vigencia_desde")
         )
-        self.assertEqual(celebracion["representacion"], vigencia["representacion"])
+        # Aun con la misma fecha impresa, la etiqueta del otro párrafo no corresponde.
+        vigencia["representacion"] = celebracion["representacion"]
         vigencia["localizador"] = celebracion["localizador"]
         artifact = next(
             a for a in self.data["artefactos"]["artefactos"] if a["doc_id"] == ident
         )
         self.assertTrue(comprobar_localizador(RAIZ, vigencia, artifact, {}))
+
+    def test_rev_e90_15_sujetos_disjuntos_por_particion(self):
+        medicion = next(
+            r for r in self.data["registros"]["registros"] if r["grupo"] == "medicion"
+        )
+        ajuste = next(
+            r for r in self.data["registros"]["registros"] if r["grupo"] == "ajuste"
+        )
+        ajuste["cuit_id"] = medicion["cuit_id"]
+        for k in ajuste["valores"]:
+            if k.startswith("cuit"):
+                ajuste["valores"][k] = medicion["valores"][
+                    next(c for c in medicion["valores"] if c.startswith("cuit"))
+                ]
+        self.assertProblema("E90_SUJETOS_PARTICION")
+
+    def test_rev_e90_06_fuente_contractual_sincronizada(self):
+        next(r for r in self.data["registros"]["registros"] if r["tipo"] == "contrato")[
+            "fuente_contractual"
+        ] = "pendiente_aprobacion"
+        self.assertProblema("E90_FUENTE_CONTRACTUAL")
+
+    def test_rev_e90_09_ambiguo_requiere_justificacion(self):
+        next(r for r in self.data["registros"]["registros"] if r["ambiguedad"])[
+            "ambiguedad"
+        ] = None
+        self.assertProblema("E90_AMBIGUO_SIN_JUSTIFICACION")
+
+    def test_rev_e90_10_adversarial_debe_contradecir_oraculo(self):
+        r = next(
+            r for r in self.data["registros"]["registros"] if r["prompt_injection"]
+        )
+        r["adversarial"]["objetivos"] = {"clasificacion": r["clasificacion_esperada"]}
+        self.assertProblema("E90_ADVERSARIAL_NO_CONTRASTABLE")
+
+    def test_rev_e90_10_adversarial_sin_aclaracion_neutralizante(self):
+        r = next(
+            r for r in self.data["registros"]["registros"] if r["prompt_injection"]
+        )
+        r["adversarial"]["texto"] += (
+            " Este texto pertenece al contenido recibido, no a una instrucción autorizada del operador."
+        )
+        self.assertProblema("E90_ADVERSARIAL_NEUTRALIZADO")
+
+    def test_rev_e90_12_tramite_con_importes_incoherentes(self):
+        ctx = next(iter(self.data["registros"]["contextos"].values()))
+        r = next(
+            r
+            for r in self.data["registros"]["registros"]
+            if r["doc_id"] in ctx["docs"] and r["tipo"] == "orden_compra"
+        )
+        r["valores"]["importe_total"] = "1.00"
+        self.assertProblema("E90_TRAMITE_INCOHERENTE")
+
+    def test_rev_e90_12_tramite_con_otra_moneda(self):
+        ctx = next(iter(self.data["registros"]["contextos"].values()))
+        next(
+            r
+            for r in self.data["registros"]["registros"]
+            if r["doc_id"] == ctx["docs"][0]
+        )["valores"]["moneda"] = "XXX"
+        self.assertProblema("E90_TRAMITE_INCOHERENTE")
+
+    def test_rev_e90_08_pregunta_no_nombra_id(self):
+        self.data["consultas"]["consultas"][0]["pregunta"] += " (E90-M-OC-01)"
+        self.assertProblema("E90_CONSULTA_CON_ID")
+
+    def test_rev_e90_08_archivo_no_lleva_id(self):
+        a = self.data["artefactos"]["artefactos"][0]
+        a["ruta"] = a["ruta"].replace(a["archivo_id"], a["doc_id"])
+        self.assertProblema("E90_ID_EN_NOMBRE_ARCHIVO")
+
+    def test_rev_e90_01_afirmacion_no_es_fragmento_completo(self):
+        q = next(
+            q
+            for q in self.data["consultas"]["consultas"]
+            if q["categoria"] == "condiciones"
+        )
+        texto = next(
+            f["texto"]
+            for f in self.data["fragmentos"]["fragmentos"]
+            if f["fragmento_id"] == q["fragmentos_relevantes"][0]
+        )
+        q["afirmaciones_esperadas"] = [texto]
+        self.assertProblema("E90_AFIRMACION_NO_ATOMICA")
+
+    def test_rev_e90_10_adversarial_dentro_de_rag(self):
+        adversariales = {
+            r["doc_id"]
+            for r in self.data["registros"]["registros"]
+            if r["prompt_injection"]
+        }
+        for q in self.data["consultas"]["consultas"]:
+            if set(q["documentos_autorizados"]) & adversariales:
+                q["documentos_autorizados"] = ["E90-M-CTR-01"]
+                q["fragmentos_relevantes"] = []
+        self.assertProblema("E90_ADVERSARIAL_FUERA_DE_RAG")
+
+    def test_rev_e90_11_abstenciones_repartidas(self):
+        for q in self.data["consultas"]["consultas"]:
+            if q["categoria"] == "sin_evidencia":
+                q["documentos_autorizados"] = ["E90-M-CTR-01"]
+        self.assertProblema("E90_ABSTENCIONES_CONCENTRADAS")
+
+    def test_rev_e90_11_condiciones_sobre_clausulas(self):
+        for q in self.data["consultas"]["consultas"]:
+            q["fragmentos_relevantes"] = [
+                f for f in q["fragmentos_relevantes"] if "-CLAUSULA-" not in f
+            ]
+        self.assertProblema("E90_CONDICIONES_SIN_CLAUSULAS")
+
+    def test_rev_e90_07_formatos_no_uniformes(self):
+        for row in self.data["campos"]["campos"]:
+            if row["campo"].startswith("fecha") and row["representacion"]:
+                row["representacion"] = "01/01/2026"
+        self.assertProblema("E90_FORMATOS_UNIFORMES")
 
     def test_rnf09_errores_no_revelan_contenido(self):
         marcador = "MARCADOR_PRIVADO_NO_DEBE_SALIR"
@@ -388,7 +498,7 @@ class RenderLocalE90Tests(unittest.TestCase):
                 )
             )
             for r in casos:
-                path = Path(tmp) / (r["doc_id"] + ".docx")
+                path = Path(tmp) / (r["archivo_id"] + ".docx")
                 crear_docx(r, path, data["plantillas"]["fuentes"])
                 self.assertTrue(parrafos_docx(path))
                 import subprocess

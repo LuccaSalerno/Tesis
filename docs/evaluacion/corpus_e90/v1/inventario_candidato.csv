@@ -1,0 +1,66 @@
+doc_id,grupo,tipo,formato,plantilla_id,ruta,sha256,prompt_injection,observaciones
+E90-M-CTR-01,medicion,contrato,pdf_digital,CTR-BASE_A,corpus/e90/medicion/E90-M-CTR-01.pdf,6afae2d2b51bfd3de3e09adb58cb44112dcc28ce2d14bc38662edbaf927ab58a,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-02,medicion,contrato,docx,CTR-BASE_B,corpus/e90/medicion/E90-M-CTR-02.docx,4157a0d08483a4b2397e2945d27aa2eb28a59ad3e28472c95fc6f1dc51fade31,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-03,medicion,contrato,pdf_digital,CTR-ARG_A,corpus/e90/medicion/E90-M-CTR-03.pdf,58e293aeb1c0e76e44937135c4883a2ec3b5f40ae75c308e0a3ccd6e8dd7deda,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-04,medicion,contrato,docx,CTR-BASE_B,corpus/e90/medicion/E90-M-CTR-04.docx,ce82454f11848c6fbd04a61ed8dd5c4493b9d97ac0b4e008ff436b63f72c5f8c,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-05,medicion,contrato,pdf_escaneado,CTR-MED_C,corpus/e90/medicion/E90-M-CTR-05.pdf,992e209efe65f938dbd218ec6775174777746c80e8204825a0f67c0b866aaed9,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-CTR-06,medicion,contrato,pdf_digital,CTR-MED_C,corpus/e90/medicion/E90-M-CTR-06.pdf,315959a3e200f649e7c1d0eb1ff3ebd5722c01b6be76bc326a6bd6385b0002c0,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-07,medicion,contrato,docx,CTR-MED_D,corpus/e90/medicion/E90-M-CTR-07.docx,ebccde1704b2bb231549e83e79bf9705472ded416d59c313746143fdf8688a60,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-08,medicion,contrato,pdf_digital,CTR-MED_D,corpus/e90/medicion/E90-M-CTR-08.pdf,efbcce358cf7b09802e55ef80d35099e92515263937b8f8bc0f1d92d92c5170a,no,CANDIDATO_NO_CONGELADO
+E90-M-CTR-09,medicion,contrato,pdf_escaneado,CTR-MED_C,corpus/e90/medicion/E90-M-CTR-09.pdf,483daaff5a74a51875d8783479caec155c7d04cfcd24d2e354a22db6e9307af2,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-CTR-10,medicion,contrato,pdf_fotografiado,CTR-MED_D,corpus/e90/medicion/E90-M-CTR-10.pdf,dd721be279e4b47a84b49e20fcbb1f2655fe2e6deb36c7c9c24a4929f9b29e0f,si,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-A-CTR-01,ajuste,contrato,pdf_digital,CTR-BASE_A,corpus/e90/ajuste/E90-A-CTR-01.pdf,f892520a270d37ba98cd73368bcfbe4d23c367146459d6f8203e5cf6ab26cffb,no,CANDIDATO_NO_CONGELADO
+E90-A-CTR-02,ajuste,contrato,docx,CTR-BASE_B,corpus/e90/ajuste/E90-A-CTR-02.docx,7c7bfa9a86a85fa13bce09cbc3e91cbc21fa75d690b6511e92e8db23daba38da,no,CANDIDATO_NO_CONGELADO
+E90-A-CTR-03,ajuste,contrato,pdf_escaneado,CTR-BASE_A,corpus/e90/ajuste/E90-A-CTR-03.pdf,d8e4e8a0eb4dd5fe8ad6fb3b4c7bdbb67806ba819ec642ff48c682f037b212b9,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-PRE-01,medicion,presupuesto,pdf_digital,PRE-BASE_A,corpus/e90/medicion/E90-M-PRE-01.pdf,bc7987be0107bfb453175b51d068c20b7da205e3e0268fce83af03d18a1d36fe,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-02,medicion,presupuesto,docx,PRE-BASE_B,corpus/e90/medicion/E90-M-PRE-02.docx,7ae52841fe40723ffd3ebcff0d171db55a589015a0a4d7ebe204d373c3fda957,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-03,medicion,presupuesto,pdf_digital,PRE-BASE_A,corpus/e90/medicion/E90-M-PRE-03.pdf,3d89bd1eaf232a3c7214b8d823acf38b6004a7fdacc0160fdbcff9c52633cb97,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-04,medicion,presupuesto,docx,PRE-BASE_B,corpus/e90/medicion/E90-M-PRE-04.docx,fbefea7c4eb18cfc0f8556e982666cf7b3fda2ea305799c6e23a52c68a77b729,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-05,medicion,presupuesto,pdf_escaneado,PRE-MED_C,corpus/e90/medicion/E90-M-PRE-05.pdf,cd8c528c9b47ec0c6107184a6284e12bf88a982cefa5c27c493b69df66e18c48,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-PRE-06,medicion,presupuesto,pdf_digital,PRE-MED_C,corpus/e90/medicion/E90-M-PRE-06.pdf,deca3e4959f314f917270a8e643b35f8ddfd62fcc9308ca987beb0f0dc53c476,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-07,medicion,presupuesto,docx,PRE-MED_D,corpus/e90/medicion/E90-M-PRE-07.docx,702a8ad7cebd12eaf4c97bcedffe0f844d1c0b890c4693ab580e9abc0e4b3ecf,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-08,medicion,presupuesto,pdf_digital,PRE-MED_D,corpus/e90/medicion/E90-M-PRE-08.pdf,31896dcfabc3ce19fac495e81a8d61889a68e5b6a7b401702537c2df4488f660,no,CANDIDATO_NO_CONGELADO
+E90-M-PRE-09,medicion,presupuesto,pdf_escaneado,PRE-MED_C,corpus/e90/medicion/E90-M-PRE-09.pdf,353ea44ad02fa7ecda5a015453b05bbae222a18bab77aca452cae5e31499bf16,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-PRE-10,medicion,presupuesto,pdf_fotografiado,PRE-MED_D,corpus/e90/medicion/E90-M-PRE-10.pdf,86b504f189772dfb1d73a8720bbac818b51125e2b266bbd3c326a91344add31d,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-A-PRE-01,ajuste,presupuesto,pdf_digital,PRE-BASE_A,corpus/e90/ajuste/E90-A-PRE-01.pdf,7a9b510c22718e3cdbac82e1c1a6bb70f92215884abdf955545628f39e7bb5bc,no,CANDIDATO_NO_CONGELADO
+E90-A-PRE-02,ajuste,presupuesto,docx,PRE-BASE_B,corpus/e90/ajuste/E90-A-PRE-02.docx,08cb1184368a0bcbdd9c4b1704ba3d438bd69d8d594f30aefc1ec267683c3778,no,CANDIDATO_NO_CONGELADO
+E90-A-PRE-03,ajuste,presupuesto,pdf_escaneado,PRE-BASE_A,corpus/e90/ajuste/E90-A-PRE-03.pdf,f6bf98d631a24204defacef0aea640d4bace5864a92e492801694dce8c5cbf67,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-OC-01,medicion,orden_compra,pdf_digital,OC-BASE_A,corpus/e90/medicion/E90-M-OC-01.pdf,e8592f0f951625e71d6dc9e3fe207f975a238db496e68e1fac1529b341ca94ae,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-02,medicion,orden_compra,docx,OC-BASE_B,corpus/e90/medicion/E90-M-OC-02.docx,ccd68272cf1e75e2cf36042c577d92db5c9e6bb320cf6ce8984035f696c45db6,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-03,medicion,orden_compra,pdf_digital,OC-BASE_A,corpus/e90/medicion/E90-M-OC-03.pdf,f30019de3ff774af26faeeaf5d352e1774629a411da2f368ad21bbf46a8249a1,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-04,medicion,orden_compra,docx,OC-BASE_B,corpus/e90/medicion/E90-M-OC-04.docx,58e1b78d65cab9a2c652c55bd9e77a1081afc1d2521c362997696a1da1fd791d,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-05,medicion,orden_compra,pdf_escaneado,OC-MED_C,corpus/e90/medicion/E90-M-OC-05.pdf,0be85553d3ec724ec3991562c5be8756bd829639ba7e82a2f337db3eb52307cb,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-OC-06,medicion,orden_compra,pdf_digital,OC-MED_C,corpus/e90/medicion/E90-M-OC-06.pdf,eec18d9b8d00fa369d0f1c46f2aacbfef02156c07fd944c14a0fc106b651bade,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-07,medicion,orden_compra,docx,OC-MED_D,corpus/e90/medicion/E90-M-OC-07.docx,76c8bb7bb525017c94414d2a8633262e2aa53cb81f087a00da808bd0eba50067,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-08,medicion,orden_compra,pdf_digital,OC-MED_D,corpus/e90/medicion/E90-M-OC-08.pdf,0b995bc3e3b0de7192b0c6fe8eaea1383c6772766be146d512115ae408ad33f1,no,CANDIDATO_NO_CONGELADO
+E90-M-OC-09,medicion,orden_compra,pdf_escaneado,OC-MED_C,corpus/e90/medicion/E90-M-OC-09.pdf,1f25c01c085b3183f3ba7837ac98b3f411236a9f7be8840ddf3866a55468175e,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-OC-10,medicion,orden_compra,pdf_fotografiado,OC-MED_D,corpus/e90/medicion/E90-M-OC-10.pdf,567eead7980366dfae19856db60b9bb921d0459b024a1b424f4f2e802fca620f,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-A-OC-01,ajuste,orden_compra,pdf_digital,OC-BASE_A,corpus/e90/ajuste/E90-A-OC-01.pdf,b64c8f206dcbd90917ab21efdc2022a2302cf4b300ee8a05ceb4d536f5ab32ab,no,CANDIDATO_NO_CONGELADO
+E90-A-OC-02,ajuste,orden_compra,docx,OC-BASE_B,corpus/e90/ajuste/E90-A-OC-02.docx,766ff5d8e0adb41e18fd9133fdcb5ae7afe63c0d95310023e1eebcd9e96960a5,no,CANDIDATO_NO_CONGELADO
+E90-A-OC-03,ajuste,orden_compra,pdf_escaneado,OC-BASE_A,corpus/e90/ajuste/E90-A-OC-03.pdf,a78dee280ccfeaa813d18beac4dfbd2938a4a19fbf063b270cdf17874ffda688,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-FAC-01,medicion,factura,pdf_digital,FAC-BASE_A,corpus/e90/medicion/E90-M-FAC-01.pdf,88e209f29aa596aee73b2901faa035c180f3b63242c79a763699211347624581,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-02,medicion,factura,docx,FAC-BASE_B,corpus/e90/medicion/E90-M-FAC-02.docx,58425aeb592021323391176ab9b6b3188c8fff499f66d72a148866cc852f5f84,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-03,medicion,factura,pdf_digital,FAC-BASE_A,corpus/e90/medicion/E90-M-FAC-03.pdf,180c902c169f41118064174fc2025fab9a575f4ad498dd20a2464555f419528c,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-04,medicion,factura,docx,FAC-BASE_B,corpus/e90/medicion/E90-M-FAC-04.docx,51a9006ce57a23f50f51e50a244da383a62a0109c27ddf26161854ead182a1f8,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-05,medicion,factura,pdf_escaneado,FAC-MED_C,corpus/e90/medicion/E90-M-FAC-05.pdf,dafd12a21168c509ec418dc871789be99af7c0041e76c210ebfe210c2c91d097,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-FAC-06,medicion,factura,pdf_digital,FAC-MED_C,corpus/e90/medicion/E90-M-FAC-06.pdf,8ada63c41b3b7b35427fdd68ec3aad011805fdeeac4af7c252c47777a2b71a9b,si,CANDIDATO_NO_CONGELADO
+E90-M-FAC-07,medicion,factura,docx,FAC-MED_D,corpus/e90/medicion/E90-M-FAC-07.docx,25b4b20d70a5d2a8c5b43c2d09041957a5552f9cd0c9e85c6032c127f47fe3ec,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-08,medicion,factura,pdf_digital,FAC-MED_D,corpus/e90/medicion/E90-M-FAC-08.pdf,597499521794a7e599526f152202f456ce2d350da93a7e793b4ecadf7f45bcd6,no,CANDIDATO_NO_CONGELADO
+E90-M-FAC-09,medicion,factura,pdf_escaneado,FAC-MED_C,corpus/e90/medicion/E90-M-FAC-09.pdf,914570c13b7620d951e972f04b51ab392d1b97e1999cf133f4f5baa51b1da367,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-FAC-10,medicion,factura,pdf_fotografiado,FAC-MED_D,corpus/e90/medicion/E90-M-FAC-10.pdf,81d77e9ffa3ab427ead096e14c07d95f0c0c76fd6d1e88f8ba73d6ee06e20639,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-A-FAC-01,ajuste,factura,pdf_digital,FAC-BASE_A,corpus/e90/ajuste/E90-A-FAC-01.pdf,cf596dc62ffc9056ad7fb24c4b4827226b035efc170b982cd0afe3b34c617a02,no,CANDIDATO_NO_CONGELADO
+E90-A-FAC-02,ajuste,factura,docx,FAC-BASE_B,corpus/e90/ajuste/E90-A-FAC-02.docx,24b3cdf13bf4ad2d2fd5919eb043a5ee67ffe2f4e304098d6a509e617ac8cfad,no,CANDIDATO_NO_CONGELADO
+E90-A-FAC-03,ajuste,factura,pdf_escaneado,FAC-BASE_A,corpus/e90/ajuste/E90-A-FAC-03.pdf,69ddda49bab7f8aefa53b03592c3bcce6ed6aecb201ef7c3356f39d274f6c0fa,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-COM-01,medicion,comprobante,pdf_digital,COM-BASE_A,corpus/e90/medicion/E90-M-COM-01.pdf,208aca1c80a63911e03d747895ffc69b4145f248406065588875b9ebd460167e,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-02,medicion,comprobante,docx,COM-BASE_B,corpus/e90/medicion/E90-M-COM-02.docx,7011935a61021b7922103511be7af3c30f64aecac540f9057d6eea4ae59de54c,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-03,medicion,comprobante,pdf_digital,COM-BASE_A,corpus/e90/medicion/E90-M-COM-03.pdf,a3aedcec75c801d3ac2889ce6cbc900f56f40a6572d920c469909313fa97e1ed,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-04,medicion,comprobante,docx,COM-BASE_B,corpus/e90/medicion/E90-M-COM-04.docx,d84af666d6ae346de1a13326bc043d18a1d712d84e69090d836567212e01bdf8,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-05,medicion,comprobante,pdf_escaneado,COM-MED_C,corpus/e90/medicion/E90-M-COM-05.pdf,7fae536b0b57290efa90679d14f7c7776e8095c938ec92cde4dff084f6e05c66,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-COM-06,medicion,comprobante,pdf_digital,COM-MED_C,corpus/e90/medicion/E90-M-COM-06.pdf,a5c1f0c2abc1beaec3e23a4aedcf44396b351c1278b9e43537b5ee10a7dc9b80,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-07,medicion,comprobante,docx,COM-MED_D,corpus/e90/medicion/E90-M-COM-07.docx,b6b6e4d90206a2fc48d03fd0ef2f745e01570d3626c260476ad59ce3c1466558,no,CANDIDATO_NO_CONGELADO
+E90-M-COM-08,medicion,comprobante,pdf_digital,COM-MED_D,corpus/e90/medicion/E90-M-COM-08.pdf,a85d584421597945eb5c9c804048f93c49c9957d653b4e19406f43f8d13ac5db,si,CANDIDATO_NO_CONGELADO
+E90-M-COM-09,medicion,comprobante,pdf_escaneado,COM-MED_C,corpus/e90/medicion/E90-M-COM-09.pdf,f026890c5a4b8b5c3124b0affffbfb6032d520c9d0810f094912c7c6b2372a79,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-M-COM-10,medicion,comprobante,pdf_fotografiado,COM-MED_D,corpus/e90/medicion/E90-M-COM-10.pdf,901f8ab0bc0e6dc07c5199f91441f3290ea898b825cebe3e0f92777048eeb0de,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
+E90-A-COM-01,ajuste,comprobante,pdf_digital,COM-BASE_A,corpus/e90/ajuste/E90-A-COM-01.pdf,1c03faf6ad4401c532fffe4b7090d966f77f40ed6f27930ca8a2edbc3038dc31,no,CANDIDATO_NO_CONGELADO
+E90-A-COM-02,ajuste,comprobante,docx,COM-BASE_B,corpus/e90/ajuste/E90-A-COM-02.docx,18d39805c8ff7774c6f14dc5c044f032d84ecae96dd85229df0b5bd13b6ff968,no,CANDIDATO_NO_CONGELADO
+E90-A-COM-03,ajuste,comprobante,pdf_escaneado,COM-BASE_A,corpus/e90/ajuste/E90-A-COM-03.pdf,85d64923887c3fcea4f416c4a8453721006d3c735737a28ecc8c6ca7af22e63d,no,CANDIDATO_NO_CONGELADO; simulacion_digital_declarada
