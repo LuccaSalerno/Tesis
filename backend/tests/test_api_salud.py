@@ -70,3 +70,15 @@ def test_rc_p01_002_error_no_controlado_responde_generico_sin_filtrar_valores(
     assert {r["evento"] for r in registros} == {"error_no_controlado", "solicitud_atendida"}
     assert any(r.get("codigo_error") == "ValueError" for r in registros)
     assert VALOR_DOCUMENTAL not in str(registros)
+
+
+def test_dif_98_verificacion_previa_de_cors_responde_204_sin_token() -> None:
+    """La ruta OPTIONS sin autorizador de API Gateway llega aquí (sesión e90-ensayo-2)."""
+    cliente = TestClient(nueva_aplicacion())
+    previa = cliente.options(
+        "/usuarios/yo",
+        headers={"Origin": "http://localhost:4173", "Access-Control-Request-Method": "GET"},
+    )
+    assert previa.status_code == 204 and previa.content == b""
+    # Un OPTIONS que no es verificación previa sigue el camino normal.
+    assert cliente.options("/usuarios/yo").status_code in (401, 405)

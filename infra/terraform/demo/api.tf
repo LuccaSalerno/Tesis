@@ -45,12 +45,13 @@ resource "aws_apigatewayv2_route" "salud" {
 }
 
 # Las verificaciones previas de CORS no llevan token: sin esta ruta, `$default` las manda al
-# autorizador y responde 401. Sin integración: las contesta API Gateway con la configuración de
-# CORS; con la Lambda como destino, FastAPI respondía 405 (sesión e90-ensayo-2).
+# autorizador y responde 401. Sin integración API Gateway la ignora; con ella, el backend
+# responde 204 (MiddlewareVerificacionPrevia) y API Gateway agrega el CORS (DIF-98).
 resource "aws_apigatewayv2_route" "verificacion_cors" {
   count     = length(var.origenes_web) > 0 ? 1 : 0
   api_id    = aws_apigatewayv2_api.principal.id
   route_key = "OPTIONS /{proxy+}"
+  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
 }
 
 resource "aws_apigatewayv2_route" "autenticada" {

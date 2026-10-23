@@ -229,3 +229,10 @@ def test_do_ops_p5_la_api_responde_eventos_de_api_gateway(
     no_autenticado = lambda_api.manejar(evento_http_api("GET", "/tramites"), None)
     assert no_autenticado["statusCode"] == 401
     lambda_api._manejador.cache_clear()
+
+
+def test_dif_98_verificacion_previa_antes_del_mantenimiento(control_s3: Any) -> None:
+    cliente = control_s3("offline")
+    previa = cliente.options("/tramites", headers={"Access-Control-Request-Method": "POST"})
+    assert previa.status_code == 204
+    assert cliente.post("/tramites", json={"titulo": "x"}).status_code == 503

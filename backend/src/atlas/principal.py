@@ -13,7 +13,7 @@ from starlette.exceptions import HTTPException
 
 from atlas import __version__
 from atlas.api import consultas, cuentas, revision, salud, tramites, vinculos
-from atlas.api.middleware import MiddlewareSolicitudes
+from atlas.api.middleware import MiddlewareSolicitudes, MiddlewareVerificacionPrevia
 from atlas.autenticacion.verificador import VerificadorJwt
 from atlas.configuracion import Configuracion, obtener_configuracion
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
@@ -88,6 +88,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
         lector=aplicacion.state.mantenimiento,
         reintentar_s=configuracion_efectiva.mantenimiento_reintentar_s,
     )
+    aplicacion.add_middleware(MiddlewareVerificacionPrevia)
     aplicacion.add_middleware(MiddlewareSolicitudes)
     aplicacion.add_exception_handler(HTTPException, _responder_http)
     aplicacion.add_exception_handler(ErrorDominio, _responder_dominio)

@@ -69,6 +69,29 @@ class MiddlewareSolicitudes:
             )
 
 
+class MiddlewareVerificacionPrevia:
+    """Responde 204, sin cuerpo ni datos, a las verificaciones previas de CORS del navegador.
+
+    En AWS la ruta `OPTIONS /{proxy+}` no tiene autorizador y llega aquí; API Gateway agrega
+    los encabezados de CORS según su configuración (DO-2026-10-22-WEB F7, DIF-98). Va antes
+    del modo de mantenimiento para que el navegador vea el 503 real de la solicitud.
+    """
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if (
+            scope["type"] == "http"
+            and scope["method"] == "OPTIONS"
+            and any(nombre == b"access-control-request-method" for nombre, _ in scope["headers"])
+        ):
+            await send({"type": "http.response.start", "status": 204, "headers": []})
+            await send({"type": "http.response.body", "body": b""})
+            return
+        await self.app(scope, receive, send)
+
+
 async def _responder_error_interno(enviar: Send, solicitud_id: str) -> None:
     cuerpo = json.dumps({"detalle": "Error interno", "solicitud_id": solicitud_id}).encode()
     await enviar(
