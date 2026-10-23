@@ -108,7 +108,7 @@ respuestas usan los fragmentos que recupera Cohere, idénticos para ambos modelo
 ## Qué no hace
 
 - No congela ni revisa oráculos: eso es de los autores.
-- No mide §6.3.2 (depende del reconciliador RC-P08). §6.3.3 tiene su propio ejecutor (abajo).
+- §6.3.2 y §6.3.3 tienen sus propios ejecutores (abajo).
 - No decide sustituciones: calcula las reglas sobre promedios y la decisión la registra el equipo.
 - No usa juez automático para las respuestas.
 
@@ -218,3 +218,25 @@ python -m atlas.evaluacion.seguridad informe --campana <id>
 
 En la CI no hay procesamiento asíncrono: la consulta cruzada no recupera fragmentos y el
 camino de error no se ejecuta. Esas dos verificaciones solo son concluyentes en el nivel B.
+
+## Confiabilidad §6.3.2 (AS-01 a AS-04)
+
+Decisión **DO-2026-10-23-REC**. El nivel A corre en la CI (`tests/test_reconciliador.py`): admisión
+con 12 confirmaciones simultáneas y cupo de 10, espera y admisión por antigüedad, inicio
+incierto recuperado una sola vez, ejecución terminada o vencida que pasa a fallido, intento
+manual sin trabajos huérfanos y descarte del resultado del intento anterior, y reconciliador
+omitido fuera de `active`.
+
+El nivel B (operador, sesión E90A de ensayo con el reconciliador desplegado) observa la espera
+real y el fallo definitivo con su intento manual:
+
+```bash
+python -m atlas.evaluacion.confiabilidad --campana <id> --url-api "$URL" \
+  --cliente-cognito <cliente> --limite 10
+```
+
+Sube `limite + 3` documentos sintéticos a la vez (consultas cada 30 s hasta que todos terminen;
+puede tardar decenas de minutos porque el reconciliador corre cada 5) y un DOCX vacío.
+Criterios: sin sobreasignación, espera observada y admitida, fallo definitivo sin reintentos
+indefinidos, intento manual y trámite sin cambios. El inicio fallido de Step Functions solo se
+prueba en el nivel A.

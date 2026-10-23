@@ -16,7 +16,7 @@ Ningún agente, push ni GitHub Action ejecuta estos pasos. Runbook general y cri
 | `bootstrap` | Bucket del estado remoto (versionado, cifrado, solo TLS, `prevent_destroy`) | Una vez; **nunca** se destruye |
 | `persistent` | VPC sin NAT, subredes, grupos de seguridad, gateway S3, RDS Multi-AZ, bucket documental con el objeto de control (`offline`), Cognito | Por sesión |
 | `runtime` | RDS Proxy con IAM de extremo a extremo, su rol, endpoints Step Functions, Bedrock Runtime y Secrets Manager (temporal) | Por sesión |
-| `demo` | Bucket de artefactos y paquete, cuatro Lambda, roles mínimos, Step Functions, API Gateway con JWT | Por sesión |
+| `demo` | Bucket de artefactos y paquete, cinco Lambda (incluido el reconciliador), roles mínimos, Step Functions, EventBridge Scheduler del reconciliador, API Gateway con JWT | Por sesión |
 | `tests` | Solo documentación: no se despliega en E90 | — |
 
 Creación: `persistent → runtime → demo`. Retiro: `demo → runtime → persistent`.
