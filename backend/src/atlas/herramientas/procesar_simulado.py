@@ -58,7 +58,7 @@ def escenario_completo(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
         elif doc["clase"] == "orden_compra":
             escenario[codigo] = {
                 "tipo_documental": "orden_compra",
-                "numero": codigo,
+                "numero": doc["numero"],
                 "fecha": doc["fecha_emision"],
                 "proveedor": RAZON_SOCIAL_PROVEEDOR,
                 "cuit_proveedor": doc["cuit_proveedor"],
@@ -68,7 +68,7 @@ def escenario_completo(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
         else:
             escenario[codigo] = {
                 "tipo_documental": "factura",
-                "numero": codigo,
+                "numero": doc["numero"],
                 "fecha_emision": doc["fecha_emision"],
                 "emisor": RAZON_SOCIAL_PROVEEDOR,
                 "cuit_emisor": doc["cuit_emisor"],

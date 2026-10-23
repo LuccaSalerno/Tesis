@@ -41,6 +41,7 @@ from tests.flujo_procesamiento import (
 from tests.procesamiento_fijo import ModeloFijo, dato
 
 ORACULO = json.loads(sembrar_demo.ORACULO.read_text(encoding="utf-8"))
+O_V2 = {c: ORACULO["documentos"]["O-v2"][c] for c in ("numero", "cuit_proveedor", "moneda")}
 
 
 def transporte_de(cliente: TestClient) -> Any:
@@ -71,7 +72,8 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
         def procesar(_: ClienteApi, __: int, archivos: list[int]) -> None:
             # Todo se procesa con el contrato fijo: O-v1 y F-v2 quedan sugeridos como
             # contrato y la semilla los corrige al tipo del oráculo. O-v2 se sugiere como
-            # orden con el CUIT del proveedor, para que RF-06 la relacione con O-v1.
+            # orden con el número estable del oráculo v2, para que RF-06 la relacione con
+            # O-v1 por su número (DIF-84).
             for archivo in archivos:
                 with motor_aplicacion.connect() as conexion:
                     nombre = conexion.execute(
@@ -83,9 +85,7 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
                         {
                             esquemas.HERRAMIENTA_CLASIFICACION: {"tipo": "orden_compra"},
                             esquemas.HERRAMIENTA_EXTRACCION: {
-                                c.nombre: dato(
-                                    "30-96472518-3" if c.nombre == "cuit_proveedor" else None
-                                )
+                                c.nombre: dato(O_V2.get(c.nombre))
                                 for c in esquemas.CAMPOS[TipoDocumental.ORDEN_COMPRA]
                             },
                         }
@@ -123,7 +123,7 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"C-v1"}
     # DO-2026-10-23-VER P9: EVD-B completo hasta la firma.
     cerrado = manifiesto.tramites["cerrado"]
-    assert cerrado["estado"] == "cerrado" and cerrado["criterio_version"] == "cuit"
+    assert cerrado["estado"] == "cerrado" and cerrado["criterio_version"] == "numero"
     assert cerrado["controles"]["R3"] == "advertencia"
     assert cerrado["controles_corregidos"]["R3"] == "cumplimiento"
     assert cerrado["validaciones"]["O-v2"]["fecha"] == "sin_sugerencia"

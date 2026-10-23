@@ -106,6 +106,7 @@
 - **RF-25:** supresión con la Lambda `cuentas` (Cognito) y el endpoint de VPC `lambda`; DIF-47 resuelta, DIF-120. Terraform validado sin AWS; lo aplica el operador (`runtime` y `demo`).
 - **Semilla:** cuarto trámite cancelado con motivo.
 - **CI:** `eliminar_prefijo` borra por lotes (la suite bajó de 10,7 GB a 1,1 GB de memoria máxima).
+- **D4 (DIF-84):** O y F regenerados con número estable y oráculo v2 preliminar; la semilla y la simulación lo usan.
 - Con esto **todos los RF-01 a RF-26 están implementados**; ninguno está probado contra AWS hasta la sesión de la sección 6.
 
 ## Próximo paso
@@ -118,7 +119,6 @@ Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecuto
 
 ## Preguntas abiertas al equipo
 
-- **DIF-84 (F11):** regenerar O y F con número estable y publicar el oráculo v2.
 - **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con 94 entradas pendientes de revisión por los autores.
 
 ## Dónde está cada cosa

@@ -141,10 +141,14 @@ P(d,'Fin del documento C-v1. Toda modificación posterior del contenido deberá 
 d.save(OUT/'C-v1_Contrato_Mantenimiento_ATLAS.docx')
 
 # Cuatro documentos relacionados: se usan en las Etapas 1.7+ y EVD-01; no son documentos fiscales.
+# Número documental estable entre versiones del mismo documento (DO-2026-10-23-CIERRE D4,
+# DIF-84): RF-06 relaciona O-v2 con O-v1 y F-v2 con F-v1 por su número.
+NUMERO = {'Orden_Compra': 'OC-2026-0042', 'Factura': 'FC-A-0001-00000123'}
+
 def auxiliary(kind, code, title, date, amount, extra=None):
     d=doc_base(title,code)
     P(d,f'Fecha de emisión: {date}. Todos los sujetos, importes y referencias de este documento son ficticios. No constituye un comprobante fiscal, una autorización de compra ni una instrucción de pago.')
-    tbl(d,[('Referencia',code),('Proveedor / emisor',PROVEEDOR),('CUIT proveedor / emisor (dato de prueba)',CUIT),('Cliente / destinatario',CLIENTE),('Fecha',date),('Importe total IVA incluido',f'ARS {amount}'),('Moneda','ARS - pesos argentinos'),('Contrato de referencia','CTR-ATLAS-2026-001')])
+    tbl(d,[('Número',NUMERO[kind]),('Proveedor / emisor',PROVEEDOR),('CUIT proveedor / emisor (dato de prueba)',CUIT),('Cliente / destinatario',CLIENTE),('Fecha',date),('Importe total IVA incluido',f'ARS {amount}'),('Moneda','ARS - pesos argentinos'),('Contrato de referencia','CTR-ATLAS-2026-001')])
     H(d,'Detalle del concepto')
     P(d,'Prestaciones de mantenimiento preventivo y soporte documental de laboratorio, vinculadas al contrato sintético de referencia. El número y los datos se incluyen solo para verificar trazabilidad documental, control humano y reglas de consistencia.')
     H2(d,'Desglose impositivo de referencia')

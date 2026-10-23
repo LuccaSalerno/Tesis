@@ -42,7 +42,8 @@ from atlas.herramientas.cliente_api import ClienteApi, ErrorApi, sub_del_token, 
 
 RAIZ_REPOSITORIO: Final = Path(__file__).resolve().parents[4]
 CORPUS: Final = RAIZ_REPOSITORIO / "corpus"
-ORACULO: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_PD07_preliminar.json"
+# Oráculo v2 preliminar: número estable en O y F (DO-2026-10-23-CIERRE D4, DIF-84).
+ORACULO: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_PD07_v2_preliminar.json"
 ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 
 ARCHIVOS: Final = {
@@ -69,9 +70,8 @@ MOTIVO_OBSERVACION: Final = (
     " contrato (01/03/2026 a 28/02/2027). Corregir la orden antes de aprobar."
 )
 
-# El oráculo preliminar no trae todos los campos de RC-P04. Estos salen literalmente de la
-# fuente reproducible del corpus (herramientas/generar_corpus.py: tabla «Referencia» y
-# «Proveedor / emisor»). Pregunta abierta: incorporarlos al oráculo al congelarlo.
+# Razón social del proveedor y emisor: en el oráculo v2 (`razon_social`) y en la fuente
+# reproducible del corpus (herramientas/generar_corpus.py, «Proveedor / emisor»).
 RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
 
 
@@ -96,7 +96,7 @@ def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
         },
         "O-v1": {
             "tipo_documental": "orden_compra",
-            "numero": "O-v1",
+            "numero": o["numero"],
             "fecha": o["fecha_emision"],
             "proveedor": RAZON_SOCIAL_PROVEEDOR,
             "cuit_proveedor": o["cuit_proveedor"],
@@ -105,7 +105,7 @@ def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
         },
         "O-v2": {
             "tipo_documental": "orden_compra",
-            "numero": "O-v2",
+            "numero": o2["numero"],
             "fecha": o2["fecha_emision"],
             "proveedor": RAZON_SOCIAL_PROVEEDOR,
             "cuit_proveedor": o2["cuit_proveedor"],
@@ -114,7 +114,7 @@ def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
         },
         "F-v2": {
             "tipo_documental": "factura",
-            "numero": "F-v2",
+            "numero": f["numero"],
             "fecha_emision": f["fecha_emision"],
             "emisor": RAZON_SOCIAL_PROVEEDOR,
             "cuit_emisor": f["cuit_emisor"],

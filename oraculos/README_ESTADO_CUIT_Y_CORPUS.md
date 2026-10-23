@@ -16,6 +16,6 @@
 3. Conservar fecha y resultado comprobable de la consulta oficial, especificando si se obtuvo “sin resultados”, error de sistema, coincidencia o resultado de otra naturaleza.
 4. Si aparece cualquier entidad real asociada o no se puede determinar el estado, no marcarlo como verificado ni afirmar que no está asignado.
 5. Si cambia el CUIT, regenerar **todos** los PDF desde la fuente reproducible `herramientas/generar_corpus.py`, cotejar el oráculo, volver a verificar páginas y calcular nuevos SHA-256.
-6. Solo entonces congelar el corpus y registrar su versión y fecha en `oraculos/oraculo_PD07_preliminar.json`.
+6. Solo entonces congelar el corpus y registrar su versión y fecha en `oraculos/oraculo_PD07_v2_preliminar.json` (v2 del 23/10/2026: número estable en O y F, DO-2026-10-23-CIERRE D4; la v1 queda como antecedente).
 
 > El control de colisiones nunca garantiza al 100 % la inexistencia de asignación, como ya advierte PD-07.
