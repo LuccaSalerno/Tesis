@@ -12,6 +12,8 @@ resource "aws_db_parameter_group" "postgres" {
   parameter {
     name  = "rds.force_ssl"
     value = "1"
+    # RDS lo informa como estático: con "immediate" cada plan lo vuelve a fijar.
+    apply_method = "pending-reboot"
   }
 }
 

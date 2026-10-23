@@ -10,9 +10,9 @@ encrypt a connection to a DB instance», paquete `global-bundle.pem`) y lo guard
 infra/certificados/rds-global-bundle.pem
 ```
 
-Antes de versionarlo, registrar la fecha de descarga, la URL oficial y su SHA-256 en este
-archivo. Es un certificado público: no contiene secretos.
+El repositorio excluye todos los `*.pem` (`.gitignore`), así que no se versiona: se vuelve a
+descargar y se compara con el SHA-256 registrado abajo. Es un certificado público, sin secretos.
 
 | Fecha | URL oficial | SHA-256 |
 |---|---|---|
-| PENDIENTE | PENDIENTE | PENDIENTE |
+| 22/10/2026 | https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem (114 certificados) | `90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b` |

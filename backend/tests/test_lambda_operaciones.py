@@ -27,8 +27,13 @@ def test_v_db_sentencias_sin_delete_y_con_rds_iam() -> None:
     n = ops.Nombres(base="pfi_demo", app="atlas_demo_app", migracion="atlas_demo_migracion")
     servidor = [s.as_string() for s in ops.sentencias_servidor(n)]
     base = [s.as_string() for s in ops.sentencias_base(n)]
-    assert 'GRANT rds_iam TO "atlas_demo_migracion", "atlas_demo_app"' in servidor
     assert 'REVOKE ALL ON DATABASE "pfi_demo" FROM PUBLIC' in servidor
+    # DIF-95: rds_iam al final, cuando ya no se abre otra conexión maestra.
+    assert not any("rds_iam" in s for s in servidor)
+    assert base[-2:] == [
+        'REVOKE "atlas_demo_migracion" FROM CURRENT_USER',
+        'GRANT rds_iam TO "atlas_demo_migracion", "atlas_demo_app"',
+    ]
     assert any("GRANT SELECT, INSERT, UPDATE ON TABLES" in s for s in base)
     assert not any("DELETE" in s or "TRUNCATE" in s for s in servidor + base)
 
@@ -76,6 +81,9 @@ def test_v_db_inicializar_ejecuta_servidor_y_base_en_orden() -> None:
 
     resultado = ops.inicializar_base(_configuracion_ops(), conectar)
     assert bases == ["postgres", "sin_base"]
+    # DIF-95: después de rds_iam no hay más sentencias ni conexiones con el maestro.
+    assert "rds_iam" in ejecutadas[-1][0]
+    assert sum("rds_iam" in sentencia for sentencia, _ in ejecutadas) == 1
     assert resultado == {"base": "sin_base", "usuarios": ["atlas_demo_migracion", "nadie"]}
     n = ops.nombres(_configuracion_ops())
     assert len(ejecutadas) == 1 + len(ops.sentencias_servidor(n)) + len(ops.sentencias_base(n))
@@ -137,7 +145,19 @@ def test_v_db_inicializacion_real_en_postgresql_16() -> None:
             publico = conexion.execute(
                 "SELECT has_database_privilege('public', %s, 'CONNECT')", (n.base,)
             ).fetchone()
+            # DIF-95: el maestro no conserva la pertenencia explícita al usuario de migración.
+            pertenece = conexion.execute(
+                "SELECT count(*) FROM pg_auth_members WHERE roleid = %s::regrole"
+                " AND member = current_user::regrole",
+                (n.migracion,),
+            ).fetchone()
+            iam = conexion.execute(
+                "SELECT count(*) FROM pg_auth_members WHERE roleid = 'rds_iam'::regrole"
+                " AND member IN (%s::regrole, %s::regrole)",
+                (n.migracion, n.app),
+            ).fetchone()
         assert dueno == (n.migracion,) and vector == (1,) and publico == (False,)
+        assert pertenece == (0,) and iam == (2,)
         with pytest.raises(ops.ErrorOperacion, match="base_ya_inicializada"):
             ops.inicializar_base(configuracion, conectar)
     finally:

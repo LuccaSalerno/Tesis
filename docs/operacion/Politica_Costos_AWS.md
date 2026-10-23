@@ -48,6 +48,8 @@ Conservar referencia/exportación de [AWS Pricing Calculator](https://calculator
 
 Calcular costo **por hora aprovisionada**, **por sesión completa** (creación, migraciones, seed, pruebas, drenaje, eliminación efectiva, mínimos) y **mensual** (número/duración de sesiones, temporales olvidados y residuales reales). Fórmula de trabajo: costo mensual = sesiones con sus mínimos/redondeos + almacenamiento y demás residuales del período + contingencia; evitar contar dos veces las partidas compartidas. Separar estimado, observado pendiente de facturación y facturado conciliado.
 
+**Aprobación comunicada (22/10/2026):** el equipo aprobó el presupuesto de las sesiones E90A (comunicado por Lucca Salerno). Pendiente registrar aquí el importe aceptado por sesión y por mes, la contingencia y la referencia a la cotización oficial. Antecedente:
+
 Registro de aprobación aún vacío: importe aceptado por sesión/mes, tolerancia de contingencia, supuestos, operador/revisor, fecha, referencia al plan exacto y límite de duración. Sin esos datos no hay autorización económica. Antes de cada sesión actualizar cambios de tarifa, configuración, uso previsto y margen de recuperación.
 
 ## 3. Inactividad, mínimos y redondeos

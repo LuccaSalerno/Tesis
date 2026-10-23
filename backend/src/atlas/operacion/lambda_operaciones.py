@@ -6,7 +6,8 @@ documental ni credenciales (AGENTS.md §2.5).
 
 - `inicializar_base`: con la credencial maestra (Secrets Manager), crea la base del
   entorno, sus usuarios con `rds_iam`, el esquema `atlas`, pgvector y los privilegios.
-  Se niega si la base ya existe.
+  Se niega si la base ya existe. Es de un solo uso: después la credencial maestra puede
+  quedar sin acceso por contraseña (DIF-95), y no se vuelve a usar en la sesión.
 - `migrar` y `estado_migraciones`: Alembic con el usuario de migración, directo a RDS.
 - `crear_administrador`: primer administrador operativo (DT-AUT-02).
 - `verificar_drenaje`: conteos de lo que impide pasar a `offline` (RC-P10-09).
@@ -71,7 +72,7 @@ def nombres(configuracion: Configuracion) -> Nombres:
 
 
 def sentencias_servidor(n: Nombres) -> list[sql.Composable]:
-    """En la base `postgres`: usuarios con IAM y base propia sin acceso de PUBLIC."""
+    """En la base `postgres`: usuarios (todavía sin IAM) y base propia sin acceso de PUBLIC."""
     app, migracion, base = (
         sql.Identifier(n.app),
         sql.Identifier(n.migracion),
@@ -80,12 +81,14 @@ def sentencias_servidor(n: Nombres) -> list[sql.Composable]:
     return [
         sql.SQL("CREATE ROLE {} LOGIN").format(migracion),
         sql.SQL("CREATE ROLE {} LOGIN").format(app),
-        sql.SQL("GRANT rds_iam TO {}, {}").format(migracion, app),
         # PostgreSQL 16: quien crea el rol necesita pertenecer a él para asignarle objetos.
+        # La pertenencia es temporal: se revoca al final de `sentencias_base`.
         sql.SQL("GRANT {} TO CURRENT_USER").format(migracion),
         sql.SQL("CREATE DATABASE {} OWNER {}").format(base, migracion),
         sql.SQL("REVOKE ALL ON DATABASE {} FROM PUBLIC").format(base),
-        sql.SQL("GRANT CONNECT ON DATABASE {} TO {}, {}").format(base, migracion, app),
+        sql.SQL("GRANT CONNECT ON DATABASE {} TO {}, {}, CURRENT_USER").format(
+            base, migracion, app
+        ),
         sql.SQL("ALTER ROLE {} IN DATABASE {} SET search_path = atlas, public").format(app, base),
         sql.SQL("ALTER ROLE {} IN DATABASE {} SET search_path = atlas, public").format(
             migracion, base
@@ -95,7 +98,12 @@ def sentencias_servidor(n: Nombres) -> list[sql.Composable]:
 
 def sentencias_base(n: Nombres) -> list[sql.Composable]:
     """En la base nueva: pgvector, esquema del usuario de migración y privilegios mínimos
-    del usuario de aplicación (sin DELETE ni TRUNCATE, RNF-04, PD-04-002)."""
+    del usuario de aplicación (sin DELETE ni TRUNCATE, RNF-04, PD-04-002).
+
+    `rds_iam` va al final y después no se abre otra conexión maestra: RDS exige IAM (PAM) a
+    todo miembro directo o indirecto de `rds_iam` (`pg_hba.conf`: `+rds_iam ... pam`), y el
+    maestro es miembro del usuario de migración mientras dura la inicialización. Verificado
+    en la sesión e90-ensayo-1 (DIF-95)."""
     app, migracion = sql.Identifier(n.app), sql.Identifier(n.migracion)
     return [
         sql.SQL("CREATE EXTENSION IF NOT EXISTS vector"),
@@ -110,6 +118,8 @@ def sentencias_base(n: Nombres) -> list[sql.Composable]:
             "ALTER DEFAULT PRIVILEGES FOR ROLE {} IN SCHEMA atlas "
             "GRANT USAGE, SELECT ON SEQUENCES TO {}"
         ).format(migracion, app),
+        sql.SQL("REVOKE {} FROM CURRENT_USER").format(migracion),
+        sql.SQL("GRANT rds_iam TO {}, {}").format(migracion, app),
     ]
 
 

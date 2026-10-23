@@ -64,6 +64,10 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    aws lambda invoke --function-name "$FN" --cli-binary-format raw-in-base64-out \
      --payload '{"accion":"estado_migraciones"}' /dev/stdout   # al_dia: true
    ```
+   El CLI corta a los 60 s: agregar `--cli-read-timeout 320` (la Lambda admite 300 s).
+   `inicializar_base` es de **un solo uso**: al terminar, RDS exige IAM al maestro (DIF-95) y la
+   credencial maestra deja de servir con contraseña. Si falla a mitad de camino, no reintentar:
+   revisar el log de RDS (`aws rds download-db-log-file-portion`) y decidir con el equipo.
    Luego retirar el endpoint temporal: en `runtime`, `endpoint_secrets_manager = false`, plan y apply.
 
 6. **Cuentas ficticias** (P10). Por cada usuario (`atlas-admin`, `atlas-responsable`,
