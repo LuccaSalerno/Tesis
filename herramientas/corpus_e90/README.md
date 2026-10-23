@@ -67,7 +67,11 @@ E90_PRUEBAS_RENDER=1 E90_LIBREOFFICE=soffice python -m pytest -q tests/corpus_e9
 
 Los mensajes del validador contienen códigos e identificadores, sin preguntas, valores ni fragmentos. `sin_inconsistencias_estructurales` no significa aceptación académica, calidad de IA ni corpus congelado.
 
-## Pendientes antes de congelar
+## Congelación (DO-2026-10-23-E90-CONGELACION)
+
+La v3 se congeló el 23/10/2026 con `python -m herramientas.corpus_e90.congelar`, después de la revisión de ambos autores por muestreo. `oraculos/e90/congelamiento.json` guarda la revisión y las huellas de 202 archivos; el validador entra en modo congelado cuando ese registro existe (`congelado=si`) y rechaza cualquier archivo cuya huella no coincida. `comun.py` y `validar.py` se modificaron después de generar la v3 solo para agregar el modo congelado: no cambian la generación. Cualquier corrección posterior exige una revisión nueva (v4) en una raíz limpia.
+
+## Pendientes antes de congelar (historial)
 
 1. ~~Verificación manual de las 18 razones sociales y de los 6 CUIT de ajuste~~: completada el 23/10/2026 (`docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md`).
 2. Revisión técnica de contraste de la v2 por el agente que no la construyó (P0).

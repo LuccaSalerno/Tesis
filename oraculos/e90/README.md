@@ -1,4 +1,6 @@
-# Referencias candidatas del corpus E90 (v3)
+# Referencias del corpus E90 (v3, congelada)
+
+**Congelada el 23/10/2026** (DO-2026-10-23-E90-CONGELACION): `congelamiento.json` registra la revisión de ambos autores por muestreo y las huellas. Los oráculos de campos, fragmentos y consultas están en estado `CONGELADO`; el registro de documentos, el inventario y los CUIT conservan su forma generada.
 
 Borradores de referencia y metadatos de generación de la versión **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION; correcciones de DO-2026-10-23-CIERRE D5). No contienen resultados experimentales ni calificaciones de los autores. El estado es CANDIDATO_NO_CONGELADO y `revisado_por_autores` permanece falso.
 

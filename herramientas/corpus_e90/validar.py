@@ -13,6 +13,8 @@ from pathlib import Path
 from .comun import (
     CAMPOS,
     ESTADO,
+    ESTADO_CONGELADO,
+    ORACULOS_CONGELABLES,
     PATRON_ID,
     PISTAS_PROHIBIDAS,
     cuit_valido,
@@ -47,7 +49,30 @@ def leer_conjunto(root: Path) -> dict:
             root / "herramientas/corpus_e90/plantillas/contratos.json"
         ),
         "inventario": inventory,
+        # DO-2026-10-23-E90-CONGELACION: sin este registro, el conjunto es candidato.
+        "congelamiento": leer_json(carpeta / "congelamiento.json")
+        if (carpeta / "congelamiento.json").exists()
+        else None,
     }
+
+
+def estado_elemento(data: dict, coleccion: str, elemento: dict) -> tuple[str, bool]:
+    """Estado y marca de revisión que corresponden a un elemento de un oráculo."""
+    congelamiento = data.get("congelamiento")
+    if congelamiento is None or coleccion not in ORACULOS_CONGELABLES:
+        return ESTADO, False
+    muestra = congelamiento["revision"]
+    if coleccion == "consultas":
+        return ESTADO_CONGELADO, elemento["pregunta_id"] in muestra["consultas"]
+    if coleccion == "campos":
+        return ESTADO_CONGELADO, elemento["doc_id"] in muestra["documentos"]
+    return ESTADO_CONGELADO, False
+
+
+def elemento_valido(data: dict, coleccion: str, elemento: dict) -> bool:
+    return (elemento["estado"], bool(elemento["revisado_por_autores"])) == estado_elemento(
+        data, coleccion, elemento
+    )
 
 
 def validar_estructura(data: dict) -> list[str]:
@@ -61,6 +86,14 @@ def validar_estructura(data: dict) -> list[str]:
         "consultas",
         "plantillas",
     ):
+        if data.get("congelamiento") is not None and name in ORACULOS_CONGELABLES:
+            if (
+                data[name].get("estado") != ESTADO_CONGELADO
+                or data[name].get("revisado_por_autores") is not True
+                or data[name].get("revision_autores") != data["congelamiento"]["revision"]
+            ):
+                errores.append(problema("E90_CONGELAMIENTO_INCOHERENTE", name))
+            continue
         if data[name].get("estado") != ESTADO:
             errores.append(problema("E90_ESTADO_NO_CANDIDATO", name))
         if data[name].get("revisado_por_autores", False):
@@ -278,7 +311,7 @@ def validar_estructura(data: dict) -> list[str]:
             )
         ):
             errores.append(problema("E90_LOCALIZADOR_FALTANTE", ident))
-        if row["estado"] != ESTADO or row["revisado_por_autores"]:
+        if not elemento_valido(data, "campos", row):
             errores.append(problema("E90_REVISION_NO_AUTORIZADA", ident))
     if seen != {(r["doc_id"], c) for r in records for c in CAMPOS[r["tipo"]]}:
         errores.append(problema("E90_CAMPOS_INCOMPLETOS"))
@@ -289,7 +322,7 @@ def validar_estructura(data: dict) -> list[str]:
     for frag in fragments:
         if frag["doc_id"] not in byid or not frag["texto"] or not frag["localizador"]:
             errores.append(problema("E90_FRAGMENTO_INVALIDO", frag["fragmento_id"]))
-        if frag["estado"] != ESTADO or frag["revisado_por_autores"]:
+        if not elemento_valido(data, "fragmentos", frag):
             errores.append(problema("E90_REVISION_NO_AUTORIZADA", frag["fragmento_id"]))
     queries = data["consultas"]["consultas"]
     if {q["pregunta_id"] for q in queries} != {
@@ -311,11 +344,7 @@ def validar_estructura(data: dict) -> list[str]:
             errores.append(problema("E90_CONSULTA_CONTEXTO", ident))
         refs = q["fragmentos_relevantes"]
         negative = q["categoria"] == "sin_evidencia"
-        if (
-            not q["pregunta"].strip()
-            or q["revisado_por_autores"]
-            or q["estado"] != ESTADO
-        ):
+        if not q["pregunta"].strip() or not elemento_valido(data, "consultas", q):
             errores.append(problema("E90_CONSULTA_ESTADO", ident))
         if negative and (
             refs or q["respuesta_referencia"] is not None or not q["motivo_abstencion"]
@@ -615,12 +644,28 @@ def validar_archivos(root: Path, data: dict) -> list[str]:
     return errores
 
 
+def huellas_congeladas(root: Path) -> dict[str, str]:
+    """P1: lo que fija la congelación. El registro mismo y los README quedan afuera."""
+    rutas = [root / "corpus/e90/registros_fuente.json"]
+    for carpeta in ("medicion", "ajuste", "fuentes_docx", "pdf_referencia"):
+        rutas += sorted(p for p in (root / "corpus/e90" / carpeta).rglob("*") if p.is_file())
+    rutas += sorted(
+        p
+        for p in (root / "oraculos/e90").iterdir()
+        if p.is_file() and p.suffix in {".json", ".csv"} and p.name != "congelamiento.json"
+    )
+    return {str(p.relative_to(root)): sha256(p) for p in rutas}
+
+
 def validar(root: Path, archivos: bool = True) -> list[str]:
     try:
         data = leer_conjunto(root)
         errores = validar_estructura(data)
         if errores:
             return errores
+        congelamiento = data.get("congelamiento")
+        if congelamiento is not None and huellas_congeladas(root) != congelamiento["sha256"]:
+            return [problema("E90_HUELLAS_CONGELADAS")]
         if archivos:
             if importlib.util.find_spec("pypdf") is None:
                 return [problema("E90_LECTOR_PDF_NO_DISPONIBLE")]
@@ -656,7 +701,13 @@ def main() -> int:
                 "aceptacion_academica": "no_acreditada",
             },
         )
-    print("VALIDACION_CANDIDATA errores=" + str(len(errores)) + " congelado=no")
+    congelado = (args.raiz.resolve() / "oraculos/e90/congelamiento.json").exists()
+    print(
+        "VALIDACION_CANDIDATA errores="
+        + str(len(errores))
+        + " congelado="
+        + ("si" if congelado else "no")
+    )
     for error in errores:
         print(error)
     return bool(errores)

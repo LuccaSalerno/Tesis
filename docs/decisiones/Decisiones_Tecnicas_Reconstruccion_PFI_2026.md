@@ -735,6 +735,16 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 3. Los autores marcan las casillas de los cuadernos y completan el cierre del documento de muestreo; el agente no marca revisiones. Una observación que exija corregir una referencia se resuelve en el generador y se regenera la candidata completa.
 4. Con la revisión completa y la aprobación de ambos autores, la v3 se congela.
 
+### DO-2026-10-23-E90-CONGELACION — Congelación de la candidata v3 del corpus E90
+
+**Fecha:** 23/10/2026. **Aprobada por:** Ivo Gonsé y Lucca Salerno (comunicada por Lucca Salerno), después de completar las tres partes del muestreo sin observaciones que exijan regenerar. **Estado:** cerrada. **Base:** DO-2026-10-23-E90-MUESTREO, DO-2026-10-23-E90-MEDICION (P4, compuerta de la medición oficial), [Revision_Autores_Muestreo_V3.md](../evaluacion/corpus_e90/Revision_Autores_Muestreo_V3.md).
+
+1. **P1 — Registro:** `oraculos/e90/congelamiento.json` con fecha, autores, decisión, alcance del muestreo y las huellas SHA-256 de los documentos, auxiliares, registros y oráculos.
+2. **P2 — Oráculos:** `campos`, `fragmentos` y `consultas` pasan a `CONGELADO` con `revisado_por_autores` a nivel de archivo y la modalidad «muestreo»; por elemento, «revisado» solo en las 30 consultas y en los campos de los 10 documentos de la muestra.
+3. **P3 — Corpus generado sin cambios:** registros, inventario, CUIT y documentos conservan sus bytes; la congelación los fija por huella.
+4. **P4 — Herramientas:** `herramientas/corpus_e90/congelar.py` (una sola vez) y modo congelado del validador, que exige que las huellas coincidan; pruebas de ambos modos.
+5. **P5 — Registro:** limitación de alcance para §6.6 y estado; la medición oficial de §6.3.1 queda habilitada.
+
 ---
 
 ## 2. Decisiones en curso

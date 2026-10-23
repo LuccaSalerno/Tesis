@@ -61,6 +61,6 @@ Completar cuando terminen las tres partes:
 - Revisó la parte 2: **Ivo Gonsé (autor 1) y Lucca Salerno (autor 2), en conjunto, 23/10/2026**, informado en el chat: los 6 casos difíciles con la clase esperada correcta, sin observaciones.
 - Revisó la parte 3: **Ivo Gonsé (autor 1) y Lucca Salerno (autor 2), en conjunto, 23/10/2026**, informado en el chat: los 10 documentos coinciden con su original.
 - Observaciones que exigen corregir y regenerar: **ninguna**. Única observación: el ajuste por redondeo de PRE-05 parece artificial; se confirmó que es deliberado (REV-E90-16: ningún neto alcanza el total de referencia con el IVA redondeado) y no se cambia.
-- Aprobación de la congelación de la v3: …… (ambos autores)
+- Aprobación de la congelación de la v3: **Ivo Gonsé y Lucca Salerno, 23/10/2026** (DO-2026-10-23-E90-CONGELACION). Congelada con `herramientas/corpus_e90/congelar.py`; registro en `oraculos/e90/congelamiento.json`.
 
 Alcance que se declara en §6.6: los autores revisaron por muestreo las 30 preguntas, los 6 casos difíciles y 10 documentos. El resto de las referencias se validó con controles automáticos (cotejo de los 403 campos con sus localizadores, aritmética, trámites, particiones y huellas) y con la revisión de contraste de otro agente sobre 25 documentos.

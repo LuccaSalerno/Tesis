@@ -14,6 +14,9 @@ DECISION_V2 = "DO-2026-10-22-CORPUS-REVISION"
 DECISION_V3 = "DO-2026-10-23-CIERRE"
 VERSION = "e90-candidato-v3"
 ESTADO = "CANDIDATO_NO_CONGELADO"
+# DO-2026-10-23-E90-CONGELACION: estado de los oráculos congelados tras la revisión.
+ESTADO_CONGELADO = "CONGELADO"
+ORACULOS_CONGELABLES = ("campos", "fragmentos", "consultas")
 MARCA = "DOCUMENTO FICTICIO - SIN VALIDEZ COMERCIAL NI FISCAL"
 # REV-E90-08: el ID de inventario no puede aparecer en el contenido ni en metadatos.
 PATRON_ID = re.compile(r"E90-[AM]-(?:CTR|PRE|OC|FAC|COM)-\d{2}")

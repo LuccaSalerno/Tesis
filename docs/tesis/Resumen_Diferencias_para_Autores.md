@@ -85,6 +85,7 @@ Prioridad sugerida: **§5.2 y Figura 5.4**, porque el modelo de datos es lo que 
 - **§6.3.1 (DIF-110):** la recuperación se mide fuera de la API, con coseno exacto y un índice congelado por modelo; un *chunk* cubre un fragmento si contiene al menos el 80 % de sus palabras (tolerancia confirmada en D6).
 - **§6.3.3 (DIF-112):** describir los dos niveles (CI y AWS) y qué casos permitidos cubre la CI.
 - **§6.3.4 (DIF-111):** describir el punto de medición en el cliente y la línea de base de red.
+- **§6.3.1 y §6.6 (DO-2026-10-23-E90-MUESTREO):** «Los autores revisaron por muestreo las 30 preguntas con sus respuestas de referencia, los seis casos difíciles y diez documentos contra su original; el resto de las referencias se validó con controles automáticos (cotejo de los 403 campos con sus localizadores, aritmética, trámites, particiones y huellas) y con una revisión de contraste independiente sobre 25 documentos. El corpus se congeló el 23/10/2026, antes de ejecutar los modelos.»
 
 ## Decisiones del equipo (DO-2026-10-23-DIF)
 

@@ -1,4 +1,4 @@
-# Corpus sintético E90 candidato (v3)
+# Corpus sintético E90 (v3, congelado el 23/10/2026)
 
 50 documentos de medición y 15 de ajuste. Versión **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION, con las correcciones de REV-E90-16 a 19 de DO-2026-10-23-CIERRE D5). Estado: **CANDIDATO_NO_CONGELADO**; referencias y preguntas sin revisión de autores.
 

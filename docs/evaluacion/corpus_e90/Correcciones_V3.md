@@ -1,6 +1,6 @@
 # Candidata v3 del corpus E90: correcciones de REV-E90-16 a 19
 
-**Fecha:** 23/10/2026. **Decisión:** DO-2026-10-23-CIERRE (D5). **Estado:** candidata, **no congelada** y **sin revisión de los autores**. No cambia cantidades (50 de medición, 15 de ajuste, 3 adversariales internos, 30 consultas), particiones, plantillas ni umbrales.
+**Fecha:** 23/10/2026. **Decisión:** DO-2026-10-23-CIERRE (D5). **Estado:** **congelada** el 23/10/2026 (DO-2026-10-23-E90-CONGELACION), con revisión de ambos autores por muestreo (DO-2026-10-23-E90-MUESTREO). No cambia cantidades (50 de medición, 15 de ajuste, 3 adversariales internos, 30 consultas), particiones, plantillas ni umbrales.
 
 Se regeneró el conjunto completo en una raíz limpia con el entorno aprobado del corpus (`herramientas/corpus_e90/requisitos.txt`, LibreOffice y pdftoppm locales), según el procedimiento de `herramientas/corpus_e90/README.md`. El validador informa `errores=0`. El manifiesto y el inventario v2 quedan en `v2/`; Git conserva los binarios v2.
 
@@ -13,6 +13,6 @@ Se regeneró el conjunto completo en una raíz limpia con el entorno aprobado de
 
 ## Pendientes del equipo antes de congelar
 
-1. Revisión de ambos autores de la v3 **por muestreo** (DO-2026-10-23-E90-MUESTREO): lista exacta en [Revision_Autores_Muestreo_V3.md](Revision_Autores_Muestreo_V3.md).
+1. ~~Revisión de ambos autores de la v3 por muestreo~~: completada el 23/10/2026 ([registro](Revision_Autores_Muestreo_V3.md)), sin observaciones que exijan regenerar.
 2. ~~Verificaciones manuales de las 18 razones sociales y de los 6 CUIT de ajuste~~: completadas el 23/10/2026 ([registro](Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md)); no hubo que reemplazar ninguna.
-3. Congelación del corpus y de los oráculos, con la tolerancia del 80 % confirmada (D6, DIF-110).
+3. ~~Congelación del corpus y de los oráculos~~: hecha el 23/10/2026; tolerancia del 80 % confirmada (D6, DIF-110).

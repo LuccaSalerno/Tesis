@@ -107,6 +107,7 @@
 - **Semilla:** cuarto trámite cancelado con motivo.
 - **CI:** `eliminar_prefijo` borra por lotes (la suite bajó de 10,7 GB a 1,1 GB de memoria máxima).
 - **D4 (DIF-84):** O y F regenerados con número estable y oráculo v2 preliminar; la semilla y la simulación lo usan.
+- **Corpus E90 congelado (23/10/2026, DO-2026-10-23-E90-CONGELACION):** ambos autores revisaron por muestreo las 30 preguntas, los 6 casos difíciles y 10 documentos, sin observaciones que exijan regenerar. `oraculos/e90/congelamiento.json` fija 202 archivos por huella; la medición oficial de §6.3.1 queda habilitada (50 documentos y 30 preguntas).
 - **Verificaciones manuales del corpus E90 (23/10/2026):** el equipo informó «No existe» para los seis CUIT de ajuste y «Sin coincidencia observada» para las 18 razones sociales; no hubo reemplazos. Solo faltan la revisión de los autores y la congelación.
 - **D5:** candidata v3 del corpus E90 con las correcciones de REV-E90-16 a 19 (`docs/evaluacion/corpus_e90/Correcciones_V3.md`); sigue sin congelar ni revisar por los autores.
 - **D7:** [resumen del registro de diferencias](../tesis/Resumen_Diferencias_para_Autores.md) con borradores de texto por sección de la tesis. DIF-29, 78, 93 y 112 actualizadas.
@@ -120,7 +121,7 @@
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: revisar por muestreo la candidata v3 del corpus E90 ([lista](../evaluacion/corpus_e90/Revision_Autores_Muestreo_V3.md), DO-2026-10-23-E90-MUESTREO) y congelarla; aplicar a la tesis los borradores del resumen del registro.
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Autores: aplicar a la tesis los borradores del resumen del registro.
 
 ## Preguntas abiertas al equipo
 
