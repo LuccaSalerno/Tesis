@@ -633,3 +633,11 @@ Se conservan 50 documentos de medición y 15 de ajuste, sus tipos, formatos, tre
 El equipo autorizó adaptar el modelo concreto bajo CC BY-NC-SA 4.0, con atribución al autor/organismo, fuente, edición, cambios, uso no comercial y misma licencia para las adaptaciones compartidas. La ficha individual y el PDF de siete páginas fueron contrastados antes de adaptarlo. No se detectó aviso contradictorio; la licencia no figura impresa en el PDF y su asignación se documenta desde el campo específico de la ficha, asociado al archivo y SHA-256. Detalle y límites de la comprobación en `docs/evaluacion/corpus_e90/Incorporacion_ARG_A_CPAU.md` y su evidencia.
 
 Se preservan los otros 64 documentos y 128 auxiliares por hash; se actualizan las siete referencias de campos del caso, fragmentos, Q12, metadatos e inventario/manifiestos. Todos continúan candidatos, sin revisión de autores ni congelación. Incorporar una fuente argentina agrega cobertura documental; un único caso no acredita representatividad ni ausencia de sesgos. No se amplía ningún requisito funcional ni se toma una decisión delegada.
+
+## DO-2026-10-22-CORPUS-REVISION — revisión independiente y regeneración v2
+
+**Fecha:** 22/10/2026. **Aprobada expresamente por el equipo en esta conversación** («ambas sí»), en respuesta a las dos preguntas de `docs/evaluacion/corpus_e90/Revision_Tecnica_Contraste_2026-10-22.md`.
+
+1. La revisión técnica de contraste (`0e52089`), realizada por un agente que no construyó el incremento, **cuenta como la revisión técnica independiente de P6** de DO-2026-10-22-CORPUS-CONSTRUCCION. No reemplaza la revisión de ambos autores ni la congelación.
+2. Se aprueba **en principio** una revisión candidata **v2** del corpus que resuelva en conjunto REV-E90-01 a REV-E90-15, sin cambiar cantidades (50 + 15), particiones, tipos, formatos, plantillas aprobadas, tres adversariales, reparto 10/8/6/6 ni umbrales. Ninguna clasificación esperada se cambia por conveniencia. El diseño detallado (decisiones P1…Pn de `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`) **requiere aprobación antes de regenerar**; se registrará como adenda de esta decisión.
+3. La v1 (`e871a59`) se conserva como evidencia histórica de la revisión; no se reescribe su historial ni sus hashes registrados.

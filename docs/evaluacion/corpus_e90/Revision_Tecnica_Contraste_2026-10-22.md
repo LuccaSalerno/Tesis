@@ -81,6 +81,21 @@ En E90-CONTEXTO-01, presupuesto, orden y factura tienen tres proveedores distint
 
 40 de los 50 documentos de medición tienen una sola página (6 de tres, 2 de dos, uno de 10 y uno de 11). Para esos 40, acertar la página en IA-M03 (≥90 %) está garantizado. **Corrección propuesta:** documentos no contractuales de dos o más páginas en parte de la muestra (detalle de ítems, condiciones en hoja aparte), manteniendo los 50 y los formatos.
 
+### REV-E90-14 — P1 (adenda): plantillas exclusivas de medición casi idénticas a las compartidas
+
+Hallazgo agregado al preparar el diseño v2. En los tipos no contractuales, `generar.py` arma MED_C con la misma tabla de dos columnas que BASE_A y MED_D con la misma lista «Etiqueta: valor» que BASE_B; solo cambian la tipografía, el orden de los campos, un encabezado y el párrafo final. IA-D03 exige al menos una plantilla exclusiva por tipo en medición: formalmente se cumple, pero en la práctica la medición casi no contiene diseños que no estén en ajuste. **Corrección propuesta:** que MED_C y MED_D tengan estructuras propias (por ejemplo, detalle de ítems con subtotal, impuestos y total; formato carta con los datos en prosa).
+
+### REV-E90-15 — P2 (adenda): sujetos compartidos entre particiones e ID en archivos
+
+- Las 12 entidades y los 12 CUIT se asignan con `index % 12` a los 65 registros, así que los mismos sujetos aparecen en ajuste y en medición (por ejemplo, «E90 01» en E90-M-CTR-01 y en E90-A-PRE-02). No es reutilizar ejemplos, pero permite memorizar sujetos durante el ajuste.
+- Los nombres de archivo de las entradas, el título en los metadatos del PDF y las propiedades del DOCX son el ID E90. El backend no parece enviar el nombre de archivo al modelo, pero sí lo muestra a quienes evalúan.
+
+**Corrección propuesta:** sujetos disjuntos por partición; nombres de archivo y metadatos neutros, con la correspondencia en el inventario.
+
+## Respuestas del equipo
+
+El 22/10/2026 el equipo respondió que sí a las dos preguntas (DO-2026-10-22-CORPUS-REVISION): esta revisión cuenta como la revisión técnica independiente de P6 y se aprueba en principio la regeneración v2. El diseño está en [Propuesta_Corpus_V2.md](Propuesta_Corpus_V2.md), pendiente de aprobación.
+
 ## Alcance de las correcciones
 
 Ninguna de las propuestas cambia cantidades, particiones, tipos, formatos, adversariales, reparto de preguntas ni umbrales: entran en «las variaciones relevantes se incorporan dentro de los 50» (IA-D05). Igualmente requieren regenerar documentos, hashes, localizadores y referencias, por lo que conviene aprobarlas como decisión del equipo y aplicarlas en **una sola revisión candidata v2**. No se cambia ninguna clasificación esperada por conveniencia.
