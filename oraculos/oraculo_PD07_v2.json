@@ -1,12 +1,12 @@
 {
-  "id": "PD-07-ATLAS-CANDIDATO-V2-2026-10-23",
-  "estado": "CANDIDATO_NO_CONGELADO",
+  "id": "PD-07-ATLAS-V2-CONGELADO-2026-10-23",
+  "estado": "CONGELADO",
   "fecha_preparacion": "2026-10-23",
   "registro_cuit": {
     "numero": "30-96472518-3",
     "modulo_11": "PASA",
-    "consulta_oficial_ARCA": "PENDIENTE",
-    "advertencia": "La comprobación de dígito no certifica inexistencia ni no asignación. No afirmar CUIT verificado."
+    "consulta_oficial_ARCA": "SIN_INSCRIPCION: consulta manual del equipo en ARCA el 23/10/2026, el CUIT no existe",
+    "advertencia": "La consulta no garantiza al 100 % la inexistencia de una asignación futura (PD-07). Uso exclusivo como dato de prueba."
   },
   "fuente_reproducible": "herramientas/generar_corpus.py + fuentes DOCX exportadas a PDF digital",
   "documentos": {
@@ -144,5 +144,7 @@
   ],
   "criterios": "Los oraculos se fijan antes de ejecutar. Los valores de IA deben confirmarse o corregirse por humano antes de probar reglas. No hay resultados de ejecucion EVD-01.",
   "version_anterior": "PD-07-ATLAS-CANDIDATO-2026-10-21",
-  "cambios": "DO-2026-10-23-CIERRE D4 (DIF-84): O y F impresos con un número estable entre versiones (OC-2026-0042 y FC-A-0001-00000123) en lugar de la referencia O-v1, O-v2, F-v1, F-v2; se agregan numero y razon_social al oráculo. Fechas, importes, CUIT y monedas sin cambios."
+  "cambios": "DO-2026-10-23-CIERRE D4 (DIF-84): O y F impresos con un número estable entre versiones (OC-2026-0042 y FC-A-0001-00000123) en lugar de la referencia O-v1, O-v2, F-v1, F-v2; se agregan numero y razon_social al oráculo. Fechas, importes, CUIT y monedas sin cambios.",
+  "fecha_congelamiento": "2026-10-23",
+  "decision_congelamiento": "DO-2026-10-23-DIF (DIF-84)"
 }

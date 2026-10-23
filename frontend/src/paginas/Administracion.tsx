@@ -226,7 +226,7 @@ export function Administracion() {
             {sinAsignar.data?.map((t) => (
               <li key={t.id} className="flex flex-wrap items-center gap-3 py-3 text-sm">
                 <span className="min-w-56 flex-1">
-                  <span className="font-medium">{t.nombre}</span> · {t.tramite.titulo}
+                  <span className="font-medium">{t.nombre}</span> · TR-{t.tramite.id}
                   <span className="block text-xs text-tenue">Ciclo {t.ciclo.numero} · creada {fechaHora(t.creada_en)}</span>
                 </span>
                 <InsigniaEstado catalogo={ESTADO_TAREA} valor={t.estado} />

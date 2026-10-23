@@ -23,8 +23,9 @@ Deja cuatro trámites (DO-2026-10-22-WEB F8, DO-2026-10-23-VER P9, DO-2026-10-23
 
 Cada dato se valida como lo haría una persona: si la sugerencia coincide con el oráculo se
 confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Nada se
-inserta en la base ni se falsifica auditoría. El oráculo es **preliminar** (P14): la semilla
-no acredita EVD-01 ni métricas. El manifiesto guarda identificadores y huellas, nunca tokens.
+inserta en la base ni se falsifica auditoría. Aunque el oráculo PD-07 v2 está congelado, la
+semilla prepara la demo: no acredita EVD-01 ni métricas. El manifiesto guarda identificadores
+y huellas, nunca tokens.
 """
 
 import argparse
@@ -42,8 +43,9 @@ from atlas.herramientas.cliente_api import ClienteApi, ErrorApi, sub_del_token, 
 
 RAIZ_REPOSITORIO: Final = Path(__file__).resolve().parents[4]
 CORPUS: Final = RAIZ_REPOSITORIO / "corpus"
-# Oráculo v2 preliminar: número estable en O y F (DO-2026-10-23-CIERRE D4, DIF-84).
-ORACULO: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_PD07_v2_preliminar.json"
+# Oráculo PD-07 v2, congelado: número estable en O y F (DO-2026-10-23-CIERRE D4,
+# DO-2026-10-23-DIF, DIF-84).
+ORACULO: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_PD07_v2.json"
 ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 
 ARCHIVOS: Final = {

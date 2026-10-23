@@ -1993,8 +1993,11 @@ export interface components {
             estado: components["schemas"]["EstadoTramite"];
             /** Id */
             id: number;
-            /** Titulo */
-            titulo: string;
+            /**
+             * Titulo
+             * @description Nulo para el administrador operativo: solo ve el identificador (RF-24, DO-2026-10-23-DIF)
+             */
+            titulo: string | null;
         };
         /** ValidacionEvidencia */
         ValidacionEvidencia: {

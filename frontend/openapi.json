@@ -2944,8 +2944,16 @@
             "type": "integer"
           },
           "titulo": {
-            "title": "Titulo",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Nulo para el administrador operativo: solo ve el identificador (RF-24, DO-2026-10-23-DIF)",
+            "title": "Titulo"
           }
         },
         "required": [

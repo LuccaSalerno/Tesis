@@ -262,6 +262,8 @@ def test_rc_p03_3_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) 
     assert "tarea_sin_asignar" in acciones(doble.motor, tramite_id)
     sin_asignar = obtener(e.administrador, "/tareas/sin-asignar")
     assert primera["id"] in {t["id"] for t in sin_asignar}
+    # DO-2026-10-23-DIF (DIF-119): el administrador ve el identificador, no el título.
+    assert all(t["tramite"]["titulo"] is None for t in sin_asignar)
     assert e.cliente.get("/tareas/sin-asignar", headers=doble.encabezados).status_code == 403
     # El administrador asigna; el responsable nunca puede recibirla.
     ruta = f"/tareas/{primera['id']}/asignacion"
@@ -273,6 +275,11 @@ def test_rc_p03_3_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) 
         ruta, json={"usuario_id": e.revisor.usuario_id}, headers=e.administrador.encabezados
     )
     assert asignada.status_code == 200 and asignada.json()["asignada_a_id"] == e.revisor.usuario_id
+    assert asignada.json()["tramite"] == {
+        "id": tramite_id,
+        "titulo": None,
+        "estado": "pendiente_aprobacion",
+    }
     assert decidir(e.revisor, primera["id"]).status_code == 201
 
 

@@ -394,7 +394,10 @@ def listar_ciclos(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> list
 
 class TramiteResumen(BaseModel):
     id: int
-    titulo: str
+    titulo: str | None = Field(
+        description="Nulo para el administrador operativo: solo ve el identificador "
+        "(RF-24, DO-2026-10-23-DIF)"
+    )
     estado: EstadoTramite
 
 
@@ -409,14 +412,16 @@ class TareaListada(TareaResumen):
     ciclo: CicloResumen
 
     @classmethod
-    def con_contexto(cls, sesion: Session, contexto: tareas.TareaConContexto) -> "TareaListada":
+    def con_contexto(
+        cls, sesion: Session, contexto: tareas.TareaConContexto, *, con_titulo: bool = True
+    ) -> "TareaListada":
         return cls(
             **TareaResumen.desde(
                 contexto.tarea, tareas.decision(sesion, contexto.tarea.id)
             ).model_dump(),
             tramite=TramiteResumen(
                 id=contexto.tramite.id,
-                titulo=contexto.tramite.titulo,
+                titulo=contexto.tramite.titulo if con_titulo else None,
                 estado=contexto.tramite.estado,
             ),
             ciclo=CicloResumen(
@@ -514,7 +519,10 @@ def listar_mis_tareas(usuario: Autenticado, sesion: Sesion) -> list[TareaListada
 @enrutador.get("/tareas/sin-asignar", response_model=list[TareaListada])
 def listar_tareas_sin_asignar(_: Administrador, sesion: Sesion) -> list[TareaListada]:
     """RC-P03.3.2: tareas abiertas señaladas al administrador; solo metadatos (RF-24)."""
-    return [TareaListada.con_contexto(sesion, c) for c in tareas.listar_sin_asignar(sesion)]
+    return [
+        TareaListada.con_contexto(sesion, c, con_titulo=False)
+        for c in tareas.listar_sin_asignar(sesion)
+    ]
 
 
 @enrutador.get("/tareas/{tarea_id}", response_model=TareaDetalle)
@@ -558,7 +566,7 @@ def asignar_tarea(
         admin_id=admin.id,
         solicitud_id=solicitud_id,
     )
-    return TareaListada.con_contexto(sesion, contexto)
+    return TareaListada.con_contexto(sesion, contexto, con_titulo=False)
 
 
 class NuevaDecision(BaseModel):

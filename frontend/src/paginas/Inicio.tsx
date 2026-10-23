@@ -77,7 +77,7 @@ export function Inicio() {
               {sinAsignar.data?.map((t) => (
                 <li key={t.id} className="flex items-center justify-between gap-3 py-3">
                   <span>
-                    {t.nombre} · <span className="text-tenue">{t.tramite.titulo}</span>
+                    {t.nombre} · <span className="text-tenue">TR-{t.tramite.id}</span>
                   </span>
                   <InsigniaEstado catalogo={ESTADO_TAREA} valor={t.estado} />
                 </li>

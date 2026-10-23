@@ -713,6 +713,19 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 13. **P13 — Registro:** DIF nuevos, DIF-47 resuelta, Estado, ensayo de CI, commit y push.
 14. No modifica RF, RN, RNF ni criterios de aceptación; el estado `cancelado` del ciclo es una extensión técnica registrada como DIF.
 
+### DO-2026-10-23-DIF — Decisiones sobre las diferencias pendientes del registro
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno), sobre las recomendaciones del agente. **Estado:** cerrada. **Base:** [Resumen_Diferencias_para_Autores.md](../tesis/Resumen_Diferencias_para_Autores.md), RC-P04, RC-P10-13, RF-24, PD-07.
+
+1. **DIF-24:** se mantiene el rechazo de todo PDF cifrado, aun con contraseña solo de propietario, y de los DOCX protegidos. Se aclara en la tesis.
+2. **DIF-28:** el límite de 400.000 caracteres normalizados se conserva como resguardo interno del procesamiento; los límites de carga de RC-P04 (50 páginas, 150.000 caracteres en DOCX) siguen siendo los visibles.
+3. **DIF-30:** corregir la clasificación no vuelve a extraer; los campos del esquema nuevo se registran por la persona (RN-02).
+4. **DIF-86:** `db.t4g.medium` se mantiene como hipótesis para la sesión; la tesis lo presenta como confirmado solo si la carga de §6.3.4 lo respalda.
+5. **DIF-114:** sin dominio propio; con `*.cloudfront.net` los navegadores negocian TLS 1.2 o 1.3 y la imposibilidad de fijar el mínimo se declara como limitación.
+6. **DIF-119:** la lista de tareas sin asignar del administrador tampoco muestra el título del trámite: solo su identificador (TR-n), como el estado general.
+7. **DIF-84:** el oráculo PD-07 v2 se congela. Consulta manual del equipo en ARCA (23/10/2026): el CUIT `30-96472518-3` no existe. Como advierte PD-07, el control no garantiza al 100 % la inexistencia de una asignación futura.
+8. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso

@@ -6,7 +6,7 @@
 
 | Grupo | Entradas | Qué hacer |
 |---|---|---|
-| Con acción sugerida en el registro | 62: 55 de texto (abajo, por sección) y 7 que piden antes una decisión del equipo | Revisar el borrador y adaptarlo, o decidir |
+| Con acción sugerida en el registro | 62: 55 de texto (abajo, por sección) y 7 ya decididas por el equipo (DO-2026-10-23-DIF) | Revisar el borrador y adaptarlo |
 | Acción «opcional» | 26 | Solo si se quiere detallar la implementación |
 | Sin acción | 17 | Ninguna |
 | Listas de pendientes y de corpus (formato corto) | 16 | Ver su estado en el registro; DIF-47, 48 y 49 ya están resueltas |
@@ -86,14 +86,16 @@ Prioridad sugerida: **§5.2 y Figura 5.4**, porque el modelo de datos es lo que 
 - **§6.3.3 (DIF-112):** describir los dos niveles (CI y AWS) y qué casos permitidos cubre la CI.
 - **§6.3.4 (DIF-111):** describir el punto de medición en el cliente y la línea de base de red.
 
-## Decisiones pendientes del equipo
+## Decisiones del equipo (DO-2026-10-23-DIF)
 
-| DIF | Tema | Opciones |
+Tomadas el 23/10/2026 sobre las recomendaciones del agente:
+
+| DIF | Tema | Decisión |
 |---|---|---|
-| DIF-24 | PDF con contraseña solo de propietario | Mantener el rechazo de todo PDF cifrado o aceptar los que se pueden leer |
-| DIF-28 | Límite de 400.000 caracteres | Confirmar que es compatible con RC-P04 (50 páginas o 150.000 caracteres en DOCX) |
-| DIF-30 | Corrección del tipo | Exigir o no una nueva extracción con el tipo confirmado |
-| DIF-86 | Dimensionamiento | Confirmar con la cotización oficial y las mediciones |
-| DIF-114 | TLS mínimo en CloudFront | Dominio propio con ACM si se exige TLS 1.2 |
-| DIF-119 | Título en la lista de tareas sin asignar | Omitirlo también ahí, por coherencia con el estado general |
-| DIF-84 | Oráculo PD-07 v2 | Congelarlo junto con el corpus |
+| DIF-24 | PDF con contraseña solo de propietario | Se mantiene el rechazo de todo PDF cifrado |
+| DIF-28 | Límite de 400.000 caracteres | Resguardo interno; los límites visibles son los de RC-P04 |
+| DIF-30 | Corrección del tipo | No se vuelve a extraer; la persona registra los campos del nuevo esquema |
+| DIF-86 | Dimensionamiento | `db.t4g.medium` como hipótesis; confirmado solo si la carga de §6.3.4 lo respalda |
+| DIF-114 | TLS mínimo en CloudFront | Sin dominio propio; se declara la limitación |
+| DIF-119 | Título en la lista de tareas sin asignar | Se omite también ahí (implementado) |
+| DIF-84 | Oráculo PD-07 v2 | Congelado; ARCA sin inscripción para el CUIT `30-96472518-3` |

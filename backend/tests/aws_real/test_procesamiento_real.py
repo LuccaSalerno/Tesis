@@ -38,7 +38,7 @@ pytestmark = [
 ]
 
 ORACULO = json.loads(
-    (archivos.CORPUS.parent / "oraculos" / "oraculo_PD07_v2_preliminar.json").read_text("utf-8")
+    (archivos.CORPUS.parent / "oraculos" / "oraculo_PD07_v2.json").read_text("utf-8")
 )["documentos"]["C-v1"]
 
 
