@@ -1,0 +1,2 @@
+cuenta_id     = "000000000000"
+nombre_bucket = "atlas-web-<sufijo-unico>"

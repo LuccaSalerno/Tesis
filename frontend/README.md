@@ -60,6 +60,19 @@ npm run build && npm run preview     # http://localhost:4173
 El origen `http://localhost:4173` debe estar en `origenes_web` (raíz `demo`) y en
 `origenes_cors` (raíz `persistent`) del Terraform que aplica el operador.
 
+## Hospedaje en S3 + CloudFront (DO-2026-10-23-WEB-HOST)
+
+La raíz Terraform `web` sirve la aplicación en `https://<id>.cloudfront.net`, con el bucket
+privado (OAC), rutas de React resueltas a `index.html` y encabezados de seguridad (CSP, HSTS).
+La aplicación lee `configuracion.json` al iniciar (URL de la API y cliente de Cognito); sin
+ese archivo usa las variables `VITE_*`, así que el desarrollo local no cambia. Publicación,
+solo por el operador:
+
+```bash
+infra/web/publicar.sh --aplicacion      # compila y sube (al cambiar el frontend)
+infra/web/publicar.sh --configuracion   # en cada sesión, después de aplicar demo
+```
+
 ## Verificaciones
 
 ```bash

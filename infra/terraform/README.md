@@ -18,11 +18,28 @@ Ningún agente, push ni GitHub Action ejecuta estos pasos. Runbook general y cri
 | `runtime` | RDS Proxy con IAM de extremo a extremo, su rol, endpoints Step Functions, Bedrock Runtime y Secrets Manager (temporal) | Por sesión |
 | `demo` | Bucket de artefactos y paquete, cinco Lambda (incluido el reconciliador), roles mínimos, Step Functions, EventBridge Scheduler del reconciliador, API Gateway con JWT | Por sesión |
 | `tests` | Solo documentación: no se despliega en E90 | — |
+| `web` | Aplicación web: bucket privado y CloudFront con OAC y encabezados de seguridad (DO-2026-10-23-WEB-HOST) | **Persistente entre sesiones** (URL estable); se retira al cerrar el proyecto |
 
-Creación: `persistent → runtime → demo`. Retiro: `demo → runtime → persistent`.
+Creación: `persistent → runtime → demo` (`web` se crea una sola vez, antes). Retiro: `demo → runtime → persistent` (`web` queda).
 Versiones fijas: Terraform ≥ 1.10 (validado con 1.16.5), proveedor AWS 6.67.0, http 3.6.2.
 Los `.terraform.lock.hcl` traen hashes de `linux_amd64`; en otra plataforma:
 `terraform providers lock -platform=<plataforma>` antes de `init`.
+
+## Aplicación web en CloudFront (una sola vez)
+
+```bash
+cd infra/terraform/web
+cp terraform.tfvars.example terraform.tfvars        # completar; no se versiona
+terraform init -backend-config=../backend.hcl
+terraform plan -out=web.tfplan                      # esperado: 8 to add
+terraform apply web.tfplan                          # CloudFront tarda de 5 a 15 min
+terraform output -raw origen                        # https://<id>.cloudfront.net
+cd ../../.. && infra/web/publicar.sh --aplicacion
+```
+
+El valor de `origen` va en `origenes_cors` (`persistent`) y `origenes_web` (`demo`), junto a
+`http://localhost:4173`. En cada sesión, después de aplicar `demo`:
+`infra/web/publicar.sh --configuracion`. Al cerrar el proyecto: `terraform plan -destroy` de `web`.
 
 ## A. Encendido
 

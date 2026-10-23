@@ -655,6 +655,20 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 11. **P11 — Evidencia:** `confiabilidad.jsonl` e informe en la campaña, sin contenido.
 12. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-WEB-HOST — Frontend servido con S3 y CloudFront
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** §5.4.2 y Figura 5.2 (frontend en S3 y CloudFront), DO-2026-10-22-WEB F7, RNF-02, RNF-03, DO-2026-10-21.
+
+1. **P1 — Raíz `web`:** bucket privado y distribución de CloudFront, independiente y **persistente entre sesiones** (como `bootstrap`) para una URL estable; solo archivos estáticos, sin contenido documental; se retira al cerrar el proyecto.
+2. **P2 — CloudFront:** Origin Access Control, HTTPS obligatorio (TLS ≥ 1.2), compresión, `PriceClass_100`, 403 y 404 → `index.html` con 200 (rutas de React), `index.html` sin caché y `assets/*` con caché larga.
+3. **P3 — Encabezados:** HSTS, `nosniff`, `frame-ancestors 'none'`, `Referrer-Policy` estricta y CSP con `connect-src` limitado a API Gateway, Cognito y el bucket documental de la región (con comodines, sin dependencia circular con `demo`).
+4. **P4 — Configuración:** `configuracion.json` leído al iniciar (URL de la API y cliente de Cognito); sin el archivo, se usan las variables `VITE_*`. Por sesión solo se publica ese archivo.
+5. **P5 — CORS:** el dominio de CloudFront se suma a `origenes_cors` (`persistent`) y `origenes_web` (`demo`); `localhost:4173` se conserva como respaldo.
+6. **P6 — Publicación:** `infra/web/publicar.sh` (`--aplicacion`, `--configuracion`), con invalidación; solo el operador, nunca la CI.
+7. **P7 — Registros:** destino del bucket web en el Registro de destinos; DIF-78 se cierra en lo que respecta al frontend.
+8. **P8 — Pruebas:** `terraform validate`, pruebas del frontend de la carga de configuración, `bash -n` y simulación del script; en la sesión, el E2E contra CloudFront.
+9. No modifica RF, RN, RNF ni criterios de aceptación.
+
 ---
 
 ## 2. Decisiones en curso
