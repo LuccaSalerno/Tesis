@@ -63,7 +63,11 @@ jobs:
       - name: Análisis estático
         run: mypy
       - name: Pruebas del backend con cobertura
-        run: pytest --cov --cov-report=term --cov-report=xml --cov-report=json
+        # Límite propio, menor que el del job: si una prueba se cuelga, el paso falla y los
+        # registros se conservan (un job cancelado no los guarda). faulthandler vuelca la pila
+        # de todos los hilos de la prueba que supere 3 minutos.
+        timeout-minutes: 11
+        run: pytest -o faulthandler_timeout=180 --cov --cov-report=term --cov-report=xml --cov-report=json
       - name: Cobertura mínima del 90 % por módulo
         run: python -m herramientas_ci.verificar_cobertura coverage.json --minimo 90
       - name: Pruebas de herramientas del corpus
