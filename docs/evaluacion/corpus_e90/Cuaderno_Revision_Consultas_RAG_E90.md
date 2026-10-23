@@ -2,6 +2,8 @@
 
 Revisión candidata **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION), datos del commit `5388569`. Estado: **CANDIDATO_NO_CONGELADO**. Este cuaderno se genera con `python -m herramientas.corpus_e90.cuadernos`; no cambia documentos ni oráculos. **Todo sigue candidato y pendiente de revisión de autores.** Las casillas y observaciones se dejan sin completar; no representan una revisión ejecutada.
 
+> **Revisión registrada (DO-2026-10-23-E90-MUESTREO):** el autor 2, Lucca Salerno, informó el 23/10/2026 que revisó las 30 preguntas y que todas están correctas, incluidas las variantes admitidas de Q11 y Q12. El autor 1 no revisó todavía. Si el cuaderno se regenera, hay que trasladar este registro.
+
 Aquí se revisan preguntas y referencias **antes de ejecutar modelos**. Las evaluaciones de respuestas de IA (IA-M06) se completarán después de ejecutar. Para cada pregunta: leer el contexto autorizado, intentar responder desde los documentos y cotejar las afirmaciones esperadas. Aceptar equivalencia semántica conforme a RC-P06.2; las afirmaciones se limitan a lo preguntado.
 
 ## Q01
@@ -23,9 +25,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-OC-01-CAMPO-moneda` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: ARS
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -46,9 +48,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-FAC-07-CAMPO-numero` — [E90-M-FAC-07](../../../corpus/e90/medicion/doc-2c029784.docx); DOCX, párrafo 3. Texto: Ref.: Factura N.º 00002-00052952
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -69,9 +71,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-CTR-02-CAMPO-vigencia_hasta` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 8. Texto: Finalización: 21-02-2027
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -92,9 +94,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-PRE-03-CAMPO-fecha` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 1. Texto: 16/03/2026
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -117,9 +119,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-COM-08-CAMPO-moneda` — [E90-M-COM-08](../../../corpus/e90/medicion/doc-3e0a6e6d.pdf); PDF, página 1. Texto: Lo recibido corresponde a un importe total de 2.242,86 euros (dos mil doscientos cuarenta y dos con 86/100).
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -142,9 +144,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-CTR-09-CAMPO-moneda` — [E90-M-CTR-09](../../../corpus/e90/medicion/doc-9426a983.pdf); PDF, página 1 (referencia previa a la simulación). Texto: Precio: ARS 9.681.580,07
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -167,9 +169,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-CTR-03-CAMPO-moneda` — [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf); PDF, página 1. Texto: Moneda: pesos argentinos
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -190,9 +192,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-OC-10-CAMPO-numero` — [E90-M-OC-10](../../../corpus/e90/medicion/doc-35699f69.pdf); PDF, página 1 (referencia previa a la simulación). Texto: Ref.: Orden de compra N.º OC/94217/2026
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -213,9 +215,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-PRE-02-CAMPO-cuit_proveedor` — [E90-M-PRE-02](../../../corpus/e90/medicion/doc-fe20a4c5.docx); DOCX, párrafo 7. Texto: C.U.I.T. N.º: 30986410046
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -236,9 +238,9 @@ Categoría: **directa** · Clase: **respondible**.
 - `E90-M-FAC-06-CAMPO-cuit_emisor` — [E90-M-FAC-06](../../../corpus/e90/medicion/doc-3c9c847a.pdf); PDF, página 1. Texto: CUIT 30-98641007-0
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -263,9 +265,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-CTR-06-ORIGEN-7` — [E90-M-CTR-06](../../../corpus/e90/medicion/doc-de08cb56.pdf); PDF, página 8. Texto: Term & TerminationTerm. This Agreement will start on the Effective Date and continue until 12 months have elapsed since the end of the latest SOW Term end date.Termination.Either party may terminate this Agreement or an 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -289,9 +291,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-CTR-08-ORIGEN-7` — [E90-M-CTR-08](../../../corpus/e90/medicion/doc-ef93a9e2.pdf); PDF, página 8. Texto: If there is a Notifiable Default, the Supplier must notify the Buyer within three (3) Working Days of the Supplier becoming aware of the Notifiable Default and the Buyer may request that the Supplier provide a Rectificat
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -313,9 +315,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-CTR-03-CLAUSULA-8` — [E90-M-CTR-03](../../../corpus/e90/medicion/doc-c4507e4a.pdf); PDF, página 2. Texto: El modelo de procedencia prevé mediación y, de persistir la controversia, pericia arbitral. Se conserva esa secuencia como rasgo del escenario documental argentino. No se reproduce un compromiso arbitral ni se afirma la 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -336,9 +338,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-CTR-02-CLAUSULA-3` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 17. Texto: Cuando un entregable esté sujeto a aceptación, el cliente dispondrá de un período de prueba de quince días para revisar su conformidad material con las especificaciones. Si encuentra diferencias, deberá describirlas razo
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -361,9 +363,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-CTR-01-CLAUSULA-6` — [E90-M-CTR-01](../../../corpus/e90/medicion/doc-fd733e9e.pdf); PDF, página 2. Texto: Cada parte mantendrá segura y reservada la información confidencial que reciba. No la divulgará ni la explotará sin consentimiento previo, salvo para la finalidad prevista en el acuerdo o una excepción expresamente admit
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -386,9 +388,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-PRE-03-COND-forma_pago` — [E90-M-PRE-03](../../../corpus/e90/medicion/doc-d416ed6c.pdf); PDF, página 2. Texto: Forma de pago: pago a 14 días desde la entrega.
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -411,9 +413,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-OC-01-COND-fecha_entrega` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: Fecha de entrega comprometida: 11/07/2026.
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -434,9 +436,9 @@ Categoría: **condiciones** · Clase: **respondible**.
 - `E90-M-FAC-02-COND-vencimiento` — [E90-M-FAC-02](../../../corpus/e90/medicion/doc-c6546cb9.docx); DOCX, párrafo 15. Texto: Vencimiento del pago: 31-03-2026.
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -459,9 +461,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-OC-01-CAMPO-importe_total` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: 3.699.990,10
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -486,9 +488,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-FAC-03-CAMPO-importe_total` — [E90-M-FAC-03](../../../corpus/e90/medicion/doc-7f20797a.pdf); PDF, página 1. Texto: 2.658.877,65
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -511,9 +513,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-OC-01-CAMPO-numero` — [E90-M-OC-01](../../../corpus/e90/medicion/doc-3b7b0d68.pdf); PDF, página 1. Texto: OC 4500072485
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -538,9 +540,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-CTR-02-CAMPO-vigencia_hasta` — [E90-M-CTR-02](../../../corpus/e90/medicion/doc-7cc20e6f.docx); DOCX, párrafo 8. Texto: Finalización: 21-02-2027
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -565,9 +567,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-FAC-04-CAMPO-importe_total` — [E90-M-FAC-04](../../../corpus/e90/medicion/doc-68df9b02.docx); DOCX, párrafo 11. Texto: Total: € 2.242,86
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -591,9 +593,9 @@ Categoría: **multidocumento** · Clase: **respondible**.
 - `E90-M-OC-06-CAMPO-fecha` — [E90-M-OC-06](../../../corpus/e90/medicion/doc-3bdfeb7c.pdf); PDF, página 1. Texto: Fecha 28/03/26
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -609,9 +611,9 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -627,9 +629,9 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -645,9 +647,9 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -663,9 +665,9 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -681,9 +683,9 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
 
@@ -699,8 +701,8 @@ Categoría: **sin_evidencia** · Clase: **sin_evidencia**.
 
 
 - [ ] Autor 1 revisó pregunta, contexto y afirmaciones o motivo de abstención.
-- [ ] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
+- [x] Autor 2 revisó pregunta, contexto y afirmaciones o motivo de abstención.
 - Observaciones del autor 1: pendiente.
-- Observaciones del autor 2: pendiente.
+- Observaciones del autor 2: ninguna (Lucca Salerno, 23/10/2026; revisión por muestreo informada en el chat).
 - Discrepancias y resolución previa a medir: pendiente.
 - Referencia de revisión (nombres, fecha y commit de datos): pendiente.
