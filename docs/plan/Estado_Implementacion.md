@@ -77,6 +77,14 @@
 - Residuos de la sesión: trámites 1 a 3 de intentos fallidos sin sugerencias; el 1 con trabajos abiertos (sin reconciliador, DIF-50), que impedirán `drenado: true`.
 - Retiro el 23/10/2026 por decisión del operador con `trabajos_abiertos: 3` (residuo sintético del trámite 1): evidencia exportada y nivel B en `operaciones/sesiones/e90-ensayo-2/` (local, no versionado); verificación de residuos sin recursos salvo el bucket de estado.
 
+## Arnés de medición de §6.3 — 23/10/2026 (DO-2026-10-23-E90-MEDICION)
+
+- Integrada la rama `codex/corpus-e90` (corpus v2: 50 de medición, 15 de ajuste, oráculos candidatos, validadores); DIF-E90-01 a 10 pasan a DIF-99 a DIF-108.
+- Paquete `atlas.evaluacion` (fuera del paquete Lambda): compuerta P4 (oficial exige oráculos congelados; ensayo solo ajuste), OCR una vez con caché, clasificación y extracción con el código de producción y tipo sugerido, recuperación con índice congelado por modelo de embeddings (Cohere y Titan), respuestas con `consultas.generar`, planillas de los autores con consolidación, métricas IA-M01 a M07 y reglas de sustitución sobre promedios, informe y CLI (`python -m atlas.evaluacion`).
+- Nuevo: adaptador de Titan V2, `consultas.generar`, `crear_cliente_region`, raíz Terraform `evaluacion` (un bucket), guía `evaluacion/README.md`. Corregida la normalización de EUR antes de medir (DIF-109). DIF-110 precisa la tolerancia del 80 % para la relevancia.
+- Verificado sin AWS: pruebas del arnés con corpus en miniatura y modelos fijos; en el corpus real, los 124 campos DOCX encuentran su bloque y los 11 fragmentos relevantes en DOCX quedan cubiertos por algún *chunk*. **Ninguna medición ejecutada.**
+- Pendientes del equipo antes de la campaña oficial: REV-E90-16 a 19, verificaciones manuales de razones sociales y CUIT de ajuste, revisión de ambos autores, congelación y confirmación de la tolerancia del 80 %. Pendientes del agente: fase 2 (latencia y carga, P17), §6.3.3 y §6.3.2 (P18).
+
 ## Próximo paso
 
 **1.1 (equipo, manual):** sesión de demo con el paquete de `b9bc012` o posterior; mismo procedimiento que e90-ensayo-2 sin los tropiezos. Después: diseño del corpus E90 y del arnés de §6.3 (requiere aprobación).

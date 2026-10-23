@@ -25,11 +25,17 @@ _CREDENCIALES_SIMULACION: Final = {
 
 def crear_cliente(configuracion: Configuracion, servicio: str) -> Any:
     configuracion.validar_servicios_aws()
+    return crear_cliente_region(servicio, configuracion.aws_region, configuracion.aws_endpoint_url)
+
+
+def crear_cliente_region(servicio: str, region: str, endpoint_url: str | None = None) -> Any:
+    """Cliente con la configuración común; lo usan también las herramientas del operador que
+    no levantan la aplicación (arnés de §6.3, DO-2026-10-23-E90-MEDICION)."""
     # La firma de S3 solo para S3 (URL prefirmadas): en otros servicios no codifica la ruta
     # como SigV4 estándar y Bedrock rechaza los ID de modelo con «:» (DIF-97).
     firma = {"signature_version": "s3v4"} if servicio == "s3" else {}
     opciones: dict[str, Any] = {
-        "region_name": configuracion.aws_region,
+        "region_name": region,
         "config": ConfiguracionBotocore(
             retries={"max_attempts": 3, "mode": "standard"},
             connect_timeout=5,
@@ -37,8 +43,8 @@ def crear_cliente(configuracion: Configuracion, servicio: str) -> Any:
             **firma,
         ),
     }
-    if configuracion.aws_endpoint_url is not None:
-        opciones.update(endpoint_url=configuracion.aws_endpoint_url, **_CREDENCIALES_SIMULACION)
+    if endpoint_url is not None:
+        opciones.update(endpoint_url=endpoint_url, **_CREDENCIALES_SIMULACION)
     return boto3.client(servicio, **opciones)
 
 
