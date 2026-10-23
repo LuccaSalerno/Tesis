@@ -686,6 +686,33 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 11. **P11 — Pruebas:** detección, rutas con negativos de autorización, RN-12 con versión nueva y concurrencia, firma, BDD de EVD-A y EVD-B, interfaz.
 12. No modifica RF, RN, RNF ni criterios de aceptación.
 
+### DO-2026-10-23-CIERRE — Cancelación, estado general, supresión de cuentas y dudas abiertas
+
+**Fecha:** 23/10/2026. **Aprobada por:** el equipo (comunicada por Lucca Salerno). **Estado:** cerrada a nivel de diseño. **Base:** RF-24, RF-25, RF-26, RN-14, RN-15, HU-01, HU-10, Tabla 3.VI, §5.4.2, §5.4.3, DO-2026-10-23-VER.
+
+**Dudas resueltas:**
+- **D1:** con una versión nueva, las reglas se ejecutan al validarla y no al confirmarla (RN-02, RN-06). **D2:** el `tipo` del documento queda vacío hasta validar la versión nueva. **D3:** la sugerencia de versión admite el estado `descartada`.
+- **D4 (DIF-84, F11):** el agente regenera O y F con un número estable entre versiones, sin cambiar fechas, importes ni CUIT, y publica el oráculo v2 preliminar.
+- **D5:** el agente prepara correcciones de REV-E90-16 a 19 en una candidata v3 sin cambiar cantidades, particiones ni umbrales; las verificaciones manuales, la revisión de autores y la congelación son del equipo.
+- **D6:** se confirma la tolerancia del 80 % para la relevancia (DIF-110).
+- **D7:** el agente prepara un resumen clasificado del registro de diferencias y borradores de texto para los impactos pendientes en la tesis.
+
+**Diseño:**
+1. **P1 — Cancelación (RF-26):** `POST /tramites/{t}/cancelacion {motivo}`, solo el responsable, desde Borrador, Pendiente de validación, Pendiente de aprobación u Observado; 409 en Aprobado, Cerrado o Cancelado. Motivo obligatorio en `motivo_cancelacion`; evento `tramite_cancelado`.
+2. **P2 — Ciclo y tareas:** el ciclo en curso pasa al estado nuevo `cancelado` y sus tareas abiertas a `anulada` con su evento; la decisión tardía responde 409 «El trámite fue cancelado».
+3. **P3 — Trabajo asíncrono (RN-14):** un procesamiento que termina después guarda sus sugerencias sin cambiar el estado; no se sugieren versiones en trámites terminales; el reconciliador marca `fallido` (`tramite_terminal`) los trabajos en espera de esos trámites. Prueba de carrera.
+4. **P4 — Estado general (RF-24):** `GET /administracion/estado-general`, solo el administrador: conteos de trámites, tareas (abiertas, sin asignar, en espera, asignadas a cuentas no habilitadas) y trabajos fallidos o en espera; lista de trámites con id, estado, responsable, fechas, cantidad de documentos y tareas abiertas, **sin título ni descripción**.
+5. **P5 — Negativos de RF-24:** sin títulos, valores validados ni contenido; 403 para los demás roles.
+6. **P6 — Supresión (RF-25):** `POST /usuarios/{id}/supresion`, solo el administrador, no sobre la propia cuenta, irreversible. Estado `suprimida`, `identificador_externo` y `nombre_visible` en NULL, sin roles ni autorización de cierre; evento `cuenta_suprimida`. Las intervenciones quedan atribuidas al id interno («Cuenta suprimida #id»); sus tareas abiertas aparecen en P4 para reasignarlas.
+7. **P7 — Cognito:** Lambda `cuentas` fuera de la VPC, invocada por la API mediante el endpoint privado de Lambda: busca por `sub` y ejecuta `AdminDeleteUser`, idempotente. Primero Cognito y después la base.
+8. **P8 — Terraform:** Lambda e IAM mínimo en `demo`; permiso de invocación para la API; endpoint de interfaz `lambda` en `runtime` (≈ US$ 0,02/h por sesión, costo aceptado). Validado sin AWS; lo aplica el operador.
+9. **P9 — Local y CI:** puerto `GestorIdentidades` con un simulador sin Cognito.
+10. **P10 — Interfaz:** «Cancelar trámite» con motivo; panel «Estado general»; «Suprimir cuenta» con confirmación explícita.
+11. **P11 — Semilla:** cuarto trámite cancelado con motivo y sin documentos.
+12. **P12 — Pruebas:** rutas con negativos, RN-15 sobre Cancelado, carrera de RN-14 y la Lambda con Cognito simulado (moto).
+13. **P13 — Registro:** DIF nuevos, DIF-47 resuelta, Estado, ensayo de CI, commit y push.
+14. No modifica RF, RN, RNF ni criterios de aceptación; el estado `cancelado` del ciclo es una extensión técnica registrada como DIF.
+
 ---
 
 ## 2. Decisiones en curso

@@ -63,6 +63,8 @@ locals {
     {
       states          = "com.amazonaws.${var.region}.states"
       bedrock_runtime = "com.amazonaws.${var.region}.bedrock-runtime"
+      # La API invoca la Lambda `cuentas` (RF-25, §5.4.2; DO-2026-10-23-CIERRE P8).
+      lambda = "com.amazonaws.${var.region}.lambda"
     },
     var.endpoint_secrets_manager ? { secretsmanager = "com.amazonaws.${var.region}.secretsmanager" } : {},
   )

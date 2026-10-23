@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "confianza_lambda" {
 
 locals {
   bucket_arn = local.p.bucket_documentos_arn
-  roles      = toset(["api", "procesamiento", "persistencia", "operaciones", "reconciliador"])
+  roles      = toset(["api", "procesamiento", "persistencia", "operaciones", "reconciliador", "cuentas"])
   en_vpc     = toset(["api", "persistencia", "operaciones", "reconciliador"])
 
   bedrock_generativo = concat(
@@ -82,6 +82,11 @@ data "aws_iam_policy_document" "api" {
   statement {
     actions   = ["rds-db:connect"]
     resources = [local.usuario_proxy_app]
+  }
+  statement {
+    sid       = "SuprimirCuenta" # RF-25: por la Lambda `cuentas`, sin acceso directo a Cognito
+    actions   = ["lambda:InvokeFunction"]
+    resources = ["arn:aws:lambda:${var.region}:${local.cuenta}:function:${local.nombre_funcion_cuentas}"]
   }
 }
 
@@ -163,6 +168,15 @@ data "aws_iam_policy_document" "reconciliador" {
   }
 }
 
+# --- Cuentas (fuera de la VPC): solo buscar y eliminar usuarios del grupo de la demo ------
+
+data "aws_iam_policy_document" "cuentas" {
+  statement {
+    actions   = ["cognito-idp:ListUsers", "cognito-idp:AdminDeleteUser"]
+    resources = [local.p.cognito_user_pool_arn]
+  }
+}
+
 locals {
   politicas = {
     api           = data.aws_iam_policy_document.api.json
@@ -170,6 +184,7 @@ locals {
     persistencia  = data.aws_iam_policy_document.persistencia.json
     operaciones   = data.aws_iam_policy_document.operaciones.json
     reconciliador = data.aws_iam_policy_document.reconciliador.json
+    cuentas       = data.aws_iam_policy_document.cuentas.json
   }
 }
 

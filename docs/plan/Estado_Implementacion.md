@@ -99,13 +99,22 @@
 - **Corrección transversal:** la sesión se confirma antes de responder (DIF-117).
 - Sin probar contra AWS: corresponde a la sesión única de la sección 6.
 
+## Cancelación, estado general y supresión — 23/10/2026 (DO-2026-10-23-CIERRE)
+
+- **RF-26/RN-14:** cancelación con motivo; ciclo `cancelado` (migración 0013) y tareas anuladas; resultados tardíos sin efecto sobre el estado; reconciliador con `tramite_terminal`. DIF-118.
+- **RF-24:** `GET /administracion/estado-general` y panel «Estado general», solo metadatos y conteos. DIF-119.
+- **RF-25:** supresión con la Lambda `cuentas` (Cognito) y el endpoint de VPC `lambda`; DIF-47 resuelta, DIF-120. Terraform validado sin AWS; lo aplica el operador (`runtime` y `demo`).
+- **Semilla:** cuarto trámite cancelado con motivo.
+- **CI:** `eliminar_prefijo` borra por lotes (la suite bajó de 10,7 GB a 1,1 GB de memoria máxima).
+- Con esto **todos los RF-01 a RF-26 están implementados**; ninguno está probado contra AWS hasta la sesión de la sección 6.
+
 ## Próximo paso
 
 **1.1 (equipo, manual):** sesión de demo con el paquete de `b9bc012` o posterior; mismo procedimiento que e90-ensayo-2 sin los tropiezos. Después: diseño del corpus E90 y del arnés de §6.3 (requiere aprobación).
 
 **F11 (equipo):** oráculo v2 y regeneración de O y F con número estable.
 
-Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla ya deja el trámite cerrado con firma). Fuera de alcance de DO-2026-10-23-VER: RF-24 (panel del administrador), RF-25 (supresión de cuentas) y RF-26/RN-14 (cancelación).
+Equipo: una sola sesión AWS para la sección 6 (raíz `web` y todos los ejecutores; la semilla deja trámites observado, en vivo, cerrado con firma y cancelado). Agente: D4 (O y F con número estable, oráculo v2), D5 (candidata v3 del corpus) y D7 (resumen del registro de diferencias) de DO-2026-10-23-CIERRE.
 
 ## Preguntas abiertas al equipo
 

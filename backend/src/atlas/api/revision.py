@@ -50,7 +50,16 @@ from atlas.persistencia.modelos import (
     Tarea,
     VersionDocumental,
 )
-from atlas.servicios import ciclos, evidencia, firma, plantillas, reglas, tareas, tramites
+from atlas.servicios import (
+    cancelacion,
+    ciclos,
+    evidencia,
+    firma,
+    plantillas,
+    reglas,
+    tareas,
+    tramites,
+)
 from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(tags=["revision"])
@@ -177,6 +186,28 @@ def subsanar(
     """RN-13: Observado → Pendiente de validación sin crear versiones."""
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     return TramiteRespuesta.desde(tramites.subsanar(sesion, tramite, usuario.id, solicitud_id))
+
+
+class NuevaCancelacion(BaseModel):
+    motivo: Annotated[str, Field(min_length=1, max_length=1000, pattern=r"\S")]
+
+
+@enrutador.post("/tramites/{tramite_id}/cancelacion", response_model=TramiteRespuesta)
+def cancelar(
+    tramite_id: int,
+    nueva: NuevaCancelacion,
+    usuario: Responsable,
+    sesion: Sesion,
+    solicitud_id: SolicitudId,
+) -> TramiteRespuesta:
+    """RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de
+    admitir decisiones (DO-2026-10-23-CIERRE P1 y P2)."""
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
+    return TramiteRespuesta.desde(
+        cancelacion.cancelar(
+            sesion, tramite, usuario_id=usuario.id, motivo=nueva.motivo, solicitud_id=solicitud_id
+        )
+    )
 
 
 # --- Flujo sugerido y ciclos (RF-17, RF-18, P2, P4) -------------------------------------

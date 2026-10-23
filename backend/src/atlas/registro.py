@@ -46,6 +46,8 @@ METADATOS_PERMITIDOS: Final = frozenset(
         "vencidos",
         "admitidos",
         "sin_resolver",
+        "terminales",  # trabajos en espera de trámites terminales (DO-2026-10-23-CIERRE P3)
+        "eliminada",  # supresión en Cognito: si había cuenta (DO-2026-10-23-CIERRE P7)
     }
 )
 

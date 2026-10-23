@@ -60,3 +60,10 @@ class OrquestadorProcesamiento(Protocol):
     def iniciar(self, trabajo_id: int, intento: int) -> None:
         """Inicia la ejecución del intento; idempotente para el mismo trabajo e intento."""
         ...
+
+
+class GestorIdentidades(Protocol):
+    def suprimir(self, identificador_externo: str) -> None:
+        """Elimina la cuenta del proveedor de identidad (RF-25, §5.4.3); idempotente: si ya
+        no existe, no es un error."""
+        ...

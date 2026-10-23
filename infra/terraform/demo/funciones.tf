@@ -34,6 +34,8 @@ locals {
         ATLAS_JWT_EMISOR  = local.p.cognito_emisor
         ATLAS_JWT_CLIENTE = local.p.cognito_cliente_id
         ATLAS_JWT_JWKS    = data.http.jwks.response_body
+        # RF-25: supresión en Cognito por la Lambda `cuentas` (DO-2026-10-23-CIERRE P7).
+        ATLAS_CUENTAS_FUNCION = local.nombre_funcion_cuentas
       })
     }
     procesamiento = {
@@ -57,6 +59,18 @@ locals {
       sg        = local.p.sg_lambda_aplicacion # proxy, endpoint de Step Functions y S3
       entorno   = local.comun
     }
+    # Fuera de la VPC (§5.4.2): llega a Cognito sin NAT; solo la invoca la API.
+    cuentas = {
+      manejador = "atlas.operacion.lambda_cuentas.manejar"
+      memoria   = 256
+      tiempo    = 15
+      sg        = null
+      entorno = {
+        ATLAS_AWS_REGION             = var.region
+        ATLAS_NIVEL_REGISTRO         = "INFO"
+        ATLAS_COGNITO_GRUPO_USUARIOS = local.p.cognito_user_pool_id
+      }
+    }
     operaciones = {
       manejador = "atlas.operacion.lambda_operaciones.manejar"
       memoria   = 512
@@ -71,9 +85,10 @@ locals {
     }
   }
 
-  # ARN conocido de antemano: evita el ciclo API ↔ máquina de estados.
-  nombre_maquina = "${local.prefijo}-procesamiento"
-  arn_maquina    = "arn:aws:states:${var.region}:${local.cuenta}:stateMachine:${local.nombre_maquina}"
+  # Nombres conocidos de antemano: evitan los ciclos de la API con la máquina y con `cuentas`.
+  nombre_funcion_cuentas = "${local.prefijo}-cuentas"
+  nombre_maquina         = "${local.prefijo}-procesamiento"
+  arn_maquina            = "arn:aws:states:${var.region}:${local.cuenta}:stateMachine:${local.nombre_maquina}"
 }
 
 # Grupos de registro explícitos: se retiran con la sesión y no quedan residuos.

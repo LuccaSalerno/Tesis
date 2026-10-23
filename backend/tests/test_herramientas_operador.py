@@ -129,6 +129,7 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert cerrado["validaciones"]["O-v2"]["fecha"] == "sin_sugerencia"
     assert cerrado["firma"]["version_id"] != cerrado["version_nueva"]
     assert len(cerrado["decisiones_2"]) == 2
+    assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"  # RF-26 (CIERRE P11)
     # PD-07, conjunto C-v1 + O-v1 + F-v2: solo R3 advierte.
     assert observado["controles"] == {
         "R1": "cumplimiento",

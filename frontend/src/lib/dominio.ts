@@ -36,7 +36,7 @@ export const ESTADO_TAREA: Catalogo<EstadoTarea> = {
   pendiente: { rotulo: "Pendiente", tono: "primario" },
   aprobada: { rotulo: "Aprobada", tono: "exito" },
   observada: { rotulo: "Observada", tono: "advertencia" },
-  anulada: { rotulo: "Anulada por cambio documental", tono: "neutro" },
+  anulada: { rotulo: "Anulada", tono: "neutro" },
   descartada: { rotulo: "Descartada", tono: "neutro" },
 };
 
@@ -45,6 +45,7 @@ export const ESTADO_CICLO: Catalogo<EstadoCiclo> = {
   aprobado: { rotulo: "Aprobado", tono: "exito" },
   observado: { rotulo: "Observado", tono: "advertencia" },
   desplazado: { rotulo: "Desplazado por cambio documental", tono: "neutro" },
+  cancelado: { rotulo: "Cancelado con el trámite", tono: "neutro" },
 };
 
 export const ESTADO_TRABAJO: Catalogo<EstadoTrabajo> = {
@@ -146,7 +147,6 @@ export const ACCION: Record<string, string> = {
   tarea_aprobada: "Tarea aprobada",
   tarea_observada: "Tarea observada",
   tarea_descartada: "Tarea descartada",
-  tarea_anulada: "Tarea anulada por cambio documental",
   tramite_aprobado: "Trámite aprobado",
   tramite_observado: "Trámite observado",
   tramite_subsanado: "Observación subsanada",
@@ -157,6 +157,10 @@ export const ACCION: Record<string, string> = {
   archivo_descartado: "Archivo descartado",
   firma_simulada_aplicada: "Firma digital simulada aplicada",
   tramite_cerrado: "Trámite cerrado",
+  tramite_cancelado: "Trámite cancelado",
+  ciclo_cancelado: "Ciclo cancelado con el trámite",
+  tarea_anulada: "Tarea anulada",
+  cuenta_suprimida: "Cuenta suprimida",
 };
 
 /** Criterio explicable de la versión nueva sugerida (RF-06, DO-2026-10-23-VER P1). */

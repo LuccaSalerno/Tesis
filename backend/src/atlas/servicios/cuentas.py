@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from atlas.dominio.enumeraciones import AccionAuditoria, EstadoUsuario, Rol
+from atlas.integraciones.puertos import GestorIdentidades
 from atlas.persistencia.modelos import Usuario, UsuarioRol
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, NoEncontrado
@@ -131,6 +132,41 @@ def cambiar_habilitacion(
     return _cuenta(sesion, usuario)
 
 
+def suprimir(
+    sesion: Session,
+    gestor: GestorIdentidades,
+    *,
+    actor_id: int,
+    usuario_id: int,
+    solicitud_id: uuid.UUID | None = None,
+) -> Cuenta:
+    """RF-25, §5.4.3 (DO-2026-10-23-CIERRE P6, P7): elimina la cuenta del proveedor de
+    identidad y desvincula sus datos identificatorios; las intervenciones conservan el
+    identificador interno. Irreversible. Primero el proveedor: si la base falla después, un
+    nuevo intento completa la supresión (el proveedor es idempotente)."""
+    if actor_id == usuario_id:
+        raise Conflicto("No podés suprimir tu propia cuenta")
+    usuario = _obtener_modificable(sesion, usuario_id)
+    if usuario.identificador_externo is not None:
+        gestor.suprimir(usuario.identificador_externo)
+    usuario.estado = EstadoUsuario.SUPRIMIDA
+    usuario.identificador_externo = None
+    usuario.nombre_visible = None
+    usuario.autorizacion_cierre = False
+    for rol in sesion.scalars(select(UsuarioRol).where(UsuarioRol.usuario_id == usuario.id)):
+        sesion.delete(rol)
+    sesion.flush()
+    registrar_evento_auditoria(
+        sesion,
+        accion=AccionAuditoria.CUENTA_SUPRIMIDA,
+        entidad_tipo=ENTIDAD,
+        entidad_id=usuario.id,
+        actor_id=actor_id,
+        solicitud_id=solicitud_id,
+    )
+    return _cuenta(sesion, usuario)
+
+
 def cambiar_rol(
     sesion: Session,
     *,
@@ -233,9 +269,10 @@ def cambiar_nombre(
     return _cuenta(sesion, usuario)
 
 
-def directorio(sesion: Session, ids: list[int]) -> dict[int, str | None]:
-    """Solo id y nombre visible: lo necesario para mostrar quién actuó (F5)."""
+def directorio(sesion: Session, ids: list[int]) -> dict[int, tuple[str | None, bool]]:
+    """Id, nombre visible y si la cuenta fue suprimida: lo necesario para mostrar quién
+    actuó (F5, RF-25)."""
     filas = sesion.execute(
-        select(Usuario.id, Usuario.nombre_visible).where(Usuario.id.in_(ids))
+        select(Usuario.id, Usuario.nombre_visible, Usuario.estado).where(Usuario.id.in_(ids))
     ).all()
-    return {i: n for i, n in filas}
+    return {i: (n, e == EstadoUsuario.SUPRIMIDA) for i, n, e in filas}

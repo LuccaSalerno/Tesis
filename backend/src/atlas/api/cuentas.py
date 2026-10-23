@@ -9,7 +9,7 @@ operaciones de Cognito (§5.4.2) y todavía no está implementada.
 import uuid
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -21,6 +21,7 @@ from atlas.api.dependencias import (
     obtener_usuario_actual,
 )
 from atlas.dominio.enumeraciones import EstadoUsuario, Rol
+from atlas.integraciones.puertos import GestorIdentidades
 from atlas.servicios import cuentas
 
 enrutador = APIRouter(prefix="/usuarios", tags=["cuentas"])
@@ -72,6 +73,9 @@ class CambioNombre(BaseModel):
 class EntradaDirectorio(BaseModel):
     id: int
     nombre_visible: str | None
+    suprimida: bool = Field(
+        default=False, description="Cuenta suprimida: sin datos identificatorios (RF-25)"
+    )
 
 
 class CambioEstado(BaseModel):
@@ -102,8 +106,8 @@ def consultar_directorio(
 ) -> list[EntradaDirectorio]:
     """Nombre visible de las cuentas pedidas; las inexistentes se omiten."""
     return [
-        EntradaDirectorio(id=i, nombre_visible=n)
-        for i, n in sorted(cuentas.directorio(sesion, ids).items())
+        EntradaDirectorio(id=i, nombre_visible=n, suprimida=s)
+        for i, (n, s) in sorted(cuentas.directorio(sesion, ids).items())
     ]
 
 
@@ -213,5 +217,28 @@ def cambiar_nombre(
             usuario_id=usuario_id,
             nombre_visible=cambio.nombre_visible,
             solicitud_id=solicitud_id,
+        )
+    )
+
+
+def obtener_gestor_identidades(request: Request) -> GestorIdentidades:
+    gestor: GestorIdentidades = request.app.state.gestor_identidades
+    return gestor
+
+
+@enrutador.post("/{usuario_id}/supresion", response_model=CuentaRespuesta)
+def suprimir_cuenta(
+    usuario_id: int,
+    admin: Administrador,
+    sesion: Sesion,
+    gestor: Annotated[GestorIdentidades, Depends(obtener_gestor_identidades)],
+    solicitud_id: SolicitudId,
+) -> CuentaRespuesta:
+    """RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las
+    intervenciones conservan el identificador interno. Irreversible; no sobre la propia
+    cuenta (DO-2026-10-23-CIERRE P6)."""
+    return CuentaRespuesta.desde(
+        cuentas.suprimir(
+            sesion, gestor, actor_id=admin.id, usuario_id=usuario_id, solicitud_id=solicitud_id
         )
     )

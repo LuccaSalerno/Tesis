@@ -68,6 +68,9 @@ class Configuracion(BaseSettings):
     aws_endpoint_url: str | None = None
     s3_bucket_documentos: str | None = None
     sfn_maquina_procesamiento_arn: str | None = None
+    # Lambda `cuentas` (RF-25, §5.4.2): supresión en Cognito. Sin ella (local y CI), la
+    # supresión solo desvincula la cuenta en la base (DO-2026-10-23-CIERRE P9).
+    cuentas_funcion: str | None = None
 
     # Lambda privada de operaciones (RC-P10-15, DO-2026-10-22-OPS P3): credencial maestra
     # administrada por RDS en Secrets Manager, solo para la inicialización privilegiada.

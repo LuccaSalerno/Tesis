@@ -181,6 +181,7 @@ class EstadoCiclo(StrEnum):
     APROBADO = "aprobado"
     OBSERVADO = "observado"
     DESPLAZADO = "desplazado"  # cambió el conjunto documental (RN-12, PD-05.1)
+    CANCELADO = "cancelado"  # el responsable canceló el trámite (RN-14, DO-2026-10-23-CIERRE)
 
 
 class EstadoTarea(StrEnum):
@@ -250,6 +251,9 @@ class AccionAuditoria(StrEnum):
     TRAMITE_OBSERVADO = "tramite_observado"
     TRAMITE_SUBSANADO = "tramite_subsanado"
     CICLO_DESPLAZADO = "ciclo_desplazado"
+    TRAMITE_CANCELADO = "tramite_cancelado"  # RF-26, RN-14
+    CICLO_CANCELADO = "ciclo_cancelado"  # RN-14
+    CUENTA_SUPRIMIDA = "cuenta_suprimida"  # RF-25
     CUENTA_NOMBRE_CAMBIADO = "cuenta_nombre_cambiado"
 
 

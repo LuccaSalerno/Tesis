@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import { useCiclos, useControles, useFirma, useTransicion } from "@/api/consultas";
 import { InsigniaEstado, Persona } from "@/componentes/dominio";
+import { CancelarTramite } from "@/componentes/cancelacion";
 import { FirmaAplicada, Firmar } from "@/componentes/firma";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
@@ -21,7 +22,7 @@ const PROXIMA = {
   observado: "Un revisor registró una observación. Revisá el motivo y subsaná el trámite.",
   aprobado: "Trámite aprobado. Un revisor/aprobador con autorización de cierre aplica la firma simulada y lo cierra.",
   cerrado: "Trámite cerrado con firma simulada. La historia sigue disponible.",
-  cancelado: "Trámite cancelado.",
+  cancelado: "Trámite cancelado por su responsable. La historia sigue disponible.",
 } as const;
 
 export function Resumen() {
@@ -42,6 +43,7 @@ export function Resumen() {
     tiene("revisor_aprobador") &&
     ultimo.tareas.some((t) => t.asignada_a_id === yo.id);
   const firmado = firma.data;
+  const cancelable = ["borrador", "pendiente_validacion", "pendiente_aprobacion", "observado"].includes(tramite.estado);
 
   return (
     <div className="grid gap-6 xl:grid-cols-3">
@@ -70,6 +72,16 @@ export function Resumen() {
             </Link>
           ) : null}
           {transicion.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(transicion.error)} /> : null}
+          {tramite.estado === "cancelado" && tramite.motivo_cancelacion ? (
+            <Aviso className="mt-3" tono="neutro" titulo="Motivo de la cancelación">
+              {tramite.motivo_cancelacion}
+            </Aviso>
+          ) : null}
+          {esResponsable && cancelable ? (
+            <div className="mt-4 border-t border-borde pt-3">
+              <CancelarTramite tramiteId={id} />
+            </div>
+          ) : null}
         </Panel>
 
         {puedeFirmar && ultimo ? (

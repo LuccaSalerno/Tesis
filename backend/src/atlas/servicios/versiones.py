@@ -24,11 +24,13 @@ from atlas.persistencia.modelos import (
     Archivo,
     Documento,
     SugerenciaVersion,
+    Tramite,
     ValorSugerido,
     VersionDocumental,
 )
 from atlas.procesamiento.contenido import comparable
 from atlas.servicios.reglas import estado_validado
+from atlas.servicios.tramites import ESTADOS_TERMINALES
 
 CAMPO_NUMERO: Final = "numero"
 CAMPO_CUIT: Final = {
@@ -54,7 +56,12 @@ def _sugeridos(sesion: Session, archivo_id: int, intento: int) -> dict[str, str]
 def detectar(sesion: Session, archivo_id: int, intento: int) -> SugerenciaVersion | None:
     """Registra la relación sugerida, si hay candidata, para un archivo todavía pendiente."""
     archivo = sesion.get_one(Archivo, archivo_id)
-    if archivo.estado_incorporacion != EstadoIncorporacion.PENDIENTE:
+    tramite = sesion.get_one(Tramite, archivo.tramite_id)
+    # RN-14, RN-15: un resultado tardío no sugiere nada en un trámite cerrado o cancelado.
+    if (
+        archivo.estado_incorporacion != EstadoIncorporacion.PENDIENTE
+        or tramite.estado in ESTADOS_TERMINALES
+    ):
         return None
     existente = sesion.scalar(
         select(SugerenciaVersion).where(SugerenciaVersion.archivo_id == archivo_id)

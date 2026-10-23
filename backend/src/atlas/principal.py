@@ -12,14 +12,15 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
 
 from atlas import __version__
-from atlas.api import consultas, cuentas, revision, salud, tramites, vinculos
+from atlas.api import administracion, consultas, cuentas, revision, salud, tramites, vinculos
 from atlas.api.middleware import MiddlewareSolicitudes, MiddlewareVerificacionPrevia
 from atlas.autenticacion.verificador import VerificadorJwt
-from atlas.configuracion import Configuracion, obtener_configuracion
+from atlas.configuracion import Configuracion, ErrorConfiguracion, obtener_configuracion
 from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.aws import AlmacenS3, OrquestadorStepFunctions, crear_cliente
 from atlas.integraciones.bedrock import EmbeddingsCohereBedrock, ModeloBedrockConverse
-from atlas.integraciones.puertos import ErrorIntegracion
+from atlas.integraciones.identidades import GestorIdentidadesLambda, GestorIdentidadesLocal
+from atlas.integraciones.puertos import ErrorIntegracion, GestorIdentidades
 from atlas.operacion.mantenimiento import LectorMantenimiento, MiddlewareMantenimiento
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
 from atlas.procesamiento.errores import ErrorEtapa
@@ -51,6 +52,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
         crear_cliente(configuracion_efectiva, "stepfunctions"),
         configuracion_efectiva.sfn_maquina_procesamiento_arn or "",
     )
+    aplicacion.state.gestor_identidades = _gestor_identidades(configuracion_efectiva)
     aplicacion.state.limites_carga = LimitesCarga(
         tamano_maximo_bytes=configuracion_efectiva.carga_tamano_maximo_bytes,
         paginas_maximas_pdf=configuracion_efectiva.carga_paginas_maximas_pdf,
@@ -100,8 +102,19 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     return aplicacion
 
 
+def _gestor_identidades(configuracion: Configuracion) -> GestorIdentidades:
+    """RF-25: en demo la supresión elimina la cuenta de Cognito por la Lambda `cuentas`."""
+    if configuracion.cuentas_funcion:
+        return GestorIdentidadesLambda(
+            crear_cliente(configuracion, "lambda"), configuracion.cuentas_funcion
+        )
+    if configuracion.entorno == "demo":
+        raise ErrorConfiguracion("En demo falta ATLAS_CUENTAS_FUNCION (supresión, RF-25)")
+    return GestorIdentidadesLocal()
+
+
 def _incluir_rutas(aplicacion: FastAPI) -> None:
-    for modulo in (salud, cuentas, tramites, consultas, vinculos, revision):
+    for modulo in (salud, cuentas, tramites, consultas, vinculos, revision, administracion):
         aplicacion.include_router(modulo.enrutador)
 
 

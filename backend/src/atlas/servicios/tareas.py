@@ -32,6 +32,8 @@ from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado, NoPer
 
 # PD-05.3: mensaje fijo para la decisión sobre una tarea de un ciclo desplazado.
 TAREA_DESACTUALIZADA = "La documentación del trámite cambió; esta tarea ya no admite decisiones"
+# RN-14: mensaje fijo para la decisión sobre una tarea de un trámite cancelado.
+TRAMITE_CANCELADO = "El trámite fue cancelado; sus tareas ya no admiten decisiones"
 
 
 @dataclass(frozen=True)
@@ -211,6 +213,8 @@ def decidir(
     obtener_visible(sesion, tarea_id, usuario_id, revisor=True)
     if tarea.asignada_a_id != usuario_id:
         raise NoPermitido("Solo el revisor/aprobador asignado resuelve la tarea")
+    if contexto.tramite.estado == EstadoTramite.CANCELADO:
+        raise Conflicto(TRAMITE_CANCELADO)
     if tarea.estado == EstadoTarea.ANULADA or contexto.ciclo.estado == EstadoCiclo.DESPLAZADO:
         raise Conflicto(TAREA_DESACTUALIZADA)
     if (

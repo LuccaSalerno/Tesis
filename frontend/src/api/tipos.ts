@@ -51,3 +51,4 @@ export type ArchivoVersion = S["ArchivoVersionRespuesta"];
 export type CriterioVersion = S["CriterioVersion"];
 export type SugerenciaVersion = S["SugerenciaVersionRespuesta"];
 export type Firma = S["FirmaRespuesta"];
+export type EstadoGeneral = S["EstadoGeneralRespuesta"];

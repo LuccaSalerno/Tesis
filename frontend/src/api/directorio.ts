@@ -22,7 +22,9 @@ async function despachar(): Promise<void> {
       const parte = await exigir(
         api.GET("/usuarios/directorio", { params: { query: { ids: ids.slice(i, i + 100) } } }),
       );
-      nombres = new Map([...nombres, ...parte.map((e) => [e.id, e.nombre_visible] as const)]);
+      // RF-25: la cuenta suprimida no conserva datos identificatorios, solo su id interno.
+      const nombre = (e: (typeof parte)[number]) => (e.suprimida ? `Cuenta suprimida #${e.id}` : e.nombre_visible);
+      nombres = new Map([...nombres, ...parte.map((e) => [e.id, nombre(e)] as const)]);
     }
   } catch {
     // Sin directorio se muestra el identificador: no bloquea la pantalla.

@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/administracion/estado-general": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consultar Estado General */
+        get: operations["consultar_estado_general_administracion_estado_general_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/decisiones/{decision_id}/evidencia": {
         parameters: {
             query?: never;
@@ -323,6 +340,27 @@ export interface paths {
          *     (DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo.
          */
         post: operations["incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tramites/{tramite_id}/cancelacion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancelar
+         * @description RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de
+         *     admitir decisiones (DO-2026-10-23-CIERRE P1 y P2).
+         */
+        post: operations["cancelar_tramites__tramite_id__cancelacion_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -825,6 +863,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/usuarios/{usuario_id}/supresion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Suprimir Cuenta
+         * @description RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las
+         *     intervenciones conservan el identificador interno. Irreversible; no sobre la propia
+         *     cuenta (DO-2026-10-23-CIERRE P6).
+         */
+        post: operations["suprimir_cuenta_usuarios__usuario_id__supresion_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1149,13 +1209,46 @@ export interface components {
             id: number;
             /** Nombre Visible */
             nombre_visible: string | null;
+            /**
+             * Suprimida
+             * @description Cuenta suprimida: sin datos identificatorios (RF-25)
+             * @default false
+             */
+            suprimida: boolean;
         };
         /**
          * EstadoCiclo
          * @description Situación de un ciclo de revisión (RN-09, RN-12, DO-2026-10-22-TAR).
          * @enum {string}
          */
-        EstadoCiclo: "en_curso" | "aprobado" | "observado" | "desplazado";
+        EstadoCiclo: "en_curso" | "aprobado" | "observado" | "desplazado" | "cancelado";
+        /** EstadoGeneralRespuesta */
+        EstadoGeneralRespuesta: {
+            /**
+             * Tareas Bloqueadas
+             * @description Tareas abiertas asignadas a cuentas deshabilitadas o suprimidas (RF-19)
+             */
+            tareas_bloqueadas: components["schemas"]["TareaBloqueadaRespuesta"][];
+            /** Tareas Por Estado */
+            tareas_por_estado: {
+                [key: string]: number;
+            };
+            /** Tareas Sin Asignar */
+            tareas_sin_asignar: number;
+            /** Trabajos Por Estado */
+            trabajos_por_estado: {
+                [key: string]: number;
+            };
+            /**
+             * Tramites
+             * @description Los 500 actualizados más recientemente
+             */
+            tramites: components["schemas"]["TramiteGeneral"][];
+            /** Tramites Por Estado */
+            tramites_por_estado: {
+                [key: string]: number;
+            };
+        };
         /**
          * EstadoIncorporacion
          * @description Situación de un archivo cargado frente al conjunto documental (RF-04, RF-07).
@@ -1420,6 +1513,11 @@ export interface components {
             /** Usuario Id */
             usuario_id: number;
         };
+        /** NuevaCancelacion */
+        NuevaCancelacion: {
+            /** Motivo */
+            motivo: string;
+        };
         /** NuevaConsulta */
         NuevaConsulta: {
             /** Pregunta */
@@ -1650,6 +1748,15 @@ export interface components {
             clasificacion: components["schemas"]["SugerenciaRespuesta"] | null;
             trabajo: components["schemas"]["TrabajoRespuesta"] | null;
         };
+        /** TareaBloqueadaRespuesta */
+        TareaBloqueadaRespuesta: {
+            /** Asignada A Id */
+            asignada_a_id: number;
+            /** Tarea Id */
+            tarea_id: number;
+            /** Tramite Id */
+            tramite_id: number;
+        };
         /** TareaDetalle */
         TareaDetalle: {
             /**
@@ -1817,10 +1924,42 @@ export interface components {
             estado: components["schemas"]["EstadoTramite"];
             /** Id */
             id: number;
+            /**
+             * Motivo Cancelacion
+             * @description Motivo registrado al cancelar el trámite (RF-26)
+             */
+            motivo_cancelacion?: string | null;
             /** Responsable Id */
             responsable_id: number;
             /** Titulo */
             titulo: string;
+        };
+        /**
+         * TramiteGeneral
+         * @description Sin título ni descripción: pueden contener datos sensibles (P4).
+         */
+        TramiteGeneral: {
+            /**
+             * Actualizado En
+             * Format: date-time
+             */
+            actualizado_en: string;
+            /**
+             * Creado En
+             * Format: date-time
+             */
+            creado_en: string;
+            /** Documentos */
+            documentos: number;
+            estado: components["schemas"]["EstadoTramite"];
+            /** Id */
+            id: number;
+            /** Responsable Id */
+            responsable_id: number;
+            /** Tareas Abiertas */
+            tareas_abiertas: number;
+            /** Tareas Sin Asignar */
+            tareas_sin_asignar: number;
         };
         /** TramiteRespuesta */
         TramiteRespuesta: {
@@ -1839,6 +1978,11 @@ export interface components {
             estado: components["schemas"]["EstadoTramite"];
             /** Id */
             id: number;
+            /**
+             * Motivo Cancelacion
+             * @description Motivo registrado al cancelar el trámite (RF-26)
+             */
+            motivo_cancelacion?: string | null;
             /** Responsable Id */
             responsable_id: number;
             /** Titulo */
@@ -2089,6 +2233,26 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    consultar_estado_general_administracion_estado_general_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EstadoGeneralRespuesta"];
+                };
+            };
+        };
+    };
     consultar_evidencia_decisiones__decision_id__evidencia_get: {
         parameters: {
             query?: never;
@@ -2638,6 +2802,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DocumentoRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    cancelar_tramites__tramite_id__cancelacion_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tramite_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NuevaCancelacion"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TramiteRespuesta"];
                 };
             };
             /** @description Validation Error */
@@ -3655,6 +3854,37 @@ export interface operations {
             path: {
                 usuario_id: number;
                 rol: components["schemas"]["Rol"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CuentaRespuesta"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suprimir_cuenta_usuarios__usuario_id__supresion_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                usuario_id: number;
             };
             cookie?: never;
         };

@@ -25,10 +25,11 @@ from sqlalchemy.orm import Session
 
 from atlas.dominio.enumeraciones import EstadoTrabajo
 from atlas.integraciones.puertos import ErrorIntegracion
-from atlas.persistencia.modelos import TrabajoProcesamiento
+from atlas.persistencia.modelos import Archivo, TrabajoProcesamiento, Tramite
 from atlas.registro import registrar_evento
 from atlas.servicios import admision
 from atlas.servicios.cargas import iniciar_procesamiento
+from atlas.servicios.tramites import ESTADOS_TERMINALES
 
 _registrador = logging.getLogger("atlas.reconciliacion")
 
@@ -50,6 +51,7 @@ class Resumen:
     interrumpidos: list[int] = field(default_factory=list)
     vencidos: list[int] = field(default_factory=list)
     admitidos: list[int] = field(default_factory=list)
+    terminales: list[int] = field(default_factory=list)
     sin_resolver: list[int] = field(default_factory=list)
 
     def conteos(self) -> dict[str, int]:
@@ -154,6 +156,28 @@ def _interrumpidos(
             _evento("ejecucion_terminada_sin_resultado", trabajo, estado_ejecucion=real)
 
 
+def _descartar_terminales(
+    sesion: Session, resumen: Resumen, alcance: Collection[int] | None
+) -> None:
+    """RN-14, RN-15 (DO-2026-10-23-CIERRE P3): un trabajo en espera de un trámite cerrado o
+    cancelado no se inicia; queda fallido con un código técnico y no cambia el trámite."""
+    consulta = (
+        select(TrabajoProcesamiento)
+        .join(Archivo, Archivo.id == TrabajoProcesamiento.archivo_id)
+        .join(Tramite, Tramite.id == Archivo.tramite_id)
+        .where(
+            TrabajoProcesamiento.estado == EstadoTrabajo.EN_ESPERA,
+            Tramite.estado.in_(ESTADOS_TERMINALES),
+        )
+        .with_for_update(of=TrabajoProcesamiento)
+    )
+    for trabajo in sesion.scalars(_en_alcance(consulta, alcance)).all():
+        _fallar(sesion, trabajo, "tramite_terminal")
+        resumen.terminales.append(trabajo.id)
+        _evento("descartado_por_tramite_terminal", trabajo)
+    sesion.commit()
+
+
 def _admitir_en_espera(
     sesion: Session,
     orquestador: Orquestador,
@@ -196,6 +220,7 @@ def reconciliar(
     resumen = Resumen()
     _inicios_inciertos(sesion, orquestador, momento, resumen, alcance)
     _interrumpidos(sesion, orquestador, momento, resumen, alcance)
+    _descartar_terminales(sesion, resumen, alcance)
     _admitir_en_espera(sesion, orquestador, limite, resumen, alcance)
     registrar_evento(_registrador, "reconciliacion_completada", **resumen.conteos())
     return resumen

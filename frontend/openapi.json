@@ -894,6 +894,12 @@
               }
             ],
             "title": "Nombre Visible"
+          },
+          "suprimida": {
+            "default": false,
+            "description": "Cuenta suprimida: sin datos identificatorios (RF-25)",
+            "title": "Suprimida",
+            "type": "boolean"
           }
         },
         "required": [
@@ -909,10 +915,75 @@
           "en_curso",
           "aprobado",
           "observado",
-          "desplazado"
+          "desplazado",
+          "cancelado"
         ],
         "title": "EstadoCiclo",
         "type": "string"
+      },
+      "EstadoGeneralRespuesta": {
+        "properties": {
+          "tareas_bloqueadas": {
+            "description": "Tareas abiertas asignadas a cuentas deshabilitadas o suprimidas (RF-19)",
+            "items": {
+              "$ref": "#/components/schemas/TareaBloqueadaRespuesta"
+            },
+            "title": "Tareas Bloqueadas",
+            "type": "array"
+          },
+          "tareas_por_estado": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/EstadoTarea"
+            },
+            "title": "Tareas Por Estado",
+            "type": "object"
+          },
+          "tareas_sin_asignar": {
+            "title": "Tareas Sin Asignar",
+            "type": "integer"
+          },
+          "trabajos_por_estado": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/EstadoTrabajo"
+            },
+            "title": "Trabajos Por Estado",
+            "type": "object"
+          },
+          "tramites": {
+            "description": "Los 500 actualizados más recientemente",
+            "items": {
+              "$ref": "#/components/schemas/TramiteGeneral"
+            },
+            "title": "Tramites",
+            "type": "array"
+          },
+          "tramites_por_estado": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/EstadoTramite"
+            },
+            "title": "Tramites Por Estado",
+            "type": "object"
+          }
+        },
+        "required": [
+          "tramites_por_estado",
+          "tareas_por_estado",
+          "tareas_sin_asignar",
+          "tareas_bloqueadas",
+          "trabajos_por_estado",
+          "tramites"
+        ],
+        "title": "EstadoGeneralRespuesta",
+        "type": "object"
       },
       "EstadoIncorporacion": {
         "description": "Situación de un archivo cargado frente al conjunto documental (RF-04, RF-07).",
@@ -1591,6 +1662,22 @@
           "usuario_id"
         ],
         "title": "NuevaAsignacion",
+        "type": "object"
+      },
+      "NuevaCancelacion": {
+        "properties": {
+          "motivo": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "pattern": "\\S",
+            "title": "Motivo",
+            "type": "string"
+          }
+        },
+        "required": [
+          "motivo"
+        ],
+        "title": "NuevaCancelacion",
         "type": "object"
       },
       "NuevaConsulta": {
@@ -2274,6 +2361,29 @@
         "title": "SugerenciasRespuesta",
         "type": "object"
       },
+      "TareaBloqueadaRespuesta": {
+        "properties": {
+          "asignada_a_id": {
+            "title": "Asignada A Id",
+            "type": "integer"
+          },
+          "tarea_id": {
+            "title": "Tarea Id",
+            "type": "integer"
+          },
+          "tramite_id": {
+            "title": "Tramite Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tarea_id",
+          "tramite_id",
+          "asignada_a_id"
+        ],
+        "title": "TareaBloqueadaRespuesta",
+        "type": "object"
+      },
       "TareaDetalle": {
         "properties": {
           "actualizada_en": {
@@ -2677,6 +2787,18 @@
             "title": "Id",
             "type": "integer"
           },
+          "motivo_cancelacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Motivo registrado al cancelar el trámite (RF-26)",
+            "title": "Motivo Cancelacion"
+          },
           "responsable_id": {
             "title": "Responsable Id",
             "type": "integer"
@@ -2697,6 +2819,56 @@
           "documentos"
         ],
         "title": "TramiteDetalle",
+        "type": "object"
+      },
+      "TramiteGeneral": {
+        "description": "Sin título ni descripción: pueden contener datos sensibles (P4).",
+        "properties": {
+          "actualizado_en": {
+            "format": "date-time",
+            "title": "Actualizado En",
+            "type": "string"
+          },
+          "creado_en": {
+            "format": "date-time",
+            "title": "Creado En",
+            "type": "string"
+          },
+          "documentos": {
+            "title": "Documentos",
+            "type": "integer"
+          },
+          "estado": {
+            "$ref": "#/components/schemas/EstadoTramite"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "responsable_id": {
+            "title": "Responsable Id",
+            "type": "integer"
+          },
+          "tareas_abiertas": {
+            "title": "Tareas Abiertas",
+            "type": "integer"
+          },
+          "tareas_sin_asignar": {
+            "title": "Tareas Sin Asignar",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "estado",
+          "responsable_id",
+          "creado_en",
+          "actualizado_en",
+          "documentos",
+          "tareas_abiertas",
+          "tareas_sin_asignar"
+        ],
+        "title": "TramiteGeneral",
         "type": "object"
       },
       "TramiteRespuesta": {
@@ -2728,6 +2900,18 @@
           "id": {
             "title": "Id",
             "type": "integer"
+          },
+          "motivo_cancelacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Motivo registrado al cancelar el trámite (RF-26)",
+            "title": "Motivo Cancelacion"
           },
           "responsable_id": {
             "title": "Responsable Id",
@@ -3526,6 +3710,32 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/administracion/estado-general": {
+      "get": {
+        "operationId": "consultar_estado_general_administracion_estado_general_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadoGeneralRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Consultar Estado General",
+        "tags": [
+          "administracion"
+        ]
+      }
+    },
     "/decisiones/{decision_id}/evidencia": {
       "get": {
         "operationId": "consultar_evidencia_decisiones__decision_id__evidencia_get",
@@ -4414,6 +4624,64 @@
         "summary": "Incorporar Version",
         "tags": [
           "tramites"
+        ]
+      }
+    },
+    "/tramites/{tramite_id}/cancelacion": {
+      "post": {
+        "description": "RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de\nadmitir decisiones (DO-2026-10-23-CIERRE P1 y P2).",
+        "operationId": "cancelar_tramites__tramite_id__cancelacion_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tramite_id",
+            "required": true,
+            "schema": {
+              "title": "Tramite Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevaCancelacion"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TramiteRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Cancelar",
+        "tags": [
+          "revision"
         ]
       }
     },
@@ -6104,6 +6372,54 @@
           }
         ],
         "summary": "Otorgar Rol",
+        "tags": [
+          "cuentas"
+        ]
+      }
+    },
+    "/usuarios/{usuario_id}/supresion": {
+      "post": {
+        "description": "RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las\nintervenciones conservan el identificador interno. Irreversible; no sobre la propia\ncuenta (DO-2026-10-23-CIERRE P6).",
+        "operationId": "suprimir_cuenta_usuarios__usuario_id__supresion_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "usuario_id",
+            "required": true,
+            "schema": {
+              "title": "Usuario Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaRespuesta"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Suprimir Cuenta",
         "tags": [
           "cuentas"
         ]

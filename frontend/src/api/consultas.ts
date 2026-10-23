@@ -23,6 +23,7 @@ export const claves = {
   flujo: (t: number) => ["tramite", t, "flujo"] as const,
   lineaTiempo: (t: number) => ["tramite", t, "linea-tiempo"] as const,
   firma: (t: number) => ["tramite", t, "firma"] as const,
+  estadoGeneral: ["estado-general"] as const,
   consultas: (t: number) => ["tramite", t, "consultas"] as const,
   tareas: ["tareas"] as const,
   tarea: (id: number) => ["tarea", id] as const,
@@ -201,6 +202,15 @@ export function useFirma(t: number, habilitado: boolean) {
   });
 }
 
+/** RF-24: estado general para el administrador, solo metadatos y conteos. */
+export function useEstadoGeneral(habilitado: boolean) {
+  return useQuery({
+    queryKey: claves.estadoGeneral,
+    enabled: habilitado,
+    queryFn: () => exigir(api.GET("/administracion/estado-general")),
+  });
+}
+
 /** URL de lectura breve del original de una versión (WEB F4): se pide al abrir el visor. */
 export function useArchivoVersion(t: number, version: number | undefined) {
   return useQuery({
@@ -285,6 +295,26 @@ export function useDescartar(t: number) {
         }),
       ),
     onSuccess: () => invalidar([...claves.archivos(t)], [...claves.lineaTiempo(t)]),
+  });
+}
+
+/** RF-26, RN-14: cancelación con motivo por el responsable. */
+export function useCancelar(t: number) {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (motivo: string) =>
+      exigir(api.POST("/tramites/{tramite_id}/cancelacion", { ...ruta(t), body: { motivo } })),
+    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], [...claves.tareas]),
+  });
+}
+
+/** RF-25: supresión irreversible de una cuenta por el administrador. */
+export function useSuprimir() {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: (usuario: number) =>
+      exigir(api.POST("/usuarios/{usuario_id}/supresion", { params: { path: { usuario_id: usuario } } })),
+    onSuccess: () => invalidar([...claves.cuentas], [...claves.estadoGeneral], ["directorio"]),
   });
 }
 

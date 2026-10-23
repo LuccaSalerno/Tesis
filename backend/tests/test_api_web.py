@@ -250,8 +250,8 @@ def test_f5_nombre_visible_y_directorio(e: Equipo) -> None:
         f"/usuarios/directorio?ids={e.revisor.usuario_id}&ids={e.aprobador.usuario_id}&ids=999999999",
     )
     assert directorio == [
-        {"id": e.revisor.usuario_id, "nombre_visible": "Laura Méndez"},
-        {"id": e.aprobador.usuario_id, "nombre_visible": None},
+        {"id": e.revisor.usuario_id, "nombre_visible": "Laura Méndez", "suprimida": False},
+        {"id": e.aprobador.usuario_id, "nombre_visible": None, "suprimida": False},
     ]
     assert obtener(e.revisor, "/usuarios/yo")["nombre_visible"] == "Laura Méndez"
     alta = e.cliente.post(

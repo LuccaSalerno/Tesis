@@ -8,8 +8,7 @@ Uso (operador, con la API en `active` y solo cuentas ficticias):
         --cliente-cognito <id> --usuarios admin=… responsable=… revisor=… aprobador=… \\
         --manifiesto operaciones/sesiones/<sesion>/manifiesto_seed.json
 
-Deja tres trámites con el escenario EVD-B de PD-07 (DO-2026-10-22-WEB F8,
-DO-2026-10-23-VER P9):
+Deja cuatro trámites (DO-2026-10-22-WEB F8, DO-2026-10-23-VER P9, DO-2026-10-23-CIERRE P11):
 
 1. **observado** (puntos de demo A a D): C-v1, O-v1 y F-v2 procesados, validados contra el
    oráculo y vinculados (R3 advierte que la orden está fuera de la vigencia); flujo
@@ -20,6 +19,7 @@ DO-2026-10-23-VER P9):
    que es una versión nueva de O-v1 (RF-06) y el responsable la confirma (RF-07); se valida,
    R3 vuelve a ejecutarse, el ciclo 2 aprueba y el aprobador aplica la firma simulada sobre
    C-v1 (RF-23): el trámite queda Cerrado.
+4. **cancelado**: sin documentos, cancelado por su responsable con motivo (RF-26).
 
 Cada dato se valida como lo haría una persona: si la sugerencia coincide con el oráculo se
 confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Nada se
@@ -63,6 +63,7 @@ NOMBRES_VISIBLES: Final = {
     "revisor": "Martín Ríos",
     "aprobador": "Sofía Herrera",
 }
+MOTIVO_CANCELACION: Final = "El laboratorio resolvió no contratar el servicio este año."
 MOTIVO_OBSERVACION: Final = (
     "La fecha de emisión de la orden de compra (15/03/2027) está fuera de la vigencia del"
     " contrato (01/03/2026 a 28/02/2027). Corregir la orden antes de aprobar."
@@ -459,6 +460,13 @@ class Sembrador:
         self.revisar(cerrado)
         self.corregir_con_version(cerrado)
         self.cerrar(cerrado)
+        tramite = self.api.post(
+            "/tramites", "responsable", {"titulo": "Mantenimiento de equipos (cancelado)"}
+        )
+        cancelado = self.api.post(
+            f"/tramites/{tramite['id']}/cancelacion", "responsable", {"motivo": MOTIVO_CANCELACION}
+        )
+        self.m.tramites["cancelado"] = {"id": tramite["id"], "estado": cancelado["estado"]}
         self.m.resultado = "completado"
         self.m.terminado_en = datetime.now(UTC).isoformat()
         return self.m

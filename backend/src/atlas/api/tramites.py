@@ -125,6 +125,9 @@ class TramiteRespuesta(BaseModel):
     titulo: str
     descripcion: str | None
     estado: EstadoTramite
+    motivo_cancelacion: str | None = Field(
+        default=None, description="Motivo registrado al cancelar el trámite (RF-26)"
+    )
     responsable_id: int
     creado_en: datetime
     actualizado_en: datetime
@@ -136,6 +139,7 @@ class TramiteRespuesta(BaseModel):
             titulo=tramite.titulo,
             descripcion=tramite.descripcion,
             estado=tramite.estado,
+            motivo_cancelacion=tramite.motivo_cancelacion,
             responsable_id=tramite.responsable_id,
             creado_en=tramite.creado_en,
             actualizado_en=tramite.actualizado_en,
