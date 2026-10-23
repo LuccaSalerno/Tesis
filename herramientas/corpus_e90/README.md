@@ -1,12 +1,12 @@
 # Construcción y validación local del corpus E90
 
-Decisiones: **DO-2026-10-22-CORPUS-CONSTRUCCION** y **DO-2026-10-22-CORPUS-REVISION** (versión candidata **v2**, diseño P0–P16 en `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`). Estado: candidato, no congelado, sin oráculos revisados por los autores. No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
+Decisiones: **DO-2026-10-22-CORPUS-CONSTRUCCION** y **DO-2026-10-22-CORPUS-REVISION** (diseño P0–P16 en `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`) y **DO-2026-10-23-CIERRE D5** (versión candidata **v3**: correcciones de REV-E90-16 a 19 en `docs/evaluacion/corpus_e90/Correcciones_V3.md`). Estado: candidato, no congelado, sin oráculos revisados por los autores. No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
 
 ## Qué contiene
 
 - `corpus/e90/registros_fuente.json`: 65 registros fijados antes de generar archivos (50 de medición y 15 de ajuste), con contextos de trámite, ambigüedades justificadas, adversariales y condiciones. No se obtuvieron de resultados de IA.
 - `corpus/e90/medicion/` y `ajuste/`: un archivo de entrada por registro, con nombre neutro; 45 PDF y 20 DOCX. `fuentes_docx/` y `pdf_referencia/` son auxiliares, no documentos adicionales de medición.
-- `oraculos/e90/`: inventario, manifiesto de artefactos, 403 campos, 727 fragmentos, 30 consultas y 18 CUIT candidatos (ver su README).
+- `oraculos/e90/`: inventario, manifiesto de artefactos, 403 campos, 745 fragmentos (727 de la v2 más 18 extractos de procedencia), 30 consultas y 18 CUIT candidatos (ver su README).
 - `docs/evaluacion/corpus_e90/Cuaderno_Revision_*.md`: vistas para los autores, generadas con `cuadernos.py` a partir de los JSON.
 
 Módulos:
@@ -26,7 +26,7 @@ Las familias BASE_A/BASE_B son compartidas; MED_C/MED_D se usan exclusivamente e
 
 Usar un entorno exclusivo y `pip install -r herramientas/corpus_e90/requisitos.txt`. No instalar estas dependencias en el backend ni en el paquete Lambda.
 
-Generación: LibreOffice headless y pdftoppm locales; Pillow hace las degradaciones. La v2 se generó con **LibreOffice 24.2.7.2** y **pdftoppm 24.02.0** (la v1 había usado LibreOfficeDev 26.8 alpha); las versiones completas están en el manifiesto. No se promete igualdad binaria con otro renderer: inspeccionar antes de cambiar el entorno.
+Generación: LibreOffice headless y pdftoppm locales; Pillow hace las degradaciones. La v2 y la v3 se generaron con **LibreOffice 24.2.7.2** y **pdftoppm 24.02.0** (la v1 había usado LibreOfficeDev 26.8 alpha); las versiones completas están en el manifiesto. No se promete igualdad binaria con otro renderer: inspeccionar antes de cambiar el entorno.
 
 ## Comandos
 
@@ -49,7 +49,7 @@ python -m herramientas.corpus_e90.consultas --raiz /ruta/nueva_revision
 python -m herramientas.corpus_e90.validar --raiz /ruta/nueva_revision
 ```
 
-Después de revisar el resultado, se reemplazan en el repositorio `corpus/e90/{registros_fuente.json,medicion,ajuste,fuentes_docx,pdf_referencia}` y los archivos de `oraculos/e90/`, conservando antes el manifiesto anterior (como en `docs/evaluacion/corpus_e90/v1/`). Así se instaló la v2. Luego, con el commit de los datos:
+Después de revisar el resultado, se reemplazan en el repositorio `corpus/e90/{registros_fuente.json,medicion,ajuste,fuentes_docx,pdf_referencia}` y los archivos de `oraculos/e90/`, conservando antes el manifiesto anterior (como en `docs/evaluacion/corpus_e90/v1/` y `v2/`). Así se instalaron la v2 y la v3. Luego, con el commit de los datos:
 
 ```bash
 python -m herramientas.corpus_e90.cuadernos --commit <commit_de_los_datos>

@@ -101,7 +101,7 @@ AMBIGUEDADES = {
     "E90-M-OC-07": {
         "parece": "presupuesto",
         "diseno": "pedido que reproduce ítems, precios y validez de la cotización aceptada",
-        "justificacion": "La emite el comprador, tiene número de orden e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto.",
+        "justificacion": "La emite el comprador e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto. Su número es neutro, sin prefijo de orden (REV-E90-18).",
     },
     "E90-M-FAC-08": {
         "parece": "comprobante",
@@ -197,6 +197,31 @@ def importe_aleatorio(rng: random.Random, moneda: str, tipo: str) -> Decimal:
         low, high = (9_000, 180_000) if contrato else (800, 45_000)
     entero = int(low * (high / low) ** rng.random())
     return (Decimal(entero) + Decimal(rng.randrange(100)) / 100).quantize(CENTAVO)
+
+
+def conciliar_pagos(byid: dict[str, dict]) -> None:
+    """REV-E90-17 (DO-2026-10-23-CIERRE D5): en cada trámite, la condición de pago de la
+    orden y la forma de pago del presupuesto coinciden con el vencimiento de la factura,
+    contado desde la recepción conforme (o, sin constancia, desde la entrega comprometida).
+    No se infiere una precedencia entre documentos: los tres dicen lo mismo."""
+    for ctx in CONTEXTOS.values():
+        docs = [byid[d] for d in ctx["docs"]]
+        tipos = {r["tipo"]: r for r in docs}
+        factura, orden = tipos.get("factura"), tipos.get("orden_compra")
+        if factura is None or orden is None:
+            continue
+        vencimiento = date.fromisoformat(factura["condiciones"]["vencimiento"])
+        comprobante = tipos.get("comprobante")
+        if comprobante is not None:
+            base, desde = date.fromisoformat(comprobante["valores"]["fecha"]), "la recepción conforme"
+        else:
+            base, desde = date.fromisoformat(orden["condiciones"]["fecha_entrega"]), "la entrega"
+        dias = (vencimiento - base).days
+        if dias <= 0:
+            raise ValueError("vencimiento_anterior_a_la_base_de_pago")
+        orden["condiciones"]["condicion_pago"] = f"{dias} días desde {desde}"
+        if "presupuesto" in tipos:
+            tipos["presupuesto"]["condiciones"]["forma_pago"] = f"pago a {dias} días desde {desde}"
 
 
 def condiciones(tipo: str, rng: random.Random, fecha: date) -> dict:
@@ -463,6 +488,10 @@ def preparar(root: Path) -> None:
                     ref["numero"] = anterior["valores"]["numero"]
                 r["referencias"] = [ref]
             anterior = r
+    conciliar_pagos(byid)
+    # REV-E90-18: el caso ambiguo no lleva el prefijo OC en su número.
+    oc07 = byid["E90-M-OC-07"]["valores"]
+    oc07["numero"] = oc07["numero"].removeprefix("OC/")
     for r in registros:
         if r["plantilla_id"] == "CTR-ARG_A":
             if r["doc_id"] != "E90-M-CTR-03" or r["grupo"] != "medicion":

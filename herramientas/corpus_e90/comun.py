@@ -10,7 +10,9 @@ from typing import Any
 
 DECISION = "DO-2026-10-22-CORPUS-CONSTRUCCION"
 DECISION_V2 = "DO-2026-10-22-CORPUS-REVISION"
-VERSION = "e90-candidato-v2"
+# v3: correcciones de REV-E90-16 a 19 (DO-2026-10-23-CIERRE D5); sigue siendo candidata.
+DECISION_V3 = "DO-2026-10-23-CIERRE"
+VERSION = "e90-candidato-v3"
 ESTADO = "CANDIDATO_NO_CONGELADO"
 MARCA = "DOCUMENTO FICTICIO - SIN VALIDEZ COMERCIAL NI FISCAL"
 # REV-E90-08: el ID de inventario no puede aparecer en el contenido ni en metadatos.

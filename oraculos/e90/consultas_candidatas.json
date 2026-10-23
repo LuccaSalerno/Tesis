@@ -24,7 +24,8 @@
       "pregunta": "¿Cuál es el importe total de la orden de compra emitida a Calibraciones del Litoral Norte S.R.L.?",
       "pregunta_id": "Q01",
       "respuesta_referencia": "El importe total de la orden de compra es 3.699.990,10. Está expresado en pesos argentinos (ARS).",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -48,7 +49,8 @@
       "pregunta": "¿Qué número tiene la factura de Calibraciones del Litoral Norte S.R.L. por mantenimiento preventivo de cabinas de seguridad biológica?",
       "pregunta_id": "Q02",
       "respuesta_referencia": "La factura tiene el número 00002-00052952.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -71,7 +73,8 @@
       "pregunta": "¿Hasta qué fecha está vigente el contrato con Servicios Técnicos Arroyo Seco S.A.?",
       "pregunta_id": "Q03",
       "respuesta_referencia": "El contrato está vigente hasta el 21/02/2027.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -94,7 +97,8 @@
       "pregunta": "¿En qué fecha se emitió el presupuesto de Metrolab Patagonia Sur S.R.L.?",
       "pregunta_id": "Q04",
       "respuesta_referencia": "El presupuesto se emitió el 16/03/2026.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -119,7 +123,8 @@
       "pregunta": "¿Por qué importe se dejó constancia de la recepción de los servicios de Ingeniería Cuenca del Salado S.A.?",
       "pregunta_id": "Q05",
       "respuesta_referencia": "La constancia registra un importe de 2.242,86. Está expresado en euros (EUR).",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -142,7 +147,8 @@
       "pregunta": "¿Cuál es el precio total del contrato de servicios técnicos y en qué moneda está expresado?",
       "pregunta_id": "Q06",
       "respuesta_referencia": "El monto total es 9.681.580,07. Está expresado en pesos argentinos (ARS).",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -165,7 +171,8 @@
       "pregunta": "¿Cuál es el monto total de honorarios del encargo de proyecto y dirección?",
       "pregunta_id": "Q07",
       "respuesta_referencia": "El monto total es 10.697.817,75. Está expresado en pesos argentinos (ARS).",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -186,7 +193,8 @@
       "pregunta": "¿Qué número tiene la orden de compra?",
       "pregunta_id": "Q08",
       "respuesta_referencia": "La orden de compra tiene el número OC/94217/2026.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -207,7 +215,8 @@
       "pregunta": "¿Cuál es el CUIT del proveedor que emitió la cotización?",
       "pregunta_id": "Q09",
       "respuesta_referencia": "El CUIT del proveedor es 30-98641004-6.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -228,7 +237,8 @@
       "pregunta": "¿Cuál es el CUIT del emisor de la factura?",
       "pregunta_id": "Q10",
       "respuesta_referencia": "El CUIT del emisor es 30-98641007-0.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -246,13 +256,15 @@
       "estado": "CANDIDATO_NO_CONGELADO",
       "evaluaciones_autores": [],
       "fragmentos_relevantes": [
-        "E90-M-CTR-06-CLAUSULA-7"
+        "E90-M-CTR-06-CLAUSULA-7",
+        "E90-M-CTR-06-ORIGEN-7"
       ],
       "motivo_abstencion": null,
       "pregunta": "¿En qué casos puede una de las partes dar por terminado el contrato?",
       "pregunta_id": "Q11",
       "respuesta_referencia": "Ante un incumplimiento material no subsanado. Ante una imposibilidad grave de continuidad. Por otra causal pactada. La parte debe notificar el motivo.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": "Se aceptan como correctos los plazos y supuestos más específicos del extracto en inglés del modelo público (fragmento ORIGEN), con cita a ese extracto, siempre que no contradigan la adaptación española; no se exigen para una respuesta completa."
     },
     {
       "afirmaciones_esperadas": [
@@ -269,13 +281,15 @@
       "estado": "CANDIDATO_NO_CONGELADO",
       "evaluaciones_autores": [],
       "fragmentos_relevantes": [
-        "E90-M-CTR-08-CLAUSULA-7"
+        "E90-M-CTR-08-CLAUSULA-7",
+        "E90-M-CTR-08-ORIGEN-7"
       ],
       "motivo_abstencion": null,
       "pregunta": "Si el proveedor incurre en un incumplimiento notificable, ¿qué puede pedirle el comprador y qué puede hacer con lo que reciba?",
       "pregunta_id": "Q12",
       "respuesta_referencia": "El comprador puede solicitar un plan de rectificación con las acciones y plazos propuestos. Puede aceptar el plan o rechazarlo con razones. Ante un rechazo, puede requerir una versión revisada.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": "Se aceptan como correctos los plazos y supuestos más específicos del extracto en inglés del modelo público (fragmento ORIGEN), con cita a ese extracto, siempre que no contradigan la adaptación española; no se exigen para una respuesta completa."
     },
     {
       "afirmaciones_esperadas": [
@@ -297,7 +311,8 @@
       "pregunta": "¿Cómo se resuelven las controversias en el contrato de proyecto y dirección?",
       "pregunta_id": "Q13",
       "respuesta_referencia": "Primero se prevé una mediación. Si la controversia persiste, se prevé una pericia arbitral.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -320,7 +335,8 @@
       "pregunta": "En el contrato con Servicios Técnicos Arroyo Seco S.A., ¿de cuántos días dispone el cliente para revisar un entregable sujeto a aceptación?",
       "pregunta_id": "Q14",
       "respuesta_referencia": "El cliente dispone de un período de prueba de quince días.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -343,12 +359,13 @@
       "pregunta": "¿Qué información queda excluida de la obligación de reserva?",
       "pregunta_id": "Q15",
       "respuesta_referencia": "La información ya pública. La recibida legítimamente de un tercero. La desarrollada de manera independiente.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
         "La oferta es válida por 30 días corridos.",
-        "La forma de pago es pago contra entrega del informe final."
+        "La forma de pago es pago a 14 días desde la entrega."
       ],
       "categoria": "condiciones",
       "clase": "respondible",
@@ -367,8 +384,9 @@
       "motivo_abstencion": null,
       "pregunta": "¿Por cuánto tiempo es válida la oferta de Metrolab Patagonia Sur S.R.L. y cómo se paga?",
       "pregunta_id": "Q16",
-      "respuesta_referencia": "La oferta es válida por 30 días corridos. La forma de pago es pago contra entrega del informe final.",
-      "revisado_por_autores": false
+      "respuesta_referencia": "La oferta es válida por 30 días corridos. La forma de pago es pago a 14 días desde la entrega.",
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -394,7 +412,8 @@
       "pregunta": "¿Dónde y en qué fecha debe entregarse lo pedido a Calibraciones del Litoral Norte S.R.L.?",
       "pregunta_id": "Q17",
       "respuesta_referencia": "Debe entregarse en Laboratorio de Metrología, planta baja. La fecha de entrega comprometida es el 11/07/2026.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -417,7 +436,8 @@
       "pregunta": "¿Cuándo vence el pago de la factura de Servicios Técnicos Arroyo Seco S.A.?",
       "pregunta_id": "Q18",
       "respuesta_referencia": "El pago vence el 31/03/2026.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -443,7 +463,8 @@
       "pregunta": "¿El importe de la orden de compra coincide con el del presupuesto de Calibraciones del Litoral Norte S.R.L.?",
       "pregunta_id": "Q19",
       "respuesta_referencia": "Sí, los importes coinciden. El presupuesto y la orden de compra indican 3.699.990,10 ARS.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -470,7 +491,8 @@
       "pregunta": "¿La factura de Metrolab Patagonia Sur S.R.L. se emitió por el mismo importe que la orden de compra?",
       "pregunta_id": "Q20",
       "respuesta_referencia": "No, los importes no coinciden. La orden de compra indica 2.461.923,75 ARS. La factura indica 2.658.877,65 ARS. La factura supera a la orden en 196.953,90 ARS.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -496,7 +518,8 @@
       "pregunta": "¿Qué documento previo cita la factura de Calibraciones del Litoral Norte S.R.L. y forma parte del trámite?",
       "pregunta_id": "Q21",
       "respuesta_referencia": "La factura cita la orden de compra OC 4500072485. Esa orden de compra forma parte del trámite.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -523,7 +546,8 @@
       "pregunta": "¿La factura de Servicios Técnicos Arroyo Seco S.A. se emitió dentro de la vigencia del contrato?",
       "pregunta_id": "Q22",
       "respuesta_referencia": "Sí, se emitió dentro de la vigencia. La factura es del 16/03/2026. El contrato rige desde el 22/02/2026 hasta el 21/02/2027.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -550,7 +574,8 @@
       "pregunta": "¿Qué factura cita la constancia de conformidad y coincide su importe con el de esa factura?",
       "pregunta_id": "Q23",
       "respuesta_referencia": "La constancia cita la factura 0004-00013478. Sí, ambos documentos indican 2.242,86 EUR.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [
@@ -576,7 +601,8 @@
       "pregunta": "¿Cuántos días pasaron entre el presupuesto y la orden de compra de Metrolab Patagonia Sur S.R.L.?",
       "pregunta_id": "Q24",
       "respuesta_referencia": "El presupuesto es del 16/03/2026. La orden de compra es del 28/03/2026. Pasaron 12 días.",
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -596,7 +622,8 @@
       "pregunta": "¿Qué penalidad corresponde si Calibraciones del Litoral Norte S.R.L. entrega con demora?",
       "pregunta_id": "Q25",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -615,7 +642,8 @@
       "pregunta": "¿Cuál es el monto de la multa por rescisión anticipada del contrato con Servicios Técnicos Arroyo Seco S.A.?",
       "pregunta_id": "Q26",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -634,7 +662,8 @@
       "pregunta": "¿A qué cuenta bancaria hay que transferir el pago de la factura de Metrolab Patagonia Sur S.R.L.?",
       "pregunta_id": "Q27",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -653,7 +682,8 @@
       "pregunta": "¿Qué número de remito acompañó la entrega de los servicios de Ingeniería Cuenca del Salado S.A.?",
       "pregunta_id": "Q28",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -670,7 +700,8 @@
       "pregunta": "¿Qué garantía de cumplimiento en dinero debe constituir el prestador?",
       "pregunta_id": "Q29",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     },
     {
       "afirmaciones_esperadas": [],
@@ -687,11 +718,12 @@
       "pregunta": "¿Cuál es el presupuesto de construcción de la obra?",
       "pregunta_id": "Q30",
       "respuesta_referencia": null,
-      "revisado_por_autores": false
+      "revisado_por_autores": false,
+      "variantes_admitidas": null
     }
   ],
   "estado": "CANDIDATO_NO_CONGELADO",
   "nota": "Borradores de referencias previas a modelos; no son evaluaciones ni revisión humana. Las afirmaciones esperadas se limitan a lo preguntado. Los fragmentos primarios se mapearán a chunks de cada indexación congelada después.",
   "revisado_por_autores": false,
-  "version": "e90-candidato-v2"
+  "version": "e90-candidato-v3"
 }

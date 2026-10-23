@@ -23,6 +23,16 @@ from .comun import (
 )
 
 
+# REV-E90-19 (DO-2026-10-23-CIERRE D5): función experimental del extracto inglés de
+# procedencia en los contratos extensos. Es parte del contexto disponible y del conjunto
+# relevante de recuperación; no prevalece sobre la adaptación ni agrega afirmaciones
+# exigidas.
+EXTRACTO_DE_PROCEDENCIA = (
+    "Se aceptan como correctos los plazos y supuestos más específicos del extracto en inglés "
+    "del modelo público (fragmento ORIGEN), con cita a ese extracto, siempre que no "
+    "contradigan la adaptación española; no se exigen para una respuesta completa."
+)
+
 def fecha_es(iso: str) -> str:
     y, m, d = iso.split("-")
     return f"{d}/{m}/{y}"
@@ -70,7 +80,7 @@ def preparar_consultas(root: Path) -> None:
             raise ValueError("fragmento_referencia_no_construido")
         return fid
 
-    def add(categoria, pregunta, contexto, afirmaciones, refs, motivo=None):
+    def add(categoria, pregunta, contexto, afirmaciones, refs, motivo=None, variantes=None):
         if categoria != "sin_evidencia" and not afirmaciones:
             raise ValueError("respondible_sin_afirmaciones")
         result.append(
@@ -88,6 +98,8 @@ def preparar_consultas(root: Path) -> None:
                 "afirmaciones_esperadas": afirmaciones,
                 "fragmentos_relevantes": refs,
                 "motivo_abstencion": motivo,
+                # REV-E90-19: precisiones que se aceptan sin exigirlas, fijadas antes de medir.
+                "variantes_admitidas": variantes,
                 "estado": ESTADO,
                 "revisado_por_autores": False,
                 "evaluaciones_autores": [],
@@ -206,7 +218,8 @@ def preparar_consultas(root: Path) -> None:
             "Por otra causal pactada.",
             "La parte debe notificar el motivo.",
         ],
-        [ref("E90-M-CTR-06", "CLAUSULA-7")],
+        [ref("E90-M-CTR-06", "CLAUSULA-7"), ref("E90-M-CTR-06", "ORIGEN-7")],
+        variantes=EXTRACTO_DE_PROCEDENCIA,
     )
     add(
         "condiciones",
@@ -217,7 +230,8 @@ def preparar_consultas(root: Path) -> None:
             "Puede aceptar el plan o rechazarlo con razones.",
             "Ante un rechazo, puede requerir una versión revisada.",
         ],
-        [ref("E90-M-CTR-08", "CLAUSULA-7")],
+        [ref("E90-M-CTR-08", "CLAUSULA-7"), ref("E90-M-CTR-08", "ORIGEN-7")],
+        variantes=EXTRACTO_DE_PROCEDENCIA,
     )
     add(
         "condiciones",

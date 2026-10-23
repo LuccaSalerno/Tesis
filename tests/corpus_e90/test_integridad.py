@@ -1,6 +1,7 @@
 """IA-D01–08, RNF-03/09: integridad del corpus generado, sin regeneración en CI.
 
 DO-2026-10-22-CORPUS-REVISION: comprobaciones de la revisión candidata v2 (REV-E90-01 a 15).
+DO-2026-10-23-CIERRE D5: correcciones de la candidata v3 (REV-E90-16 a 19).
 """
 
 import copy
@@ -164,7 +165,84 @@ class IntegridadE90Tests(unittest.TestCase):
         self.assertEqual(len(v1["artefactos"]), 65)
         actuales = {a["sha256"] for a in self.data["artefactos"]["artefactos"]}
         self.assertFalse(actuales & {a["sha256"] for a in v1["artefactos"]})
-        self.assertEqual(self.data["artefactos"]["version"], "e90-candidato-v2")
+        self.assertEqual(self.data["artefactos"]["version"], "e90-candidato-v3")
+        v2 = leer_json(RAIZ / "docs/evaluacion/corpus_e90/v2/artefactos_candidatos.json")
+        self.assertEqual(len(v2["artefactos"]), 65)
+        self.assertEqual(v2["version"], "e90-candidato-v2")
+
+    def test_rev_e90_16_iva_y_ajuste_cuadran_en_cada_docx(self):
+        """Comprobación aritmética independiente del generador: se lee el texto impreso."""
+        import re
+        import zipfile
+        from decimal import Decimal
+
+        def importe(texto):
+            return Decimal(texto.replace(".", "").replace(",", "."))
+
+        revisados = ajustes = 0
+        for ruta in sorted((RAIZ / "corpus/e90/fuentes_docx").glob("*/*.docx")):
+            with zipfile.ZipFile(ruta) as docx:
+                xml = docx.read("word/document.xml").decode("utf-8")
+            texto = re.sub(r"<[^>]+>", " ", xml)
+            neto = re.search(r"Neto gravado \S+ ([\d.]+,\d{2})", texto)
+            if neto is None:
+                continue
+            iva = re.search(r"IVA 21 % \S+ ([\d.]+,\d{2})", texto)
+            total = re.search(r"Total \S+ ([\d.]+,\d{2})", texto)
+            ajuste = re.search(r"Ajuste por redondeo ([+−]) \S+ ([\d.]+,\d{2})", texto)
+            n, i, t = importe(neto.group(1)), importe(iva.group(1)), importe(total.group(1))
+            a = Decimal(0)
+            if ajuste:
+                ajustes += 1
+                a = importe(ajuste.group(2)) * (1 if ajuste.group(1) == "+" else -1)
+            self.assertEqual(i, (n * Decimal("0.21")).quantize(Decimal(".01")), ruta.name)
+            self.assertEqual(n + i + a, t, ruta.name)
+            self.assertLessEqual(abs(a), Decimal("0.01"), ruta.name)
+            revisados += 1
+        self.assertGreaterEqual(revisados, 5)  # solo una familia imprime el desglose
+        self.assertEqual(ajustes, 2)  # PRE-05 y PRE-09 (REV-E90-16)
+
+    def test_rev_e90_17_condiciones_de_pago_conciliadas(self):
+        from datetime import date
+
+        registros = {r["doc_id"]: r for r in self.data["registros"]["registros"]}
+        for ctx in self.data["registros"]["contextos"].values():
+            tipos = {registros[d]["tipo"]: registros[d] for d in ctx["docs"]}
+            if "factura" not in tipos or "orden_compra" not in tipos:
+                continue
+            vence = date.fromisoformat(tipos["factura"]["condiciones"]["vencimiento"])
+            if "comprobante" in tipos:
+                base = date.fromisoformat(tipos["comprobante"]["valores"]["fecha"])
+                desde = "la recepción conforme"
+            else:
+                base = date.fromisoformat(tipos["orden_compra"]["condiciones"]["fecha_entrega"])
+                desde = "la entrega"
+            esperada = f"{(vence - base).days} días desde {desde}"
+            self.assertEqual(tipos["orden_compra"]["condiciones"]["condicion_pago"], esperada)
+            if "presupuesto" in tipos:
+                self.assertEqual(
+                    tipos["presupuesto"]["condiciones"]["forma_pago"], "pago a " + esperada
+                )
+
+    def test_rev_e90_18_el_ambiguo_oc_07_tiene_numero_neutro(self):
+        registro = next(
+            r for r in self.data["registros"]["registros"] if r["doc_id"] == "E90-M-OC-07"
+        )
+        self.assertNotIn("OC", registro["valores"]["numero"])
+        self.assertIn("REV-E90-18", registro["ambiguedad"]["justificacion"])
+
+    def test_rev_e90_19_extracto_de_procedencia_relevante_y_admitido(self):
+        consultas = {c["pregunta_id"]: c for c in self.data["consultas"]["consultas"]}
+        fragmentos = {f["fragmento_id"] for f in self.data["fragmentos"]["fragmentos"]}
+        for pregunta, contrato in (("Q11", "E90-M-CTR-06"), ("Q12", "E90-M-CTR-08")):
+            consulta = consultas[pregunta]
+            origen = f"{contrato}-ORIGEN-7"
+            self.assertIn(origen, fragmentos)
+            self.assertIn(origen, consulta["fragmentos_relevantes"])
+            self.assertIn("no se exigen", consulta["variantes_admitidas"])
+        self.assertTrue(
+            all(c["variantes_admitidas"] is None for q, c in consultas.items() if q not in ("Q11", "Q12"))
+        )
 
     def test_rc_p04_arg_a_ground_truth_separa_honorarios_y_obra(self):
         record = next(

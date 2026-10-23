@@ -705,7 +705,7 @@
       "clasificacion_esperada": "presupuesto",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "forma_pago": "pago contra entrega del informe final",
+        "forma_pago": "pago a 14 días desde la entrega",
         "plazo_ejecucion_dias_habiles": 24,
         "validez_dias": 30
       },
@@ -842,7 +842,7 @@
       "clasificacion_esperada": "presupuesto",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "forma_pago": "pago contra entrega del informe final",
+        "forma_pago": "pago a 18 días desde la recepción conforme",
         "plazo_ejecucion_dias_habiles": 17,
         "validez_dias": 15
       },
@@ -1211,7 +1211,7 @@
       "clasificacion_esperada": "orden_compra",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "condicion_pago": "15 días desde la recepción conforme",
+        "condicion_pago": "18 días desde la recepción conforme",
         "fecha_entrega": "2026-07-11",
         "lugar_entrega": "Laboratorio de Metrología, planta baja"
       },
@@ -1258,7 +1258,7 @@
       "clasificacion_esperada": "orden_compra",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "condicion_pago": "contado contra entrega",
+        "condicion_pago": "14 días desde la entrega",
         "fecha_entrega": "2026-03-17",
         "lugar_entrega": "Laboratorio de Metrología, planta baja"
       },
@@ -1346,7 +1346,7 @@
       "clasificacion_esperada": "orden_compra",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "condicion_pago": "contado contra entrega",
+        "condicion_pago": "2 días desde la recepción conforme",
         "fecha_entrega": "2026-05-26",
         "lugar_entrega": "Laboratorio de Metrología, planta baja"
       },
@@ -1442,7 +1442,7 @@
       "clasificacion_esperada": "orden_compra",
       "comprador": "Laboratorio de Ensayos ATLAS (organización ficticia)",
       "condiciones": {
-        "condicion_pago": "15 días desde la recepción conforme",
+        "condicion_pago": "14 días desde la entrega",
         "fecha_entrega": "2026-04-14",
         "lugar_entrega": "Sede Ensayos Norte, recepción de materiales"
       },
@@ -1482,7 +1482,7 @@
       "adversarial": null,
       "ambiguedad": {
         "diseno": "pedido que reproduce ítems, precios y validez de la cotización aceptada",
-        "justificacion": "La emite el comprador, tiene número de orden e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto.",
+        "justificacion": "La emite el comprador e instruye la provisión al proveedor; reproducir la cotización no la convierte en presupuesto. Su número es neutro, sin prefijo de orden (REV-E90-18).",
         "parece": "presupuesto"
       },
       "archivo_id": "doc-6084b5de",
@@ -1521,7 +1521,7 @@
         "fecha": "2026-06-08",
         "importe_total": "495193.92",
         "moneda": "ARS",
-        "numero": "OC/55372/2026",
+        "numero": "55372/2026",
         "proveedor": "Servicios de Laboratorio Cerro Azul S.A."
       }
     },
@@ -3031,5 +3031,5 @@
       }
     }
   ],
-  "version": "e90-candidato-v2"
+  "version": "e90-candidato-v3"
 }

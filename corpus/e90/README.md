@@ -1,10 +1,10 @@
-# Corpus sintético E90 candidato (v2)
+# Corpus sintético E90 candidato (v3)
 
-50 documentos de medición y 15 de ajuste. Versión **e90-candidato-v2** (DO-2026-10-22-CORPUS-REVISION). Estado: **CANDIDATO_NO_CONGELADO**; referencias y preguntas sin revisión de autores.
+50 documentos de medición y 15 de ajuste. Versión **e90-candidato-v3** (DO-2026-10-22-CORPUS-REVISION, con las correcciones de REV-E90-16 a 19 de DO-2026-10-23-CIERRE D5). Estado: **CANDIDATO_NO_CONGELADO**; referencias y preguntas sin revisión de autores.
 
 Los únicos archivos de entrada están en `medicion/` y `ajuste/`, con nombres neutros (`doc-<8 hex>`). La correspondencia con el ID de inventario (E90-M-CTR-01, etc.) figura solo en `oraculos/e90/inventario_candidato.csv` y en los cuadernos de revisión: ni el contenido, ni los metadatos, ni el nombre del archivo la revelan. Los DOCX de `fuentes_docx/` y los PDF de `pdf_referencia/` son auxiliares reproducibles y no aumentan el N. Los PDF escaneados y fotografiados son simulaciones digitales declaradas, con parámetros y semilla por documento.
 
-Contenido de la v2:
+Contenido de la v3 (misma estructura que la v2):
 
 - Razones sociales ficticias verosímiles, 12 en medición y 6 en ajuste, sin repetirse entre particiones; un comprador ficticio común. Los 12 CUIT de medición son los del reporte ARCA del equipo del 22/10/2026; los 6 de ajuste están pendientes de consulta. Las razones sociales también deben verificarse a mano: ver `docs/evaluacion/corpus_e90/Verificaciones_Pendientes_V2.md`.
 - Formatos por familia de plantilla: fechas `dd/mm/aaaa`, `dd-mm-aaaa`, `dd/mm/aa` o en letras; importes con o sin símbolo; moneda por código, símbolo o nombre; CUIT con o sin guiones; numeración documental propia de cada tipo.

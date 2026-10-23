@@ -17,7 +17,7 @@ import subprocess
 import tempfile
 import time
 from datetime import UTC, datetime
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
@@ -374,11 +374,14 @@ class Constructor:
         return result
 
     def montos(self) -> tuple[Decimal, Decimal, Decimal]:
+        """REV-E90-16: el IVA es el 21 % del neto redondeado a centavos; si neto + IVA no
+        alcanza el total de referencia, la diferencia se imprime como ajuste por redondeo."""
         total = Decimal(self.v[self.importe_campo()])
         if self.r["tipo"] == "comprobante":
             return total, Decimal(0), total
-        neto = (total / Decimal("1.21")).quantize(Decimal(".01"))
-        return neto, total - neto, total
+        neto = (total / Decimal("1.21")).quantize(Decimal(".01"), ROUND_HALF_UP)
+        iva = (neto * Decimal("0.21")).quantize(Decimal(".01"), ROUND_HALF_UP)
+        return neto, iva, total
 
     # --- familias no contractuales ---------------------------------------
     def base_a(self) -> None:
@@ -485,6 +488,10 @@ class Constructor:
         else:
             self.p(f"Neto gravado {moneda} {importe_es(str(neto))}")
             self.p(f"IVA 21 % {moneda} {importe_es(str(iva))}")
+            ajuste = _total - neto - iva
+            if ajuste:
+                signo = "+" if ajuste > 0 else "−"
+                self.p(f"Ajuste por redondeo {signo} {moneda} {importe_es(str(abs(ajuste)))}")
             etiqueta = "Total"
         self.p(f"{etiqueta} {moneda} {self.rep(campo)}", "CAMPO-" + campo, bold=True)
         self.campos[campo] = {
@@ -726,7 +733,8 @@ class Constructor:
                     + clause["localizador_original"]
                     + ". El siguiente extracto del modelo se conserva para identificar la procedencia del texto adaptado."
                 )
-                self.p(clause["original_en"])
+                # REV-E90-19: el extracto de procedencia es un fragmento propio, recuperable.
+                self.p(clause["original_en"], f"ORIGEN-{n}")
         self.h("Alcance de esta adaptación académica")
         self.p(
             "Se tradujeron y abreviaron cláusulas seleccionadas, se sustituyeron partes, moneda y condiciones particulares "
