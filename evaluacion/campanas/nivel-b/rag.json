@@ -1,0 +1,12 @@
+{
+  "vigencia": {
+    "suficiente": true,
+    "paginas_citadas": [
+      6
+    ]
+  },
+  "sin_evidencia": {
+    "suficiente": false,
+    "paginas_citadas": []
+  }
+}
