@@ -745,6 +745,16 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **P4 — Herramientas:** `herramientas/corpus_e90/congelar.py` (una sola vez) y modo congelado del validador, que exige que las huellas coincidan; pruebas de ambos modos.
 5. **P5 — Registro:** limitación de alcance para §6.6 y estado; la medición oficial de §6.3.1 queda habilitada.
 
+### DO-2026-10-24-DEMO-EXTENSO — Contrato extenso para la demo en vivo
+
+**Fecha:** 24/10/2026. **Aprobada por:** Lucca Salerno («ok»), tras la propuesta P1–P5 con las opciones recomendadas. **Estado:** cerrada. **Motivo:** para la demo se pidió un contrato más largo que C-v1 (10 páginas). **Base:** PD-07 (C-v1 de 8 a 12 páginas), DO-2026-10-22-WEB (F8), DIF-121.
+
+1. **P1 — C-v1 no cambia:** el oráculo PD-07 v2 congelado, la semilla, los trámites sembrados y EVD-B siguen con C-v1.
+2. **P2 — Documento adicional:** `0_Contrato_extenso_C-v1-EXT.pdf` (29 páginas), sintético, en `operaciones/demo/documentos_a_cargar/`. Las 10 primeras páginas son las de C-v1, armadas con el mismo código de `herramientas/generar_corpus.py`, que no se modifica; siguen los anexos B a L (niveles de servicio, plan preventivo, inventario, incidentes, escalamiento, créditos, seguridad, cambios, modelos de reporte, glosario y cuadro resumen). Generador: `herramientas/generar_contrato_extenso_demo.py`.
+3. **P3 — Mismos datos que C-v1:** partes, CUIT, celebración, monto, moneda y vigencia, en las mismas páginas (1, 5 y 6) y repetidos en el cuadro resumen (página 29). Los anexos no agregan otros importes totales, fechas de vigencia ni CUIT. Con O-v1, F-v2 y O-v2 el recorrido del guion no cambia (R3 advierte con O-v1).
+4. **P4 — Uso:** en vivo, en un trámite nuevo creado durante la demo; el trámite «en vivo» sembrado queda de respaldo.
+5. **P5 — Alcance:** solo demo. No forma parte de PD-07, EVD-01 ni E90, no tiene oráculo y su procesamiento en la demo no es evidencia.
+
 ---
 
 ## 2. Decisiones en curso
