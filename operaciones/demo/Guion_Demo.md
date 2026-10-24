@@ -55,6 +55,8 @@ Con `atlas-responsable`, en **Trámites**, tienen que estar los cuatro que dejó
 | Servicio de mantenimiento de laboratorio **(historia completa)** | Cerrado | La historia con versión nueva y firma |
 | Mantenimiento de equipos (cancelado) | Cancelado | Cancelación con motivo |
 
+**Sesión del 24/10:** aparece además un quinto, «… (historia completa)» en estado **Cancelado** (trámite 3). Es el primer intento de la semilla, interrumpido por un fallo técnico de Textract y reemplazado por el trámite 4; su motivo lo dice. Para la historia completa abrí el que está **Cerrado**. Si preguntan: no se borra (RNF-04), se cancela con motivo y queda en la auditoría.
+
 Revisá también:
 - En el trámite en vivo, **Documentos y datos**: el contrato aparece como «Contrato de mantenimiento», v1, con «Validar datos».
 - La API responde `"operacion": "active"`: `curl -s "${URL}salud"`. Si no está en `active`, la interfaz muestra «ATLAS está en mantenimiento» y no deja hacer cambios.
