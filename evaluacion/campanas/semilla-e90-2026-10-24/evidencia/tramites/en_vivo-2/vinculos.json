@@ -1,0 +1,34 @@
+{
+  "confirmados": [
+    {
+      "creado_en": "2026-10-24T14:53:35.345814Z",
+      "creado_por_id": null,
+      "documento_destino_id": 4,
+      "documento_origen_id": 27,
+      "estado": "confirmado",
+      "fuente": null,
+      "id": 14,
+      "justificacion": "El CUIT del proveedor de la orden de compra coincide con el CUIT de la contraparte del contrato (30-96472518-3).",
+      "origen": "automatico",
+      "resuelto_en": "2026-10-24T14:54:17.022684Z",
+      "resuelto_por_id": 2,
+      "tipo": "campos"
+    },
+    {
+      "creado_en": "2026-10-24T14:53:50.478006Z",
+      "creado_por_id": null,
+      "documento_destino_id": 27,
+      "documento_origen_id": 28,
+      "estado": "confirmado",
+      "fuente": null,
+      "id": 15,
+      "justificacion": "El CUIT del emisor de la factura coincide con el CUIT del proveedor de la orden de compra (30-96472518-3).",
+      "origen": "automatico",
+      "resuelto_en": "2026-10-24T14:54:21.426972Z",
+      "resuelto_por_id": 2,
+      "tipo": "campos"
+    }
+  ],
+  "resueltos": [],
+  "sugeridos": []
+}

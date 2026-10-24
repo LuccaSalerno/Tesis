@@ -1,0 +1,1082 @@
+[
+  {
+    "accion": "tramite_creado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 60,
+    "ocurrido_en": "2026-10-24T00:29:44.383637Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "carga_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 4,
+    "entidad_tipo": "archivo",
+    "id": 61,
+    "ocurrido_en": "2026-10-24T00:29:50.922206Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "documento_incorporado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 4,
+    "entidad_tipo": "documento",
+    "id": 62,
+    "ocurrido_en": "2026-10-24T00:29:53.012859Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "procesamiento_reintentado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 4,
+    "entidad_tipo": "archivo",
+    "id": 109,
+    "ocurrido_en": "2026-10-24T01:08:13.094409Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "carga_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 29,
+    "entidad_tipo": "archivo",
+    "id": 342,
+    "ocurrido_en": "2026-10-24T14:51:55.240454Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "carga_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 30,
+    "entidad_tipo": "archivo",
+    "id": 343,
+    "ocurrido_en": "2026-10-24T14:52:01.442829Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "clasificacion_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 154,
+    "entidad_tipo": "validacion_humana",
+    "id": 344,
+    "ocurrido_en": "2026-10-24T14:52:22.962314Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 155,
+    "entidad_tipo": "validacion_humana",
+    "id": 345,
+    "ocurrido_en": "2026-10-24T14:52:38.065057Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 156,
+    "entidad_tipo": "validacion_humana",
+    "id": 346,
+    "ocurrido_en": "2026-10-24T14:52:41.727834Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 157,
+    "entidad_tipo": "validacion_humana",
+    "id": 347,
+    "ocurrido_en": "2026-10-24T14:52:51.116067Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 158,
+    "entidad_tipo": "validacion_humana",
+    "id": 348,
+    "ocurrido_en": "2026-10-24T14:53:02.955268Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 159,
+    "entidad_tipo": "validacion_humana",
+    "id": 349,
+    "ocurrido_en": "2026-10-24T14:53:07.197880Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 160,
+    "entidad_tipo": "validacion_humana",
+    "id": 350,
+    "ocurrido_en": "2026-10-24T14:53:11.439560Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 161,
+    "entidad_tipo": "validacion_humana",
+    "id": 351,
+    "ocurrido_en": "2026-10-24T14:53:14.947046Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "documento_incorporado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 27,
+    "entidad_tipo": "documento",
+    "id": 352,
+    "ocurrido_en": "2026-10-24T14:53:22.244802Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "documento_incorporado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 28,
+    "entidad_tipo": "documento",
+    "id": 353,
+    "ocurrido_en": "2026-10-24T14:53:24.147232Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "clasificacion_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 162,
+    "entidad_tipo": "validacion_humana",
+    "id": 354,
+    "ocurrido_en": "2026-10-24T14:53:29.143992Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 163,
+    "entidad_tipo": "validacion_humana",
+    "id": 355,
+    "ocurrido_en": "2026-10-24T14:53:31.423768Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 164,
+    "entidad_tipo": "validacion_humana",
+    "id": 356,
+    "ocurrido_en": "2026-10-24T14:53:32.995120Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 165,
+    "entidad_tipo": "validacion_humana",
+    "id": 357,
+    "ocurrido_en": "2026-10-24T14:53:34.217376Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 166,
+    "entidad_tipo": "validacion_humana",
+    "id": 358,
+    "ocurrido_en": "2026-10-24T14:53:35.321087Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "vinculo_sugerido",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 14,
+    "entidad_tipo": "vinculo_documental",
+    "id": 359,
+    "ocurrido_en": "2026-10-24T14:53:35.354636Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 167,
+    "entidad_tipo": "validacion_humana",
+    "id": 360,
+    "ocurrido_en": "2026-10-24T14:53:36.573405Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 168,
+    "entidad_tipo": "validacion_humana",
+    "id": 361,
+    "ocurrido_en": "2026-10-24T14:53:38.595268Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 29,
+      "documento_id": 27,
+      "version_id": 28,
+      "version_numero": 1
+    },
+    "version_id": 28
+  },
+  {
+    "accion": "clasificacion_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 169,
+    "entidad_tipo": "validacion_humana",
+    "id": 362,
+    "ocurrido_en": "2026-10-24T14:53:43.526183Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 170,
+    "entidad_tipo": "validacion_humana",
+    "id": 363,
+    "ocurrido_en": "2026-10-24T14:53:45.306936Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 171,
+    "entidad_tipo": "validacion_humana",
+    "id": 364,
+    "ocurrido_en": "2026-10-24T14:53:47.010029Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 172,
+    "entidad_tipo": "validacion_humana",
+    "id": 365,
+    "ocurrido_en": "2026-10-24T14:53:48.299341Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 173,
+    "entidad_tipo": "validacion_humana",
+    "id": 366,
+    "ocurrido_en": "2026-10-24T14:53:50.453830Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "vinculo_sugerido",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 15,
+    "entidad_tipo": "vinculo_documental",
+    "id": 367,
+    "ocurrido_en": "2026-10-24T14:53:50.486439Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 174,
+    "entidad_tipo": "validacion_humana",
+    "id": 368,
+    "ocurrido_en": "2026-10-24T14:53:55.877949Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 175,
+    "entidad_tipo": "validacion_humana",
+    "id": 369,
+    "ocurrido_en": "2026-10-24T14:53:58.111048Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 30,
+      "documento_id": 28,
+      "version_id": 29,
+      "version_numero": 1
+    },
+    "version_id": 29
+  },
+  {
+    "accion": "vinculo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 14,
+    "entidad_tipo": "vinculo_documental",
+    "id": 370,
+    "ocurrido_en": "2026-10-24T14:54:17.031477Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 34,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 371,
+    "ocurrido_en": "2026-10-24T14:54:17.080896Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 35,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 372,
+    "ocurrido_en": "2026-10-24T14:54:17.099385Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "vinculo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 15,
+    "entidad_tipo": "vinculo_documental",
+    "id": 373,
+    "ocurrido_en": "2026-10-24T14:54:21.640551Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 36,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 374,
+    "ocurrido_en": "2026-10-24T14:54:21.689539Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 37,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 375,
+    "ocurrido_en": "2026-10-24T14:54:21.707979Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tramite_enviado_a_validacion",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 376,
+    "ocurrido_en": "2026-10-24T14:56:04.975721Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "flujo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 8,
+    "entidad_tipo": "ciclo_revision",
+    "id": 377,
+    "ocurrido_en": "2026-10-24T14:56:32.793307Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_asignada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 15,
+    "entidad_tipo": "tarea",
+    "id": 378,
+    "ocurrido_en": "2026-10-24T14:56:32.802621Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_asignada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 16,
+    "entidad_tipo": "tarea",
+    "id": 379,
+    "ocurrido_en": "2026-10-24T14:56:32.809824Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_aprobada",
+    "actor_id": 3,
+    "actor_tipo": "usuario",
+    "entidad_id": 9,
+    "entidad_tipo": "decision",
+    "id": 537,
+    "ocurrido_en": "2026-10-24T18:15:21.407320Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_habilitada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 16,
+    "entidad_tipo": "tarea",
+    "id": 538,
+    "ocurrido_en": "2026-10-24T18:15:21.414164Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_observada",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 10,
+    "entidad_tipo": "decision",
+    "id": 539,
+    "ocurrido_en": "2026-10-24T18:16:01.989017Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tramite_observado",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 540,
+    "ocurrido_en": "2026-10-24T18:16:01.992521Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "carga_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 94,
+    "entidad_tipo": "archivo",
+    "id": 541,
+    "ocurrido_en": "2026-10-24T18:17:53.572589Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "version_incorporada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 27,
+    "entidad_tipo": "documento",
+    "id": 542,
+    "ocurrido_en": "2026-10-24T18:19:37.157521Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "tramite_vuelve_a_borrador",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 543,
+    "ocurrido_en": "2026-10-24T18:19:37.166562Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "clasificacion_confirmada",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 194,
+    "entidad_tipo": "validacion_humana",
+    "id": 544,
+    "ocurrido_en": "2026-10-24T18:20:33.593856Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 40,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 545,
+    "ocurrido_en": "2026-10-24T18:20:33.670174Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 41,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 546,
+    "ocurrido_en": "2026-10-24T18:20:33.697014Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 42,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 547,
+    "ocurrido_en": "2026-10-24T18:20:33.734494Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 43,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 548,
+    "ocurrido_en": "2026-10-24T18:20:33.756751Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 195,
+    "entidad_tipo": "validacion_humana",
+    "id": 549,
+    "ocurrido_en": "2026-10-24T18:20:41.440703Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 196,
+    "entidad_tipo": "validacion_humana",
+    "id": 550,
+    "ocurrido_en": "2026-10-24T18:20:44.452032Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 44,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 551,
+    "ocurrido_en": "2026-10-24T18:20:44.534312Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 197,
+    "entidad_tipo": "validacion_humana",
+    "id": 552,
+    "ocurrido_en": "2026-10-24T18:20:47.990957Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 198,
+    "entidad_tipo": "validacion_humana",
+    "id": 553,
+    "ocurrido_en": "2026-10-24T18:20:50.619783Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 45,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 554,
+    "ocurrido_en": "2026-10-24T18:20:50.676521Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 46,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 555,
+    "ocurrido_en": "2026-10-24T18:20:50.719233Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 199,
+    "entidad_tipo": "validacion_humana",
+    "id": 556,
+    "ocurrido_en": "2026-10-24T18:20:53.151413Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 47,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 557,
+    "ocurrido_en": "2026-10-24T18:20:53.254669Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "campo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 200,
+    "entidad_tipo": "validacion_humana",
+    "id": 558,
+    "ocurrido_en": "2026-10-24T18:20:55.213369Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 94,
+      "documento_id": 27,
+      "version_id": 60,
+      "version_numero": 2
+    },
+    "version_id": 60
+  },
+  {
+    "accion": "regla_ejecutada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 48,
+    "entidad_tipo": "ejecucion_regla",
+    "id": 559,
+    "ocurrido_en": "2026-10-24T18:20:55.319627Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tramite_enviado_a_validacion",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 560,
+    "ocurrido_en": "2026-10-24T18:21:24.663791Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "flujo_confirmado",
+    "actor_id": 2,
+    "actor_tipo": "usuario",
+    "entidad_id": 10,
+    "entidad_tipo": "ciclo_revision",
+    "id": 561,
+    "ocurrido_en": "2026-10-24T18:21:27.425656Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_asignada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 19,
+    "entidad_tipo": "tarea",
+    "id": 562,
+    "ocurrido_en": "2026-10-24T18:21:27.433840Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_asignada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 20,
+    "entidad_tipo": "tarea",
+    "id": 563,
+    "ocurrido_en": "2026-10-24T18:21:27.441053Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_aprobada",
+    "actor_id": 3,
+    "actor_tipo": "usuario",
+    "entidad_id": 11,
+    "entidad_tipo": "decision",
+    "id": 564,
+    "ocurrido_en": "2026-10-24T18:22:13.340630Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_habilitada",
+    "actor_id": null,
+    "actor_tipo": "sistema",
+    "entidad_id": 20,
+    "entidad_tipo": "tarea",
+    "id": 565,
+    "ocurrido_en": "2026-10-24T18:22:13.346336Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tarea_aprobada",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 12,
+    "entidad_tipo": "decision",
+    "id": 566,
+    "ocurrido_en": "2026-10-24T18:22:24.321511Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "tramite_aprobado",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 567,
+    "ocurrido_en": "2026-10-24T18:22:24.332682Z",
+    "resultado": "exito",
+    "version": null,
+    "version_id": null
+  },
+  {
+    "accion": "firma_simulada_aplicada",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "firma_simulada",
+    "id": 568,
+    "ocurrido_en": "2026-10-24T18:23:07.129959Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  },
+  {
+    "accion": "tramite_cerrado",
+    "actor_id": 4,
+    "actor_tipo": "usuario",
+    "entidad_id": 2,
+    "entidad_tipo": "tramite",
+    "id": 569,
+    "ocurrido_en": "2026-10-24T18:23:07.136905Z",
+    "resultado": "exito",
+    "version": {
+      "archivo_id": 4,
+      "documento_id": 4,
+      "version_id": 4,
+      "version_numero": 1
+    },
+    "version_id": 4
+  }
+]

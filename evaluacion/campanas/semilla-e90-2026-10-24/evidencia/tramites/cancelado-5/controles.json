@@ -1,0 +1,41 @@
+{
+  "historial": [],
+  "vigentes": [
+    {
+      "codigo_regla": "R1-CUIT-FACTURA-OC",
+      "descripcion": "CUIT del emisor de la factura = CUIT del proveedor de la orden de compra vinculada",
+      "ejecucion": null,
+      "explicacion": "No hay documentos vinculados con los tipos que compara la regla.",
+      "resultado": "no_aplicable",
+      "version_regla": "v1",
+      "vinculo_id": null
+    },
+    {
+      "codigo_regla": "R2-CUIT-OC-CONTRATO",
+      "descripcion": "CUIT del proveedor de la orden de compra = CUIT de la contraparte del contrato vinculado",
+      "ejecucion": null,
+      "explicacion": "No hay documentos vinculados con los tipos que compara la regla.",
+      "resultado": "no_aplicable",
+      "version_regla": "v1",
+      "vinculo_id": null
+    },
+    {
+      "codigo_regla": "R3-VIGENCIA-OC-CONTRATO",
+      "descripcion": "Fecha de la orden de compra dentro de la vigencia del contrato vinculado",
+      "ejecucion": null,
+      "explicacion": "No hay documentos vinculados con los tipos que compara la regla.",
+      "resultado": "no_aplicable",
+      "version_regla": "v1",
+      "vinculo_id": null
+    },
+    {
+      "codigo_regla": "R4-IMPORTE-FACTURA-OC",
+      "descripcion": "Importe total de la factura ≤ importe total de la orden de compra vinculada, con la misma moneda",
+      "ejecucion": null,
+      "explicacion": "No hay documentos vinculados con los tipos que compara la regla.",
+      "resultado": "no_aplicable",
+      "version_regla": "v1",
+      "vinculo_id": null
+    }
+  ]
+}

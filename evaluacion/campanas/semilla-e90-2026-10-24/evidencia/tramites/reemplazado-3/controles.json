@@ -1,0 +1,446 @@
+{
+  "historial": [
+    {
+      "codigo_regla": "R2-CUIT-OC-CONTRATO",
+      "descripcion": "CUIT del proveedor de la orden de compra = CUIT de la contraparte del contrato vinculado",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T00:31:01.557978Z",
+      "explicacion": "El CUIT del proveedor de la orden de compra (30-96472518-3) coincide con el CUIT de la contraparte del contrato (30-96472518-3).",
+      "id": 5,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "cuit_contraparte",
+          "papel": "contrato",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 25,
+          "valor_validado": "30-96472518-3",
+          "version_id": 5
+        },
+        {
+          "campo": "cuit_proveedor",
+          "papel": "orden_compra",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 35,
+          "valor_validado": "30-96472518-3",
+          "version_id": 6
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 5,
+          "documento_nombre": "Contrato de mantenimiento",
+          "papel": "contrato",
+          "version_id": 5,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 6,
+          "documento_nombre": "Orden de compra",
+          "papel": "orden_compra",
+          "version_id": 6,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 3
+    },
+    {
+      "codigo_regla": "R3-VIGENCIA-OC-CONTRATO",
+      "descripcion": "Fecha de la orden de compra dentro de la vigencia del contrato vinculado",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T00:31:01.579047Z",
+      "explicacion": "La fecha de la orden de compra (2027-03-15) está fuera de la vigencia del contrato (del 2026-03-01 al 2027-02-28).",
+      "id": 6,
+      "resultado": "advertencia",
+      "valores": [
+        {
+          "campo": "vigencia_desde",
+          "papel": "contrato",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 27,
+          "valor_validado": "2026-03-01",
+          "version_id": 5
+        },
+        {
+          "campo": "vigencia_hasta",
+          "papel": "contrato",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 28,
+          "valor_validado": "2027-02-28",
+          "version_id": 5
+        },
+        {
+          "campo": "fecha",
+          "papel": "orden_compra",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 33,
+          "valor_validado": "2027-03-15",
+          "version_id": 6
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 5,
+          "documento_nombre": "Contrato de mantenimiento",
+          "papel": "contrato",
+          "version_id": 5,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 6,
+          "documento_nombre": "Orden de compra",
+          "papel": "orden_compra",
+          "version_id": 6,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 3
+    },
+    {
+      "codigo_regla": "R1-CUIT-FACTURA-OC",
+      "descripcion": "CUIT del emisor de la factura = CUIT del proveedor de la orden de compra vinculada",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T00:31:04.550861Z",
+      "explicacion": "El CUIT del emisor de la factura (30-96472518-3) coincide con el CUIT del proveedor de la orden de compra (30-96472518-3).",
+      "id": 7,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "cuit_proveedor",
+          "papel": "orden_compra",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 35,
+          "valor_validado": "30-96472518-3",
+          "version_id": 6
+        },
+        {
+          "campo": "cuit_emisor",
+          "papel": "factura",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 42,
+          "valor_validado": "30-96472518-3",
+          "version_id": 7
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 7,
+          "documento_nombre": "Factura",
+          "papel": "factura",
+          "version_id": 7,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 6,
+          "documento_nombre": "Orden de compra",
+          "papel": "orden_compra",
+          "version_id": 6,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 4
+    },
+    {
+      "codigo_regla": "R4-IMPORTE-FACTURA-OC",
+      "descripcion": "Importe total de la factura ≤ importe total de la orden de compra vinculada, con la misma moneda",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T00:31:04.565338Z",
+      "explicacion": "El importe total de la factura (1250000.00 ARS) no supera el de la orden de compra (1250000.00 ARS).",
+      "id": 8,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "importe_total",
+          "papel": "orden_compra",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 36,
+          "valor_validado": "1250000.00",
+          "version_id": 6
+        },
+        {
+          "campo": "moneda",
+          "papel": "orden_compra",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 37,
+          "valor_validado": "ARS",
+          "version_id": 6
+        },
+        {
+          "campo": "importe_total",
+          "papel": "factura",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 43,
+          "valor_validado": "1250000.00",
+          "version_id": 7
+        },
+        {
+          "campo": "moneda",
+          "papel": "factura",
+          "tipo": "sin_sugerencia",
+          "validacion_id": 44,
+          "valor_validado": "ARS",
+          "version_id": 7
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 7,
+          "documento_nombre": "Factura",
+          "papel": "factura",
+          "version_id": 7,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 6,
+          "documento_nombre": "Orden de compra",
+          "papel": "orden_compra",
+          "version_id": 6,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 4
+    }
+  ],
+  "vigentes": [
+    {
+      "codigo_regla": "R1-CUIT-FACTURA-OC",
+      "descripcion": "CUIT del emisor de la factura = CUIT del proveedor de la orden de compra vinculada",
+      "ejecucion": {
+        "codigo_regla": "R1-CUIT-FACTURA-OC",
+        "descripcion": "CUIT del emisor de la factura = CUIT del proveedor de la orden de compra vinculada",
+        "disparador": "vinculo",
+        "ejecutada_en": "2026-10-24T00:31:04.550861Z",
+        "explicacion": "El CUIT del emisor de la factura (30-96472518-3) coincide con el CUIT del proveedor de la orden de compra (30-96472518-3).",
+        "id": 7,
+        "resultado": "cumplimiento",
+        "valores": [
+          {
+            "campo": "cuit_proveedor",
+            "papel": "orden_compra",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 35,
+            "valor_validado": "30-96472518-3",
+            "version_id": 6
+          },
+          {
+            "campo": "cuit_emisor",
+            "papel": "factura",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 42,
+            "valor_validado": "30-96472518-3",
+            "version_id": 7
+          }
+        ],
+        "version_regla": "v1",
+        "versiones": [
+          {
+            "documento_id": 7,
+            "documento_nombre": "Factura",
+            "papel": "factura",
+            "version_id": 7,
+            "version_numero": 1
+          },
+          {
+            "documento_id": 6,
+            "documento_nombre": "Orden de compra",
+            "papel": "orden_compra",
+            "version_id": 6,
+            "version_numero": 1
+          }
+        ],
+        "vinculo_id": 4
+      },
+      "explicacion": "El CUIT del emisor de la factura (30-96472518-3) coincide con el CUIT del proveedor de la orden de compra (30-96472518-3).",
+      "resultado": "cumplimiento",
+      "version_regla": "v1",
+      "vinculo_id": 4
+    },
+    {
+      "codigo_regla": "R2-CUIT-OC-CONTRATO",
+      "descripcion": "CUIT del proveedor de la orden de compra = CUIT de la contraparte del contrato vinculado",
+      "ejecucion": {
+        "codigo_regla": "R2-CUIT-OC-CONTRATO",
+        "descripcion": "CUIT del proveedor de la orden de compra = CUIT de la contraparte del contrato vinculado",
+        "disparador": "vinculo",
+        "ejecutada_en": "2026-10-24T00:31:01.557978Z",
+        "explicacion": "El CUIT del proveedor de la orden de compra (30-96472518-3) coincide con el CUIT de la contraparte del contrato (30-96472518-3).",
+        "id": 5,
+        "resultado": "cumplimiento",
+        "valores": [
+          {
+            "campo": "cuit_contraparte",
+            "papel": "contrato",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 25,
+            "valor_validado": "30-96472518-3",
+            "version_id": 5
+          },
+          {
+            "campo": "cuit_proveedor",
+            "papel": "orden_compra",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 35,
+            "valor_validado": "30-96472518-3",
+            "version_id": 6
+          }
+        ],
+        "version_regla": "v1",
+        "versiones": [
+          {
+            "documento_id": 5,
+            "documento_nombre": "Contrato de mantenimiento",
+            "papel": "contrato",
+            "version_id": 5,
+            "version_numero": 1
+          },
+          {
+            "documento_id": 6,
+            "documento_nombre": "Orden de compra",
+            "papel": "orden_compra",
+            "version_id": 6,
+            "version_numero": 1
+          }
+        ],
+        "vinculo_id": 3
+      },
+      "explicacion": "El CUIT del proveedor de la orden de compra (30-96472518-3) coincide con el CUIT de la contraparte del contrato (30-96472518-3).",
+      "resultado": "cumplimiento",
+      "version_regla": "v1",
+      "vinculo_id": 3
+    },
+    {
+      "codigo_regla": "R3-VIGENCIA-OC-CONTRATO",
+      "descripcion": "Fecha de la orden de compra dentro de la vigencia del contrato vinculado",
+      "ejecucion": {
+        "codigo_regla": "R3-VIGENCIA-OC-CONTRATO",
+        "descripcion": "Fecha de la orden de compra dentro de la vigencia del contrato vinculado",
+        "disparador": "vinculo",
+        "ejecutada_en": "2026-10-24T00:31:01.579047Z",
+        "explicacion": "La fecha de la orden de compra (2027-03-15) está fuera de la vigencia del contrato (del 2026-03-01 al 2027-02-28).",
+        "id": 6,
+        "resultado": "advertencia",
+        "valores": [
+          {
+            "campo": "vigencia_desde",
+            "papel": "contrato",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 27,
+            "valor_validado": "2026-03-01",
+            "version_id": 5
+          },
+          {
+            "campo": "vigencia_hasta",
+            "papel": "contrato",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 28,
+            "valor_validado": "2027-02-28",
+            "version_id": 5
+          },
+          {
+            "campo": "fecha",
+            "papel": "orden_compra",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 33,
+            "valor_validado": "2027-03-15",
+            "version_id": 6
+          }
+        ],
+        "version_regla": "v1",
+        "versiones": [
+          {
+            "documento_id": 5,
+            "documento_nombre": "Contrato de mantenimiento",
+            "papel": "contrato",
+            "version_id": 5,
+            "version_numero": 1
+          },
+          {
+            "documento_id": 6,
+            "documento_nombre": "Orden de compra",
+            "papel": "orden_compra",
+            "version_id": 6,
+            "version_numero": 1
+          }
+        ],
+        "vinculo_id": 3
+      },
+      "explicacion": "La fecha de la orden de compra (2027-03-15) está fuera de la vigencia del contrato (del 2026-03-01 al 2027-02-28).",
+      "resultado": "advertencia",
+      "version_regla": "v1",
+      "vinculo_id": 3
+    },
+    {
+      "codigo_regla": "R4-IMPORTE-FACTURA-OC",
+      "descripcion": "Importe total de la factura ≤ importe total de la orden de compra vinculada, con la misma moneda",
+      "ejecucion": {
+        "codigo_regla": "R4-IMPORTE-FACTURA-OC",
+        "descripcion": "Importe total de la factura ≤ importe total de la orden de compra vinculada, con la misma moneda",
+        "disparador": "vinculo",
+        "ejecutada_en": "2026-10-24T00:31:04.565338Z",
+        "explicacion": "El importe total de la factura (1250000.00 ARS) no supera el de la orden de compra (1250000.00 ARS).",
+        "id": 8,
+        "resultado": "cumplimiento",
+        "valores": [
+          {
+            "campo": "importe_total",
+            "papel": "orden_compra",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 36,
+            "valor_validado": "1250000.00",
+            "version_id": 6
+          },
+          {
+            "campo": "moneda",
+            "papel": "orden_compra",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 37,
+            "valor_validado": "ARS",
+            "version_id": 6
+          },
+          {
+            "campo": "importe_total",
+            "papel": "factura",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 43,
+            "valor_validado": "1250000.00",
+            "version_id": 7
+          },
+          {
+            "campo": "moneda",
+            "papel": "factura",
+            "tipo": "sin_sugerencia",
+            "validacion_id": 44,
+            "valor_validado": "ARS",
+            "version_id": 7
+          }
+        ],
+        "version_regla": "v1",
+        "versiones": [
+          {
+            "documento_id": 7,
+            "documento_nombre": "Factura",
+            "papel": "factura",
+            "version_id": 7,
+            "version_numero": 1
+          },
+          {
+            "documento_id": 6,
+            "documento_nombre": "Orden de compra",
+            "papel": "orden_compra",
+            "version_id": 6,
+            "version_numero": 1
+          }
+        ],
+        "vinculo_id": 4
+      },
+      "explicacion": "El importe total de la factura (1250000.00 ARS) no supera el de la orden de compra (1250000.00 ARS).",
+      "resultado": "cumplimiento",
+      "version_regla": "v1",
+      "vinculo_id": 4
+    }
+  ]
+}

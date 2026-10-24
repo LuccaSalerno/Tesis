@@ -1,0 +1,74 @@
+[
+  {
+    "cargado_en": "2026-10-24T00:30:01.699781Z",
+    "estado_incorporacion": "incorporado",
+    "formato": "pdf",
+    "huella": "7802ce9a5f065260a0d027ae68dafeab78b2657170725f88fb34a1f2783143d4",
+    "id": 5,
+    "nombre": "C-v1_Contrato_Mantenimiento_ATLAS.pdf",
+    "sugerencia_version": null,
+    "tamano_bytes": 112796,
+    "trabajo": {
+      "actualizado_en": "2026-10-24T00:30:02.817454Z",
+      "creado_en": "2026-10-24T00:30:01.699781Z",
+      "ejecucion_iniciada_en": "2026-10-24T00:30:02.048594Z",
+      "estado": "fallido",
+      "intento": 1
+    },
+    "vence_en": null
+  },
+  {
+    "cargado_en": "2026-10-24T00:30:08.170775Z",
+    "estado_incorporacion": "incorporado",
+    "formato": "pdf",
+    "huella": "5d1ee24b3e8638f6f8c0a2ba14ade21cf975d81abb04903ab4b21f3d6debb108",
+    "id": 6,
+    "nombre": "O-v1_Orden_Compra.pdf",
+    "sugerencia_version": null,
+    "tamano_bytes": 41505,
+    "trabajo": {
+      "actualizado_en": "2026-10-24T00:30:08.957664Z",
+      "creado_en": "2026-10-24T00:30:08.170775Z",
+      "ejecucion_iniciada_en": "2026-10-24T00:30:08.427097Z",
+      "estado": "fallido",
+      "intento": 1
+    },
+    "vence_en": null
+  },
+  {
+    "cargado_en": "2026-10-24T00:30:13.544072Z",
+    "estado_incorporacion": "incorporado",
+    "formato": "pdf",
+    "huella": "28890479ff39cac17464ab0482e90f04fd3eb6df4c35d711fff1181019b469ac",
+    "id": 7,
+    "nombre": "F-v2_Factura.pdf",
+    "sugerencia_version": null,
+    "tamano_bytes": 41654,
+    "trabajo": {
+      "actualizado_en": "2026-10-24T00:30:14.270453Z",
+      "creado_en": "2026-10-24T00:30:13.544072Z",
+      "ejecucion_iniciada_en": "2026-10-24T00:30:13.699110Z",
+      "estado": "fallido",
+      "intento": 1
+    },
+    "vence_en": null
+  },
+  {
+    "cargado_en": "2026-10-24T00:31:21.931486Z",
+    "estado_incorporacion": "pendiente",
+    "formato": "pdf",
+    "huella": "0f006259ca2280fffc2b13ad429ed9ce3cc3461a63046127817f3339f26dbfae",
+    "id": 8,
+    "nombre": "O-v2_Orden_Compra.pdf",
+    "sugerencia_version": null,
+    "tamano_bytes": 41595,
+    "trabajo": {
+      "actualizado_en": "2026-10-24T00:31:22.823491Z",
+      "creado_en": "2026-10-24T00:31:21.931486Z",
+      "ejecucion_iniciada_en": "2026-10-24T00:31:22.198583Z",
+      "estado": "fallido",
+      "intento": 1
+    },
+    "vence_en": "2026-10-25T00:31:21.931486Z"
+  }
+]

@@ -1,0 +1,378 @@
+{
+  "campos": [
+    {
+      "campo": "numero",
+      "historial": [
+        {
+          "campo": "numero",
+          "id": 68,
+          "localizador": {
+            "fragmento": "Número | OC-2026-0042",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:15.825434Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 54,
+          "valor_validado": "OC-2026-0042",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "numero",
+        "id": 54,
+        "localizador": {
+          "fragmento": "Número | OC-2026-0042",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "OC-2026-0042",
+        "valor_original": "OC-2026-0042",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "numero",
+        "id": 68,
+        "localizador": {
+          "fragmento": "Número | OC-2026-0042",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:15.825434Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 54,
+        "valor_validado": "OC-2026-0042",
+        "version_id": 11
+      }
+    },
+    {
+      "campo": "fecha",
+      "historial": [
+        {
+          "campo": "fecha",
+          "id": 69,
+          "localizador": {
+            "fragmento": "Fecha | 15/09/2026",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:17.833492Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 55,
+          "valor_validado": "2026-09-15",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "fecha",
+        "id": 55,
+        "localizador": {
+          "fragmento": "Fecha | 15/09/2026",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "2026-09-15",
+        "valor_original": "15/09/2026",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "fecha",
+        "id": 69,
+        "localizador": {
+          "fragmento": "Fecha | 15/09/2026",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:17.833492Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 55,
+        "valor_validado": "2026-09-15",
+        "version_id": 11
+      }
+    },
+    {
+      "campo": "proveedor",
+      "historial": [
+        {
+          "campo": "proveedor",
+          "id": 70,
+          "localizador": {
+            "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:18.883381Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 56,
+          "valor_validado": "Servicios Integrales del Sur S.A.",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "proveedor",
+        "id": 56,
+        "localizador": {
+          "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "Servicios Integrales del Sur S.A.",
+        "valor_original": "Servicios Integrales del Sur S.A.",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "proveedor",
+        "id": 70,
+        "localizador": {
+          "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:18.883381Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 56,
+        "valor_validado": "Servicios Integrales del Sur S.A.",
+        "version_id": 11
+      }
+    },
+    {
+      "campo": "cuit_proveedor",
+      "historial": [
+        {
+          "campo": "cuit_proveedor",
+          "id": 71,
+          "localizador": {
+            "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:20.016999Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 57,
+          "valor_validado": "30-96472518-3",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "cuit_proveedor",
+        "id": 57,
+        "localizador": {
+          "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "30-96472518-3",
+        "valor_original": "30-96472518-3",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "cuit_proveedor",
+        "id": 71,
+        "localizador": {
+          "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:20.016999Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 57,
+        "valor_validado": "30-96472518-3",
+        "version_id": 11
+      }
+    },
+    {
+      "campo": "importe_total",
+      "historial": [
+        {
+          "campo": "importe_total",
+          "id": 72,
+          "localizador": {
+            "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:22.065126Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 58,
+          "valor_validado": "1250000.00",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "importe_total",
+        "id": 58,
+        "localizador": {
+          "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "1250000.00",
+        "valor_original": "ARS 1.250.000,00",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "importe_total",
+        "id": 72,
+        "localizador": {
+          "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:22.065126Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 58,
+        "valor_validado": "1250000.00",
+        "version_id": 11
+      }
+    },
+    {
+      "campo": "moneda",
+      "historial": [
+        {
+          "campo": "moneda",
+          "id": 73,
+          "localizador": {
+            "fragmento": "Moneda | ARS pesos argentinos",
+            "pagina": 1,
+            "seccion": "Orden de compra sintética (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:11:24.247854Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 59,
+          "valor_validado": "ARS",
+          "version_id": 11
+        }
+      ],
+      "sugerencia": {
+        "campo": "moneda",
+        "id": 59,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "ARS",
+        "valor_original": "ARS",
+        "version_esquema": "esquema-extraccion-orden_compra-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "moneda",
+        "id": 73,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 1,
+          "seccion": "Orden de compra sintética (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:24.247854Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 59,
+        "valor_validado": "ARS",
+        "version_id": 11
+      }
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "historial": [
+      {
+        "campo": "tipo_documental",
+        "id": 67,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:11:13.668268Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 53,
+        "valor_validado": "orden_compra",
+        "version_id": 11
+      }
+    ],
+    "sugerencia": {
+      "campo": "tipo_documental",
+      "id": 53,
+      "localizador": null,
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": "no_aplica",
+      "valor": "orden_compra",
+      "valor_original": "orden_compra",
+      "version_esquema": "esquema-clasificacion-v1",
+      "version_instrucciones": "clasificacion-v1"
+    },
+    "vigente": {
+      "campo": "tipo_documental",
+      "id": 67,
+      "localizador": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validado_en": "2026-10-24T01:11:13.668268Z",
+      "validador_id": 2,
+      "valor_sugerido_id": 53,
+      "valor_validado": "orden_compra",
+      "version_id": 11
+    }
+  },
+  "documento_id": 9,
+  "fuera_de_esquema": [],
+  "tipo_validado": "orden_compra",
+  "version": {
+    "archivo_id": 12,
+    "id": 11,
+    "numero": 2
+  }
+}

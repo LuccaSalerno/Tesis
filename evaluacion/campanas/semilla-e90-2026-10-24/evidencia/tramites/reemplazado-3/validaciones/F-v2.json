@@ -1,0 +1,236 @@
+{
+  "campos": [
+    {
+      "campo": "numero",
+      "historial": [
+        {
+          "campo": "numero",
+          "id": 39,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:52.274357Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "FC-A-0001-00000123",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "numero",
+        "id": 39,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:52.274357Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "FC-A-0001-00000123",
+        "version_id": 7
+      }
+    },
+    {
+      "campo": "fecha_emision",
+      "historial": [
+        {
+          "campo": "fecha_emision",
+          "id": 40,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:53.273496Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "2026-09-30",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "fecha_emision",
+        "id": 40,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:53.273496Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "2026-09-30",
+        "version_id": 7
+      }
+    },
+    {
+      "campo": "emisor",
+      "historial": [
+        {
+          "campo": "emisor",
+          "id": 41,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:54.510720Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "Servicios Integrales del Sur S.A.",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "emisor",
+        "id": 41,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:54.510720Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "Servicios Integrales del Sur S.A.",
+        "version_id": 7
+      }
+    },
+    {
+      "campo": "cuit_emisor",
+      "historial": [
+        {
+          "campo": "cuit_emisor",
+          "id": 42,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:55.774556Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "30-96472518-3",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "cuit_emisor",
+        "id": 42,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:55.774556Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "30-96472518-3",
+        "version_id": 7
+      }
+    },
+    {
+      "campo": "importe_total",
+      "historial": [
+        {
+          "campo": "importe_total",
+          "id": 43,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:57.014158Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "1250000.00",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "importe_total",
+        "id": 43,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:57.014158Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "1250000.00",
+        "version_id": 7
+      }
+    },
+    {
+      "campo": "moneda",
+      "historial": [
+        {
+          "campo": "moneda",
+          "id": 44,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:58.440630Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "ARS",
+          "version_id": 7
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "moneda",
+        "id": 44,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:58.440630Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "ARS",
+        "version_id": 7
+      }
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "historial": [
+      {
+        "campo": "tipo_documental",
+        "id": 38,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:50.224604Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "factura",
+        "version_id": 7
+      }
+    ],
+    "sugerencia": null,
+    "vigente": {
+      "campo": "tipo_documental",
+      "id": 38,
+      "localizador": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "sin_sugerencia",
+      "validado_en": "2026-10-24T00:30:50.224604Z",
+      "validador_id": 2,
+      "valor_sugerido_id": null,
+      "valor_validado": "factura",
+      "version_id": 7
+    }
+  },
+  "documento_id": 7,
+  "fuera_de_esquema": [],
+  "tipo_validado": "factura",
+  "version": {
+    "archivo_id": 7,
+    "id": 7,
+    "numero": 1
+  }
+}

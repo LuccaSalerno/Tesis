@@ -1,0 +1,11 @@
+{
+  "campos": [],
+  "clasificacion": null,
+  "trabajo": {
+    "actualizado_en": "2026-10-24T00:31:22.823491Z",
+    "creado_en": "2026-10-24T00:31:21.931486Z",
+    "ejecucion_iniciada_en": "2026-10-24T00:31:22.198583Z",
+    "estado": "fallido",
+    "intento": 1
+  }
+}

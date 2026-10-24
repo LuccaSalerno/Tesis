@@ -1,0 +1,252 @@
+{
+  "sesion": "e90-2026-10-24",
+  "url_api": "https://hbs5d0xsb2.execute-api.us-east-1.amazonaws.com/",
+  "oraculo": "PD-07-ATLAS-V2-CONGELADO-2026-10-23 (CONGELADO)",
+  "corpus": {
+    "C-v1_Contrato_Mantenimiento_ATLAS.pdf": "7802ce9a5f065260a0d027ae68dafeab78b2657170725f88fb34a1f2783143d4",
+    "O-v1_Orden_Compra.pdf": "5d1ee24b3e8638f6f8c0a2ba14ade21cf975d81abb04903ab4b21f3d6debb108",
+    "F-v2_Factura.pdf": "28890479ff39cac17464ab0482e90f04fd3eb6df4c35d711fff1181019b469ac",
+    "O-v2_Orden_Compra.pdf": "0f006259ca2280fffc2b13ad429ed9ce3cc3461a63046127817f3339f26dbfae"
+  },
+  "iniciado_en": "2026-10-24T00:27:31.206485+00:00",
+  "cuentas": {
+    "administrador": 1,
+    "responsable": 2,
+    "revisor": 3,
+    "aprobador": 4
+  },
+  "plantilla_id": 1,
+  "tramites": {
+    "observado": {
+      "id": 1,
+      "documentos": {
+        "C-v1": 1,
+        "O-v1": 2,
+        "F-v2": 3
+      },
+      "archivos": {
+        "C-v1": 1,
+        "O-v1": 2,
+        "F-v2": 3
+      },
+      "validaciones": {
+        "C-v1": {
+          "tipo_documental": "confirmacion",
+          "contraparte": "confirmacion",
+          "cuit_contraparte": "confirmacion",
+          "fecha_celebracion": "confirmacion",
+          "vigencia_desde": "confirmacion",
+          "vigencia_hasta": "confirmacion",
+          "monto_total": "confirmacion",
+          "moneda": "confirmacion"
+        },
+        "O-v1": {
+          "tipo_documental": "confirmacion",
+          "numero": "confirmacion",
+          "fecha": "confirmacion",
+          "proveedor": "confirmacion",
+          "cuit_proveedor": "confirmacion",
+          "importe_total": "confirmacion",
+          "moneda": "confirmacion"
+        },
+        "F-v2": {
+          "tipo_documental": "confirmacion",
+          "numero": "confirmacion",
+          "fecha_emision": "confirmacion",
+          "emisor": "confirmacion",
+          "cuit_emisor": "confirmacion",
+          "importe_total": "confirmacion",
+          "moneda": "confirmacion"
+        }
+      },
+      "vinculos": [
+        1,
+        2
+      ],
+      "controles": {
+        "R1": "cumplimiento",
+        "R2": "cumplimiento",
+        "R3": "advertencia",
+        "R4": "cumplimiento"
+      },
+      "ciclo": 1,
+      "decisiones": [
+        1,
+        2
+      ],
+      "estado": "observado"
+    },
+    "en_vivo": {
+      "id": 2,
+      "documentos": {
+        "C-v1": 4
+      },
+      "archivos": {
+        "C-v1": 4
+      },
+      "estado": "borrador",
+      "reintentos": [
+        4
+      ]
+    },
+    "cerrado": {
+      "id": 4,
+      "documentos": {
+        "C-v1": 8,
+        "O-v1": 9,
+        "F-v2": 10
+      },
+      "archivos": {
+        "C-v1": 9,
+        "O-v1": 10,
+        "F-v2": 11,
+        "O-v2": 12
+      },
+      "validaciones": {
+        "C-v1": {
+          "tipo_documental": "confirmacion",
+          "contraparte": "confirmacion",
+          "cuit_contraparte": "confirmacion",
+          "fecha_celebracion": "confirmacion",
+          "vigencia_desde": "confirmacion",
+          "vigencia_hasta": "confirmacion",
+          "monto_total": "confirmacion",
+          "moneda": "confirmacion"
+        },
+        "O-v1": {
+          "tipo_documental": "confirmacion",
+          "numero": "confirmacion",
+          "fecha": "confirmacion",
+          "proveedor": "confirmacion",
+          "cuit_proveedor": "confirmacion",
+          "importe_total": "confirmacion",
+          "moneda": "confirmacion"
+        },
+        "F-v2": {
+          "tipo_documental": "confirmacion",
+          "numero": "confirmacion",
+          "fecha_emision": "confirmacion",
+          "emisor": "confirmacion",
+          "cuit_emisor": "confirmacion",
+          "importe_total": "confirmacion",
+          "moneda": "confirmacion"
+        },
+        "O-v2": {
+          "tipo_documental": "confirmacion",
+          "numero": "confirmacion",
+          "fecha": "confirmacion",
+          "proveedor": "confirmacion",
+          "cuit_proveedor": "confirmacion",
+          "importe_total": "confirmacion",
+          "moneda": "confirmacion"
+        }
+      },
+      "vinculos": [
+        5,
+        6
+      ],
+      "controles": {
+        "R1": "cumplimiento",
+        "R2": "cumplimiento",
+        "R3": "advertencia",
+        "R4": "cumplimiento"
+      },
+      "ciclo": 3,
+      "decisiones": [
+        5,
+        6
+      ],
+      "estado": "cerrado",
+      "criterio_version": "numero",
+      "version_nueva": 11,
+      "controles_corregidos": {
+        "R1": "cumplimiento",
+        "R2": "cumplimiento",
+        "R3": "cumplimiento",
+        "R4": "cumplimiento"
+      },
+      "ciclo_2": 4,
+      "decisiones_2": [
+        7,
+        8
+      ],
+      "firma": {
+        "id": 1,
+        "version_id": 8,
+        "referencia_integridad": "459dd01ae89d5bb3f4b58fc38c751980bec70b972d00b1cd44ad6f07a2997def"
+      }
+    },
+    "cancelado": {
+      "id": 5,
+      "estado": "cancelado"
+    }
+  },
+  "reemplazados": [
+    {
+      "id": 3,
+      "documentos": {
+        "C-v1": 5,
+        "O-v1": 6,
+        "F-v2": 7
+      },
+      "archivos": {
+        "C-v1": 5,
+        "O-v1": 6,
+        "F-v2": 7,
+        "O-v2": 8
+      },
+      "validaciones": {
+        "C-v1": {
+          "tipo_documental": "sin_sugerencia",
+          "contraparte": "sin_sugerencia",
+          "cuit_contraparte": "sin_sugerencia",
+          "fecha_celebracion": "sin_sugerencia",
+          "vigencia_desde": "sin_sugerencia",
+          "vigencia_hasta": "sin_sugerencia",
+          "monto_total": "sin_sugerencia",
+          "moneda": "sin_sugerencia"
+        },
+        "O-v1": {
+          "tipo_documental": "sin_sugerencia",
+          "numero": "sin_sugerencia",
+          "fecha": "sin_sugerencia",
+          "proveedor": "sin_sugerencia",
+          "cuit_proveedor": "sin_sugerencia",
+          "importe_total": "sin_sugerencia",
+          "moneda": "sin_sugerencia"
+        },
+        "F-v2": {
+          "tipo_documental": "sin_sugerencia",
+          "numero": "sin_sugerencia",
+          "fecha_emision": "sin_sugerencia",
+          "emisor": "sin_sugerencia",
+          "cuit_emisor": "sin_sugerencia",
+          "importe_total": "sin_sugerencia",
+          "moneda": "sin_sugerencia"
+        }
+      },
+      "vinculos": [
+        3,
+        4
+      ],
+      "controles": {
+        "R1": "cumplimiento",
+        "R2": "cumplimiento",
+        "R3": "advertencia",
+        "R4": "cumplimiento"
+      },
+      "ciclo": 2,
+      "decisiones": [
+        3,
+        4
+      ],
+      "estado": "cancelado",
+      "motivo_cancelacion": "Semilla interrumpida por un fallo técnico de procesamiento al preparar la sesión; se reemplaza por un trámite nuevo con la historia completa."
+    }
+  ],
+  "reanudaciones": [
+    "2026-10-24T01:08:10.719121+00:00"
+  ],
+  "terminado_en": "2026-10-24T01:11:38.174649+00:00",
+  "resultado": "completado"
+}

@@ -1,0 +1,42 @@
+{
+  "actualizado_en": "2026-10-24T01:08:53.417524Z",
+  "creado_en": "2026-10-24T00:29:55.793413Z",
+  "descripcion": null,
+  "documentos": [
+    {
+      "id": 5,
+      "nombre": "Contrato de mantenimiento",
+      "tipo": "contrato",
+      "version_vigente": {
+        "archivo_id": 5,
+        "id": 5,
+        "numero": 1
+      }
+    },
+    {
+      "id": 6,
+      "nombre": "Orden de compra",
+      "tipo": "orden_compra",
+      "version_vigente": {
+        "archivo_id": 6,
+        "id": 6,
+        "numero": 1
+      }
+    },
+    {
+      "id": 7,
+      "nombre": "Factura",
+      "tipo": "factura",
+      "version_vigente": {
+        "archivo_id": 7,
+        "id": 7,
+        "numero": 1
+      }
+    }
+  ],
+  "estado": "cancelado",
+  "id": 3,
+  "motivo_cancelacion": "Semilla interrumpida por un fallo técnico de procesamiento al preparar la sesión; se reemplaza por un trámite nuevo con la historia completa.",
+  "responsable_id": 2,
+  "titulo": "Servicio de mantenimiento de laboratorio (historia completa)"
+}

@@ -1,0 +1,112 @@
+{
+  "campos": [
+    {
+      "campo": "numero",
+      "id": 40,
+      "localizador": {
+        "fragmento": "Número | OC-2026-0042",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "OC-2026-0042",
+      "valor_original": "OC-2026-0042",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    },
+    {
+      "campo": "fecha",
+      "id": 41,
+      "localizador": {
+        "fragmento": "Fecha | 15/03/2027",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "2027-03-15",
+      "valor_original": "15/03/2027",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    },
+    {
+      "campo": "proveedor",
+      "id": 42,
+      "localizador": {
+        "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "Servicios Integrales del Sur S.A.",
+      "valor_original": "Servicios Integrales del Sur S.A.",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    },
+    {
+      "campo": "cuit_proveedor",
+      "id": 43,
+      "localizador": {
+        "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "30-96472518-3",
+      "valor_original": "30-96472518-3",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    },
+    {
+      "campo": "importe_total",
+      "id": 44,
+      "localizador": {
+        "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "1250000.00",
+      "valor_original": "ARS 1.250.000,00",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    },
+    {
+      "campo": "moneda",
+      "id": 45,
+      "localizador": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": null,
+      "valor": "ARS",
+      "valor_original": "ARS",
+      "version_esquema": "esquema-extraccion-orden_compra-v1",
+      "version_instrucciones": "extraccion-v1"
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "id": 39,
+    "localizador": null,
+    "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "motivo_sin_fuente": "no_aplica",
+    "valor": "orden_compra",
+    "valor_original": "orden_compra",
+    "version_esquema": "esquema-clasificacion-v1",
+    "version_instrucciones": "clasificacion-v1"
+  },
+  "trabajo": {
+    "actualizado_en": "2026-10-24T01:09:25.152015Z",
+    "creado_en": "2026-10-24T01:09:08.548372Z",
+    "ejecucion_iniciada_en": "2026-10-24T01:09:08.754278Z",
+    "estado": "completado",
+    "intento": 1
+  }
+}

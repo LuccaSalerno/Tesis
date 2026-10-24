@@ -1,0 +1,378 @@
+{
+  "campos": [
+    {
+      "campo": "numero",
+      "historial": [
+        {
+          "campo": "numero",
+          "id": 170,
+          "localizador": {
+            "fragmento": "Número | FC-A-0001-00000123",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:45.300042Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 186,
+          "valor_validado": "FC-A-0001-00000123",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "numero",
+        "id": 186,
+        "localizador": {
+          "fragmento": "Número | FC-A-0001-00000123",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "FC-A-0001-00000123",
+        "valor_original": "FC-A-0001-00000123",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "numero",
+        "id": 170,
+        "localizador": {
+          "fragmento": "Número | FC-A-0001-00000123",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:45.300042Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 186,
+        "valor_validado": "FC-A-0001-00000123",
+        "version_id": 29
+      }
+    },
+    {
+      "campo": "fecha_emision",
+      "historial": [
+        {
+          "campo": "fecha_emision",
+          "id": 171,
+          "localizador": {
+            "fragmento": "Fecha de emisión: 30/09/2026",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:47.002630Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 187,
+          "valor_validado": "2026-09-30",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "fecha_emision",
+        "id": 187,
+        "localizador": {
+          "fragmento": "Fecha de emisión: 30/09/2026",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "2026-09-30",
+        "valor_original": "30/09/2026",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "fecha_emision",
+        "id": 171,
+        "localizador": {
+          "fragmento": "Fecha de emisión: 30/09/2026",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:47.002630Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 187,
+        "valor_validado": "2026-09-30",
+        "version_id": 29
+      }
+    },
+    {
+      "campo": "emisor",
+      "historial": [
+        {
+          "campo": "emisor",
+          "id": 172,
+          "localizador": {
+            "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:48.288708Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 188,
+          "valor_validado": "Servicios Integrales del Sur S.A.",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "emisor",
+        "id": 188,
+        "localizador": {
+          "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "Servicios Integrales del Sur S.A.",
+        "valor_original": "Servicios Integrales del Sur S.A.",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "emisor",
+        "id": 172,
+        "localizador": {
+          "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:48.288708Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 188,
+        "valor_validado": "Servicios Integrales del Sur S.A.",
+        "version_id": 29
+      }
+    },
+    {
+      "campo": "cuit_emisor",
+      "historial": [
+        {
+          "campo": "cuit_emisor",
+          "id": 173,
+          "localizador": {
+            "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:50.448374Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 189,
+          "valor_validado": "30-96472518-3",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "cuit_emisor",
+        "id": 189,
+        "localizador": {
+          "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "30-96472518-3",
+        "valor_original": "30-96472518-3",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "cuit_emisor",
+        "id": 173,
+        "localizador": {
+          "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:50.448374Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 189,
+        "valor_validado": "30-96472518-3",
+        "version_id": 29
+      }
+    },
+    {
+      "campo": "importe_total",
+      "historial": [
+        {
+          "campo": "importe_total",
+          "id": 174,
+          "localizador": {
+            "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:55.867580Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 190,
+          "valor_validado": "1250000.00",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "importe_total",
+        "id": 190,
+        "localizador": {
+          "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "1250000.00",
+        "valor_original": "ARS 1.250.000,00",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "importe_total",
+        "id": 174,
+        "localizador": {
+          "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:55.867580Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 190,
+        "valor_validado": "1250000.00",
+        "version_id": 29
+      }
+    },
+    {
+      "campo": "moneda",
+      "historial": [
+        {
+          "campo": "moneda",
+          "id": 175,
+          "localizador": {
+            "fragmento": "Moneda | ARS pesos argentinos",
+            "pagina": 1,
+            "seccion": "Factura ficticia de ensayo (versión corregida)"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T14:53:58.103806Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 191,
+          "valor_validado": "ARS",
+          "version_id": 29
+        }
+      ],
+      "sugerencia": {
+        "campo": "moneda",
+        "id": 191,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "ARS",
+        "valor_original": "ARS",
+        "version_esquema": "esquema-extraccion-factura-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "moneda",
+        "id": 175,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 1,
+          "seccion": "Factura ficticia de ensayo (versión corregida)"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:58.103806Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 191,
+        "valor_validado": "ARS",
+        "version_id": 29
+      }
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "historial": [
+      {
+        "campo": "tipo_documental",
+        "id": 169,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T14:53:43.514643Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 185,
+        "valor_validado": "factura",
+        "version_id": 29
+      }
+    ],
+    "sugerencia": {
+      "campo": "tipo_documental",
+      "id": 185,
+      "localizador": null,
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": "no_aplica",
+      "valor": "factura",
+      "valor_original": "factura",
+      "version_esquema": "esquema-clasificacion-v1",
+      "version_instrucciones": "clasificacion-v1"
+    },
+    "vigente": {
+      "campo": "tipo_documental",
+      "id": 169,
+      "localizador": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validado_en": "2026-10-24T14:53:43.514643Z",
+      "validador_id": 2,
+      "valor_sugerido_id": 185,
+      "valor_validado": "factura",
+      "version_id": 29
+    }
+  },
+  "documento_id": 28,
+  "fuera_de_esquema": [],
+  "tipo_validado": "factura",
+  "version": {
+    "archivo_id": 30,
+    "id": 29,
+    "numero": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "algoritmo": "SHA-256",
+  "ciclo_numero": 2,
+  "ciclo_revision_id": 10,
+  "documento_id": 4,
+  "firmada_en": "2026-10-24T18:23:07.120510Z",
+  "firmante_id": 4,
+  "huella_archivo": "7802ce9a5f065260a0d027ae68dafeab78b2657170725f88fb34a1f2783143d4",
+  "id": 2,
+  "leyenda": "Firma digital simulada — sin validez jurídica",
+  "referencia_integridad": "3a83b519a7d9bb8d98140d21b04b8b147d639c3cf333725e59234a45e020abea",
+  "registro_canonico": "{\"firmada_en\":\"2026-10-24T18:23:07.120510+00:00\",\"firmante_id\":4,\"huella_archivo\":\"7802ce9a5f065260a0d027ae68dafeab78b2657170725f88fb34a1f2783143d4\",\"version_id\":4}",
+  "simulada": true,
+  "tramite_id": 2,
+  "version_id": 4,
+  "version_numero": 1
+}

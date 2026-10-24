@@ -1,0 +1,1173 @@
+{
+  "ciclo": {
+    "estado": "observado",
+    "id": 8,
+    "numero": 1
+  },
+  "controles": [
+    {
+      "codigo_regla": "R2-CUIT-OC-CONTRATO",
+      "descripcion": "CUIT del proveedor de la orden de compra = CUIT de la contraparte del contrato vinculado",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T14:54:17.066000Z",
+      "explicacion": "El CUIT del proveedor de la orden de compra (30-96472518-3) coincide con el CUIT de la contraparte del contrato (30-96472518-3).",
+      "id": 34,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "cuit_contraparte",
+          "papel": "contrato",
+          "tipo": "confirmacion",
+          "validacion_id": 156,
+          "valor_validado": "30-96472518-3",
+          "version_id": 4
+        },
+        {
+          "campo": "cuit_proveedor",
+          "papel": "orden_compra",
+          "tipo": "confirmacion",
+          "validacion_id": 166,
+          "valor_validado": "30-96472518-3",
+          "version_id": 28
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 4,
+          "documento_nombre": "Contrato de mantenimiento",
+          "papel": "contrato",
+          "version_id": 4,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 27,
+          "documento_nombre": "1_Orden_de_compra_O-v1",
+          "papel": "orden_compra",
+          "version_id": 28,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 14
+    },
+    {
+      "codigo_regla": "R3-VIGENCIA-OC-CONTRATO",
+      "descripcion": "Fecha de la orden de compra dentro de la vigencia del contrato vinculado",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T14:54:17.088918Z",
+      "explicacion": "La fecha de la orden de compra (2027-03-15) está fuera de la vigencia del contrato (del 2026-03-01 al 2027-02-28).",
+      "id": 35,
+      "resultado": "advertencia",
+      "valores": [
+        {
+          "campo": "vigencia_desde",
+          "papel": "contrato",
+          "tipo": "confirmacion",
+          "validacion_id": 158,
+          "valor_validado": "2026-03-01",
+          "version_id": 4
+        },
+        {
+          "campo": "vigencia_hasta",
+          "papel": "contrato",
+          "tipo": "confirmacion",
+          "validacion_id": 159,
+          "valor_validado": "2027-02-28",
+          "version_id": 4
+        },
+        {
+          "campo": "fecha",
+          "papel": "orden_compra",
+          "tipo": "confirmacion",
+          "validacion_id": 164,
+          "valor_validado": "2027-03-15",
+          "version_id": 28
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 4,
+          "documento_nombre": "Contrato de mantenimiento",
+          "papel": "contrato",
+          "version_id": 4,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 27,
+          "documento_nombre": "1_Orden_de_compra_O-v1",
+          "papel": "orden_compra",
+          "version_id": 28,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 14
+    },
+    {
+      "codigo_regla": "R1-CUIT-FACTURA-OC",
+      "descripcion": "CUIT del emisor de la factura = CUIT del proveedor de la orden de compra vinculada",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T14:54:21.676592Z",
+      "explicacion": "El CUIT del emisor de la factura (30-96472518-3) coincide con el CUIT del proveedor de la orden de compra (30-96472518-3).",
+      "id": 36,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "cuit_proveedor",
+          "papel": "orden_compra",
+          "tipo": "confirmacion",
+          "validacion_id": 166,
+          "valor_validado": "30-96472518-3",
+          "version_id": 28
+        },
+        {
+          "campo": "cuit_emisor",
+          "papel": "factura",
+          "tipo": "confirmacion",
+          "validacion_id": 173,
+          "valor_validado": "30-96472518-3",
+          "version_id": 29
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 28,
+          "documento_nombre": "2_Factura_F-v2",
+          "papel": "factura",
+          "version_id": 29,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 27,
+          "documento_nombre": "1_Orden_de_compra_O-v1",
+          "papel": "orden_compra",
+          "version_id": 28,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 15
+    },
+    {
+      "codigo_regla": "R4-IMPORTE-FACTURA-OC",
+      "descripcion": "Importe total de la factura ≤ importe total de la orden de compra vinculada, con la misma moneda",
+      "disparador": "vinculo",
+      "ejecutada_en": "2026-10-24T14:54:21.696610Z",
+      "explicacion": "El importe total de la factura (1250000.00 ARS) no supera el de la orden de compra (1250000.00 ARS).",
+      "id": 37,
+      "resultado": "cumplimiento",
+      "valores": [
+        {
+          "campo": "importe_total",
+          "papel": "orden_compra",
+          "tipo": "confirmacion",
+          "validacion_id": 167,
+          "valor_validado": "1250000.00",
+          "version_id": 28
+        },
+        {
+          "campo": "moneda",
+          "papel": "orden_compra",
+          "tipo": "confirmacion",
+          "validacion_id": 168,
+          "valor_validado": "ARS",
+          "version_id": 28
+        },
+        {
+          "campo": "importe_total",
+          "papel": "factura",
+          "tipo": "confirmacion",
+          "validacion_id": 174,
+          "valor_validado": "1250000.00",
+          "version_id": 29
+        },
+        {
+          "campo": "moneda",
+          "papel": "factura",
+          "tipo": "confirmacion",
+          "validacion_id": 175,
+          "valor_validado": "ARS",
+          "version_id": 29
+        }
+      ],
+      "version_regla": "v1",
+      "versiones": [
+        {
+          "documento_id": 28,
+          "documento_nombre": "2_Factura_F-v2",
+          "papel": "factura",
+          "version_id": 29,
+          "version_numero": 1
+        },
+        {
+          "documento_id": 27,
+          "documento_nombre": "1_Orden_de_compra_O-v1",
+          "papel": "orden_compra",
+          "version_id": 28,
+          "version_numero": 1
+        }
+      ],
+      "vinculo_id": 15
+    }
+  ],
+  "decision": {
+    "actor_id": 4,
+    "controles_considerados": [
+      34,
+      35,
+      36,
+      37
+    ],
+    "decidida_en": "2026-10-24T18:16:01.946349Z",
+    "id": 10,
+    "motivo": "La fecha de emisión de la orden de compra (15/03/2027) está fuera de la vigencia del contrato. Corregir la orden antes de aprobar.",
+    "tarea_id": 16,
+    "tipo": "observacion"
+  },
+  "eventos": [
+    {
+      "accion": "clasificacion_confirmada",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 154,
+      "entidad_tipo": "validacion_humana",
+      "id": 344,
+      "ocurrido_en": "2026-10-24T14:52:22.962314Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 155,
+      "entidad_tipo": "validacion_humana",
+      "id": 345,
+      "ocurrido_en": "2026-10-24T14:52:38.065057Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 156,
+      "entidad_tipo": "validacion_humana",
+      "id": 346,
+      "ocurrido_en": "2026-10-24T14:52:41.727834Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 157,
+      "entidad_tipo": "validacion_humana",
+      "id": 347,
+      "ocurrido_en": "2026-10-24T14:52:51.116067Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 158,
+      "entidad_tipo": "validacion_humana",
+      "id": 348,
+      "ocurrido_en": "2026-10-24T14:53:02.955268Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 159,
+      "entidad_tipo": "validacion_humana",
+      "id": 349,
+      "ocurrido_en": "2026-10-24T14:53:07.197880Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 160,
+      "entidad_tipo": "validacion_humana",
+      "id": 350,
+      "ocurrido_en": "2026-10-24T14:53:11.439560Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 161,
+      "entidad_tipo": "validacion_humana",
+      "id": 351,
+      "ocurrido_en": "2026-10-24T14:53:14.947046Z",
+      "resultado": "exito",
+      "version_id": 4
+    },
+    {
+      "accion": "clasificacion_confirmada",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 162,
+      "entidad_tipo": "validacion_humana",
+      "id": 354,
+      "ocurrido_en": "2026-10-24T14:53:29.143992Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 163,
+      "entidad_tipo": "validacion_humana",
+      "id": 355,
+      "ocurrido_en": "2026-10-24T14:53:31.423768Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 164,
+      "entidad_tipo": "validacion_humana",
+      "id": 356,
+      "ocurrido_en": "2026-10-24T14:53:32.995120Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 165,
+      "entidad_tipo": "validacion_humana",
+      "id": 357,
+      "ocurrido_en": "2026-10-24T14:53:34.217376Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 166,
+      "entidad_tipo": "validacion_humana",
+      "id": 358,
+      "ocurrido_en": "2026-10-24T14:53:35.321087Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 167,
+      "entidad_tipo": "validacion_humana",
+      "id": 360,
+      "ocurrido_en": "2026-10-24T14:53:36.573405Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 168,
+      "entidad_tipo": "validacion_humana",
+      "id": 361,
+      "ocurrido_en": "2026-10-24T14:53:38.595268Z",
+      "resultado": "exito",
+      "version_id": 28
+    },
+    {
+      "accion": "clasificacion_confirmada",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 169,
+      "entidad_tipo": "validacion_humana",
+      "id": 362,
+      "ocurrido_en": "2026-10-24T14:53:43.526183Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 170,
+      "entidad_tipo": "validacion_humana",
+      "id": 363,
+      "ocurrido_en": "2026-10-24T14:53:45.306936Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 171,
+      "entidad_tipo": "validacion_humana",
+      "id": 364,
+      "ocurrido_en": "2026-10-24T14:53:47.010029Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 172,
+      "entidad_tipo": "validacion_humana",
+      "id": 365,
+      "ocurrido_en": "2026-10-24T14:53:48.299341Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 173,
+      "entidad_tipo": "validacion_humana",
+      "id": 366,
+      "ocurrido_en": "2026-10-24T14:53:50.453830Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 174,
+      "entidad_tipo": "validacion_humana",
+      "id": 368,
+      "ocurrido_en": "2026-10-24T14:53:55.877949Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "campo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 175,
+      "entidad_tipo": "validacion_humana",
+      "id": 369,
+      "ocurrido_en": "2026-10-24T14:53:58.111048Z",
+      "resultado": "exito",
+      "version_id": 29
+    },
+    {
+      "accion": "regla_ejecutada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 34,
+      "entidad_tipo": "ejecucion_regla",
+      "id": 371,
+      "ocurrido_en": "2026-10-24T14:54:17.080896Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "regla_ejecutada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 35,
+      "entidad_tipo": "ejecucion_regla",
+      "id": 372,
+      "ocurrido_en": "2026-10-24T14:54:17.099385Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "regla_ejecutada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 36,
+      "entidad_tipo": "ejecucion_regla",
+      "id": 374,
+      "ocurrido_en": "2026-10-24T14:54:21.689539Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "regla_ejecutada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 37,
+      "entidad_tipo": "ejecucion_regla",
+      "id": 375,
+      "ocurrido_en": "2026-10-24T14:54:21.707979Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "flujo_confirmado",
+      "actor_id": 2,
+      "actor_tipo": "usuario",
+      "entidad_id": 8,
+      "entidad_tipo": "ciclo_revision",
+      "id": 377,
+      "ocurrido_en": "2026-10-24T14:56:32.793307Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "tarea_asignada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 15,
+      "entidad_tipo": "tarea",
+      "id": 378,
+      "ocurrido_en": "2026-10-24T14:56:32.802621Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "tarea_asignada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 16,
+      "entidad_tipo": "tarea",
+      "id": 379,
+      "ocurrido_en": "2026-10-24T14:56:32.809824Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "tarea_aprobada",
+      "actor_id": 3,
+      "actor_tipo": "usuario",
+      "entidad_id": 9,
+      "entidad_tipo": "decision",
+      "id": 537,
+      "ocurrido_en": "2026-10-24T18:15:21.407320Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "tarea_habilitada",
+      "actor_id": null,
+      "actor_tipo": "sistema",
+      "entidad_id": 16,
+      "entidad_tipo": "tarea",
+      "id": 538,
+      "ocurrido_en": "2026-10-24T18:15:21.414164Z",
+      "resultado": "exito",
+      "version_id": null
+    },
+    {
+      "accion": "tarea_observada",
+      "actor_id": 4,
+      "actor_tipo": "usuario",
+      "entidad_id": 10,
+      "entidad_tipo": "decision",
+      "id": 539,
+      "ocurrido_en": "2026-10-24T18:16:01.989017Z",
+      "resultado": "exito",
+      "version_id": null
+    }
+  ],
+  "firma": null,
+  "tarea": {
+    "actualizada_en": "2026-10-24T18:16:01.982011Z",
+    "asignada_a_id": 4,
+    "ciclo_revision_id": 8,
+    "creada_en": "2026-10-24T14:56:32.785273Z",
+    "decision_id": 10,
+    "estado": "observada",
+    "id": 16,
+    "nombre": "Aprobación final",
+    "orden": 2,
+    "rol_requerido": "revisor_aprobador"
+  },
+  "tareas_del_ciclo": [
+    {
+      "actualizada_en": "2026-10-24T18:15:21.402692Z",
+      "asignada_a_id": 3,
+      "ciclo_revision_id": 8,
+      "creada_en": "2026-10-24T14:56:32.784578Z",
+      "decision_id": 9,
+      "estado": "aprobada",
+      "id": 15,
+      "nombre": "Revisión legal",
+      "orden": 1,
+      "rol_requerido": "revisor_aprobador"
+    },
+    {
+      "actualizada_en": "2026-10-24T18:16:01.982011Z",
+      "asignada_a_id": 4,
+      "ciclo_revision_id": 8,
+      "creada_en": "2026-10-24T14:56:32.785273Z",
+      "decision_id": 10,
+      "estado": "observada",
+      "id": 16,
+      "nombre": "Aprobación final",
+      "orden": 2,
+      "rol_requerido": "revisor_aprobador"
+    }
+  ],
+  "tramite": {
+    "estado": "cerrado",
+    "id": 2,
+    "titulo": "Servicio de mantenimiento de laboratorio (en vivo)"
+  },
+  "validaciones": [
+    {
+      "campo": "tipo_documental",
+      "clase": "clasificacion",
+      "documento_id": 4,
+      "localizador_sugerido": null,
+      "localizador_validado": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 154,
+      "validado_en": "2026-10-24T14:52:22.950443Z",
+      "validador_id": 2,
+      "valor_sugerido": "contrato",
+      "valor_sugerido_id": 23,
+      "valor_validado": "contrato",
+      "version_id": 4
+    },
+    {
+      "campo": "contraparte",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Parte prestadora / contraparte | Servicios Integrales del Sur S.A. (entidad completamente ficticia)",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "localizador_validado": {
+        "fragmento": "Parte prestadora / contraparte | Servicios Integrales del Sur S.A. (entidad completamente ficticia)",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 155,
+      "validado_en": "2026-10-24T14:52:38.057074Z",
+      "validador_id": 2,
+      "valor_sugerido": "Servicios Integrales del Sur S.A.",
+      "valor_sugerido_id": 24,
+      "valor_validado": "Servicios Integrales del Sur S.A.",
+      "version_id": 4
+    },
+    {
+      "campo": "cuit_contraparte",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "CUIT de la contraparte (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "localizador_validado": {
+        "fragmento": "CUIT de la contraparte (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 156,
+      "validado_en": "2026-10-24T14:52:41.718656Z",
+      "validador_id": 2,
+      "valor_sugerido": "30-96472518-3",
+      "valor_sugerido_id": 25,
+      "valor_validado": "30-96472518-3",
+      "version_id": 4
+    },
+    {
+      "campo": "fecha_celebracion",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Fecha de celebración | 20/02/2026",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "localizador_validado": {
+        "fragmento": "Fecha de celebración | 20/02/2026",
+        "pagina": 1,
+        "seccion": "Carátula y celebración"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 157,
+      "validado_en": "2026-10-24T14:52:51.108356Z",
+      "validador_id": 2,
+      "valor_sugerido": "2026-02-20",
+      "valor_sugerido_id": 26,
+      "valor_validado": "2026-02-20",
+      "version_id": 4
+    },
+    {
+      "campo": "vigencia_desde",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Inicio de vigencia | 01/03/2026",
+        "pagina": 6,
+        "seccion": "5. Plazo de ejecución y vigencia"
+      },
+      "localizador_validado": {
+        "fragmento": "Inicio de vigencia | 01/03/2026",
+        "pagina": 6,
+        "seccion": "5. Plazo de ejecución y vigencia"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 158,
+      "validado_en": "2026-10-24T14:53:02.949783Z",
+      "validador_id": 2,
+      "valor_sugerido": "2026-03-01",
+      "valor_sugerido_id": 27,
+      "valor_validado": "2026-03-01",
+      "version_id": 4
+    },
+    {
+      "campo": "vigencia_hasta",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Fin de vigencia | 28/02/2027",
+        "pagina": 6,
+        "seccion": "5. Plazo de ejecución y vigencia"
+      },
+      "localizador_validado": {
+        "fragmento": "Fin de vigencia | 28/02/2027",
+        "pagina": 6,
+        "seccion": "5. Plazo de ejecución y vigencia"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 159,
+      "validado_en": "2026-10-24T14:53:07.188498Z",
+      "validador_id": 2,
+      "valor_sugerido": "2027-02-28",
+      "valor_sugerido_id": 28,
+      "valor_validado": "2027-02-28",
+      "version_id": 4
+    },
+    {
+      "campo": "monto_total",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Monto total | ARS 1.250.000,00",
+        "pagina": 5,
+        "seccion": "4. Condiciones económicas y forma de pago"
+      },
+      "localizador_validado": {
+        "fragmento": "Monto total | ARS 1.250.000,00",
+        "pagina": 5,
+        "seccion": "4. Condiciones económicas y forma de pago"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 160,
+      "validado_en": "2026-10-24T14:53:11.432267Z",
+      "validador_id": 2,
+      "valor_sugerido": "1250000.00",
+      "valor_sugerido_id": 29,
+      "valor_validado": "1250000.00",
+      "version_id": 4
+    },
+    {
+      "campo": "moneda",
+      "clase": "campo",
+      "documento_id": 4,
+      "localizador_sugerido": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 5,
+        "seccion": "4. Condiciones económicas y forma de pago"
+      },
+      "localizador_validado": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 5,
+        "seccion": "4. Condiciones económicas y forma de pago"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 161,
+      "validado_en": "2026-10-24T14:53:14.940035Z",
+      "validador_id": 2,
+      "valor_sugerido": "ARS",
+      "valor_sugerido_id": 30,
+      "valor_validado": "ARS",
+      "version_id": 4
+    },
+    {
+      "campo": "tipo_documental",
+      "clase": "clasificacion",
+      "documento_id": 27,
+      "localizador_sugerido": null,
+      "localizador_validado": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 162,
+      "validado_en": "2026-10-24T14:53:29.132814Z",
+      "validador_id": 2,
+      "valor_sugerido": "orden_compra",
+      "valor_sugerido_id": 178,
+      "valor_validado": "orden_compra",
+      "version_id": 28
+    },
+    {
+      "campo": "numero",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "Número | OC-2026-0042",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "Número | OC-2026-0042",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 163,
+      "validado_en": "2026-10-24T14:53:31.416568Z",
+      "validador_id": 2,
+      "valor_sugerido": "OC-2026-0042",
+      "valor_sugerido_id": 179,
+      "valor_validado": "OC-2026-0042",
+      "version_id": 28
+    },
+    {
+      "campo": "fecha",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "Fecha | 15/03/2027",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "Fecha | 15/03/2027",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 164,
+      "validado_en": "2026-10-24T14:53:32.987542Z",
+      "validador_id": 2,
+      "valor_sugerido": "2027-03-15",
+      "valor_sugerido_id": 180,
+      "valor_validado": "2027-03-15",
+      "version_id": 28
+    },
+    {
+      "campo": "proveedor",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 165,
+      "validado_en": "2026-10-24T14:53:34.210379Z",
+      "validador_id": 2,
+      "valor_sugerido": "Servicios Integrales del Sur S.A.",
+      "valor_sugerido_id": 181,
+      "valor_validado": "Servicios Integrales del Sur S.A.",
+      "version_id": 28
+    },
+    {
+      "campo": "cuit_proveedor",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 166,
+      "validado_en": "2026-10-24T14:53:35.315501Z",
+      "validador_id": 2,
+      "valor_sugerido": "30-96472518-3",
+      "valor_sugerido_id": 182,
+      "valor_validado": "30-96472518-3",
+      "version_id": 28
+    },
+    {
+      "campo": "importe_total",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 167,
+      "validado_en": "2026-10-24T14:53:36.560541Z",
+      "validador_id": 2,
+      "valor_sugerido": "1250000.00",
+      "valor_sugerido_id": 183,
+      "valor_validado": "1250000.00",
+      "version_id": 28
+    },
+    {
+      "campo": "moneda",
+      "clase": "campo",
+      "documento_id": 27,
+      "localizador_sugerido": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "localizador_validado": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 1,
+        "seccion": "Orden de compra sintética (primera versión)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 168,
+      "validado_en": "2026-10-24T14:53:38.587746Z",
+      "validador_id": 2,
+      "valor_sugerido": "ARS",
+      "valor_sugerido_id": 184,
+      "valor_validado": "ARS",
+      "version_id": 28
+    },
+    {
+      "campo": "tipo_documental",
+      "clase": "clasificacion",
+      "documento_id": 28,
+      "localizador_sugerido": null,
+      "localizador_validado": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 169,
+      "validado_en": "2026-10-24T14:53:43.514643Z",
+      "validador_id": 2,
+      "valor_sugerido": "factura",
+      "valor_sugerido_id": 185,
+      "valor_validado": "factura",
+      "version_id": 29
+    },
+    {
+      "campo": "numero",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "Número | FC-A-0001-00000123",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "Número | FC-A-0001-00000123",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 170,
+      "validado_en": "2026-10-24T14:53:45.300042Z",
+      "validador_id": 2,
+      "valor_sugerido": "FC-A-0001-00000123",
+      "valor_sugerido_id": 186,
+      "valor_validado": "FC-A-0001-00000123",
+      "version_id": 29
+    },
+    {
+      "campo": "fecha_emision",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "Fecha de emisión: 30/09/2026",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "Fecha de emisión: 30/09/2026",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 171,
+      "validado_en": "2026-10-24T14:53:47.002630Z",
+      "validador_id": 2,
+      "valor_sugerido": "2026-09-30",
+      "valor_sugerido_id": 187,
+      "valor_validado": "2026-09-30",
+      "version_id": 29
+    },
+    {
+      "campo": "emisor",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "Proveedor / emisor | Servicios Integrales del Sur S.A.",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 172,
+      "validado_en": "2026-10-24T14:53:48.288708Z",
+      "validador_id": 2,
+      "valor_sugerido": "Servicios Integrales del Sur S.A.",
+      "valor_sugerido_id": 188,
+      "valor_validado": "Servicios Integrales del Sur S.A.",
+      "version_id": 29
+    },
+    {
+      "campo": "cuit_emisor",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "CUIT proveedor / emisor (dato de prueba) | 30-96472518-3",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 173,
+      "validado_en": "2026-10-24T14:53:50.448374Z",
+      "validador_id": 2,
+      "valor_sugerido": "30-96472518-3",
+      "valor_sugerido_id": 189,
+      "valor_validado": "30-96472518-3",
+      "version_id": 29
+    },
+    {
+      "campo": "importe_total",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "Importe total IVA incluido | ARS 1.250.000,00",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 174,
+      "validado_en": "2026-10-24T14:53:55.867580Z",
+      "validador_id": 2,
+      "valor_sugerido": "1250000.00",
+      "valor_sugerido_id": 190,
+      "valor_validado": "1250000.00",
+      "version_id": 29
+    },
+    {
+      "campo": "moneda",
+      "clase": "campo",
+      "documento_id": 28,
+      "localizador_sugerido": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "localizador_validado": {
+        "fragmento": "Moneda | ARS pesos argentinos",
+        "pagina": 1,
+        "seccion": "Factura ficticia de ensayo (versión corregida)"
+      },
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validacion_id": 175,
+      "validado_en": "2026-10-24T14:53:58.103806Z",
+      "validador_id": 2,
+      "valor_sugerido": "ARS",
+      "valor_sugerido_id": 191,
+      "valor_validado": "ARS",
+      "version_id": 29
+    }
+  ],
+  "versiones": [
+    {
+      "documento_id": 4,
+      "documento_nombre": "Contrato de mantenimiento",
+      "version_id": 4,
+      "version_numero": 1
+    },
+    {
+      "documento_id": 27,
+      "documento_nombre": "1_Orden_de_compra_O-v1",
+      "version_id": 28,
+      "version_numero": 1
+    },
+    {
+      "documento_id": 28,
+      "documento_nombre": "2_Factura_F-v2",
+      "version_id": 29,
+      "version_numero": 1
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+{
+  "campos": [
+    {
+      "campo": "contraparte",
+      "historial": [
+        {
+          "campo": "contraparte",
+          "id": 46,
+          "localizador": {
+            "fragmento": "Parte prestadora / contraparte | Servicios Integrales del Sur S.A. (entidad completamente ficticia)",
+            "pagina": 1,
+            "seccion": "Carátula y celebración"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:48.431492Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 32,
+          "valor_validado": "Servicios Integrales del Sur S.A.",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "contraparte",
+        "id": 32,
+        "localizador": {
+          "fragmento": "Parte prestadora / contraparte | Servicios Integrales del Sur S.A. (entidad completamente ficticia)",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "Servicios Integrales del Sur S.A.",
+        "valor_original": "Servicios Integrales del Sur S.A.",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "contraparte",
+        "id": 46,
+        "localizador": {
+          "fragmento": "Parte prestadora / contraparte | Servicios Integrales del Sur S.A. (entidad completamente ficticia)",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:48.431492Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 32,
+        "valor_validado": "Servicios Integrales del Sur S.A.",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "cuit_contraparte",
+      "historial": [
+        {
+          "campo": "cuit_contraparte",
+          "id": 47,
+          "localizador": {
+            "fragmento": "CUIT de la contraparte (dato de prueba) | 30-96472518-3",
+            "pagina": 1,
+            "seccion": "Carátula y celebración"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:50.299186Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 33,
+          "valor_validado": "30-96472518-3",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "cuit_contraparte",
+        "id": 33,
+        "localizador": {
+          "fragmento": "CUIT de la contraparte (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "30-96472518-3",
+        "valor_original": "30-96472518-3",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "cuit_contraparte",
+        "id": 47,
+        "localizador": {
+          "fragmento": "CUIT de la contraparte (dato de prueba) | 30-96472518-3",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:50.299186Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 33,
+        "valor_validado": "30-96472518-3",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "fecha_celebracion",
+      "historial": [
+        {
+          "campo": "fecha_celebracion",
+          "id": 48,
+          "localizador": {
+            "fragmento": "Fecha de celebración | 20/02/2026",
+            "pagina": 1,
+            "seccion": "Carátula y celebración"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:51.887649Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 34,
+          "valor_validado": "2026-02-20",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "fecha_celebracion",
+        "id": 34,
+        "localizador": {
+          "fragmento": "Fecha de celebración | 20/02/2026",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "2026-02-20",
+        "valor_original": "20/02/2026",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "fecha_celebracion",
+        "id": 48,
+        "localizador": {
+          "fragmento": "Fecha de celebración | 20/02/2026",
+          "pagina": 1,
+          "seccion": "Carátula y celebración"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:51.887649Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 34,
+        "valor_validado": "2026-02-20",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "vigencia_desde",
+      "historial": [
+        {
+          "campo": "vigencia_desde",
+          "id": 49,
+          "localizador": {
+            "fragmento": "Inicio de vigencia | 01/03/2026",
+            "pagina": 6,
+            "seccion": "5. Plazo de ejecución y vigencia"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:53.936296Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 35,
+          "valor_validado": "2026-03-01",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "vigencia_desde",
+        "id": 35,
+        "localizador": {
+          "fragmento": "Inicio de vigencia | 01/03/2026",
+          "pagina": 6,
+          "seccion": "5. Plazo de ejecución y vigencia"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "2026-03-01",
+        "valor_original": "01/03/2026",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "vigencia_desde",
+        "id": 49,
+        "localizador": {
+          "fragmento": "Inicio de vigencia | 01/03/2026",
+          "pagina": 6,
+          "seccion": "5. Plazo de ejecución y vigencia"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:53.936296Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 35,
+        "valor_validado": "2026-03-01",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "vigencia_hasta",
+      "historial": [
+        {
+          "campo": "vigencia_hasta",
+          "id": 50,
+          "localizador": {
+            "fragmento": "Fin de vigencia | 28/02/2027",
+            "pagina": 6,
+            "seccion": "5. Plazo de ejecución y vigencia"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:55.495467Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 36,
+          "valor_validado": "2027-02-28",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "vigencia_hasta",
+        "id": 36,
+        "localizador": {
+          "fragmento": "Fin de vigencia | 28/02/2027",
+          "pagina": 6,
+          "seccion": "5. Plazo de ejecución y vigencia"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "2027-02-28",
+        "valor_original": "28/02/2027",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "vigencia_hasta",
+        "id": 50,
+        "localizador": {
+          "fragmento": "Fin de vigencia | 28/02/2027",
+          "pagina": 6,
+          "seccion": "5. Plazo de ejecución y vigencia"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:55.495467Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 36,
+        "valor_validado": "2027-02-28",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "monto_total",
+      "historial": [
+        {
+          "campo": "monto_total",
+          "id": 51,
+          "localizador": {
+            "fragmento": "Monto total | ARS 1.250.000,00",
+            "pagina": 5,
+            "seccion": "4. Condiciones económicas y forma de pago"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:56.849366Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 37,
+          "valor_validado": "1250000.00",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "monto_total",
+        "id": 37,
+        "localizador": {
+          "fragmento": "Monto total | ARS 1.250.000,00",
+          "pagina": 5,
+          "seccion": "4. Condiciones económicas y forma de pago"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "1250000.00",
+        "valor_original": "ARS 1.250.000,00",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "monto_total",
+        "id": 51,
+        "localizador": {
+          "fragmento": "Monto total | ARS 1.250.000,00",
+          "pagina": 5,
+          "seccion": "4. Condiciones económicas y forma de pago"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:56.849366Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 37,
+        "valor_validado": "1250000.00",
+        "version_id": 8
+      }
+    },
+    {
+      "campo": "moneda",
+      "historial": [
+        {
+          "campo": "moneda",
+          "id": 52,
+          "localizador": {
+            "fragmento": "Moneda | ARS pesos argentinos",
+            "pagina": 5,
+            "seccion": "4. Condiciones económicas y forma de pago"
+          },
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "confirmacion",
+          "validado_en": "2026-10-24T01:09:58.278950Z",
+          "validador_id": 2,
+          "valor_sugerido_id": 38,
+          "valor_validado": "ARS",
+          "version_id": 8
+        }
+      ],
+      "sugerencia": {
+        "campo": "moneda",
+        "id": 38,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 5,
+          "seccion": "4. Condiciones económicas y forma de pago"
+        },
+        "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "motivo_sin_fuente": null,
+        "valor": "ARS",
+        "valor_original": "ARS",
+        "version_esquema": "esquema-extraccion-contrato-v1",
+        "version_instrucciones": "extraccion-v1"
+      },
+      "vigente": {
+        "campo": "moneda",
+        "id": 52,
+        "localizador": {
+          "fragmento": "Moneda | ARS pesos argentinos",
+          "pagina": 5,
+          "seccion": "4. Condiciones económicas y forma de pago"
+        },
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:58.278950Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 38,
+        "valor_validado": "ARS",
+        "version_id": 8
+      }
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "historial": [
+      {
+        "campo": "tipo_documental",
+        "id": 45,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "confirmacion",
+        "validado_en": "2026-10-24T01:09:46.611027Z",
+        "validador_id": 2,
+        "valor_sugerido_id": 31,
+        "valor_validado": "contrato",
+        "version_id": 8
+      }
+    ],
+    "sugerencia": {
+      "campo": "tipo_documental",
+      "id": 31,
+      "localizador": null,
+      "modelo": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "motivo_sin_fuente": "no_aplica",
+      "valor": "contrato",
+      "valor_original": "contrato",
+      "version_esquema": "esquema-clasificacion-v1",
+      "version_instrucciones": "clasificacion-v1"
+    },
+    "vigente": {
+      "campo": "tipo_documental",
+      "id": 45,
+      "localizador": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "confirmacion",
+      "validado_en": "2026-10-24T01:09:46.611027Z",
+      "validador_id": 2,
+      "valor_sugerido_id": 31,
+      "valor_validado": "contrato",
+      "version_id": 8
+    }
+  },
+  "documento_id": 8,
+  "fuera_de_esquema": [],
+  "tipo_validado": "contrato",
+  "version": {
+    "archivo_id": 9,
+    "id": 8,
+    "numero": 1
+  }
+}

@@ -1,0 +1,114 @@
+[
+  {
+    "concluido_en": "2026-10-24T01:10:37.536328Z",
+    "confirmado_en": "2026-10-24T01:10:32.906572Z",
+    "confirmado_por_id": 2,
+    "estado": "observado",
+    "id": 3,
+    "numero": 1,
+    "plantilla_flujo_id": 1,
+    "tareas": [
+      {
+        "actualizada_en": "2026-10-24T01:10:35.181110Z",
+        "asignada_a_id": 3,
+        "ciclo_revision_id": 3,
+        "creada_en": "2026-10-24T01:10:32.927033Z",
+        "decision_id": 5,
+        "estado": "aprobada",
+        "id": 5,
+        "nombre": "Revisión legal",
+        "orden": 1,
+        "rol_requerido": "revisor_aprobador"
+      },
+      {
+        "actualizada_en": "2026-10-24T01:10:37.539797Z",
+        "asignada_a_id": 4,
+        "ciclo_revision_id": 3,
+        "creada_en": "2026-10-24T01:10:32.927751Z",
+        "decision_id": 6,
+        "estado": "observada",
+        "id": 6,
+        "nombre": "Aprobación final",
+        "orden": 2,
+        "rol_requerido": "revisor_aprobador"
+      }
+    ],
+    "tramite_id": 4,
+    "versiones": [
+      {
+        "documento_id": 8,
+        "documento_nombre": "Contrato de mantenimiento",
+        "version_id": 8,
+        "version_numero": 1
+      },
+      {
+        "documento_id": 9,
+        "documento_nombre": "Orden de compra",
+        "version_id": 9,
+        "version_numero": 1
+      },
+      {
+        "documento_id": 10,
+        "documento_nombre": "Factura",
+        "version_id": 10,
+        "version_numero": 1
+      }
+    ]
+  },
+  {
+    "concluido_en": "2026-10-24T01:11:32.694433Z",
+    "confirmado_en": "2026-10-24T01:11:29.207604Z",
+    "confirmado_por_id": 2,
+    "estado": "aprobado",
+    "id": 4,
+    "numero": 2,
+    "plantilla_flujo_id": 1,
+    "tareas": [
+      {
+        "actualizada_en": "2026-10-24T01:11:30.613450Z",
+        "asignada_a_id": 3,
+        "ciclo_revision_id": 4,
+        "creada_en": "2026-10-24T01:11:29.219752Z",
+        "decision_id": 7,
+        "estado": "aprobada",
+        "id": 7,
+        "nombre": "Revisión legal",
+        "orden": 1,
+        "rol_requerido": "revisor_aprobador"
+      },
+      {
+        "actualizada_en": "2026-10-24T01:11:32.688060Z",
+        "asignada_a_id": 4,
+        "ciclo_revision_id": 4,
+        "creada_en": "2026-10-24T01:11:29.220179Z",
+        "decision_id": 8,
+        "estado": "aprobada",
+        "id": 8,
+        "nombre": "Aprobación final",
+        "orden": 2,
+        "rol_requerido": "revisor_aprobador"
+      }
+    ],
+    "tramite_id": 4,
+    "versiones": [
+      {
+        "documento_id": 8,
+        "documento_nombre": "Contrato de mantenimiento",
+        "version_id": 8,
+        "version_numero": 1
+      },
+      {
+        "documento_id": 9,
+        "documento_nombre": "Orden de compra",
+        "version_id": 11,
+        "version_numero": 2
+      },
+      {
+        "documento_id": 10,
+        "documento_nombre": "Factura",
+        "version_id": 10,
+        "version_numero": 1
+      }
+    ]
+  }
+]

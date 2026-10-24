@@ -1,0 +1,236 @@
+{
+  "campos": [
+    {
+      "campo": "numero",
+      "historial": [
+        {
+          "campo": "numero",
+          "id": 32,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:38.247869Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "OC-2026-0042",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "numero",
+        "id": 32,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:38.247869Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "OC-2026-0042",
+        "version_id": 6
+      }
+    },
+    {
+      "campo": "fecha",
+      "historial": [
+        {
+          "campo": "fecha",
+          "id": 33,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:40.043421Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "2027-03-15",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "fecha",
+        "id": 33,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:40.043421Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "2027-03-15",
+        "version_id": 6
+      }
+    },
+    {
+      "campo": "proveedor",
+      "historial": [
+        {
+          "campo": "proveedor",
+          "id": 34,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:41.572792Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "Servicios Integrales del Sur S.A.",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "proveedor",
+        "id": 34,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:41.572792Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "Servicios Integrales del Sur S.A.",
+        "version_id": 6
+      }
+    },
+    {
+      "campo": "cuit_proveedor",
+      "historial": [
+        {
+          "campo": "cuit_proveedor",
+          "id": 35,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:43.081230Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "30-96472518-3",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "cuit_proveedor",
+        "id": 35,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:43.081230Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "30-96472518-3",
+        "version_id": 6
+      }
+    },
+    {
+      "campo": "importe_total",
+      "historial": [
+        {
+          "campo": "importe_total",
+          "id": 36,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:44.684617Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "1250000.00",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "importe_total",
+        "id": 36,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:44.684617Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "1250000.00",
+        "version_id": 6
+      }
+    },
+    {
+      "campo": "moneda",
+      "historial": [
+        {
+          "campo": "moneda",
+          "id": 37,
+          "localizador": null,
+          "motivo_ausencia": null,
+          "reemplaza_a_id": null,
+          "tipo": "sin_sugerencia",
+          "validado_en": "2026-10-24T00:30:46.817835Z",
+          "validador_id": 2,
+          "valor_sugerido_id": null,
+          "valor_validado": "ARS",
+          "version_id": 6
+        }
+      ],
+      "sugerencia": null,
+      "vigente": {
+        "campo": "moneda",
+        "id": 37,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:46.817835Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "ARS",
+        "version_id": 6
+      }
+    }
+  ],
+  "clasificacion": {
+    "campo": "tipo_documental",
+    "historial": [
+      {
+        "campo": "tipo_documental",
+        "id": 31,
+        "localizador": null,
+        "motivo_ausencia": null,
+        "reemplaza_a_id": null,
+        "tipo": "sin_sugerencia",
+        "validado_en": "2026-10-24T00:30:35.685346Z",
+        "validador_id": 2,
+        "valor_sugerido_id": null,
+        "valor_validado": "orden_compra",
+        "version_id": 6
+      }
+    ],
+    "sugerencia": null,
+    "vigente": {
+      "campo": "tipo_documental",
+      "id": 31,
+      "localizador": null,
+      "motivo_ausencia": null,
+      "reemplaza_a_id": null,
+      "tipo": "sin_sugerencia",
+      "validado_en": "2026-10-24T00:30:35.685346Z",
+      "validador_id": 2,
+      "valor_sugerido_id": null,
+      "valor_validado": "orden_compra",
+      "version_id": 6
+    }
+  },
+  "documento_id": 6,
+  "fuera_de_esquema": [],
+  "tipo_validado": "orden_compra",
+  "version": {
+    "archivo_id": 6,
+    "id": 6,
+    "numero": 1
+  }
+}
