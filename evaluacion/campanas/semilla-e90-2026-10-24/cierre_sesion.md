@@ -44,3 +44,12 @@ ni VPC etiquetadas `proyecto=atlas`; sin funciones Lambda ni grupos de registros
 eliminación programada). Quedan solo los buckets `atlas-estado-terraform-5566` (`bootstrap`,
 estado remoto, intocable) y `atlas-web-5566` con su distribución de CloudFront (`web`, se
 conserva entre sesiones). Revisar Billing en los días siguientes.
+
+## Retiro total (DO-2026-10-24-RETIRO-TOTAL)
+
+Después del cierre, el operador decidió bajar también `web` (8 recursos: CloudFront
+`E3F2NWTWLS36DR` y el bucket `atlas-web-5566`) y `bootstrap` (bucket de estado vaciado: 102
+versiones de `tfstate` y `tflock` sin recursos gestionados; luego 7 recursos, con
+`prevent_destroy` desactivado solo para ese retiro y restaurado en el código). Verificación final:
+ningún bucket ni distribución de CloudFront en la cuenta 014574285566. Para la exposición final se
+reconstruye todo desde la Parte 1 de la guía.

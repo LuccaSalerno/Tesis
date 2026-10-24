@@ -745,6 +745,16 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **P4 — Herramientas:** `herramientas/corpus_e90/congelar.py` (una sola vez) y modo congelado del validador, que exige que las huellas coincidan; pruebas de ambos modos.
 5. **P5 — Registro:** limitación de alcance para §6.6 y estado; la medición oficial de §6.3.1 queda habilitada.
 
+### DO-2026-10-24-RETIRO-TOTAL — Retiro de `web` y `bootstrap` hasta la exposición final
+
+**Fecha:** 24/10/2026. **Aprobada por:** Lucca Salerno (operador autorizado), al cerrar la sesión E90A del 24/10 y con la demo terminada; **se informa a Ivo Gonsé**. **Estado:** cerrada. **Modifica:** la regla de AGENTS.md §3 y de DO-2026-10-21-E90A que declara `bootstrap` intocable, y la guía de la sección 6 («`web` queda»), **solo para este retiro**.
+
+1. **Motivo:** costo cero en la cuenta 014574285566 hasta la exposición final; toda la evidencia de la sección 6 está versionada en Git (`evaluacion/campanas/`).
+2. **Orden:** `web` primero (su estado vive en el bucket de `bootstrap`); después se vacía el bucket de estado versionado y se destruye `bootstrap`, cuyo estado es local.
+3. **`prevent_destroy`:** se desactiva solo en la copia local para este retiro y se restaura en el código en el mismo cambio: la próxima creación vuelve a quedar protegida.
+4. **Consecuencia:** para la exposición final se reconstruye todo desde la Parte 1 de la guía (bootstrap, web, persistent, runtime, demo y semilla); la URL de CloudFront cambia. Los estados remotos vacíos de `demo`, `runtime`, `persistent` y `evaluacion` se pierden con el bucket (no gestionan recursos).
+5. **Sin cambios:** cuenta, Organizations, Budgets y configuración de privacidad siguen fuera del alcance de los agentes y de este retiro.
+
 ---
 
 ## 2. Decisiones en curso
