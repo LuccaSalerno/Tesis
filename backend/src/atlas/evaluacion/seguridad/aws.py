@@ -60,14 +60,30 @@ def configuracion(cliente: Cliente, *, prefijo: str, bucket: str, rds: str) -> l
             "rds_sin_acceso_publico", not instancia["PubliclyAccessible"], "PubliclyAccessible"
         )
     )
-    grupo = instancia["DBParameterGroups"][0]["DBParameterGroupName"]
-    parametros = rds_cliente.describe_db_parameters(DBParameterGroupName=grupo, Source="user")[
-        "Parameters"
-    ]
-    force_ssl = any(
-        p["ParameterName"] == "rds.force_ssl" and p.get("ParameterValue") == "1" for p in parametros
+    # Valor efectivo, de cualquier origen y en todas las páginas: en PostgreSQL 16 el valor 1
+    # es el predeterminado y RDS lo informa con origen «system» aunque Terraform lo fije
+    # (e90-seguridad-1 lo buscaba solo con Source=user). El grupo debe estar aplicado.
+    grupo_instancia = instancia["DBParameterGroups"][0]
+    grupo = grupo_instancia["DBParameterGroupName"]
+    aplicado = grupo_instancia.get("ParameterApplyStatus")
+    valor = next(
+        (
+            p.get("ParameterValue")
+            for pagina in rds_cliente.get_paginator("describe_db_parameters").paginate(
+                DBParameterGroupName=grupo
+            )
+            for p in pagina["Parameters"]
+            if p["ParameterName"] == "rds.force_ssl"
+        ),
+        None,
     )
-    salida.append(_verificacion("rds_force_ssl", force_ssl, grupo))
+    salida.append(
+        _verificacion(
+            "rds_force_ssl",
+            valor == "1" and aplicado == "in-sync",
+            f"{grupo}: rds.force_ssl={valor}, {aplicado}",
+        )
+    )
 
     lambda_cliente, logs = cliente("lambda"), cliente("logs")
     for funcion in FUNCIONES:

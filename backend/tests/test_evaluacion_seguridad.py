@@ -206,19 +206,36 @@ def aws_simulado(*, fallas: bool) -> dict[str, Any]:
             }
         },
     )
-    rds = ns(
-        describe_db_instances={
+    rds = SimpleNamespace(
+        describe_db_instances=lambda **_: {
             "DBInstances": [
                 {
                     "StorageEncrypted": True,
                     "PubliclyAccessible": fallas,
-                    "DBParameterGroups": [{"DBParameterGroupName": "g"}],
+                    "DBParameterGroups": [
+                        {
+                            "DBParameterGroupName": "g",
+                            "ParameterApplyStatus": "pending-reboot" if fallas else "in-sync",
+                        }
+                    ],
                 }
             ]
         },
-        describe_db_parameters={
-            "Parameters": [{"ParameterName": "rds.force_ssl", "ParameterValue": "1"}]
-        },
+        # Como en AWS: una página sin el parámetro y, después, el valor con origen «system».
+        get_paginator=lambda _: _Paginador(
+            [
+                {"Parameters": [{"ParameterName": "max_connections", "ParameterValue": "100"}]},
+                {
+                    "Parameters": [
+                        {
+                            "ParameterName": "rds.force_ssl",
+                            "ParameterValue": "1",
+                            "Source": "system",
+                        }
+                    ]
+                },
+            ]
+        ),
     )
     eventos = [{"message": "x"}] if fallas else []
     logs = SimpleNamespace(
@@ -288,6 +305,16 @@ def test_seg_02_04_detectan_una_cuenta_mal_configurada() -> None:
         not configuracion["bedrock_sin_registro_de_invocaciones"]
         and configuracion["sin_endpoint_secrets_manager"]
     )
+    # El parámetro existe con valor 1, pero el grupo espera un reinicio: no se da por aplicado.
+    assert not configuracion["rds_force_ssl"]
+    correcta = {
+        v["verificacion"]: v
+        for v in aws.configuracion(
+            aws_simulado(fallas=False).__getitem__, prefijo="atlas-demo", bucket="b", rds="r"
+        )
+    }
+    assert correcta["rds_force_ssl"]["cumple"]
+    assert correcta["rds_force_ssl"]["detalle"] == "g: rds.force_ssl=1, in-sync"
     marcadores = aws.buscar_marcadores(
         cuenta.__getitem__,
         prefijo="atlas-demo",
