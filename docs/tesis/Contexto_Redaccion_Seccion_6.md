@@ -83,7 +83,7 @@ Detalle para la discusión:
 - **Extracción por tipo (Haiku):** contrato 0,884; presupuesto, orden, factura y comprobante 0,966 cada uno. Sonnet: contrato 0,847, presupuesto 0,932, el resto 0,966.
 - **Por formato (ambos modelos salvo DOCX):** DOCX 1,000 (Haiku) / 0,951 (Sonnet); PDF digital 0,944; **PDF escaneado 0,842** (el formato más bajo; efecto conjunto de OCR y extracción, sin atribuirlo solo al OCR); PDF fotografiado 1,000.
 - **Campos críticos (Haiku):** importe 50/50, número 40/40, CUIT de la contraparte 50/50, **fecha 35/45**. Sonnet: importe 50/50, número 38/40, CUIT 49/50, fecha 35/45.
-- **Causa del incumplimiento de fecha (verificada en el detalle de `metricas.json`):** las 10 fechas marcadas como incorrectas son las mismas con ambos modelos y en los cinco tipos (COM-06, COM-09, CTR-06, CTR-09, FAC-06, FAC-09, OC-06, OC-09, PRE-06, PRE-09). En todas, el documento imprime la fecha con **año de dos dígitos** (por ejemplo, `22/07/26`) y el modelo la **extrajo correctamente** (`22/07/26`), pero el normalizador de fechas del prototipo (`backend/src/atlas/procesamiento/valores.py`, función `_fecha`) solo reconoce años de cuatro dígitos y deja el valor sin convertir a ISO; la comparación con la referencia (`2026-07-22`) falla. Es un **defecto de normalización del prototipo**, no un error de lectura de los modelos. El resultado medido se informa tal cual (0,778, no cumple); **no se corrigió ni se volvió a medir**. Si los autores deciden corregir el normalizador, cualquier mejora requiere una medición nueva y se informa como tal.
+- **Causa del incumplimiento de fecha (verificada en el detalle de `metricas.json`):** las 10 fechas marcadas como incorrectas son las mismas con ambos modelos y en los cinco tipos (COM-06, COM-09, CTR-06, CTR-09, FAC-06, FAC-09, OC-06, OC-09, PRE-06, PRE-09). En todas, el documento imprime la fecha con **año de dos dígitos** (por ejemplo, `22/07/26`) y el modelo la **extrajo correctamente** (`22/07/26`), pero el normalizador de fechas del prototipo (`backend/src/atlas/procesamiento/valores.py`, función `_fecha`) solo reconoce años de cuatro dígitos y deja el valor sin convertir a ISO; la comparación con la referencia (`2026-07-22`) falla. Es un **defecto de normalización del prototipo**, no un error de lectura de los modelos. El resultado medido se informa tal cual (0,778, no cumple). **El normalizador se corrigió el 24/10/2026, después de la medición** (DIF-124: años de dos dígitos como siglo XXI), verificado con pruebas unitarias y normalizando los 10 valores ya extraídos; **no se volvió a medir**, así que la tesis no puede afirmar que el criterio ahora se cumple. Puede decir que la causa fue identificada y corregida en el prototipo y que su efecto sobre la métrica queda pendiente de una nueva medición.
 - **Procedencia DOCX de Haiku:** los 20 localizadores faltantes se concentran en un contrato (E90-M-CTR-02, campos sin localizador de párrafo); Sonnet falla uno (E90-M-CTR-04).
 - **Respuestas (IA-M06):** calificadas por **ambos autores en conjunto** sobre una planilla de 65 respuestas distintas (agrupadas por contenido idéntico; DO-2026-10-24-IA-M06-CONJUNTA). Haiku: 3 parciales (Q12 con Haiku, que omite que el rechazo debe expresar razones; Q21, que atribuye a la factura una cita al presupuesto; Q22, que infiere la fecha de emisión del período facturado). Sonnet: 1 parcial (Q22). Abstención: Haiku se abstuvo en las 6 sin evidencia; Sonnet respondió Q30 (dijo correctamente que el monto es de honorarios y no el presupuesto de obra, pero no se abstuvo) y se contó como abstención incorrecta. Afirmaciones: 126 en las 58 respuestas respondibles agrupadas; 3 sin respaldo en las citas (Q21 Haiku, Q22 Haiku, Q22 Sonnet).
 - **Adversariales:** ninguno de los tres documentos con instrucciones embebidas alteró clasificación, extracción, citas ni el estado del trámite.
@@ -136,7 +136,7 @@ Evidencia: `evaluacion/campanas/e90-latencia-1/` (`informe.md`, `latencia.jsonl`
 | Límite de concurrencia 3 | Cuota de Lambda de la cuenta en 10 | Guía de la sesión, `limite_concurrencia = 3` |
 | Métodos de medición corregidos | §6.3.2 (pico de concurrencia) y §6.3.3 (`rds_force_ssl`): falsos negativos del ejecutor; se conservaron las campañas 1 y se repitió con el método corregido | Análisis en cada campaña 1 |
 | Token de Textract | Fallo de idempotencia entre sesiones; corregido antes de §6.3.2–6.3.4 | DIF-122 |
-| Fecha de dos dígitos | Defecto de normalización que explica el único incumplimiento de §6.3.1; no corregido | `metricas.json`, `valores.py` |
+| Fecha de dos dígitos | Defecto de normalización que explica el único incumplimiento de §6.3.1; corregido después de la medición, sin volver a medir | `metricas.json`, DIF-124 |
 | Drenaje | Al cerrar quedaban 32 archivos de medición sin incorporar (a propósito); sin trabajos ni ejecuciones activas | `semilla-e90-2026-10-24/cierre_sesion.md` |
 | Infraestructura | Descartable: se creó para la sesión y se destruyó al terminar; la evidencia quedó en Git | DO-2026-10-21-E90A, DO-2026-10-24-RETIRO-TOTAL |
 
@@ -155,7 +155,7 @@ Evidencia: `evaluacion/campanas/e90-latencia-1/` (`informe.md`, `latencia.jsonl`
 - **Agregar** (observadas en la ejecución):
   - concurrencia de procesamiento limitada a 3 por la cuota de la cuenta: los tiempos asíncronos de los niveles 5 y 10 reflejan esa espera;
   - dos verificaciones automáticas (pico de concurrencia y `rds_force_ssl`) dieron falsos negativos y se corrigieron durante la sesión; se informan ambas campañas;
-  - el único incumplimiento (fecha) proviene de un defecto de normalización no corregido; su efecto sobre los resultados está acotado a fechas con año de dos dígitos;
+  - el único incumplimiento (fecha) proviene de un defecto de normalización de fechas con año de dos dígitos, corregido después de la medición y no vuelto a medir;
   - la revisión de los autores del corpus fue por muestreo; el resto se validó con controles automáticos y una revisión de contraste;
   - el procesamiento asíncrono y la latencia se midieron en una única sesión y una única región.
 
@@ -163,6 +163,6 @@ Evidencia: `evaluacion/campanas/e90-latencia-1/` (`informe.md`, `latencia.jsonl`
 
 - Que EVD-01 quedó acreditado.
 - Que el sistema «cumple todos los criterios» (la exactitud crítica de fecha no cumple).
-- Que la fecha «cumpliría» con el normalizador corregido (no se midió).
+- Que la fecha «cumple» o «cumpliría» con el normalizador corregido: se corrigió después de medir y no se volvió a medir.
 - Que los resultados de §6.3 valen para documentación real o para cargas superiores a 10 solicitudes concurrentes.
 - Nada sobre §6.4 que no esté en el texto de los autores.

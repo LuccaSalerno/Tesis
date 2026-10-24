@@ -82,6 +82,10 @@ def _fecha(valor: str) -> str | None:
         anio, mes, dia = (int(x) for x in m.groups())
     elif m := re.fullmatch(r"(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})", texto):
         dia, mes, anio = (int(x) for x in m.groups())
+    elif m := re.fullmatch(r"(\d{1,2})[/.-](\d{1,2})[/.-](\d{2})", texto):
+        # Año de dos dígitos (22/07/26): siglo XXI, como en la documentación del dominio
+        # (DIF-124). En e90-oficial-1 estas fechas quedaban sin normalizar.
+        dia, mes, anio = int(m.group(1)), int(m.group(2)), 2000 + int(m.group(3))
     elif m := re.fullmatch(r"(\d{1,2})(?:º|°)? de ([a-záéíóú]+) de(?:l)? (\d{4})", texto):
         if m.group(2) not in _MESES:
             return None

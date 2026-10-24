@@ -16,6 +16,13 @@ from atlas.procesamiento.valores import ClaseValor, cuit_valido, normalizar
         ("01/03/2026", ClaseValor.FECHA, "2026-03-01"),
         ("2027-02-28", ClaseValor.FECHA, "2027-02-28"),
         ("31/02/2026", ClaseValor.FECHA, "31/02/2026"),  # fecha imposible: sin normalizar
+        # DIF-124: año de dos dígitos, siglo XXI (las 10 fechas críticas de e90-oficial-1).
+        ("22/07/26", ClaseValor.FECHA, "2026-07-22"),
+        ("01/05/26", ClaseValor.FECHA, "2026-05-01"),
+        ("3-9-26", ClaseValor.FECHA, "2026-09-03"),
+        ("19.04.26", ClaseValor.FECHA, "2026-04-19"),
+        ("31/02/26", ClaseValor.FECHA, "31/02/26"),  # fecha imposible: sin normalizar
+        ("22/07/226", ClaseValor.FECHA, "22/07/226"),  # año de tres dígitos: sin normalizar
         ("ARS 1.250.000,00", ClaseValor.IMPORTE, "1250000.00"),
         ("$ 10.500", ClaseValor.IMPORTE, "10500.00"),
         ("1,234.56", ClaseValor.IMPORTE, "1234.56"),
