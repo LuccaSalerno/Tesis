@@ -1,0 +1,82 @@
+[
+  {
+    "verificacion": "s3_cifrado",
+    "cumple": true,
+    "detalle": "AES256"
+  },
+  {
+    "verificacion": "s3_solo_tls",
+    "cumple": true,
+    "detalle": "Deny sin aws:SecureTransport"
+  },
+  {
+    "verificacion": "s3_bloqueo_publico",
+    "cumple": true,
+    "detalle": "BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets"
+  },
+  {
+    "verificacion": "rds_cifrado",
+    "cumple": true,
+    "detalle": "StorageEncrypted"
+  },
+  {
+    "verificacion": "rds_sin_acceso_publico",
+    "cumple": true,
+    "detalle": "PubliclyAccessible"
+  },
+  {
+    "verificacion": "rds_force_ssl",
+    "cumple": true,
+    "detalle": "atlas-demo-postgres16: rds.force_ssl=1, in-sync"
+  },
+  {
+    "verificacion": "lambda_api_sin_secretos",
+    "cumple": true,
+    "detalle": "ninguna"
+  },
+  {
+    "verificacion": "logs_api_retencion",
+    "cumple": true,
+    "detalle": "7 días"
+  },
+  {
+    "verificacion": "lambda_procesamiento_sin_secretos",
+    "cumple": true,
+    "detalle": "ninguna"
+  },
+  {
+    "verificacion": "logs_procesamiento_retencion",
+    "cumple": true,
+    "detalle": "7 días"
+  },
+  {
+    "verificacion": "lambda_persistencia_sin_secretos",
+    "cumple": true,
+    "detalle": "ninguna"
+  },
+  {
+    "verificacion": "logs_persistencia_retencion",
+    "cumple": true,
+    "detalle": "7 días"
+  },
+  {
+    "verificacion": "lambda_operaciones_sin_secretos",
+    "cumple": true,
+    "detalle": "ninguna"
+  },
+  {
+    "verificacion": "logs_operaciones_retencion",
+    "cumple": true,
+    "detalle": "7 días"
+  },
+  {
+    "verificacion": "bedrock_sin_registro_de_invocaciones",
+    "cumple": true,
+    "detalle": "loggingConfig"
+  },
+  {
+    "verificacion": "sin_endpoint_secrets_manager",
+    "cumple": true,
+    "detalle": "bedrock-runtime,lambda,s3,states"
+  }
+]
