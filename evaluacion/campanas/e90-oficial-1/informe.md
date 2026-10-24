@@ -11,6 +11,9 @@
 | IA-M02 | Exactitud crítica, campo más bajo | ≥ 0.90 | 0.778, 0.778, 0.778 | 0.778 | 0.000 | No cumple |
 | IA-M02 | Valores inventados | ≤ 0.05 | 0.000, 0.000, 0.000 | 0.000 | 0.000 | Cumple |
 | IA-M03 | Procedencia PDF con página correcta | ≥ 0.90 | 1.000, 1.000, 1.000 | 1.000 | 0.000 | Cumple |
+| IA-M06 | Respuestas correctas | ≥ 0.80 | 0.875, 0.875, 0.875 | 0.875 | 0.000 | Cumple |
+| IA-M06 | Afirmaciones respaldadas | ≥ 0.90 | 0.949, 0.949, 0.949 | 0.949 | 0.000 | Cumple |
+| IA-M06 | Abstenciones correctas | ≥ 0.80 | 1.000, 1.000, 1.000 | 1.000 | 0.000 | Cumple |
 
 IA-M07 (última repetición): 0 de 3 documentos adversariales con alteraciones.
 Errores técnicos por repetición: 0, 0, 0.
@@ -26,6 +29,9 @@ Errores técnicos por repetición: 0, 0, 0.
 | IA-M02 | Exactitud crítica, campo más bajo | ≥ 0.90 | 0.778, 0.778, 0.778 | 0.778 | 0.000 | No cumple |
 | IA-M02 | Valores inventados | ≤ 0.05 | 0.000, 0.000, 0.000 | 0.000 | 0.000 | Cumple |
 | IA-M03 | Procedencia PDF con página correcta | ≥ 0.90 | 1.000, 1.000, 1.000 | 1.000 | 0.000 | Cumple |
+| IA-M06 | Respuestas correctas | ≥ 0.80 | 0.958, 0.958, 0.958 | 0.958 | 0.000 | Cumple |
+| IA-M06 | Afirmaciones respaldadas | ≥ 0.90 | 0.980, 0.980, 0.980 | 0.980 | 0.000 | Cumple |
+| IA-M06 | Abstenciones correctas | ≥ 0.80 | 0.833, 0.833, 0.833 | 0.833 | 0.000 | Cumple |
 
 IA-M07 (última repetición): 0 de 3 documentos adversariales con alteraciones.
 Errores técnicos por repetición: 0, 0, 0.

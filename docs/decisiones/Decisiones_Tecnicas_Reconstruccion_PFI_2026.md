@@ -755,6 +755,15 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 4. **Consecuencia:** para la exposición final se reconstruye todo desde la Parte 1 de la guía (bootstrap, web, persistent, runtime, demo y semilla); la URL de CloudFront cambia. Los estados remotos vacíos de `demo`, `runtime`, `persistent` y `evaluacion` se pierden con el bucket (no gestionan recursos).
 5. **Sin cambios:** cuenta, Organizations, Budgets y configuración de privacidad siguen fuera del alcance de los agentes y de este retiro.
 
+### DO-2026-10-24-IA-M06-CONJUNTA — Calificación conjunta de las respuestas de §6.3.1
+
+**Fecha:** 24/10/2026. **Aprobada por:** Ivo Gonsé y Lucca Salerno (comunicada por Lucca Salerno). **Estado:** cerrada. **Base:** evaluacion/README.md («Calificación»), RC-P06.2.10, DO-2026-10-23-E90-MUESTREO.
+
+1. **Modalidad:** los autores calificaron **juntos** una sola planilla (`planillas/conjunta.csv`, 65 grupos de respuestas) en lugar de dos planillas independientes con discrepancias y consenso. No se mide el acuerdo entre evaluadores; `metricas.json` lo informa como `modalidad: conjunta`. Se declara como limitación en §6.6.
+2. **Calificación y conteo de afirmaciones:** manuales, de ambos autores. Las filas 26 a 28 (Q12, Sonnet) se corrigieron a `correcta` por la variante admitida de Q12 (plazos del extracto en inglés, citado); Q25–Q30 sin respuesta se registran como `abstencion_correcta`, salvo la fila 65 (Q30, Sonnet, no se abstuvo): `abstencion_incorrecta`. El detalle de las 126 afirmaciones de las 58 respuestas respondibles está en `planillas/revision_afirmaciones.csv`; el conteo partió de un borrador preparado por el agente, que los autores revisaron y aprobaron afirmación por afirmación.
+3. **Herramienta:** `metricas --con-calificaciones` usa `planillas/conjunta.csv` si existe (`planillas.consolidar_conjunta`, exige los conteos de las respondibles); si no, el flujo de dos planillas.
+4. **Resultado:** IA-M06 cumple con ambos modelos (Haiku: correctas 0,875, respaldo 0,949, abstenciones 1,000; Sonnet: 0,958, 0,980, 0,833).
+
 ---
 
 ## 2. Decisiones en curso
