@@ -30,3 +30,17 @@ exportación y el retiro.
 
 `manifiesto_seed.json` es la copia del manifiesto de la semilla (`operaciones/sesiones/` no se
 versiona); contiene identificadores y huellas, sin tokens. No acredita EVD-01.
+
+## Retiro selectivo y residuos (24/10/2026)
+
+Destruidas, con plan revisado y confirmación del operador: `demo` (49 recursos), `runtime` (8;
+el RDS Proxy tardó 22 min), `persistent` (protecciones quitadas con `retiro_autorizado`, bucket
+de documentos vaciado: 563 versiones; luego 41 recursos, RDS sin snapshot final) y `evaluacion`
+(6; bucket de copias de §6.3.1).
+
+Verificación de residuos: sin instancias, proxies ni snapshots manuales de RDS; sin endpoints
+ni VPC etiquetadas `proyecto=atlas`; sin funciones Lambda ni grupos de registros
+`/aws/lambda/atlas*`; sin grupos de usuarios de Cognito; sin secretos (incluidos los en
+eliminación programada). Quedan solo los buckets `atlas-estado-terraform-5566` (`bootstrap`,
+estado remoto, intocable) y `atlas-web-5566` con su distribución de CloudFront (`web`, se
+conserva entre sesiones). Revisar Billing en los días siguientes.
