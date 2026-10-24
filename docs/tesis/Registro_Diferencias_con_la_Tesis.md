@@ -189,7 +189,7 @@ Nada de esta sección se desplegó: es código y procedimiento validados sin AWS
 | ID | Tema | Implementación | Tipo y respaldo | Acción sugerida | Estado |
 |---|---|---|---|---|---|
 | DIF-45 | Cobertura (RC-P02.7: ≥ 85 %) | La CI exige **≥ 90 % en cada módulo**, no solo en el total | Más estricto. Pedido del equipo (22/10/2026) | Si la tesis menciona el 85 %, decidir si se actualiza | Pendiente |
-| DIF-46 | Aceptación BDD | Escenarios Gherkin ejecutados con `pytest-bdd` contra la API. De EVD-01 se ejecutan los cuatro recorridos: EVD-A y EVD-B con una versión nueva sugerida y confirmada (DO-2026-10-23-VER), EVD-C y EVD-N12 (este con un documento nuevo como cambio del conjunto documental). Ejecutarlos no acredita EVD-01: falta el oráculo congelado y la evidencia conservada | Precisión. DO-2026-10-22-BDD | Opcional | Pendiente |
+| DIF-46 | Aceptación BDD | Escenarios Gherkin ejecutados con `pytest-bdd` contra la API. De EVD-01 se ejecutan los cuatro recorridos: EVD-A y EVD-B con una versión nueva sugerida y confirmada (DO-2026-10-23-VER), EVD-C y EVD-N12 (este con un documento nuevo como cambio del conjunto documental). EVD-01 se acreditó el 24/10/2026: V1 a V11 cumplen contra el oráculo PD-07 congelado, con paquete probatorio en `evaluacion/campanas/evd01-2026-10-24/` (78 comprobaciones, procesamiento con dobles controlados declarados) | Precisión. DO-2026-10-22-BDD | Opcional | Pendiente |
 
 ## I. Pendientes que la tesis da por existentes
 

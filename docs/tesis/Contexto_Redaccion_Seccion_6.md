@@ -29,7 +29,7 @@ Estilo de los capítulos existentes (respetarlo):
 1. **No inventar ni redondear a favor.** Cada cifra sale de la evidencia. Un incumplimiento se informa como tal (hay uno: exactitud crítica de fechas).
 2. **No cambiar umbrales ni criterios** de la Tabla `tab:indicadores-criterios-procesamiento-inteligente` ni de las secciones 6.3.x.
 3. **§6.3 y §6.4 son evaluaciones distintas.** §6.3 es cuantitativa y sintética (corpus E90 de 50 documentos); §6.4 es la experiencia operativa del equipo. No mezclar muestras, métricas ni conclusiones entre ambas; el corpus de la demo (PD-07) tampoco sustituye al de 50.
-4. **EVD-01 no está acreditado.** Los cuatro recorridos de la cadena de evidencia se ejecutan como escenarios en la CI y el recorrido completo se ejecutó en AWS, pero no se aplicó el procedimiento formal de acreditación de EVD-01 con su oráculo. Decirlo así.
+4. **EVD-01 está acreditado con su alcance:** V1 a V11 cumplen contra el oráculo PD-07 congelado, ejecutados por la API con procesamiento simulado por dobles controlados (declararlo). El recorrido EVD-B además se ejecutó en AWS real.
 5. **Interpretación proporcional:** los resultados valen para el corpus sintético, la configuración y la carga ensayadas; no extrapolar a producción ni a cargas mayores.
 6. **Nada de contenido documental real:** todo lo medido es sintético.
 
@@ -54,6 +54,7 @@ Evidencia: ensayo de CI limpio del 24/10 (`backend/herramientas_ci/ensayo_ci_lim
 
 - **Pruebas automatizadas:** 835 aprobadas, 2 omitidas, 0 fallidas; cobertura total 98 %, y **cada uno de los 110 módulos ≥ 90 %** (el criterio de la tesis es ≥ 85 %; el equipo exigió 90 % por módulo, DIF-45). Pruebas del corpus: 71 aprobadas, 1 omitida. PostgreSQL con pgvector real en la CI.
 - **Escenarios de aceptación (BDD, pytest-bdd):** 6 características Gherkin con 20 escenarios: incorporación documental, validación humana, consulta asistida, vínculos y reglas de consistencia, flujo de revisión y evidencia de la decisión, y reconstrucción de la cadena de evidencia documental (recorridos EVD-A, EVD-B, EVD-C y EVD-N12). Se ejecutan en cada CI contra la API.
+- **Acreditación de EVD-01 (verificación de la cadena de evidencia documental):** `evaluacion/campanas/evd01-2026-10-24/` (`acta.md`, `evd01.json`). Los 11 criterios cumplen: V1, V2, V3, V4, V7 y V9 (esenciales), V5, V6 y V8 (complementarios), V10 y V11 (ampliación); 78 comprobaciones con esperado y observado, 0 fallidas, en el commit `e0faadf` sin cambios pendientes. Recorridos con los conjuntos del oráculo: EVD-A `{C-v1, O-v2, F-v1}` → F-v2; EVD-B `{C-v1, O-v1, F-v2}` → O-v2 y firma; EVD-C subsanación sin archivo nuevo; EVD-N12 tarea desplazada rechazada. Alcance: procesamiento con dobles controlados (no Textract ni Bedrock reales). El ejecutor también corre en cada CI.
 - **Recorrido completo en AWS:** la semilla sintética (PD-07) recorrió por la API el trámite completo: validación de C-v1, O-v1 y F-v2, vínculos, controles (R3 advierte por fecha fuera de vigencia), revisión legal aprobada, aprobación final observada, O-v2 sugerida como **versión nueva por su número** (RF-06) y confirmada, R3 pasa a cumplimiento, ciclo 2 aprobado y **firma simulada** aplicada (RF-23). Además, **las personas completaron el mismo recorrido desde la interfaz** en el trámite «en vivo» (id 2), que quedó Cerrado con firma. La evidencia exportada por la API (71 archivos: trámites, archivos, sugerencias, validaciones, vínculos y controles con historial, ciclos, línea de tiempo, evidencia de cada decisión y firma) está en `evaluacion/campanas/semilla-e90-2026-10-24/evidencia/`, con índice SHA-256.
 - **Nivel B (servicios reales, verificación puntual, no es métrica de §6.3):** `evaluacion/campanas/nivel-b/`. C-v1 (10 páginas): tipo correcto y 7 de 7 campos correctos con la página esperada, 25,7 s; la consulta de vigencia responde citando la página 6 y la consulta sin evidencia se abstiene sin citar.
 
@@ -161,7 +162,7 @@ Evidencia: `evaluacion/campanas/e90-latencia-1/` (`informe.md`, `latencia.jsonl`
 
 ## 8. Qué no afirmar
 
-- Que EVD-01 quedó acreditado.
+- Que EVD-01 se acreditó con Textract y Bedrock reales: se acreditó por la API con dobles controlados; con servicios reales solo se ejecutó el recorrido EVD-B (semilla y recorrido manual).
 - Que el sistema «cumple todos los criterios» (la exactitud crítica de fecha no cumple).
 - Que la fecha «cumple» o «cumpliría» con el normalizador corregido: se corrigió después de medir y no se volvió a medir.
 - Que los resultados de §6.3 valen para documentación real o para cargas superiores a 10 solicitudes concurrentes.
