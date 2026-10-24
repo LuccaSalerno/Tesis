@@ -1,0 +1,11 @@
+{"en_curso": 3, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "en_ejecucion", "73": "en_ejecucion", "74": "en_espera", "75": "en_ejecucion", "76": "en_espera"}, "momento": "2026-10-24T17:12:13.964205+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:12:44.607591+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:13:19.403838+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:13:50.225042+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:14:21.076134+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:14:52.095893+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:15:22.778833+00:00"}
+{"en_curso": 0, "en_espera": 2, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "en_espera", "75": "completado", "76": "en_espera"}, "momento": "2026-10-24T17:15:53.746725+00:00"}
+{"en_curso": 0, "en_espera": 0, "escenario": "espera", "estados": {"71": "completado", "72": "completado", "73": "completado", "74": "completado", "75": "completado", "76": "completado"}, "momento": "2026-10-24T17:16:24.411887+00:00"}
+{"en_curso": 0, "en_espera": 0, "escenario": "fallo", "estados": {"77": "fallido"}, "momento": "2026-10-24T17:16:28.295411+00:00"}
+{"en_curso": 0, "en_espera": 0, "escenario": "fallo", "estados": {"77": "fallido"}, "momento": "2026-10-24T17:16:29.602541+00:00"}
