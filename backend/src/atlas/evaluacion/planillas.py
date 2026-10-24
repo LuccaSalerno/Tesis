@@ -4,6 +4,9 @@ Cada respuesta distinta (misma pregunta, afirmaciones, citas y motivo) aparece u
 con la lista de modelos y repeticiones que la produjeron. Cada autor completa su planilla por
 separado; `discrepancias` lista los grupos en que difieren y `consolidar` aplica el consenso
 sin sobrescribir las calificaciones individuales. No hay juez automático.
+
+Si los autores califican juntos una sola planilla (DO-2026-10-24-IA-M06-CONJUNTA),
+`consolidar_conjunta` la carga directamente: no hay acuerdo entre evaluadores que informar.
 """
 
 import csv
@@ -134,9 +137,41 @@ def consolidar(
     faltantes = sorted(set(a) - acordados - set(resueltos))
     if faltantes:
         raise ValueError(f"discrepancias_sin_consenso:{len(faltantes)}")
+    finales = _por_ocurrencia(
+        {g: (fila, fila if g in acordados else resueltos[g]) for g, fila in a.items()}
+    )
+    acuerdo = {
+        "modalidad": "independiente",
+        "grupos": len(a),
+        "acuerdos": len(acordados),
+        "proporcion": len(acordados) / len(a) if a else None,
+    }
+    return finales, acuerdo
+
+
+def consolidar_conjunta(
+    conjunta: Path,
+) -> tuple[dict[tuple[str, int], list[dict[str, Any]]], dict[str, Any]]:
+    """Calificaciones finales de una planilla completada por ambos autores juntos."""
+    filas = leer_planilla(conjunta)
+    incompletas = sorted(
+        g
+        for g, f in filas.items()
+        if f["clase"] == "respondible"
+        and not (f["afirmaciones_sustantivas"] and f["afirmaciones_respaldadas"])
+    )
+    if incompletas:
+        raise ValueError(f"conteos_faltantes:{len(incompletas)}")
+    acuerdo = {"modalidad": "conjunta", "grupos": len(filas), "acuerdos": None, "proporcion": None}
+    return _por_ocurrencia({g: (f, f) for g, f in filas.items()}), acuerdo
+
+
+def _por_ocurrencia(
+    grupos: dict[str, tuple[dict[str, str], dict[str, str]]],
+) -> dict[tuple[str, int], list[dict[str, Any]]]:
+    """Expande cada grupo (fila de la planilla, juicio final) a sus modelos y repeticiones."""
     finales: dict[tuple[str, int], list[dict[str, Any]]] = {}
-    for grupo, fila in a.items():
-        final = fila if grupo in acordados else resueltos[grupo]
+    for fila, final in grupos.values():
         for ocurrencia in fila["ocurrencias"].split():
             modelo, repeticion = ocurrencia.rsplit(":", 1)
             finales.setdefault((modelo, int(repeticion)), []).append(
@@ -147,9 +182,4 @@ def consolidar(
                     "afirmaciones_respaldadas": final["afirmaciones_respaldadas"] or 0,
                 }
             )
-    acuerdo = {
-        "grupos": len(a),
-        "acuerdos": len(acordados),
-        "proporcion": len(acordados) / len(a) if a else None,
-    }
-    return finales, acuerdo
+    return finales

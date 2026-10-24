@@ -174,12 +174,16 @@ def ejecutar(argumentos: argparse.Namespace) -> str:
     calificaciones = None
     acuerdo = None
     if argumentos.con_calificaciones:
+        conjunta = c.ruta("planillas/conjunta.csv")
         consenso = c.ruta("planillas/consenso.csv")
-        calificaciones, acuerdo = planillas.consolidar(
-            c.ruta("planillas/autor_a.csv"),
-            c.ruta("planillas/autor_b.csv"),
-            consenso if consenso.exists() else None,
-        )
+        if conjunta.exists():  # DO-2026-10-24-IA-M06-CONJUNTA
+            calificaciones, acuerdo = planillas.consolidar_conjunta(conjunta)
+        else:
+            calificaciones, acuerdo = planillas.consolidar(
+                c.ruta("planillas/autor_a.csv"),
+                c.ruta("planillas/autor_b.csv"),
+                consenso if consenso.exists() else None,
+            )
     resultado = cmp.calcular(
         c,
         oraculos,

@@ -452,11 +452,32 @@ def test_p14_respuestas_planillas_y_consolidacion(raiz: Path) -> None:
         planillas.consolidar(autor_a, autor_b, None)
     completar(raiz / "disc.csv", "correcta")
     finales, acuerdo = planillas.consolidar(autor_a, autor_b, raiz / "disc.csv")
-    assert acuerdo["acuerdos"] < acuerdo["grupos"]
+    assert acuerdo["acuerdos"] < acuerdo["grupos"] and acuerdo["modalidad"] == "independiente"
     rag = metricas.respuestas(finales[("haiku", 1)], consultas)
     assert (
         rag["correctas"] == 1.0 and rag["respaldo"] == 1.0 and rag["abstenciones_correctas"] == 1.0
     )
+    # DO-2026-10-24-IA-M06-CONJUNTA: una sola planilla, sin acuerdo entre evaluadores.
+    conjuntas, acuerdo = planillas.consolidar_conjunta(autor_a)
+    assert conjuntas == planillas.consolidar(autor_a, autor_a, None)[0]
+    assert acuerdo == {
+        "modalidad": "conjunta",
+        "grupos": grupos,
+        "acuerdos": None,
+        "proporcion": None,
+    }
+    sin_conteos = raiz / "sin_conteos.csv"
+    import csv
+
+    with autor_a.open(encoding="utf-8", newline="") as archivo:
+        filas_csv = list(csv.DictReader(archivo))
+    filas_csv[0] |= {"clase": "respondible", "afirmaciones_respaldadas": ""}
+    with sin_conteos.open("w", encoding="utf-8", newline="") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=planillas.COLUMNAS)
+        escritor.writeheader()
+        escritor.writerows(filas_csv)
+    with pytest.raises(ValueError, match="conteos_faltantes:1"):
+        planillas.consolidar_conjunta(sin_conteos)
 
 
 def test_p14_planillas_validan_conteos_y_grupos(raiz: Path) -> None:
