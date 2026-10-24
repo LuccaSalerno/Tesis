@@ -4,7 +4,11 @@ Dos escenarios con documentos sintéticos, en una sesión E90A de ensayo:
 
 - **espera:** se suben `limite + 3` documentos a la vez; se registra cuántos quedan «En
   espera» al confirmar y, con consultas cada 30 s, cómo el reconciliador los admite sin que
-  haya más de `limite` en curso, hasta que todos terminan.
+  haya más de `limite` en curso, hasta que todos terminan. El pico de trabajos simultáneos
+  se calcula con los tiempos del servidor de cada trabajo (`ejecucion_iniciada_en` hasta
+  `actualizado_en` en estado terminal), además de los sondeos. Los estados devueltos al
+  confirmar se registran pero no cuentan para el pico: se toman en instantes distintos
+  (campaña e90-confiabilidad-1).
 - **fallo:** un DOCX vacío falla de forma definitiva; el responsable pide un intento nuevo,
   que vuelve a fallar sin reintentos indefinidos y sin cambiar el estado del trámite.
 
@@ -19,7 +23,7 @@ import argparse
 import json
 import sys
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from functools import partial
@@ -85,6 +89,28 @@ def observar(
         dormir(intervalo_s)
 
 
+def pico_simultaneo(trabajos: Iterable[dict[str, Any]]) -> int | None:
+    """Máximo de trabajos en ejecución a la vez según los tiempos del servidor. Cada trabajo
+    terminado ocupa un cupo desde `ejecucion_iniciada_en` hasta `actualizado_en`; en un
+    empate, el que termina libera el cupo antes de que empiece el otro. Sin tiempos del
+    servidor no se puede verificar: devuelve None."""
+    eventos: list[tuple[datetime, int]] = []
+    for trabajo in trabajos:
+        inicio = trabajo.get("ejecucion_iniciada_en")
+        if trabajo.get("estado") not in TERMINALES or not trabajo.get("actualizado_en"):
+            return None
+        if inicio:
+            eventos += [
+                (datetime.fromisoformat(inicio), 1),
+                (datetime.fromisoformat(trabajo["actualizado_en"]), -1),
+            ]
+    actual = pico = 0
+    for _, delta in sorted(eventos):
+        actual += delta
+        pico = max(pico, actual)
+    return pico
+
+
 def escenario_espera(
     api: ClienteApi, limite: int, registro: Registro, **espera: Any
 ) -> dict[str, Any]:
@@ -99,11 +125,10 @@ def escenario_espera(
     return {
         "documentos": cantidad,
         "en_espera_al_confirmar": al_confirmar.count("en_espera"),
-        # El pico puede darse al confirmar, antes de la primera consulta periódica.
-        "max_en_curso_observado": max(
-            sum(e in ("pendiente", "en_ejecucion") for e in al_confirmar),
-            *(f["en_curso"] for f in observaciones),
-        ),
+        # Informativo: suma de estados de instantes distintos, no es un pico simultáneo.
+        "en_curso_al_confirmar": sum(e in ("pendiente", "en_ejecucion") for e in al_confirmar),
+        "max_en_curso_sondeos": max(f["en_curso"] for f in observaciones),
+        "max_en_curso_servidor": pico_simultaneo(finales.values()),
         "limite": limite,
         "completados": sum(t.get("estado") == "completado" for t in finales.values()),
         "fallidos": sum(t.get("estado") == "fallido" for t in finales.values()),
@@ -128,7 +153,11 @@ def escenario_fallo(api: ClienteApi, registro: Registro, **espera: Any) -> dict[
 def criterios(resultado: dict[str, Any]) -> dict[str, bool]:
     salida: dict[str, bool] = {}
     if espera := resultado.get("espera"):
-        salida["espera_sin_sobreasignacion"] = espera["max_en_curso_observado"] <= espera["limite"]
+        servidor = espera["max_en_curso_servidor"]
+        salida["espera_sin_sobreasignacion"] = (
+            servidor is not None
+            and max(servidor, espera["max_en_curso_sondeos"]) <= espera["limite"]
+        )
         salida["espera_admitida_y_terminada"] = (
             espera["completados"] + espera["fallidos"] == espera["documentos"]
         )

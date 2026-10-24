@@ -6,6 +6,7 @@ entran cuando terminan las anteriores; un DOCX vacío falla siempre. No hay AWS.
 
 import argparse
 import threading
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -14,10 +15,16 @@ import pytest
 from atlas.evaluacion import campana as cmp
 from atlas.evaluacion import confiabilidad as conf
 
+BASE = datetime(2026, 10, 24, 17, tzinfo=UTC)
+
 
 class ApiSimulada:
+    """Cada consulta de archivos es un paso del reloj del servidor: terminan los que estaban
+    en ejecución y después entran los que esperaban, en el mismo instante."""
+
     def __init__(self, limite: int) -> None:
         self.limite = limite
+        self.reloj = 0
         self.ids = 0
         self.archivos: dict[int, dict[str, Any]] = {}
         self._candado = threading.Lock()
@@ -49,10 +56,16 @@ class ApiSimulada:
                     a.get("estado") in ("pendiente", "en_ejecucion") for a in self.archivos.values()
                 )
                 archivo["estado"] = "en_ejecucion" if en_curso < self.limite else "en_espera"
+                if archivo["estado"] == "en_ejecucion":
+                    archivo["inicio"] = self.reloj
             return {"id": int(partes[3]), "trabajo": {"estado": archivo["estado"], "intento": 1}}
         if partes[-1] == "reintento":
             archivo = self.archivos[int(partes[3])]
-            archivo |= {"estado": "en_ejecucion", "intento": archivo["intento"] + 1}
+            archivo |= {
+                "estado": "en_ejecucion",
+                "intento": archivo["intento"] + 1,
+                "inicio": self.reloj,
+            }
             return {
                 "id": int(partes[3]),
                 "trabajo": {"estado": "en_ejecucion", "intento": archivo["intento"]},
@@ -65,20 +78,34 @@ class ApiSimulada:
             return {"estado": "borrador"}
         # Cada consulta avanza un paso: terminan los que estaban en ejecución y entra la espera.
         with self._candado:
+            self.reloj += 1
             for archivo in self.archivos.values():
                 if archivo.get("estado") == "en_ejecucion":
                     archivo["estado"] = "fallido" if archivo["vacio"] else "completado"
+                    archivo["fin"] = self.reloj
             libres = self.limite - sum(
                 a.get("estado") == "en_ejecucion" for a in self.archivos.values()
             )
             for archivo in self.archivos.values():
                 if archivo.get("estado") == "en_espera" and libres > 0:
                     archivo["estado"], libres = "en_ejecucion", libres - 1
+                    archivo["inicio"] = self.reloj
         return [
-            {"id": i, "trabajo": {"estado": a.get("estado"), "intento": a["intento"]}}
+            {"id": i, "trabajo": self._trabajo(a)}
             for i, a in self.archivos.items()
             if a["tramite"] == int(partes[1])
         ]
+
+    def _trabajo(self, archivo: dict[str, Any]) -> dict[str, Any]:
+        def instante(paso: int | None) -> str | None:
+            return None if paso is None else (BASE + timedelta(seconds=paso)).isoformat()
+
+        return {
+            "estado": archivo.get("estado"),
+            "intento": archivo["intento"],
+            "ejecucion_iniciada_en": instante(archivo.get("inicio")),
+            "actualizado_en": instante(archivo.get("fin", archivo.get("inicio", 0))),
+        }
 
 
 def test_as_nivel_b_espera_y_fallo_definitivo(
@@ -102,6 +129,48 @@ def test_as_nivel_b_detecta_sobreasignacion(
     # La API admite hasta 5 aunque el límite declarado sea 2: el criterio lo detecta.
     salida = conf.ejecutar(argumentos, ApiSimulada(5), dormir=lambda _: None)  # type: ignore[arg-type]
     assert salida == "confiabilidad:1/3_cumplen"
+
+
+def t(segundo: int) -> str:
+    return (BASE + timedelta(seconds=segundo)).isoformat()
+
+
+def test_as_nivel_b_pico_con_tiempos_del_servidor() -> None:
+    """e90-confiabilidad-1: cuatro trabajos admitidos al confirmar, pero el cuarto empezó
+    cuando el primero ya había terminado. Con los tiempos del servidor el pico es 3."""
+    real = [
+        {"estado": "completado", "ejecucion_iniciada_en": t(0), "actualizado_en": t(4)},
+        {"estado": "completado", "ejecucion_iniciada_en": t(3), "actualizado_en": t(8)},
+        {"estado": "completado", "ejecucion_iniciada_en": t(3), "actualizado_en": t(12)},
+        {"estado": "completado", "ejecucion_iniciada_en": t(5), "actualizado_en": t(10)},
+        {"estado": "completado", "ejecucion_iniciada_en": t(248), "actualizado_en": t(253)},
+    ]
+    assert conf.pico_simultaneo(real) == 3
+    # Un fin y un inicio en el mismo instante no se superponen.
+    contiguos = [
+        {"estado": "completado", "ejecucion_iniciada_en": t(0), "actualizado_en": t(5)},
+        {"estado": "fallido", "ejecucion_iniciada_en": t(5), "actualizado_en": t(6)},
+    ]
+    assert conf.pico_simultaneo(contiguos) == 1
+    # Sin tiempos del servidor o con trabajos sin terminar no se puede verificar.
+    assert conf.pico_simultaneo([{"estado": "en_ejecucion", "actualizado_en": t(1)}]) is None
+    assert conf.pico_simultaneo([{"estado": "completado"}]) is None
+    assert (
+        conf.criterios(
+            {
+                "espera": {
+                    "max_en_curso_servidor": None,
+                    "max_en_curso_sondeos": 1,
+                    "limite": 3,
+                    "documentos": 1,
+                    "completados": 1,
+                    "fallidos": 0,
+                    "en_espera_al_confirmar": 0,
+                }
+            }
+        )["espera_sin_sobreasignacion"]
+        is False
+    )
 
 
 def test_as_nivel_b_espera_maxima_y_cli(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -128,7 +197,9 @@ def test_as_nivel_b_espera_maxima_y_cli(monkeypatch: pytest.MonkeyPatch, tmp_pat
         lambda *a, **k: {
             "documentos": 1,
             "en_espera_al_confirmar": 1,
-            "max_en_curso_observado": 1,
+            "en_curso_al_confirmar": 1,
+            "max_en_curso_sondeos": 1,
+            "max_en_curso_servidor": 1,
             "limite": 1,
             "completados": 1,
             "fallidos": 0,
