@@ -43,9 +43,6 @@ aws cognito-idp admin-set-user-password --user-pool-id "$POOL" --username atlas-
 | `2_Factura_F-v2.pdf` | Factura FC-A-0001-00000123 por $ 1.250.000,00 | Paso 3.1 |
 | `3_Orden_de_compra_corregida_O-v2.pdf` | La misma orden corregida, emitida el **15/09/2026** | Paso 3.10 (opcional) |
 | `0_Contrato_C-v1_(respaldo).pdf` | El contrato. **Ya está cargado** en el trámite en vivo; es solo de respaldo | Solo si falta el trámite en vivo (§5) |
-| `0_Contrato_extenso_C-v1-EXT.pdf` | **Contrato extenso (29 páginas)**: las 10 páginas de C-v1 más anexos operativos, con los mismos datos y en las mismas páginas (contraparte y CUIT en la 1, monto en la 5, vigencia en la 6; cuadro resumen en la 29) | Opción «contrato extenso» (abajo) |
-
-**Opción «contrato extenso» (DO-2026-10-24-DEMO-EXTENSO).** Si querés mostrar un documento largo: en 3.1, en vez de abrir el trámite «(en vivo)», creá con Laura un trámite nuevo «Servicio de mantenimiento de laboratorio (en vivo, contrato extenso)» y cargá **primero** `0_Contrato_extenso_C-v1-EXT.pdf`, después la orden y la factura. Procesa en 1 a 2 minutos (C-v1 tarda unos 25 s): cargalo al empezar la apertura. El resto del guion vale igual, con «Contrato extenso» como nombre del documento al incorporarlo. Si se demora, seguí con el trámite «(en vivo)» sembrado. Qué decir: «Es un contrato de 29 páginas: el sistema clasifica, extrae y cita la página de cada dato aunque esté al principio o en el cuadro resumen del final».
 
 ### 1.3 Control previo
 
