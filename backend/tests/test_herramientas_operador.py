@@ -167,10 +167,24 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert set(manifiesto.cuentas) == set(sembrar_demo.ROLES)
     assert "token" not in json.dumps(manifiesto.__dict__).lower()
 
-    resumen = exportar_evidencia.exportar(entorno["api"], manifiesto.__dict__, tmp_path)
+    # El exportador descubre en la API lo que el manifiesto no lista: sin las decisiones del
+    # ciclo 2 ni los archivos del trámite en vivo, igual quedan exportados.
+    datos = json.loads(json.dumps(manifiesto.__dict__))
+    del datos["tramites"]["cerrado"]["decisiones_2"]
+    datos["tramites"]["en_vivo"]["archivos"] = {}
+    resumen = exportar_evidencia.exportar(
+        entorno["api"], datos, tmp_path, [manifiesto.tramites["cancelado"]["id"]]
+    )
     evidencias = [n for n in resumen["archivos"] if "/evidencia/" in n and "observado-" in n]
     assert len(evidencias) == 2
     assert len([n for n in resumen["archivos"] if "/evidencia/" in n]) == 6
+    en_vivo = f"tramites/en_vivo-{manifiesto.tramites['en_vivo']['id']}"
+    archivo_c = manifiesto.tramites["en_vivo"]["archivos"]["C-v1"]
+    assert f"{en_vivo}/sugerencias/archivo-{archivo_c}.json" in resumen["archivos"]
+    assert f"{en_vivo}/validaciones/C-v1.json" in resumen["archivos"]
+    adicional = f"tramites/adicional-{manifiesto.tramites['cancelado']['id']}/tramite.json"
+    assert adicional in resumen["archivos"]
+    assert resumen["tramites_adicionales"] == [manifiesto.tramites["cancelado"]["id"]]
     firma = next(n for n in resumen["archivos"] if n.endswith("/firma.json"))
     assert json.loads((tmp_path / firma).read_text())["leyenda"].startswith(
         "Firma digital simulada"
@@ -186,7 +200,7 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
 
 @pytest.mark.integracion
 def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
-    entorno: dict[str, Any],
+    entorno: dict[str, Any], tmp_path: Path
 ) -> None:
     """Sesión del 24/10: Textract rechazó el token de trabajos del trámite en vivo y del
     cerrado. La semilla se detiene antes de validar a mano; `reanudar` reintenta el en vivo
@@ -219,6 +233,11 @@ def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
     assert cerrado["criterio_version"] == "numero"
     assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"
     assert not fallos
+    # P12: el reemplazado también se exporta, con su cancelación.
+    resumen = exportar_evidencia.exportar(entorno["api"], manifiesto.__dict__, tmp_path)
+    exportado = tmp_path / f"tramites/reemplazado-{incompleto['id']}/tramite.json"
+    assert json.loads(exportado.read_text())["estado"] == "cancelado"
+    assert f"tramites/reemplazado-{incompleto['id']}/tramite.json" in resumen["archivos"]
 
 
 def test_p11_reanudar_exige_el_observado_completo() -> None:
@@ -384,6 +403,16 @@ def test_p12_main_de_exportacion(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     assert exportar_evidencia.main([*base, "--salida", str(ocupada)]) == 1
     monkeypatch.setattr(exportar_evidencia, "tokens_cognito", lambda *_: {"responsable": "t"})
     assert exportar_evidencia.main([*base, "--salida", str(tmp_path / "vacia")]) == 0
+    recibidos: list[Any] = []
+
+    def exporta(cliente: Any, manifiesto_: Any, salida: Path, adicionales: Any) -> Any:
+        recibidos.append(adicionales)
+        return {"archivos": {}}
+
+    monkeypatch.setattr(exportar_evidencia, "exportar", exporta)
+    adicionales = ["--tramites-adicionales", "7", "8"]
+    assert exportar_evidencia.main([*base, *adicionales, "--salida", str(tmp_path / "mas")]) == 0
+    assert recibidos == [[7, 8]]
 
     def falla(*_: Any) -> Any:
         raise ErrorApi("GET", "/tramites/1", 503)
