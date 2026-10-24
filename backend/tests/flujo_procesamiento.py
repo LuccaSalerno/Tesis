@@ -75,32 +75,35 @@ def recorrer(
     modelo: ModeloFijo,
     analizador: AnalizadorFijo | None = None,
     embeddings: EmbeddingsFijos | None = None,
+    intento: int = 1,
 ) -> list[dict[str, Any]]:
     """Ejecuta las etapas en el orden de la máquina de estados."""
     almacen = aplicacion.state.almacen
-    salidas = [en_sesion(aplicacion, etapas.preparar, trabajo_id=trabajo_id, intento=1)]
+    salidas = [en_sesion(aplicacion, etapas.preparar, trabajo_id=trabajo_id, intento=intento)]
     clave = salidas[0]["clave_objeto"]
     if salidas[0]["formato"] == "pdf":
         assert analizador is not None
         salidas.append(
             etapas.iniciar_textract(
-                analizador, clave_objeto=clave, trabajo_id=trabajo_id, intento=1
+                analizador, clave_objeto=clave, trabajo_id=trabajo_id, intento=intento
             )
         )  # type: ignore[arg-type]
         salidas.append(etapas.consultar_textract(analizador, job_id="job-fijo"))  # type: ignore[arg-type]
         salidas.append(
             etapas.normalizar_textract(
-                analizador, almacen, job_id="job-fijo", trabajo_id=trabajo_id, intento=1
+                analizador, almacen, job_id="job-fijo", trabajo_id=trabajo_id, intento=intento
             )  # type: ignore[arg-type]
         )
     else:
         salidas.append(
-            etapas.normalizar_docx(almacen, clave_objeto=clave, trabajo_id=trabajo_id, intento=1)
+            etapas.normalizar_docx(
+                almacen, clave_objeto=clave, trabajo_id=trabajo_id, intento=intento
+            )
         )
     contenido = salidas[-1]["contenido"]
     salidas.append(
         etapas.clasificar(
-            almacen, modelo, LIMITES, contenido=contenido, trabajo_id=trabajo_id, intento=1
+            almacen, modelo, LIMITES, contenido=contenido, trabajo_id=trabajo_id, intento=intento
         )
     )
     clasificacion = salidas[-1]["clasificacion"]
@@ -112,7 +115,7 @@ def recorrer(
             contenido=contenido,
             clasificacion=clasificacion,
             trabajo_id=trabajo_id,
-            intento=1,
+            intento=intento,
         )
     )
     extraccion = salidas[-1]["extraccion"]
@@ -122,7 +125,7 @@ def recorrer(
             embeddings or EmbeddingsFijos(),
             contenido=contenido,
             trabajo_id=trabajo_id,
-            intento=1,
+            intento=intento,
         )
     )
     salidas.append(
@@ -134,7 +137,7 @@ def recorrer(
             extraccion=extraccion,
             fragmentos=salidas[-1]["fragmentos"],
             trabajo_id=trabajo_id,
-            intento=1,
+            intento=intento,
         )
     )
     return salidas

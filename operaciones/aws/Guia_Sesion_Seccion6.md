@@ -225,7 +225,9 @@ cd backend
 cd ..
 ```
 
-Tarda 15–25 min (Textract y Bedrock reales). Deja cuatro trámites: **observado**, **en vivo**, **cerrado con firma** y **cancelado**. Si falla, volvé a `offline` y pegame el error; no la repitas sobre datos sin auditar.
+Tarda 15–25 min (Textract y Bedrock reales). Deja cuatro trámites: **observado**, **en vivo**, **cerrado con firma** y **cancelado**. Si falla, volvé a `offline` y pegame el error; no la repitas sobre datos sin auditar. Un procesamiento fallido la detiene antes de validar a mano. Corregida la causa, se continúa con el mismo comando más `--reanudar`: reintenta por la API los fallidos del trámite en vivo y, si el «cerrado» quedó a medias, lo cancela con el motivo real y siembra uno nuevo (queda en `reemplazados` del manifiesto).
+
+> **Sesión del 24/10:** Textract rechazó con `IdempotentParameterMismatchException` los trabajos 4 a 8 porque el token (`atlas-trabajo-<id>-intento-<n>`) repetía el de una sesión anterior en la misma cuenta. El token incluye ahora la huella del objeto S3; se redesplegó y se reanudó la semilla.
 
 - [ ] Humo en `https://<origen>` (CloudFront): ingresar con cada rol, abrir los cuatro trámites, firma visible en el cerrado, estado general en Administración.
 - [ ] **Demo:** hacela acá, antes de los ejecutores que agregan datos (§6.3.2 y §6.3.3).

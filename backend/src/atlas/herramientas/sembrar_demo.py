@@ -22,10 +22,17 @@ Deja cuatro trámites (DO-2026-10-22-WEB F8, DO-2026-10-23-VER P9, DO-2026-10-23
 4. **cancelado**: sin documentos, cancelado por su responsable con motivo (RF-26).
 
 Cada dato se valida como lo haría una persona: si la sugerencia coincide con el oráculo se
-confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Nada se
-inserta en la base ni se falsifica auditoría. Aunque el oráculo PD-07 v2 está congelado, la
-semilla prepara la demo: no acredita EVD-01 ni métricas. El manifiesto guarda identificadores
-y huellas, nunca tokens.
+confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. Un
+procesamiento fallido detiene la semilla antes de incorporar: no se valida a mano lo que la
+IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
+
+`--reanudar` continúa una semilla interrumpida sobre el mismo manifiesto, sin repetir ni
+ocultar lo hecho: reintenta por la API los procesamientos fallidos del trámite en vivo
+(RNF-06) y, si el trámite «cerrado» quedó a medias, lo cancela con el motivo real y siembra
+uno nuevo. El reemplazado queda en el manifiesto (`reemplazados`).
+
+Aunque el oráculo PD-07 v2 está congelado, la semilla prepara la demo: no acredita EVD-01 ni
+métricas. El manifiesto guarda identificadores y huellas, nunca tokens.
 """
 
 import argparse
@@ -67,6 +74,10 @@ NOMBRES_VISIBLES: Final = {
     "aprobador": "Sofía Herrera",
 }
 MOTIVO_CANCELACION: Final = "El laboratorio resolvió no contratar el servicio este año."
+MOTIVO_REEMPLAZO: Final = (
+    "Semilla interrumpida por un fallo técnico de procesamiento al preparar la sesión; se"
+    " reemplaza por un trámite nuevo con la historia completa."
+)
 MOTIVO_OBSERVACION: Final = (
     "La fecha de emisión de la orden de compra (15/03/2027) está fuera de la vigencia del"
     " contrato (01/03/2026 a 28/02/2027). Corregir la orden antes de aprobar."
@@ -162,6 +173,8 @@ class Manifiesto:
     cuentas: dict[str, int] = field(default_factory=dict)
     plantilla_id: int | None = None
     tramites: dict[str, dict[str, Any]] = field(default_factory=dict)
+    reemplazados: list[dict[str, Any]] = field(default_factory=list)
+    reanudaciones: list[str] = field(default_factory=list)
     terminado_en: str | None = None
     resultado: str = "en_curso"
 
@@ -256,6 +269,35 @@ class Sembrador:
         archivo_id: int = confirmado["id"]
         return archivo_id
 
+    def _estados_trabajo(self, tramite_id: int, archivos: list[int]) -> dict[int, str | None]:
+        return {
+            a["id"]: (a.get("trabajo") or {}).get("estado")
+            for a in self.api.get(f"/tramites/{tramite_id}/archivos", "responsable")
+            if a["id"] in archivos
+        }
+
+    def _procesar(self, tramite_id: int, archivos: list[int]) -> None:
+        """Espera y exige que cada trabajo haya terminado bien."""
+        self.esperar(self.api, tramite_id, archivos)
+        fallidos = sorted(
+            a for a, e in self._estados_trabajo(tramite_id, archivos).items() if e != "completado"
+        )
+        if fallidos:
+            raise RuntimeError(
+                f"Procesamiento fallido de los archivos {fallidos} del trámite {tramite_id}"
+            )
+
+    def _incorporar(self, registro: dict[str, Any]) -> None:
+        for codigo, archivo_id in registro["archivos"].items():
+            if codigo in registro["documentos"]:
+                continue
+            documento = self.api.post(
+                f"/tramites/{registro['id']}/archivos/{archivo_id}/incorporacion",
+                "responsable",
+                {"nombre": NOMBRES[codigo]},
+            )
+            registro["documentos"][codigo] = documento["id"]
+
     def cargar_documentos(
         self, clave: str, titulo: str, codigos: tuple[str, ...]
     ) -> dict[str, Any]:
@@ -264,15 +306,23 @@ class Sembrador:
         self.m.tramites[clave] = registro
         for codigo in codigos:
             registro["archivos"][codigo] = self._cargar(tramite["id"], codigo)
-        self.esperar(self.api, tramite["id"], list(registro["archivos"].values()))
-        for codigo, archivo_id in registro["archivos"].items():
-            documento = self.api.post(
-                f"/tramites/{tramite['id']}/archivos/{archivo_id}/incorporacion",
-                "responsable",
-                {"nombre": NOMBRES[codigo]},
-            )
-            registro["documentos"][codigo] = documento["id"]
+        self._procesar(tramite["id"], list(registro["archivos"].values()))
+        self._incorporar(registro)
         return registro
+
+    def reintentar_fallidos(self, registro: dict[str, Any]) -> None:
+        """RNF-06: intento nuevo, por la API, de cada procesamiento fallido del trámite."""
+        archivos = list(registro["archivos"].values())
+        fallidos = [
+            a for a, e in self._estados_trabajo(registro["id"], archivos).items() if e == "fallido"
+        ]
+        for archivo_id in fallidos:
+            self.api.post(
+                f"/tramites/{registro['id']}/archivos/{archivo_id}/reintento", "responsable"
+            )
+        registro.setdefault("reintentos", []).extend(fallidos)
+        self._procesar(registro["id"], archivos)
+        self._incorporar(registro)
 
     def _validar_dato(
         self, tramite_id: int, documento_id: int, dato: dict[str, Any], valor: str
@@ -388,7 +438,7 @@ class Sembrador:
         tramite_id = registro["id"]
         archivo_id = self._cargar(tramite_id, "O-v2")
         registro["archivos"]["O-v2"] = archivo_id
-        self.esperar(self.api, tramite_id, [archivo_id])
+        self._procesar(tramite_id, [archivo_id])
         archivo = next(
             a
             for a in self.api.get(f"/tramites/{tramite_id}/archivos", "responsable")
@@ -436,22 +486,28 @@ class Sembrador:
 
     # --- Recorrido completo ---------------------------------------------------------
 
-    def ejecutar(self) -> Manifiesto:
-        salud = self.api.get("/salud")
-        if salud["operacion"] != "active":
+    def _exigir_active(self) -> None:
+        if self.api.get("/salud")["operacion"] != "active":
             raise RuntimeError("La API no está en active: no se siembra")
-        self.preparar_cuentas()
-        self.crear_plantilla()
+
+    def _estado(self, registro: dict[str, Any]) -> None:
+        registro["estado"] = self.api.get(f"/tramites/{registro['id']}", "responsable")["estado"]
+
+    def sembrar_observado(self) -> None:
         observado = self.cargar_documentos(
             "observado", "Servicio de mantenimiento de laboratorio", ("C-v1", "O-v1", "F-v2")
         )
         self.validar(observado)
         self.vincular(observado)
         self.revisar(observado)
+
+    def sembrar_en_vivo(self) -> None:
         en_vivo = self.cargar_documentos(
             "en_vivo", "Servicio de mantenimiento de laboratorio (en vivo)", ("C-v1",)
         )
-        en_vivo["estado"] = self.api.get(f"/tramites/{en_vivo['id']}", "responsable")["estado"]
+        self._estado(en_vivo)
+
+    def sembrar_cerrado(self) -> None:
         cerrado = self.cargar_documentos(
             "cerrado",
             "Servicio de mantenimiento de laboratorio (historia completa)",
@@ -462,6 +518,8 @@ class Sembrador:
         self.revisar(cerrado)
         self.corregir_con_version(cerrado)
         self.cerrar(cerrado)
+
+    def sembrar_cancelado(self) -> None:
         tramite = self.api.post(
             "/tramites", "responsable", {"titulo": "Mantenimiento de equipos (cancelado)"}
         )
@@ -469,9 +527,53 @@ class Sembrador:
             f"/tramites/{tramite['id']}/cancelacion", "responsable", {"motivo": MOTIVO_CANCELACION}
         )
         self.m.tramites["cancelado"] = {"id": tramite["id"], "estado": cancelado["estado"]}
+
+    def _terminar(self) -> Manifiesto:
         self.m.resultado = "completado"
         self.m.terminado_en = datetime.now(UTC).isoformat()
         return self.m
+
+    def ejecutar(self) -> Manifiesto:
+        self._exigir_active()
+        self.preparar_cuentas()
+        self.crear_plantilla()
+        self.sembrar_observado()
+        self.sembrar_en_vivo()
+        self.sembrar_cerrado()
+        self.sembrar_cancelado()
+        return self._terminar()
+
+    def reanudar(self) -> Manifiesto:
+        """Continúa una semilla interrumpida. Lo ya hecho no se repite; lo que quedó a medias
+        se completa por la API (en vivo) o se cancela con su motivo y se reemplaza (cerrado)."""
+        self._exigir_active()
+        self.m.reanudaciones.append(datetime.now(UTC).isoformat())
+        if (
+            self.m.plantilla_id is None
+            or self.m.tramites.get("observado", {}).get("estado") != "observado"
+        ):
+            raise RuntimeError("El trámite observado no quedó completo: sembrar de nuevo")
+        en_vivo = self.m.tramites.get("en_vivo")
+        if en_vivo is None:
+            self.sembrar_en_vivo()
+        else:
+            self.reintentar_fallidos(en_vivo)
+            self._estado(en_vivo)
+        cerrado = self.m.tramites.get("cerrado")
+        if cerrado is not None and cerrado.get("estado") != "cerrado":
+            respuesta = self.api.post(
+                f"/tramites/{cerrado['id']}/cancelacion",
+                "responsable",
+                {"motivo": MOTIVO_REEMPLAZO},
+            )
+            cerrado["estado"] = respuesta["estado"]
+            cerrado["motivo_cancelacion"] = MOTIVO_REEMPLAZO
+            self.m.reemplazados.append(self.m.tramites.pop("cerrado"))
+        if "cerrado" not in self.m.tramites:
+            self.sembrar_cerrado()
+        if "cancelado" not in self.m.tramites:
+            self.sembrar_cancelado()
+        return self._terminar()
 
 
 def huellas_corpus() -> dict[str, str]:
@@ -502,29 +604,52 @@ def main(argumentos: list[str] | None = None) -> int:
         "--usuarios", nargs=4, required=True, metavar="ROL=USUARIO", help="Los cuatro roles"
     )
     analizador.add_argument("--manifiesto", required=True, type=Path)
+    analizador.add_argument(
+        "--reanudar",
+        action="store_true",
+        help="Continúa la semilla interrumpida del manifiesto (misma sesión y API)",
+    )
     opciones = analizador.parse_args(argumentos)
-    if opciones.manifiesto.exists():
-        print(
-            "El manifiesto ya existe: no se repite una semilla sobre datos sin auditar",
-            file=sys.stderr,
-        )
-        return 1
     usuarios = dict(u.split("=", 1) for u in opciones.usuarios)
     if set(usuarios) != set(ROLES):
         print(f"Se esperan exactamente los roles {', '.join(ROLES)}", file=sys.stderr)
         return 2
     oraculo = json.loads(ORACULO.read_text(encoding="utf-8"))
-    manifiesto = Manifiesto(
-        sesion=opciones.sesion,
-        url_api=opciones.url_api,
-        oraculo=f"{oraculo['id']} ({oraculo['estado']})",
-        corpus=verificar_corpus(oraculo),
-    )
+    corpus = verificar_corpus(oraculo)
+    if opciones.reanudar:
+        if not opciones.manifiesto.exists():
+            print("No hay manifiesto que reanudar", file=sys.stderr)
+            return 1
+        manifiesto = Manifiesto(**json.loads(opciones.manifiesto.read_text(encoding="utf-8")))
+        if not manifiesto.resultado.startswith("fallido") or (
+            manifiesto.sesion,
+            manifiesto.url_api,
+            manifiesto.corpus,
+        ) != (opciones.sesion, opciones.url_api, corpus):
+            print(
+                "Solo se reanuda una semilla interrumpida de la misma sesión, API y corpus",
+                file=sys.stderr,
+            )
+            return 1
+    elif opciones.manifiesto.exists():
+        print(
+            "El manifiesto ya existe: no se repite una semilla sobre datos sin auditar",
+            file=sys.stderr,
+        )
+        return 1
+    else:
+        manifiesto = Manifiesto(
+            sesion=opciones.sesion,
+            url_api=opciones.url_api,
+            oraculo=f"{oraculo['id']} ({oraculo['estado']})",
+            corpus=corpus,
+        )
     cliente = ClienteApi(
         opciones.url_api, tokens_cognito(opciones.region, opciones.cliente_cognito, usuarios)
     )
+    sembrador = Sembrador(cliente, manifiesto, oraculo)
     try:
-        Sembrador(cliente, manifiesto, oraculo).ejecutar()
+        sembrador.reanudar() if opciones.reanudar else sembrador.ejecutar()
     except (ErrorApi, RuntimeError) as error:
         manifiesto.resultado = f"fallido: {error}"
         guardar(manifiesto, opciones.manifiesto)

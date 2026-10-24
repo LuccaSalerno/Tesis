@@ -28,11 +28,13 @@ from atlas.herramientas.cliente_api import (
 from atlas.integraciones.aws import crear_cliente
 from atlas.principal import crear_aplicacion
 from atlas.procesamiento import esquemas
+from atlas.servicios import resultados
 from tests.conftest import CLAVES_PRUEBA, configuracion_sin_base
 from tests.datos import crear_cuenta
 from tests.flujo_procesamiento import (
     PAGINAS_C_V1,
     AnalizadorFijo,
+    en_sesion,
     extraccion_c_v1_pdf,
     modelo_contrato,
     recorrer,
@@ -68,6 +70,9 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
         tokens[rol] = CLAVES_PRUEBA.emitir(f"sub-{rol}-{uuid.uuid4()}")
     with TestClient(aplicacion) as cliente:
         api = ClienteApi("http://testserver", tokens, transporte_de(cliente))
+        # (fragmento del título del trámite, prefijo del archivo): falla una vez, como el
+        # token repetido de Textract de la sesión del 24/10.
+        fallos: set[tuple[str, str]] = set()
 
         def procesar(_: ClienteApi, __: int, archivos: list[int]) -> None:
             # Todo se procesa con el contrato fijo: O-v1 y F-v2 quedan sugeridos como
@@ -76,9 +81,31 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
             # O-v1 por su número (DIF-84).
             for archivo in archivos:
                 with motor_aplicacion.connect() as conexion:
-                    nombre = conexion.execute(
-                        text("SELECT nombre FROM atlas.archivo WHERE id = :a"), {"a": archivo}
-                    ).scalar_one()
+                    nombre, titulo, estado, intento = conexion.execute(
+                        text(
+                            "SELECT a.nombre, t.titulo, p.estado, p.intento"
+                            " FROM atlas.archivo a JOIN atlas.tramite t ON t.id = a.tramite_id"
+                            " JOIN atlas.trabajo_procesamiento p ON p.archivo_id = a.id"
+                            " WHERE a.id = :a"
+                        ),
+                        {"a": archivo},
+                    ).one()
+                if estado in ("completado", "fallido"):
+                    continue
+                trabajo = trabajo_de(motor_aplicacion, archivo)
+                fallo = next(
+                    (f for f in fallos if f[0] in titulo and nombre.startswith(f[1])), None
+                )
+                if fallo is not None:
+                    fallos.discard(fallo)
+                    en_sesion(
+                        aplicacion,
+                        resultados.registrar_fallo,
+                        trabajo_id=trabajo,
+                        intento=intento,
+                        codigo="textract_IdempotentParameterMismatchException",
+                    )
+                    continue
                 modelo = modelo_contrato(extraccion_c_v1_pdf())
                 if nombre.startswith("O-v2"):
                     modelo = ModeloFijo(
@@ -90,14 +117,9 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
                             },
                         }
                     )
-                recorrer(
-                    aplicacion,
-                    trabajo_de(motor_aplicacion, archivo),
-                    modelo,
-                    AnalizadorFijo(PAGINAS_C_V1),
-                )
+                recorrer(aplicacion, trabajo, modelo, AnalizadorFijo(PAGINAS_C_V1), intento=intento)
 
-        yield {"api": api, "procesar": procesar, "aplicacion": aplicacion}
+        yield {"api": api, "procesar": procesar, "aplicacion": aplicacion, "fallos": fallos}
     aplicacion.state.motor.dispose()
 
 
@@ -160,6 +182,52 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert segunda["decision"]["tipo"] == "observacion"
     assert segunda["decision"]["motivo"] == sembrar_demo.MOTIVO_OBSERVACION
     assert {c["codigo_regla"][:2] for c in primera["controles"]} == {"R1", "R2", "R3", "R4"}
+
+
+@pytest.mark.integracion
+def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
+    entorno: dict[str, Any],
+) -> None:
+    """Sesión del 24/10: Textract rechazó el token de trabajos del trámite en vivo y del
+    cerrado. La semilla se detiene antes de validar a mano; `reanudar` reintenta el en vivo
+    por la API y reemplaza el cerrado incompleto, que queda cancelado con su motivo."""
+    fallos = entorno["fallos"]
+    fallos.add(("(en vivo)", "C-v1"))
+    semilla = sembrar_demo.Sembrador(entorno["api"], _manifiesto(), ORACULO, entorno["procesar"])
+    with pytest.raises(RuntimeError, match="Procesamiento fallido"):
+        semilla.ejecutar()
+    en_vivo = semilla.m.tramites["en_vivo"]
+    assert en_vivo["documentos"] == {}  # no se incorpora un archivo sin procesar
+    assert semilla.m.tramites["observado"]["estado"] == "observado"
+
+    fallos.add(("(historia completa)", "O-v2"))
+    with pytest.raises(RuntimeError, match="Procesamiento fallido"):
+        semilla.reanudar()
+    assert en_vivo["reintentos"] == [en_vivo["archivos"]["C-v1"]]
+    assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"C-v1"}
+    incompleto = semilla.m.tramites["cerrado"]
+    assert incompleto["estado"] == "observado" and "O-v2" not in incompleto["validaciones"]
+
+    manifiesto = semilla.reanudar()
+    assert manifiesto.resultado == "completado" and len(manifiesto.reanudaciones) == 2
+    [reemplazado] = manifiesto.reemplazados
+    assert reemplazado["id"] == incompleto["id"] and reemplazado["estado"] == "cancelado"
+    tramite = entorno["api"].get(f"/tramites/{incompleto['id']}", "responsable")
+    assert tramite["motivo_cancelacion"] == sembrar_demo.MOTIVO_REEMPLAZO
+    cerrado = manifiesto.tramites["cerrado"]
+    assert cerrado["id"] != incompleto["id"] and cerrado["estado"] == "cerrado"
+    assert cerrado["criterio_version"] == "numero"
+    assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"
+    assert not fallos
+
+
+def test_p11_reanudar_exige_el_observado_completo() -> None:
+    class Api:
+        def get(self, ruta: str, *_: Any) -> dict[str, str]:
+            return {"operacion": "active"}
+
+    with pytest.raises(RuntimeError, match="observado"):
+        sembrar_demo.Sembrador(Api(), _manifiesto(), ORACULO).reanudar()  # type: ignore[arg-type]
 
 
 def test_p11_no_siembra_fuera_de_active() -> None:
@@ -237,6 +305,21 @@ def test_p11_main_valida_argumentos_y_guarda_el_resultado(
     correcto = tmp_path / "correcto.json"
     assert sembrar_demo.main([*base, *usuarios, "--manifiesto", str(correcto)]) == 0
     assert json.loads(correcto.read_text())["corpus"] == sembrar_demo.huellas_corpus()
+
+    # --reanudar: solo sobre una semilla interrumpida de la misma sesión, API y corpus.
+    reanudar = ["--reanudar", "--manifiesto"]
+    assert sembrar_demo.main([*base, *usuarios, *reanudar, str(tmp_path / "no.json")]) == 1
+    assert sembrar_demo.main([*base, *usuarios, *reanudar, str(correcto)]) == 1
+    otra = ["--url-api", "https://otra.ejemplo", *base[2:]]
+    assert sembrar_demo.main([*otra, *usuarios, *reanudar, str(fallido)]) == 1
+
+    def reanuda(self: Any) -> Any:
+        self.m.reanudaciones.append("ahora")
+        return self.m
+
+    monkeypatch.setattr(sembrar_demo.Sembrador, "reanudar", reanuda)
+    assert sembrar_demo.main([*base, *usuarios, *reanudar, str(fallido)]) == 0
+    assert json.loads(fallido.read_text())["reanudaciones"] == ["ahora"]
 
 
 # --- Cliente HTTP y tokens ---------------------------------------------------------------

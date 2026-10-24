@@ -5,6 +5,7 @@ trae botocore y devuelve respuestas fijas: comprueba la forma de las llamadas si
 contactar AWS. No evalúa la calidad de los servicios.
 """
 
+import re
 from typing import Any
 
 import boto3
@@ -157,12 +158,24 @@ def test_rc_p08_7_textract_con_tables_layout_y_token_estable() -> None:
             {
                 "DocumentLocation": {"S3Object": {"Bucket": "bucket", "Name": "documentos/x"}},
                 "FeatureTypes": ["TABLES", "LAYOUT"],
-                "ClientRequestToken": "atlas-trabajo-7-intento-2",
+                "ClientRequestToken": token_solicitud(7, 2, "bucket", "documentos/x"),
                 "JobTag": "trabajo-7",
             },
         )
         assert AnalizadorTextract(textract, "bucket").iniciar("documentos/x", 7, 2) == "job-1"
-    assert token_solicitud(7, 2) == token_solicitud(7, 2) != token_solicitud(7, 3)
+    token = token_solicitud(7, 2, "bucket", "documentos/x")
+    assert token == token_solicitud(7, 2, "bucket", "documentos/x")
+    assert token != token_solicitud(7, 3, "bucket", "documentos/x")
+    assert re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", token)
+
+
+def test_rc_p08_7_token_distinto_entre_sesiones_con_el_mismo_trabajo() -> None:
+    """Sesión E90A del 24/10: el trabajo 4 de una base nueva repetía el token de una sesión
+    anterior en la misma cuenta y Textract respondía IdempotentParameterMismatchException."""
+    anterior = token_solicitud(4, 1, "atlas-demo-documentos-e90-2026-10-21-5566", "documentos/4")
+    actual = token_solicitud(4, 1, "atlas-demo-documentos-e90-2026-10-24-5566", "documentos/4")
+    assert anterior != actual
+    assert token_solicitud(4, 1, "b", "documentos/4") != token_solicitud(4, 1, "b", "documentos/5")
 
 
 @pytest.mark.parametrize(
