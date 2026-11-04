@@ -9,23 +9,25 @@ el flujo y subsana; solo el revisor/aprobador asignado decide (RN-08). Lo que no
 ver responde 404, igual que lo inexistente.
 """
 
-import uuid
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
-    UsuarioActual,
+    Administrador,
+    Autenticado,
+    Nombre,
+    Responsable,
+    Revisor,
+    Sesion,
+    SolicitudId,
+    acceso_de_consulta,
     es_revisor,
-    exigir_rol,
-    obtener_sesion,
-    obtener_solicitud_id,
-    obtener_usuario_actual,
 )
-from atlas.api.tramites import Localizador, TramiteRespuesta
+from atlas.api.tramites import Localizador, TramiteRespuesta, localizador_de
 from atlas.api.vinculos import ControlRespuesta, EjecucionRespuesta
 from atlas.dominio.enumeraciones import (
     AlcancePlantilla,
@@ -46,7 +48,6 @@ from atlas.persistencia.modelos import (
     Decision,
     EventoAuditoria,
     FirmaSimulada,
-    ReferenciaFuente,
     Tarea,
     VersionDocumental,
 )
@@ -63,15 +64,6 @@ from atlas.servicios import (
 from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(tags=["revision"])
-
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
-Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
-Revisor = Annotated[UsuarioActual, Depends(exigir_rol(Rol.REVISOR_APROBADOR))]
-Administrador = Annotated[UsuarioActual, Depends(exigir_rol(Rol.ADMINISTRADOR_OPERATIVO))]
-SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
-
-Nombre = Annotated[str, Field(min_length=1, max_length=120, pattern=r"\S")]
 
 
 # --- Plantillas (RC-P03.1, P1) ----------------------------------------------------------
@@ -378,9 +370,7 @@ def confirmar_flujo(
 def listar_ciclos(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> list[CicloRespuesta]:
     """RN-09: cada ciclo con sus versiones consideradas y sus tareas. El revisor ve los
     ciclos en los que tiene una tarea asignada."""
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     return [
         _ciclo(sesion, c)
         for c in ciclos.listar(sesion, acceso.tramite.id)
@@ -650,9 +640,7 @@ def consultar_linea_de_tiempo(
 ) -> list[HitoRespuesta]:
     """RF-22: historial del trámite en orden, con acceso a la versión de cada evento. El
     revisor ve todos los eventos (solo metadatos) y abre las versiones de sus ciclos."""
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     return [
         HitoRespuesta(
             **EventoRespuesta.desde(h.evento).model_dump(),
@@ -764,12 +752,6 @@ class EvidenciaRespuesta(BaseModel):
     )
 
 
-def _localizador(fuente: ReferenciaFuente | None) -> Localizador | None:
-    if fuente is None:
-        return None
-    return Localizador(pagina=fuente.pagina, seccion=fuente.seccion, fragmento=fuente.fragmento)
-
-
 @enrutador.get("/decisiones/{decision_id}/evidencia", response_model=EvidenciaRespuesta)
 def consultar_evidencia(
     decision_id: int, usuario: Autenticado, sesion: Sesion
@@ -795,14 +777,14 @@ def consultar_evidencia(
                 campo=v.validacion.campo,
                 valor_sugerido=None if v.sugerencia is None else v.sugerencia.valor,
                 valor_sugerido_id=v.validacion.valor_sugerido_id,
-                localizador_sugerido=_localizador(v.fuente_sugerencia),
+                localizador_sugerido=localizador_de(v.fuente_sugerencia),
                 valor_validado=v.validacion.valor_validado,
                 tipo=v.validacion.tipo,
                 motivo_ausencia=v.validacion.motivo_ausencia,
                 validador_id=v.validacion.validador_id,
                 validado_en=v.validacion.validado_en,
                 reemplaza_a_id=v.validacion.reemplaza_a_id,
-                localizador_validado=_localizador(v.fuente_validacion),
+                localizador_validado=localizador_de(v.fuente_validacion),
             )
             for v in actual.validaciones
         ],
@@ -843,9 +825,7 @@ def firmar(
 @enrutador.get("/tramites/{tramite_id}/firma", response_model=FirmaRespuesta)
 def consultar_firma(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> FirmaRespuesta:
     """V11: la firma sigue consultable con el trámite Cerrado (RN-15)."""
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     aplicada = firma.de_tramite(sesion, acceso.tramite.id)
     if aplicada is None or not acceso.permite(aplicada.version_id):
         raise NoEncontrado("El trámite no tiene una firma simulada")

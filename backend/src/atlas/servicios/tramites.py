@@ -222,3 +222,10 @@ def documentos_de_versiones(sesion: Session, versiones: frozenset[int]) -> set[i
             select(VersionDocumental.documento_id).where(VersionDocumental.id.in_(versiones))
         )
     )
+
+
+def documento_del_tramite(sesion: Session, tramite: Tramite, documento_id: int) -> Documento:
+    documento = sesion.get(Documento, documento_id)
+    if documento is None or documento.tramite_id != tramite.id:
+        raise NoEncontrado("El documento no existe en este trámite")
+    return documento

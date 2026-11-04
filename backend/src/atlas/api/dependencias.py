@@ -12,12 +12,13 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import Field
 from sqlalchemy.orm import Session
 
 from atlas.autenticacion.verificador import ErrorAutenticacion, VerificadorJwt
 from atlas.dominio.enumeraciones import EstadoUsuario, Rol
 from atlas.registro import registrar_evento
-from atlas.servicios import cuentas
+from atlas.servicios import cuentas, tramites
 
 _registrador = logging.getLogger("atlas.api")
 _portador = HTTPBearer(auto_error=False)
@@ -41,9 +42,15 @@ def obtener_sesion(request: Request) -> Iterator[Session]:
             raise
 
 
+Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
+
+
 def obtener_solicitud_id(request: Request) -> uuid.UUID | None:
     valor = getattr(request.state, "solicitud_id", None)
     return uuid.UUID(valor) if valor else None
+
+
+SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
 
 
 @dataclass(frozen=True)
@@ -81,7 +88,7 @@ def _denegar(request: Request, codigo: str, usuario_id: int | None = None) -> HT
 def obtener_usuario_actual(
     request: Request,
     credenciales: Annotated[HTTPAuthorizationCredentials | None, Depends(_portador)],
-    sesion: Annotated[Session, Depends(obtener_sesion, scope="function")],
+    sesion: Sesion,
 ) -> UsuarioActual:
     """RF-01 y RN-01: token válido y cuenta registrada y habilitada en cada solicitud,
     aunque el token todavía no haya vencido (§5.4.3)."""
@@ -102,6 +109,9 @@ def obtener_usuario_actual(
     )
 
 
+Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
+
+
 def exigir_rol(rol: Rol) -> Callable[..., UsuarioActual]:
     """RF-02: la operación requiere el rol indicado (Tabla 3.II)."""
 
@@ -116,6 +126,19 @@ def exigir_rol(rol: Rol) -> Callable[..., UsuarioActual]:
     return dependencia
 
 
+Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
+Revisor = Annotated[UsuarioActual, Depends(exigir_rol(Rol.REVISOR_APROBADOR))]
+Administrador = Annotated[UsuarioActual, Depends(exigir_rol(Rol.ADMINISTRADOR_OPERATIVO))]
+
+Nombre = Annotated[str, Field(min_length=1, max_length=120, pattern=r"\S")]
+
+
 def es_revisor(usuario: UsuarioActual) -> bool:
     """El acceso derivado de una tarea exige el rol de revisor/aprobador (RF-19, P8)."""
     return Rol.REVISOR_APROBADOR in usuario.roles
+
+
+def acceso_de_consulta(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramites.Acceso:
+    return tramites.obtener_para_consulta(
+        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
+    )

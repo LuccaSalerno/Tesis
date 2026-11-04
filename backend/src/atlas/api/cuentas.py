@@ -6,18 +6,17 @@ visible, para mostrar quién actuó (DO-2026-10-22-WEB F5). La supresión (RF-25
 operaciones de Cognito (§5.4.2) y todavía no está implementada.
 """
 
-import uuid
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, Request, status
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
+    Administrador,
+    Nombre,
+    Sesion,
+    SolicitudId,
     UsuarioActual,
-    exigir_rol,
-    obtener_sesion,
-    obtener_solicitud_id,
     obtener_usuario_actual,
 )
 from atlas.dominio.enumeraciones import EstadoUsuario, Rol
@@ -25,10 +24,6 @@ from atlas.integraciones.puertos import GestorIdentidades
 from atlas.servicios import cuentas
 
 enrutador = APIRouter(prefix="/usuarios", tags=["cuentas"])
-
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Administrador = Annotated[UsuarioActual, Depends(exigir_rol(Rol.ADMINISTRADOR_OPERATIVO))]
-SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
 
 
 class CuentaRespuesta(BaseModel):
@@ -58,16 +53,13 @@ class YoRespuesta(BaseModel):
     nombre_visible: str | None
 
 
-NombreVisible = Annotated[str, Field(min_length=1, max_length=120, pattern=r"\S")]
-
-
 class AltaCuenta(BaseModel):
     identificador_externo: str = Field(min_length=1, max_length=128, pattern=r"^\S+$")
-    nombre_visible: NombreVisible | None = None
+    nombre_visible: Nombre | None = None
 
 
 class CambioNombre(BaseModel):
-    nombre_visible: NombreVisible | None
+    nombre_visible: Nombre | None
 
 
 class EntradaDirectorio(BaseModel):

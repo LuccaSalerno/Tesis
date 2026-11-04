@@ -40,7 +40,8 @@ from atlas.persistencia.modelos import (
 from atlas.procesamiento import esquemas
 from atlas.servicios import reglas, resultados, vinculos
 from atlas.servicios.auditoria import registrar_evento_auditoria
-from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
+from atlas.servicios.errores import Conflicto, ErrorDominio
+from atlas.servicios.tramites import documento_del_tramite
 
 ESTADOS_QUE_ADMITEN = frozenset({EstadoTramite.BORRADOR, EstadoTramite.PENDIENTE_VALIDACION})
 CAMPO_CLASIFICACION = esquemas.CAMPO_CLASIFICACION
@@ -68,20 +69,13 @@ class ValidacionesDeVersion:
     fuentes: dict[int, ReferenciaFuente]
 
 
-def _documento(sesion: Session, tramite: Tramite, documento_id: int) -> Documento:
-    documento = sesion.get(Documento, documento_id)
-    if documento is None or documento.tramite_id != tramite.id:
-        raise NoEncontrado("El documento no existe en este trámite")
-    return documento
-
-
 def _vigentes(validaciones: list[ValidacionHumana]) -> dict[tuple[str, str], ValidacionHumana]:
     reemplazadas = {v.reemplaza_a_id for v in validaciones if v.reemplaza_a_id is not None}
     return {(v.clase, v.campo): v for v in validaciones if v.id not in reemplazadas}
 
 
 def consultar(sesion: Session, tramite: Tramite, documento_id: int) -> ValidacionesDeVersion:
-    documento = _documento(sesion, tramite, documento_id)
+    documento = documento_del_tramite(sesion, tramite, documento_id)
     version = sesion.get_one(VersionDocumental, documento.version_vigente_id)
     validaciones = list(
         sesion.scalars(

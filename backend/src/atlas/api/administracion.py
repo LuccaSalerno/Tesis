@@ -5,20 +5,15 @@ documental ni datos validados; los demás roles reciben 403.
 """
 
 from datetime import datetime
-from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
 
-from atlas.api.dependencias import UsuarioActual, exigir_rol, obtener_sesion
-from atlas.dominio.enumeraciones import EstadoTarea, EstadoTrabajo, EstadoTramite, Rol
+from atlas.api.dependencias import Administrador, Sesion
+from atlas.dominio.enumeraciones import EstadoTarea, EstadoTrabajo, EstadoTramite
 from atlas.servicios import estado_general
 
 enrutador = APIRouter(prefix="/administracion", tags=["administracion"])
-
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Administrador = Annotated[UsuarioActual, Depends(exigir_rol(Rol.ADMINISTRADOR_OPERATIVO))]
 
 
 class TramiteGeneral(BaseModel):

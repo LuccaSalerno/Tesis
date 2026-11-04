@@ -12,7 +12,7 @@ from typing import Final
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from atlas.dominio.enumeraciones import AccionAuditoria, EstadoCiclo, EstadoTarea, EstadoTramite
+from atlas.dominio.enumeraciones import AccionAuditoria, EstadoCiclo, EstadoTramite
 from atlas.persistencia.modelos import Tramite
 from atlas.servicios import ciclos
 from atlas.servicios.auditoria import registrar_evento_auditoria
@@ -58,19 +58,13 @@ def cancelar(
             tramite_id=tramite.id,
             solicitud_id=solicitud_id,
         )
-        for tarea in ciclos.tareas(sesion, ciclo.id):
-            if tarea.estado in ciclos.ABIERTAS:
-                tarea.estado = EstadoTarea.ANULADA
-                sesion.flush()
-                registrar_evento_auditoria(
-                    sesion,
-                    accion=AccionAuditoria.TAREA_ANULADA,
-                    entidad_tipo="tarea",
-                    entidad_id=tarea.id,
-                    actor_id=usuario_id,
-                    tramite_id=tramite.id,
-                    solicitud_id=solicitud_id,
-                )
+        ciclos.anular_tareas_abiertas(
+            sesion,
+            ciclo.id,
+            usuario_id=usuario_id,
+            tramite_id=tramite.id,
+            solicitud_id=solicitud_id,
+        )
     tramite.estado = EstadoTramite.CANCELADO
     tramite.motivo_cancelacion = motivo
     sesion.flush()

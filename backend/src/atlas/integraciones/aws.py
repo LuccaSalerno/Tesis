@@ -6,6 +6,8 @@ credenciales de la identidad del despliegue (rol de la Lambda).
 """
 
 import json
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import datetime
 from typing import Any, Final
 
@@ -53,27 +55,33 @@ def nombre_ejecucion(trabajo_id: int, intento: int) -> str:
     return f"trabajo-{trabajo_id}-intento-{intento}"
 
 
+@contextmanager
+def _errores_s3(codigo: str) -> Iterator[None]:
+    try:
+        yield
+    except (BotoCoreError, ClientError) as error:
+        raise ErrorIntegracion(codigo) from error
+
+
 class AlmacenS3:
     def __init__(self, cliente: Any, bucket: str) -> None:
         self._cliente = cliente
         self._bucket = bucket
 
     def url_carga(self, clave: str, tipo_contenido: str, vigencia_s: int) -> str:
-        try:
+        with _errores_s3("s3_url_no_generada"):
             url: str = self._cliente.generate_presigned_url(
                 "put_object",
                 Params={"Bucket": self._bucket, "Key": clave, "ContentType": tipo_contenido},
                 ExpiresIn=vigencia_s,
                 HttpMethod="PUT",
             )
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_url_no_generada") from error
         return url
 
     def url_lectura(self, clave: str, vigencia_s: int, nombre: str) -> str:
         # El nombre solo va como sugerencia de descarga; se limpia de comillas.
         limpio = nombre.replace('"', "").replace("\\", "")
-        try:
+        with _errores_s3("s3_url_no_generada"):
             url: str = self._cliente.generate_presigned_url(
                 "get_object",
                 Params={
@@ -83,8 +91,6 @@ class AlmacenS3:
                 },
                 ExpiresIn=vigencia_s,
             )
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_url_no_generada") from error
         return url
 
     def metadatos(self, clave: str) -> MetadatosObjeto | None:
@@ -99,62 +105,43 @@ class AlmacenS3:
         return MetadatosObjeto(tamano_bytes=int(respuesta["ContentLength"]))
 
     def leer(self, clave: str) -> bytes:
-        try:
+        with _errores_s3("s3_lectura_fallida"):
             datos: bytes = self._cliente.get_object(Bucket=self._bucket, Key=clave)["Body"].read()
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_lectura_fallida") from error
         return datos
 
     def escribir(self, clave: str, datos: bytes, tipo_contenido: str) -> None:
-        try:
+        with _errores_s3("s3_escritura_fallida"):
             self._cliente.put_object(
                 Bucket=self._bucket, Key=clave, Body=datos, ContentType=tipo_contenido
             )
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_escritura_fallida") from error
 
     def eliminar_prefijo(self, prefijo: str) -> int:
-        # Una sola enumeración y borrado por lotes: listar por clave hacía el costo cuadrático
-        # en la cantidad de objetos del prefijo.
-        try:
-            versiones = [
-                {"Key": v["Key"], "VersionId": v["VersionId"]}
-                for pagina in self._cliente.get_paginator("list_object_versions").paginate(
-                    Bucket=self._bucket, Prefix=prefijo
-                )
-                for v in pagina.get("Versions", []) + pagina.get("DeleteMarkers", [])
-            ]
-            for inicio in range(0, len(versiones), 1000):
-                respuesta = self._cliente.delete_objects(
-                    Bucket=self._bucket,
-                    Delete={"Objects": versiones[inicio : inicio + 1000], "Quiet": True},
-                )
-                if respuesta.get("Errors"):
-                    raise ErrorIntegracion("s3_eliminacion_incompleta")
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_eliminacion_fallida") from error
-        return len(versiones)
+        return self._borrar_versiones(prefijo)
 
     def copiar(self, origen: str, destino: str) -> None:
-        try:
+        with _errores_s3("s3_copia_fallida"):
             self._cliente.copy_object(
                 Bucket=self._bucket,
                 Key=destino,
                 CopySource={"Bucket": self._bucket, "Key": origen},
                 MetadataDirective="COPY",
             )
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_copia_fallida") from error
 
     def eliminar_definitivamente(self, clave: str) -> int:
-        try:
+        return self._borrar_versiones(clave, exacta=True)
+
+    def _borrar_versiones(self, prefijo: str, *, exacta: bool = False) -> int:
+        # Una sola enumeración y borrado por lotes: listar por clave hacía el costo cuadrático
+        # en la cantidad de objetos del prefijo. Con `exacta` se excluyen otras claves que el
+        # prefijo podría abarcar.
+        with _errores_s3("s3_eliminacion_fallida"):
             versiones = [
-                {"Key": clave, "VersionId": v["VersionId"]}
+                {"Key": v["Key"], "VersionId": v["VersionId"]}
                 for pagina in self._cliente.get_paginator("list_object_versions").paginate(
-                    Bucket=self._bucket, Prefix=clave
+                    Bucket=self._bucket, Prefix=prefijo
                 )
                 for v in pagina.get("Versions", []) + pagina.get("DeleteMarkers", [])
-                if v["Key"] == clave  # el prefijo podría abarcar otras claves
+                if not exacta or v["Key"] == prefijo
             ]
             for inicio in range(0, len(versiones), 1000):
                 respuesta = self._cliente.delete_objects(
@@ -163,13 +150,11 @@ class AlmacenS3:
                 )
                 if respuesta.get("Errors"):
                     raise ErrorIntegracion("s3_eliminacion_incompleta")
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_eliminacion_fallida") from error
         return len(versiones)
 
     def abortar_multipartes(self, prefijo: str, iniciadas_antes: datetime) -> int:
         abortadas = 0
-        try:
+        with _errores_s3("s3_multiparte_fallida"):
             for pagina in self._cliente.get_paginator("list_multipart_uploads").paginate(
                 Bucket=self._bucket, Prefix=prefijo
             ):
@@ -179,8 +164,6 @@ class AlmacenS3:
                             Bucket=self._bucket, Key=carga["Key"], UploadId=carga["UploadId"]
                         )
                         abortadas += 1
-        except (BotoCoreError, ClientError) as error:
-            raise ErrorIntegracion("s3_multiparte_fallida") from error
         return abortadas
 
 

@@ -14,7 +14,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from sqlalchemy import func, select, text
+from sqlalchemy import RowMapping, func, select, text
 from sqlalchemy.orm import Session
 
 from atlas.dominio.enumeraciones import MotivoAbstencion
@@ -63,6 +63,21 @@ class FragmentoRecuperado:
     seccion: str | None
 
 
+def _fragmento(fila: RowMapping, etiqueta: str, distancia: float) -> FragmentoRecuperado:
+    return FragmentoRecuperado(
+        etiqueta=etiqueta,
+        fragmento_id=fila["id"],
+        contenido=fila["contenido"],
+        distancia=distancia,
+        documento_id=fila["documento_id"],
+        documento_nombre=fila["documento_nombre"],
+        version_id=fila["version_id"],
+        version_numero=fila["version_numero"],
+        pagina=fila["pagina"],
+        seccion=fila["seccion"],
+    )
+
+
 @dataclass(frozen=True)
 class Afirmacion:
     texto: str
@@ -96,18 +111,7 @@ def recuperar(
         },
     ).mappings()
     return [
-        FragmentoRecuperado(
-            etiqueta=f"F{posicion}",
-            fragmento_id=fila["id"],
-            contenido=fila["contenido"],
-            distancia=float(fila["distancia"]),
-            documento_id=fila["documento_id"],
-            documento_nombre=fila["documento_nombre"],
-            version_id=fila["version_id"],
-            version_numero=fila["version_numero"],
-            pagina=fila["pagina"],
-            seccion=fila["seccion"],
-        )
+        _fragmento(fila, f"F{posicion}", float(fila["distancia"]))
         for posicion, fila in enumerate(filas, start=1)
     ]
 
@@ -304,18 +308,7 @@ def historial(sesion: Session, tramite_id: int, usuario_id: int) -> list[Consult
     )
     ids = sorted({i for c in consultas for a in c.afirmaciones for i in _citas(a)})
     fragmentos = {
-        fila["id"]: FragmentoRecuperado(
-            etiqueta="",
-            fragmento_id=fila["id"],
-            contenido=fila["contenido"],
-            distancia=0.0,
-            documento_id=fila["documento_id"],
-            documento_nombre=fila["documento_nombre"],
-            version_id=fila["version_id"],
-            version_numero=fila["version_numero"],
-            pagina=fila["pagina"],
-            seccion=fila["seccion"],
-        )
+        fila["id"]: _fragmento(fila, "", 0.0)
         for fila in sesion.execute(_CITADOS, {"tramite": tramite_id, "ids": ids}).mappings()
     }
     recuperados = dict(

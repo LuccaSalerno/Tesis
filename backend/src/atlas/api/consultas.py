@@ -11,20 +11,17 @@ from collections.abc import Iterable
 from datetime import datetime
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Request, Response, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from atlas.api import arranque
-from atlas.api.dependencias import UsuarioActual, es_revisor, obtener_sesion, obtener_usuario_actual
+from atlas.api.dependencias import Autenticado, Sesion, UsuarioActual, acceso_de_consulta
 from atlas.dominio.enumeraciones import MotivoAbstencion, Rol
 from atlas.servicios import consultas, tramites
 from atlas.servicios.errores import NoPermitido
 
 enrutador = APIRouter(prefix="/tramites", tags=["consultas"])
-
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
 
 
 class NuevaConsulta(BaseModel):
@@ -103,9 +100,7 @@ def _acceso(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramite
     # Tabla 3.II: responsable del trámite o revisor/aprobador con tarea asignada.
     if not ({Rol.RESPONSABLE_TRAMITE, Rol.REVISOR_APROBADOR} & usuario.roles):
         raise NoPermitido("Operación no permitida")
-    return tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    return acceso_de_consulta(sesion, tramite_id, usuario)
 
 
 @enrutador.get("/{tramite_id}/consultas", response_model=list[ConsultaRespuesta])

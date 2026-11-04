@@ -7,27 +7,27 @@ y el revisor/aprobador con una tarea asignada, limitado a las versiones de sus c
 """
 
 import uuid
+from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
+    Autenticado,
+    Responsable,
+    Sesion,
+    SolicitudId,
     UsuarioActual,
-    es_revisor,
-    exigir_rol,
-    obtener_sesion,
-    obtener_solicitud_id,
-    obtener_usuario_actual,
+    acceso_de_consulta,
 )
 from atlas.dominio.enumeraciones import (
     DisparadorRegla,
     EstadoVinculo,
     OrigenVinculo,
     ResultadoRegla,
-    Rol,
     TipoDocumental,
     TipoValidacion,
     TipoVinculo,
@@ -38,11 +38,6 @@ from atlas.servicios import reglas, tramites, vinculos
 from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["vinculos"])
-
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
-Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
-SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
 
 
 class FuenteVinculo(BaseModel):
@@ -136,9 +131,7 @@ def _respuesta(sesion: Session, vinculo: VinculoDocumental) -> VinculoRespuesta:
 def listar_vinculos(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, historial: bool = False
 ) -> VinculosRespuesta:
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     todos = [
         v
         for v in vinculos.listar(sesion, acceso.tramite.id, historial=historial)
@@ -185,6 +178,25 @@ def crear_vinculo(
     return _respuesta(sesion, vinculo)
 
 
+def _resolver(
+    operacion: Callable[..., VinculoDocumental],
+    tramite_id: int,
+    vinculo_id: int,
+    usuario: UsuarioActual,
+    sesion: Session,
+    solicitud_id: uuid.UUID | None,
+) -> VinculoRespuesta:
+    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
+    vinculo = operacion(
+        sesion,
+        tramite=tramite,
+        vinculo_id=vinculo_id,
+        usuario_id=usuario.id,
+        solicitud_id=solicitud_id,
+    )
+    return _respuesta(sesion, vinculo)
+
+
 @enrutador.post("/{tramite_id}/vinculos/{vinculo_id}/confirmacion", response_model=VinculoRespuesta)
 def confirmar_vinculo(
     tramite_id: int,
@@ -194,15 +206,7 @@ def confirmar_vinculo(
     solicitud_id: SolicitudId,
 ) -> VinculoRespuesta:
     """RF-15: confirma un vínculo sugerido; desde ahí rige y alimenta las reglas."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
-    vinculo = vinculos.confirmar(
-        sesion,
-        tramite=tramite,
-        vinculo_id=vinculo_id,
-        usuario_id=usuario.id,
-        solicitud_id=solicitud_id,
-    )
-    return _respuesta(sesion, vinculo)
+    return _resolver(vinculos.confirmar, tramite_id, vinculo_id, usuario, sesion, solicitud_id)
 
 
 @enrutador.post("/{tramite_id}/vinculos/{vinculo_id}/rechazo", response_model=VinculoRespuesta)
@@ -214,15 +218,7 @@ def rechazar_vinculo(
     solicitud_id: SolicitudId,
 ) -> VinculoRespuesta:
     """RF-15: rechaza un vínculo sugerido, sin efecto sobre las reglas."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
-    vinculo = vinculos.rechazar(
-        sesion,
-        tramite=tramite,
-        vinculo_id=vinculo_id,
-        usuario_id=usuario.id,
-        solicitud_id=solicitud_id,
-    )
-    return _respuesta(sesion, vinculo)
+    return _resolver(vinculos.rechazar, tramite_id, vinculo_id, usuario, sesion, solicitud_id)
 
 
 @enrutador.delete("/{tramite_id}/vinculos/{vinculo_id}", response_model=VinculoRespuesta)
@@ -234,15 +230,7 @@ def eliminar_vinculo(
     solicitud_id: SolicitudId,
 ) -> VinculoRespuesta:
     """RF-14: baja lógica; el vínculo y sus ejecuciones quedan en el historial."""
-    tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
-    vinculo = vinculos.eliminar(
-        sesion,
-        tramite=tramite,
-        vinculo_id=vinculo_id,
-        usuario_id=usuario.id,
-        solicitud_id=solicitud_id,
-    )
-    return _respuesta(sesion, vinculo)
+    return _resolver(vinculos.eliminar, tramite_id, vinculo_id, usuario, sesion, solicitud_id)
 
 
 # --- Controles de consistencia (RF-16, V3) ---------------------------------------------
@@ -341,9 +329,7 @@ def consultar_controles(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, historial: bool = False
 ) -> ControlesRespuesta:
     """RF-16: regla, versiones, valores comparados y resultado de cada control."""
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     return ControlesRespuesta(
         vigentes=[
             ControlRespuesta(
@@ -375,9 +361,7 @@ def consultar_ejecucion(
     tramite_id: int, ejecucion_id: int, usuario: Autenticado, sesion: Sesion
 ) -> EjecucionRespuesta:
     """V3: una ejecución con sus entradas validadas y versiones de origen."""
-    acceso = tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     detalle = reglas.obtener(sesion, acceso.tramite.id, ejecucion_id)
     if not _ejecucion_permitida(acceso, detalle):
         raise NoEncontrado("La ejecución no existe en este trámite")

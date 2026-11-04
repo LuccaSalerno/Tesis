@@ -7,7 +7,6 @@ ciclos (DO-2026-10-22-TAR, P8). Un trámite sin acceso responde 404, igual que u
 inexistente.
 """
 
-import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
@@ -18,12 +17,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from atlas.api.dependencias import (
-    UsuarioActual,
+    Autenticado,
+    Responsable,
+    Sesion,
+    SolicitudId,
+    acceso_de_consulta,
     es_revisor,
-    exigir_rol,
-    obtener_sesion,
-    obtener_solicitud_id,
-    obtener_usuario_actual,
 )
 from atlas.dominio.enumeraciones import (
     ClaseSugerencia,
@@ -35,7 +34,6 @@ from atlas.dominio.enumeraciones import (
     FormatoArchivo,
     MotivoAusencia,
     MotivoSinFuente,
-    Rol,
     TipoDocumental,
     TipoValidacion,
 )
@@ -44,6 +42,7 @@ from atlas.dominio.validacion_archivo import ArchivoRechazado, LimitesCarga
 from atlas.integraciones.puertos import AlmacenDocumental, OrquestadorProcesamiento
 from atlas.persistencia.modelos import (
     Archivo,
+    Documento,
     ReferenciaFuente,
     TrabajoProcesamiento,
     Tramite,
@@ -56,10 +55,6 @@ from atlas.servicios.errores import NoEncontrado
 
 enrutador = APIRouter(prefix="/tramites", tags=["tramites"])
 
-Sesion = Annotated[Session, Depends(obtener_sesion, scope="function")]
-Autenticado = Annotated[UsuarioActual, Depends(obtener_usuario_actual)]
-Responsable = Annotated[UsuarioActual, Depends(exigir_rol(Rol.RESPONSABLE_TRAMITE))]
-SolicitudId = Annotated[uuid.UUID | None, Depends(obtener_solicitud_id)]
 
 Texto = Annotated[str, Field(min_length=1, pattern=r"\S")]
 
@@ -82,12 +77,6 @@ def obtener_limites(request: Request) -> LimitesCarga:
 def obtener_vigencia_pendiente(request: Request) -> int:
     vigencia: int = request.app.state.vigencia_carga_pendiente_s
     return vigencia
-
-
-def _consulta(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramites.Acceso:
-    return tramites.obtener_para_consulta(
-        sesion, tramite_id, usuario.id, revisor=es_revisor(usuario)
-    )
 
 
 def _archivos_permitidos(sesion: Session, acceso: tramites.Acceso) -> set[int] | None:
@@ -301,7 +290,7 @@ def listar_tramites(usuario: Autenticado, sesion: Sesion) -> list[TramiteRespues
 
 @enrutador.get("/{tramite_id}", response_model=TramiteDetalle)
 def abrir_tramite(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> TramiteDetalle:
-    acceso = _consulta(sesion, tramite_id, usuario)
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     tramite = acceso.tramite
     documentos = [
         DocumentoRespuesta(
@@ -420,7 +409,7 @@ def confirmar_carga(
 def listar_archivos(
     tramite_id: int, usuario: Autenticado, sesion: Sesion, vigencia: VigenciaPendiente
 ) -> list[ArchivoRespuesta]:
-    acceso = _consulta(sesion, tramite_id, usuario)
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     permitidos = _archivos_permitidos(sesion, acceso)
     sugeridas = {
         s.archivo_id: SugerenciaVersionRespuesta(
@@ -437,6 +426,17 @@ def listar_archivos(
         for a, t in cargas.listar_archivos(sesion, acceso.tramite.id)
         if permitidos is None or a.id in permitidos
     ]
+
+
+def _documento_incorporado(documento: Documento, version: VersionDocumental) -> DocumentoRespuesta:
+    return DocumentoRespuesta(
+        id=documento.id,
+        nombre=documento.nombre,
+        tipo=documento.tipo,
+        version_vigente=VersionResumen(
+            id=version.id, numero=version.numero, archivo_id=version.archivo_id
+        ),
+    )
 
 
 @enrutador.post(
@@ -471,14 +471,7 @@ def incorporar_archivo(
         vigencia_pendiente_s=vigencia,
         solicitud_id=solicitud_id,
     )
-    return DocumentoRespuesta(
-        id=documento.id,
-        nombre=documento.nombre,
-        tipo=documento.tipo,
-        version_vigente=VersionResumen(
-            id=version.id, numero=version.numero, archivo_id=version.archivo_id
-        ),
-    )
+    return _documento_incorporado(documento, version)
 
 
 @enrutador.post(
@@ -508,14 +501,7 @@ def incorporar_version(
         vigencia_pendiente_s=vigencia,
         solicitud_id=solicitud_id,
     )
-    return DocumentoRespuesta(
-        id=documento.id,
-        nombre=documento.nombre,
-        tipo=documento.tipo,
-        version_vigente=VersionResumen(
-            id=version.id, numero=version.numero, archivo_id=version.archivo_id
-        ),
-    )
+    return _documento_incorporado(documento, version)
 
 
 @enrutador.post("/{tramite_id}/archivos/{archivo_id}/descarte", response_model=ArchivoRespuesta)
@@ -561,7 +547,7 @@ def consultar_sugerencias(
 ) -> SugerenciasRespuesta:
     """RF-08, RF-10, RF-11: clasificación y campos sugeridos con su localizador, o el
     motivo por el que no hay uno verificable."""
-    acceso = _consulta(sesion, tramite_id, usuario)
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     permitidos = _archivos_permitidos(sesion, acceso)
     archivo = sesion.get(Archivo, archivo_id)
     if (
@@ -582,7 +568,7 @@ def consultar_sugerencias(
     )
 
 
-def _localizador(fuente: ReferenciaFuente | None) -> Localizador | None:
+def localizador_de(fuente: ReferenciaFuente | None) -> Localizador | None:
     if fuente is None:
         return None
     return Localizador(pagina=fuente.pagina, seccion=fuente.seccion, fragmento=fuente.fragmento)
@@ -594,7 +580,7 @@ def _sugerencia(valor: ValorSugerido, fuente: ReferenciaFuente | None) -> Sugere
         campo=valor.campo,
         valor=valor.valor,
         valor_original=valor.valor_original,
-        localizador=_localizador(fuente),
+        localizador=localizador_de(fuente),
         motivo_sin_fuente=valor.motivo_sin_fuente,
         modelo=valor.modelo,
         version_instrucciones=valor.version_instrucciones,
@@ -655,7 +641,7 @@ class ValidacionRespuesta(BaseModel):
             reemplaza_a_id=validacion.reemplaza_a_id,
             validador_id=validacion.validador_id,
             validado_en=validacion.validado_en,
-            localizador=_localizador(fuente),
+            localizador=localizador_de(fuente),
         )
 
 
@@ -688,7 +674,7 @@ def consultar_validaciones(
     tramite_id: int, documento_id: int, usuario: Autenticado, sesion: Sesion
 ) -> ValidacionesRespuesta:
     """Versión vigente: sugerencias, validaciones vigentes e historial de cada dato."""
-    acceso = _consulta(sesion, tramite_id, usuario)
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     actual = validaciones.consultar(sesion, acceso.tramite, documento_id)
     if not acceso.permite(actual.version.id):
         raise NoEncontrado("El documento no existe en este trámite")
@@ -775,7 +761,7 @@ def consultar_archivo_de_version(
 ) -> ArchivoVersionRespuesta:
     """URL de lectura breve del original, con las mismas reglas de acceso que las demás
     consultas: el responsable, o el revisor para las versiones de sus ciclos (P8)."""
-    acceso = _consulta(sesion, tramite_id, usuario)
+    acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     fila = sesion.execute(
         select(VersionDocumental, Archivo)
         .join(Archivo, Archivo.id == VersionDocumental.archivo_id)

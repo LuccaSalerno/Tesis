@@ -300,7 +300,28 @@ def desplazar_en_curso(
         version_id=version_id,
         solicitud_id=solicitud_id,
     )
-    for tarea in tareas(sesion, ciclo.id):
+    anular_tareas_abiertas(
+        sesion,
+        ciclo.id,
+        usuario_id=usuario_id,
+        tramite_id=tramite_id,
+        version_id=version_id,
+        solicitud_id=solicitud_id,
+    )
+    sesion.refresh(ciclo)
+    return ciclo
+
+
+def anular_tareas_abiertas(
+    sesion: Session,
+    ciclo_id: int,
+    *,
+    usuario_id: int,
+    tramite_id: int,
+    version_id: int | None = None,
+    solicitud_id: uuid.UUID | None = None,
+) -> None:
+    for tarea in tareas(sesion, ciclo_id):
         if tarea.estado in ABIERTAS:
             tarea.estado = EstadoTarea.ANULADA
             sesion.flush()
@@ -314,5 +335,3 @@ def desplazar_en_curso(
                 version_id=version_id,
                 solicitud_id=solicitud_id,
             )
-    sesion.refresh(ciclo)
-    return ciclo

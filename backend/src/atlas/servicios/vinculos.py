@@ -38,6 +38,7 @@ from atlas.persistencia.modelos import (
 from atlas.servicios import reglas
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
+from atlas.servicios.tramites import documento_del_tramite
 
 ESTADOS_QUE_ADMITEN = frozenset({EstadoTramite.BORRADOR, EstadoTramite.PENDIENTE_VALIDACION})
 YA_VINCULADOS = "Los documentos ya tienen un vínculo pendiente o confirmado"
@@ -76,13 +77,6 @@ CRITERIOS = (
 def _exigir_estado(tramite: Tramite) -> None:
     if tramite.estado not in ESTADOS_QUE_ADMITEN:
         raise Conflicto("El estado del trámite no admite cambiar vínculos")
-
-
-def _documento(sesion: Session, tramite: Tramite, documento_id: int) -> Documento:
-    documento = sesion.get(Documento, documento_id)
-    if documento is None or documento.tramite_id != tramite.id:
-        raise NoEncontrado("El documento no existe en este trámite")
-    return documento
 
 
 def _vinculo(sesion: Session, tramite: Tramite, vinculo_id: int) -> VinculoDocumental:
@@ -138,8 +132,8 @@ def crear(
     El trámite llega bloqueado por el llamador (PD-05.2).
     """
     _exigir_estado(tramite)
-    origen = _documento(sesion, tramite, documento_origen_id)
-    destino = _documento(sesion, tramite, documento_destino_id)
+    origen = documento_del_tramite(sesion, tramite, documento_origen_id)
+    destino = documento_del_tramite(sesion, tramite, documento_destino_id)
     if origen.id == destino.id:
         raise ErrorDominio("Un documento no puede vincularse consigo mismo")
     if not justificacion.strip():

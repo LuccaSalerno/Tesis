@@ -84,6 +84,13 @@ def _instante() -> Mapped[datetime]:
     return mapped_column(DateTime(timezone=True), nullable=False, server_default=text("now()"))
 
 
+def _instante_reloj() -> Mapped[datetime]:
+    """Con `clock_timestamp()`, las filas de una misma transacción no comparten el instante."""
+    return mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
+    )
+
+
 class Usuario(Base):
     __tablename__ = "usuario"
     __table_args__ = (
@@ -229,9 +236,7 @@ class EventoAuditoria(Base):
     resultado: Mapped[ResultadoAuditoria] = mapped_column(
         catalogo(ResultadoAuditoria, 20), nullable=False
     )
-    ocurrido_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    ocurrido_en: Mapped[datetime] = _instante_reloj()
     solicitud_id: Mapped[uuid.UUID | None] = mapped_column(Uuid)
 
 
@@ -365,9 +370,7 @@ class ValidacionHumana(Base):
     valor_validado: Mapped[str | None] = mapped_column(Text)
     tipo: Mapped[TipoValidacion] = mapped_column(catalogo(TipoValidacion, 20), nullable=False)
     motivo_ausencia: Mapped[MotivoAusencia | None] = mapped_column(catalogo(MotivoAusencia, 20))
-    validado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    validado_en: Mapped[datetime] = _instante_reloj()
 
 
 DIMENSIONES_EMBEDDING = 1024  # Cohere Embed Multilingual v3 (tesis §5.4.1, RC-P07.3)
@@ -426,9 +429,7 @@ class ConsultaAsistida(Base):
     tokens_entrada: Mapped[int | None] = mapped_column(Integer)
     tokens_salida: Mapped[int | None] = mapped_column(Integer)
     duracion_ms: Mapped[int] = mapped_column(Integer, nullable=False)
-    creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    creado_en: Mapped[datetime] = _instante_reloj()
 
 
 class ConsultaFragmento(Base):
@@ -486,9 +487,7 @@ class VinculoDocumental(Base):
     justificacion: Mapped[str] = mapped_column(Text, nullable=False)
     fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
     creado_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
-    creado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    creado_en: Mapped[datetime] = _instante_reloj()
     resuelto_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
     resuelto_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -515,9 +514,7 @@ class EjecucionRegla(Base):
     disparador: Mapped[DisparadorRegla] = mapped_column(
         catalogo(DisparadorRegla, 20), nullable=False
     )
-    ejecutada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    ejecutada_en: Mapped[datetime] = _instante_reloj()
 
 
 class EntradaRegla(Base):
@@ -564,9 +561,7 @@ class PlantillaFlujo(Base):
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     activa: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
     creada_por_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
-    creada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    creada_en: Mapped[datetime] = _instante_reloj()
     desactivada_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
     desactivada_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
@@ -609,9 +604,7 @@ class CicloRevision(Base):
         ForeignKey("plantilla_flujo.id"), nullable=False
     )
     confirmado_por_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
-    confirmado_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    confirmado_en: Mapped[datetime] = _instante_reloj()
     concluido_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
@@ -641,12 +634,8 @@ class Tarea(Base):
     rol_requerido: Mapped[Rol] = mapped_column(catalogo(Rol, 30), nullable=False)
     estado: Mapped[EstadoTarea] = mapped_column(catalogo(EstadoTarea, 20), nullable=False)
     asignada_a_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"), index=True)
-    creada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
-    actualizada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    creada_en: Mapped[datetime] = _instante_reloj()
+    actualizada_en: Mapped[datetime] = _instante_reloj()
 
 
 class AsignacionTarea(Base):
@@ -659,9 +648,7 @@ class AsignacionTarea(Base):
     anterior_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
     asignada_a_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
     asignada_por_id: Mapped[int | None] = mapped_column(ForeignKey("usuario.id"))
-    asignada_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    asignada_en: Mapped[datetime] = _instante_reloj()
 
 
 class Decision(Base):
@@ -674,9 +661,7 @@ class Decision(Base):
     actor_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
     tipo: Mapped[TipoDecision] = mapped_column(catalogo(TipoDecision, 20), nullable=False)
     motivo: Mapped[str | None] = mapped_column(Text)
-    decidida_en: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=text("clock_timestamp()")
-    )
+    decidida_en: Mapped[datetime] = _instante_reloj()
 
 
 class DecisionControl(Base):
