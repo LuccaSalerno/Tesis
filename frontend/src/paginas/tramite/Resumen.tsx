@@ -85,7 +85,7 @@ export function Resumen() {
         </Panel>
 
         {puedeFirmar && ultimo ? (
-          <Panel titulo="Firma y cierre" descripcion="RF-23: firma digital simulada de una versión del ciclo aprobado.">
+          <Panel titulo="Firma y cierre" descripcion="Firma digital simulada de una versión del ciclo aprobado.">
             <Firmar tramiteId={id} ciclo={ultimo} />
           </Panel>
         ) : null}

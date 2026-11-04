@@ -177,7 +177,7 @@ export function rotuloAccion(accion: string): string {
 }
 
 /** Prefijo con que el procesamiento simulado (WEB F9) rotula sus sugerencias. */
-export const PREFIJO_SIMULACION = "simulacion-local";
+const PREFIJO_SIMULACION = "simulacion-local";
 
 export function esSimulado(modelo: string | null | undefined): boolean {
   return !!modelo && modelo.startsWith(PREFIJO_SIMULACION);

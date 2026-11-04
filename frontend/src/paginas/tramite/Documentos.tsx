@@ -10,7 +10,7 @@ import { ReintentarProcesamiento } from "@/componentes/reintento";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { Entrada } from "@/componentes/ui/campos";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Panel } from "@/componentes/ui/panel";
 import { CRITERIO_VERSION, ESTADO_TRABAJO, rotuloCampo, TIPO_DOCUMENTAL } from "@/lib/dominio";
@@ -92,7 +92,7 @@ function Pendiente({ archivo, tramiteId }: { archivo: Archivo; tramiteId: number
         >
           Sugerencia del sistema: {CRITERIO_VERSION[sugerida.criterio]} ({rotuloCampo(sugerida.campo)}) con el valor validado del
           documento. Si es un documento distinto, incorporalo como documento nuevo. Confirmar la versión devuelve el trámite a
-          Borrador y desplaza el ciclo en curso (RN-12).
+          Borrador y desplaza el ciclo en curso.
         </Aviso>
       ) : null}
       <label className="sr-only" htmlFor={`nombre-${archivo.id}`}>Nombre del documento</label>
@@ -144,10 +144,9 @@ export function Documentos() {
       </Panel>
 
       {esResponsable && !terminal ? (
-        <Panel titulo="Cargas" descripcion="Los archivos cargados no producen efectos hasta que confirmás su incorporación (RF-04, RF-07).">
+        <Panel titulo="Cargas" descripcion="Los archivos cargados no producen efectos hasta que confirmás su incorporación.">
           <Carga tramiteId={id} />
-          {archivos.isPending ? <Cargando /> : null}
-          {archivos.isError ? <ErrorConsulta error={archivos.error} /> : null}
+          <EstadoConsulta consulta={archivos} />
           {pendientes.length ? (
             <ul className="mt-4 divide-y divide-borde">
               {pendientes.map((a) => (

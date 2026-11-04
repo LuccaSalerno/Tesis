@@ -1,4 +1,6 @@
 /** Presentación de fechas, importes y valores canónicos (DO-2026-10-22-VAL P4). */
+import type { TipoDocumental } from "@/api/tipos";
+import { TIPO_DOCUMENTAL } from "@/lib/dominio";
 
 const FECHA_HORA = new Intl.DateTimeFormat("es-AR", {
   dateStyle: "medium",
@@ -24,6 +26,7 @@ export function importeCanonico(valor: string): string {
 /** Muestra un valor validado según el tipo de dato que sugiere su nombre de campo. */
 export function valorLegible(campo: string, valor: string | null | undefined): string {
   if (valor == null) return "—";
+  if (campo === "tipo_documental") return TIPO_DOCUMENTAL[valor as TipoDocumental] ?? valor;
   if (/fecha|vigencia/.test(campo)) return fechaCanonica(valor);
   if (/importe|monto/.test(campo)) return importeCanonico(valor);
   return valor;

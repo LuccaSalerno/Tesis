@@ -6,7 +6,7 @@ import type { Tramite } from "@/api/tipos";
 import { InsigniaEstado } from "@/componentes/dominio";
 import { Encabezado } from "@/componentes/marco";
 import { Panel } from "@/componentes/ui/panel";
-import { Cargando, ErrorConsulta, Vacio } from "@/componentes/ui/estados";
+import { Cargando, EstadoConsulta, Vacio } from "@/componentes/ui/estados";
 import { ESTADO_TAREA, ESTADO_TRAMITE } from "@/lib/dominio";
 import { useSesion } from "@/lib/sesion";
 
@@ -34,8 +34,7 @@ export function Inicio() {
       <div className="grid gap-6 lg:grid-cols-2">
         {tiene("revisor_aprobador") ? (
           <Panel titulo="Tareas pendientes de decisión" acciones={<Link to="/tareas" className="text-sm text-primario hover:underline">Ver bandeja</Link>}>
-            {tareas.isPending ? <Cargando /> : null}
-            {tareas.isError ? <ErrorConsulta error={tareas.error} /> : null}
+            <EstadoConsulta consulta={tareas} />
             {tareas.data && abiertas.length === 0 ? <Vacio titulo="No tenés tareas pendientes" /> : null}
             <ul className="divide-y divide-borde">
               {abiertas.map((t) => (
@@ -70,7 +69,7 @@ export function Inicio() {
           </Panel>
         ) : null}
         {tiene("administrador_operativo") ? (
-          <Panel titulo="Coordinación" descripcion="Sin acceso al contenido documental (RF-24)." acciones={<Link to="/administracion" className="text-sm text-primario hover:underline">Administración</Link>}>
+          <Panel titulo="Coordinación" descripcion="Sin acceso al contenido documental." acciones={<Link to="/administracion" className="text-sm text-primario hover:underline">Administración</Link>}>
             {sinAsignar.isPending ? <Cargando /> : null}
             {sinAsignar.data?.length === 0 ? <Vacio titulo="No hay tareas sin asignar" /> : null}
             <ul className="divide-y divide-borde">

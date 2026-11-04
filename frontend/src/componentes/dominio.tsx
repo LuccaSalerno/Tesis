@@ -8,9 +8,10 @@ import { BadgeCheck, Bot, FileSearch, FlaskConical, MapPin } from "lucide-react"
 import type { ReactNode } from "react";
 
 import { useNombre } from "@/api/directorio";
-import type { Localizador, ResultadoRegla } from "@/api/tipos";
+import type { Control, Localizador, ResultadoRegla } from "@/api/tipos";
 import { Insignia } from "@/componentes/ui/insignia";
-import { esSimulado, MOTIVO_AUSENCIA, RESULTADO_REGLA, TIPO_VALIDACION, type Tono } from "@/lib/dominio";
+import type { Fuente } from "@/componentes/visor";
+import { esSimulado, MOTIVO_AUSENCIA, RESULTADO_REGLA, rotuloCampo, TIPO_VALIDACION, type Tono } from "@/lib/dominio";
 import { fechaHora, valorLegible } from "@/lib/formatos";
 import { cn } from "@/lib/utilidades";
 
@@ -126,5 +127,40 @@ export function BotonFuente({ onClick, children = "Ver en el documento" }: { onC
     >
       <FileSearch className="size-3.5" aria-hidden /> {children}
     </button>
+  );
+}
+
+/** Un control con su regla, las versiones y los valores comparados, y el acceso a cada documento (RF-16). */
+export function TarjetaControl({ control, alVerFuente }: { control: Control; alVerFuente: (f: Fuente) => void }) {
+  const ejecucion = control.ejecucion;
+  return (
+    <li className={cn("rounded-md border px-4 py-3 text-sm", control.resultado === "advertencia" ? "border-advertencia/40 bg-advertencia-suave/40" : "border-borde")}>
+      <div className="flex items-start justify-between gap-2">
+        <p className="font-medium">{control.descripcion}</p>
+        <ResultadoControl resultado={control.resultado} />
+      </div>
+      <p className="mt-1 text-tenue">{control.explicacion}</p>
+      {ejecucion ? (
+        <>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {ejecucion.versiones.map((v) => {
+              const titulo = `${v.documento_nombre} · v${v.version_numero}`;
+              return (
+                <div key={v.version_id} className="rounded border border-borde bg-superficie px-3 py-2 text-xs">
+                  <p className="font-medium">{titulo}</p>
+                  {ejecucion.valores.filter((x) => x.version_id === v.version_id).map((x) => (
+                    <p key={x.validacion_id}>
+                      {rotuloCampo(x.campo)}: <span className="font-medium">{x.tipo === "ausente" ? "declarado ausente" : valorLegible(x.campo, x.valor_validado)}</span>
+                    </p>
+                  ))}
+                  <BotonFuente onClick={() => alVerFuente({ versionId: v.version_id, titulo })}>Ver documento</BotonFuente>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-xs text-tenue">Regla {ejecucion.version_regla} · ejecutada {fechaHora(ejecucion.ejecutada_en)}</p>
+        </>
+      ) : null}
+    </li>
   );
 }

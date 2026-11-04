@@ -13,8 +13,9 @@ import { DialogoFuente, type Fuente } from "@/componentes/visor";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { AreaTexto } from "@/componentes/ui/campos";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Panel } from "@/componentes/ui/panel";
+import { esSimulado } from "@/lib/dominio";
 import { fechaHora } from "@/lib/formatos";
 
 import { useIdTramite } from "./MarcoTramite";
@@ -26,6 +27,7 @@ const ABSTENCION = {
 } as const;
 
 function Respuesta({ consulta, alVerFuente }: { consulta: TipoConsulta; alVerFuente: (f: Fuente) => void }) {
+  const modelo = esSimulado(consulta.modelo_generacion) ? "simulación local" : consulta.modelo_generacion ?? "sin invocar el modelo";
   return (
     <article className="space-y-3 py-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -58,7 +60,7 @@ function Respuesta({ consulta, alVerFuente }: { consulta: TipoConsulta; alVerFue
         </Aviso>
       )}
       <p className="text-xs text-tenue">
-        {consulta.fragmentos_recuperados} fragmentos recuperados · {consulta.modelo_generacion ?? "sin invocar el modelo"}
+        {consulta.fragmentos_recuperados} fragmentos recuperados · {modelo}
       </p>
     </article>
   );
@@ -90,8 +92,7 @@ export function Consulta() {
         {consultar.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(consultar.error)} /> : null}
       </Panel>
       <Panel titulo="Tus consultas">
-        {historial.isPending ? <Cargando /> : null}
-        {historial.isError ? <ErrorConsulta error={historial.error} /> : null}
+        <EstadoConsulta consulta={historial} />
         {historial.data?.length === 0 ? <Vacio titulo="Todavía no hiciste consultas" /> : null}
         <div className="divide-y divide-borde">
           {historial.data?.map((c) => <Respuesta key={c.id} consulta={c} alVerFuente={setFuente} />)}

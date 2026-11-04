@@ -10,7 +10,7 @@ import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { AreaTexto, Entrada, Etiqueta } from "@/componentes/ui/campos";
 import { AbrirDialogo, ContenidoDialogo, RaizDialogo } from "@/componentes/ui/dialogo";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { ESTADO_TRAMITE } from "@/lib/dominio";
 import { fechaHora } from "@/lib/formatos";
 import { useSesion } from "@/lib/sesion";
@@ -104,8 +104,7 @@ export function Tramites() {
         descripcion={tiene("responsable_tramite") ? "Los trámites a tu cargo y aquellos en los que tenés tareas." : "Los trámites en los que tenés tareas asignadas."}
         acciones={tiene("responsable_tramite") ? <NuevoTramite /> : null}
       />
-      {tramites.isPending ? <Cargando /> : null}
-      {tramites.isError ? <ErrorConsulta error={tramites.error} reintentar={() => void tramites.refetch()} /> : null}
+      <EstadoConsulta consulta={tramites} reintentar={() => void tramites.refetch()} />
       {tramites.data?.length === 0 ? <Vacio titulo="Todavía no hay trámites" /> : null}
       {tramites.data?.length ? <TablaTramites tramites={tramites.data} /> : null}
     </>

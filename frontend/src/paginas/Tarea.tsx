@@ -9,8 +9,8 @@ import { type FormEvent, useState } from "react";
 import { Link, useParams } from "react-router";
 
 import { useDecidir, useTarea } from "@/api/consultas";
-import type { Control, TareaDetalle } from "@/api/tipos";
-import { BotonFuente, InsigniaEstado, Persona, ResultadoControl } from "@/componentes/dominio";
+import type { TareaDetalle } from "@/api/tipos";
+import { BotonFuente, InsigniaEstado, Persona, TarjetaControl } from "@/componentes/dominio";
 import { DialogoFuente, type Fuente } from "@/componentes/visor";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
@@ -18,39 +18,9 @@ import { AreaTexto, Ayuda, Etiqueta } from "@/componentes/ui/campos";
 import { ContenidoDialogo, RaizDialogo } from "@/componentes/ui/dialogo";
 import { Cargando, ErrorConsulta, mensajeDeError } from "@/componentes/ui/estados";
 import { Dato, Panel } from "@/componentes/ui/panel";
-import { DECISION, ESTADO_CICLO, ESTADO_TAREA, ESTADO_TRAMITE, rotuloCampo } from "@/lib/dominio";
-import { fechaHora, valorLegible } from "@/lib/formatos";
+import { DECISION, ESTADO_CICLO, ESTADO_TAREA, ESTADO_TRAMITE } from "@/lib/dominio";
+import { fechaHora } from "@/lib/formatos";
 import { useSesion } from "@/lib/sesion";
-
-function DetalleControl({ control, alVerFuente }: { control: Control; alVerFuente: (f: Fuente) => void }) {
-  const ejecucion = control.ejecucion;
-  return (
-    <li className="rounded-md border border-borde px-4 py-3 text-sm">
-      <div className="flex items-start justify-between gap-2">
-        <p className="font-medium">{control.codigo_regla.split("-")[0]} · {control.descripcion}</p>
-        <ResultadoControl resultado={control.resultado} />
-      </div>
-      <p className="mt-1 text-tenue">{control.explicacion}</p>
-      {ejecucion ? (
-        <div className="mt-2 grid gap-2 sm:grid-cols-2">
-          {ejecucion.versiones.map((v) => (
-            <div key={v.version_id} className="rounded border border-borde bg-neutro-suave/50 px-3 py-2 text-xs">
-              <p className="font-medium">{v.documento_nombre} · v{v.version_numero}</p>
-              {ejecucion.valores
-                .filter((valor) => valor.version_id === v.version_id)
-                .map((valor) => (
-                  <p key={valor.validacion_id}>
-                    {rotuloCampo(valor.campo)}: <span className="font-medium">{valor.tipo === "ausente" ? "declarado ausente" : valorLegible(valor.campo, valor.valor_validado)}</span>
-                  </p>
-                ))}
-              <BotonFuente onClick={() => alVerFuente({ versionId: v.version_id, titulo: `${v.documento_nombre} · v${v.version_numero}` })}>Ver documento</BotonFuente>
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </li>
-  );
-}
 
 function PanelDecision({ tarea }: { tarea: TareaDetalle }) {
   const decidir = useDecidir(tarea.id);
@@ -84,7 +54,7 @@ function PanelDecision({ tarea }: { tarea: TareaDetalle }) {
             <div className="space-y-1.5">
               <Etiqueta htmlFor="motivo">Motivo de la observación</Etiqueta>
               <AreaTexto id="motivo" value={motivo} onChange={(e) => setMotivo(e.target.value)} required maxLength={5000} />
-              <Ayuda>Obligatorio (RN-08).</Ayuda>
+              <Ayuda>Obligatorio.</Ayuda>
             </div>
             {decidir.isError ? <Aviso tono="peligro" titulo={mensajeDeError(decidir.error)} /> : null}
             <div className="flex justify-end gap-2">
@@ -161,7 +131,7 @@ export function Tarea() {
             {t.controles.length === 0 ? <p className="text-sm text-tenue">No hay reglas aplicables a este conjunto.</p> : null}
             <ul className="space-y-3">
               {t.controles.map((c) => (
-                <DetalleControl key={`${c.codigo_regla}-${c.vinculo_id}-${c.ejecucion?.id}`} control={c} alVerFuente={setFuente} />
+                <TarjetaControl key={`${c.codigo_regla}-${c.vinculo_id}-${c.ejecucion?.id}`} control={c} alVerFuente={setFuente} />
               ))}
             </ul>
           </Panel>

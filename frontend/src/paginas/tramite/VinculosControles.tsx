@@ -7,17 +7,16 @@ import { Link2, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { type FormEvent, useState } from "react";
 
 import { useControles, useCrearVinculo, useResolverVinculo, useVinculos } from "@/api/consultas";
-import type { Control, Vinculo } from "@/api/tipos";
-import { BotonFuente, ResultadoControl } from "@/componentes/dominio";
+import type { Vinculo } from "@/api/tipos";
+import { TarjetaControl } from "@/componentes/dominio";
 import { DialogoFuente, type Fuente } from "@/componentes/visor";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { Entrada, Etiqueta, Selector } from "@/componentes/ui/campos";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Panel } from "@/componentes/ui/panel";
-import { RESULTADO_REGLA, rotuloCampo } from "@/lib/dominio";
-import { fechaHora, valorLegible } from "@/lib/formatos";
+import { RESULTADO_REGLA } from "@/lib/dominio";
 
 import { useContextoTramite, useIdTramite } from "./MarcoTramite";
 
@@ -92,37 +91,6 @@ function FilaVinculo({ vinculo, editable, tramiteId }: { vinculo: Vinculo; edita
   );
 }
 
-function TarjetaControl({ control, alVerFuente }: { control: Control; alVerFuente: (f: Fuente) => void }) {
-  const ejecucion = control.ejecucion;
-  return (
-    <li className={`rounded-md border px-4 py-3 ${control.resultado === "advertencia" ? "border-advertencia/40 bg-advertencia-suave/40" : "border-borde"}`}>
-      <div className="flex items-start justify-between gap-2 text-sm">
-        <p className="font-medium">{control.codigo_regla.split("-")[0]} · {control.descripcion}</p>
-        <ResultadoControl resultado={control.resultado} />
-      </div>
-      <p className="mt-1 text-sm text-tenue">{control.explicacion}</p>
-      {ejecucion ? (
-        <>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {ejecucion.versiones.map((v) => (
-              <div key={v.version_id} className="rounded border border-borde bg-superficie px-3 py-2 text-xs">
-                <p className="font-medium">{v.documento_nombre} · v{v.version_numero}</p>
-                {ejecucion.valores.filter((x) => x.version_id === v.version_id).map((x) => (
-                  <p key={x.validacion_id}>
-                    {rotuloCampo(x.campo)}: <span className="font-medium">{x.tipo === "ausente" ? "declarado ausente" : valorLegible(x.campo, x.valor_validado)}</span>
-                  </p>
-                ))}
-                <BotonFuente onClick={() => alVerFuente({ versionId: v.version_id, titulo: v.documento_nombre })}>Ver documento</BotonFuente>
-              </div>
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-tenue">Regla v{ejecucion.version_regla} · ejecutada {fechaHora(ejecucion.ejecutada_en)}</p>
-        </>
-      ) : null}
-    </li>
-  );
-}
-
 export function VinculosControles() {
   const id = useIdTramite();
   const { tramite, esResponsable } = useContextoTramite();
@@ -134,9 +102,8 @@ export function VinculosControles() {
 
   return (
     <div className="space-y-6">
-      <Panel titulo="Vínculos entre documentos" descripcion="Los sugeridos no rigen hasta que el responsable los confirma (RF-15, RN-05).">
-        {vinculos.isPending ? <Cargando /> : null}
-        {vinculos.isError ? <ErrorConsulta error={vinculos.error} /> : null}
+      <Panel titulo="Vínculos entre documentos" descripcion="Los sugeridos no rigen hasta que el responsable los confirma.">
+        <EstadoConsulta consulta={vinculos} />
         {vinculos.data ? (
           <>
             {vinculos.data.sugeridos.length ? (
@@ -159,7 +126,7 @@ export function VinculosControles() {
 
       <Panel
         titulo="Controles de consistencia"
-        descripcion="Reglas explícitas sobre valores validados. Producen advertencias explicables, no decisiones (RN-06)."
+        descripcion="Reglas explícitas sobre valores validados. Producen advertencias explicables, no decisiones."
         acciones={
           <span className="flex flex-wrap gap-1">
             {Object.entries(resumen).map(([resultado, n]) => (
@@ -170,8 +137,7 @@ export function VinculosControles() {
           </span>
         }
       >
-        {controles.isPending ? <Cargando /> : null}
-        {controles.isError ? <ErrorConsulta error={controles.error} /> : null}
+        <EstadoConsulta consulta={controles} />
         <ul className="space-y-3">
           {controles.data?.vigentes.map((c) => (
             <TarjetaControl key={`${c.codigo_regla}-${c.vinculo_id ?? "sin"}`} control={c} alVerFuente={setFuente} />

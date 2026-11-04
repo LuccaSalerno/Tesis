@@ -126,10 +126,9 @@ export function useCiclos(t: number) {
   });
 }
 
-export function useFlujoSugerido(t: number, habilitado: boolean) {
+export function useFlujoSugerido(t: number) {
   return useQuery({
     queryKey: claves.flujo(t),
-    enabled: habilitado,
     queryFn: () => exigir(api.GET("/tramites/{tramite_id}/flujo-sugerido", ruta(t))),
   });
 }
@@ -177,18 +176,16 @@ export function useTareasSinAsignar(habilitado: boolean) {
   });
 }
 
-export function usePlantillas(habilitado: boolean) {
+export function usePlantillas() {
   return useQuery({
     queryKey: claves.plantillas,
-    enabled: habilitado,
     queryFn: () => exigir(api.GET("/plantillas-flujo")),
   });
 }
 
-export function useCuentas(habilitado: boolean) {
+export function useCuentas() {
   return useQuery({
     queryKey: claves.cuentas,
-    enabled: habilitado,
     queryFn: () => exigir(api.GET("/usuarios")),
   });
 }
@@ -203,10 +200,9 @@ export function useFirma(t: number, habilitado: boolean) {
 }
 
 /** RF-24: estado general para el administrador, solo metadatos y conteos. */
-export function useEstadoGeneral(habilitado: boolean) {
+export function useEstadoGeneral() {
   return useQuery({
     queryKey: claves.estadoGeneral,
-    enabled: habilitado,
     queryFn: () => exigir(api.GET("/administracion/estado-general")),
   });
 }
@@ -230,7 +226,7 @@ export function useArchivoVersion(t: number, version: number | undefined) {
 
 function useInvalidar() {
   const cliente = useQueryClient();
-  return (...prefijos: readonly unknown[][]) =>
+  return (...prefijos: (readonly unknown[])[]) =>
     Promise.all(prefijos.map((queryKey) => cliente.invalidateQueries({ queryKey })));
 }
 
@@ -238,7 +234,7 @@ export function useCrearTramite() {
   const invalidar = useInvalidar();
   return useMutation({
     mutationFn: (cuerpo: S["NuevoTramite"]) => exigir(api.POST("/tramites", { body: cuerpo })),
-    onSuccess: () => invalidar([...claves.tramites]),
+    onSuccess: () => invalidar(claves.tramites),
   });
 }
 
@@ -252,7 +248,7 @@ export function useRegistrarValidacion(t: number, documento: number) {
           body: cuerpo,
         }),
       ),
-    onSuccess: () => invalidar(["tramite", t]),
+    onSuccess: () => invalidar(claves.tramite(t)),
   });
 }
 
@@ -266,7 +262,7 @@ export function useIncorporar(t: number) {
           body: { nombre },
         }),
       ),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites),
   });
 }
 
@@ -280,7 +276,7 @@ export function useIncorporarVersion(t: number) {
           params: { path: { tramite_id: t, archivo_id: archivo } },
         }),
       ),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], [...claves.tareas]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites, claves.tareas),
   });
 }
 
@@ -294,7 +290,7 @@ export function useDescartar(t: number) {
           params: { path: { tramite_id: t, archivo_id: archivo } },
         }),
       ),
-    onSuccess: () => invalidar([...claves.archivos(t)], [...claves.lineaTiempo(t)]),
+    onSuccess: () => invalidar(claves.archivos(t), claves.lineaTiempo(t)),
   });
 }
 
@@ -304,7 +300,7 @@ export function useCancelar(t: number) {
   return useMutation({
     mutationFn: (motivo: string) =>
       exigir(api.POST("/tramites/{tramite_id}/cancelacion", { ...ruta(t), body: { motivo } })),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], [...claves.tareas]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites, claves.tareas),
   });
 }
 
@@ -314,7 +310,7 @@ export function useSuprimir() {
   return useMutation({
     mutationFn: (usuario: number) =>
       exigir(api.POST("/usuarios/{usuario_id}/supresion", { params: { path: { usuario_id: usuario } } })),
-    onSuccess: () => invalidar([...claves.cuentas], [...claves.estadoGeneral], ["directorio"]),
+    onSuccess: () => invalidar(claves.cuentas, claves.estadoGeneral, ["directorio"]),
   });
 }
 
@@ -324,7 +320,7 @@ export function useFirmar(t: number) {
   return useMutation({
     mutationFn: (version: number) =>
       exigir(api.POST("/tramites/{tramite_id}/firma", { ...ruta(t), body: { version_id: version } })),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], ["evidencia"]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites, ["evidencia"]),
   });
 }
 
@@ -338,7 +334,7 @@ export function useReintentar(t: number) {
           params: { path: { tramite_id: t, archivo_id: archivo } },
         }),
       ),
-    onSuccess: () => invalidar([...claves.archivos(t)]),
+    onSuccess: () => invalidar(claves.archivos(t)),
   });
 }
 
@@ -349,7 +345,7 @@ export function useTransicion(t: number) {
       accion === "envio-a-validacion"
         ? exigir(api.POST("/tramites/{tramite_id}/envio-a-validacion", ruta(t)))
         : exigir(api.POST("/tramites/{tramite_id}/subsanacion", ruta(t))),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites),
   });
 }
 
@@ -358,7 +354,7 @@ export function useConfirmarFlujo(t: number) {
   return useMutation({
     mutationFn: (cuerpo: S["ConfirmacionFlujo"]) =>
       exigir(api.POST("/tramites/{tramite_id}/ciclos", { ...ruta(t), body: cuerpo })),
-    onSuccess: () => invalidar(["tramite", t], [...claves.tramites], [...claves.tareas]),
+    onSuccess: () => invalidar(claves.tramite(t), claves.tramites, claves.tareas),
   });
 }
 
@@ -372,7 +368,7 @@ export function useDecidir(tarea: number) {
           body: cuerpo,
         }),
       ),
-    onSuccess: () => invalidar(["tarea"], [...claves.tareas], ["tramite"]),
+    onSuccess: () => invalidar(["tarea"], claves.tareas, ["tramite"]),
   });
 }
 
@@ -387,7 +383,7 @@ export function useResolverVinculo(t: number) {
         return exigir(api.POST("/tramites/{tramite_id}/vinculos/{vinculo_id}/confirmacion", opciones));
       return exigir(api.POST("/tramites/{tramite_id}/vinculos/{vinculo_id}/rechazo", opciones));
     },
-    onSuccess: () => invalidar(["tramite", t]),
+    onSuccess: () => invalidar(claves.tramite(t)),
   });
 }
 
@@ -396,7 +392,7 @@ export function useCrearVinculo(t: number) {
   return useMutation({
     mutationFn: (cuerpo: S["NuevoVinculo"]) =>
       exigir(api.POST("/tramites/{tramite_id}/vinculos", { ...ruta(t), body: cuerpo })),
-    onSuccess: () => invalidar(["tramite", t]),
+    onSuccess: () => invalidar(claves.tramite(t)),
   });
 }
 
@@ -405,7 +401,7 @@ export function useConsultar(t: number) {
   return useMutation({
     mutationFn: (pregunta: string) =>
       exigir(api.POST("/tramites/{tramite_id}/consultas", { ...ruta(t), body: { pregunta } })),
-    onSuccess: () => invalidar([...claves.consultas(t)]),
+    onSuccess: () => invalidar(claves.consultas(t)),
   });
 }
 
@@ -419,7 +415,7 @@ export function useAsignar() {
           body: { usuario_id: usuario },
         }),
       ),
-    onSuccess: () => invalidar([...claves.sinAsignar], [...claves.tareas], ["tarea"]),
+    onSuccess: () => invalidar(claves.sinAsignar, claves.tareas, ["tarea"]),
   });
 }
 
@@ -427,7 +423,7 @@ export function useCrearPlantilla() {
   const invalidar = useInvalidar();
   return useMutation({
     mutationFn: (cuerpo: S["NuevaPlantilla"]) => exigir(api.POST("/plantillas-flujo", { body: cuerpo })),
-    onSuccess: () => invalidar([...claves.plantillas]),
+    onSuccess: () => invalidar(claves.plantillas),
   });
 }
 
@@ -441,6 +437,6 @@ export function useCambiarNombre() {
           body: { nombre_visible: nombre },
         }),
       ),
-    onSuccess: () => invalidar([...claves.cuentas], ["directorio"]),
+    onSuccess: () => invalidar(claves.cuentas, ["directorio"]),
   });
 }

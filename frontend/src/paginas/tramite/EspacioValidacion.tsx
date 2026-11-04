@@ -10,7 +10,7 @@ import { Link, useParams } from "react-router";
 
 import { useArchivos, useRegistrarValidacion, useValidaciones } from "@/api/consultas";
 import { ReintentarProcesamiento } from "@/componentes/reintento";
-import type { DatoValidacion, MotivoAusencia, TipoDocumental } from "@/api/tipos";
+import type { DatoValidacion, MotivoAusencia } from "@/api/tipos";
 import { BotonFuente, InsigniaEstado, TextoLocalizador, ValorSugerido, ValorValidado } from "@/componentes/dominio";
 import { VisorDocumento, type Fuente } from "@/componentes/visor";
 import { Aviso } from "@/componentes/ui/aviso";
@@ -81,7 +81,7 @@ function Dato({
       </div>
       <div className="grid gap-2">
         {sugerencia ? (
-          <ValorSugerido campo={dato.campo} valor={esClasificacion ? TIPO_DOCUMENTAL[sugerencia.valor as TipoDocumental] ?? sugerencia.valor : sugerencia.valor} modelo={sugerencia.modelo}>
+          <ValorSugerido campo={dato.campo} valor={sugerencia.valor} modelo={sugerencia.modelo}>
             <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-tenue">
               <TextoLocalizador localizador={sugerencia.localizador} />
               {sugerencia.localizador ? (
@@ -93,10 +93,7 @@ function Dato({
           <p className="text-xs text-tenue">Sin sugerencia automática para este dato.</p>
         )}
         {vigente ? (
-          <ValorValidado
-            campo={dato.campo}
-            validacion={{ ...vigente, valor_validado: esClasificacion && vigente.valor_validado ? TIPO_DOCUMENTAL[vigente.valor_validado as TipoDocumental] : vigente.valor_validado }}
-          />
+          <ValorValidado campo={dato.campo} validacion={vigente} />
         ) : null}
       </div>
 
@@ -242,7 +239,7 @@ export function EspacioValidacion() {
             {datos.tipo_validado ? (
               datos.campos.map((c) => <Dato key={c.campo} dato={c} editable={editable} alVerFuente={setFuente} registrar={registrar} />)
             ) : (
-              <li className="py-4 text-sm text-tenue">Los campos se presentan después de validar la clasificación (RF-10).</li>
+              <li className="py-4 text-sm text-tenue">Los campos se presentan después de validar la clasificación.</li>
             )}
           </ul>
         </div>

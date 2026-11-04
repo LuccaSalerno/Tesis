@@ -43,6 +43,12 @@ export function ErrorConsulta({ error, reintentar }: { error: unknown; reintenta
   );
 }
 
+/** Carga y error de una consulta, para el lugar donde irá su contenido. */
+export function EstadoConsulta({ consulta, reintentar }: { consulta: { isPending: boolean; isError: boolean; error: unknown }; reintentar?: () => void }) {
+  if (consulta.isPending) return <Cargando />;
+  return consulta.isError ? <ErrorConsulta error={consulta.error} reintentar={reintentar} /> : null;
+}
+
 export function mensajeDeError(error: unknown): string {
   if (error instanceof ErrorApi) return error.detalle;
   if (error instanceof Error) return error.message;

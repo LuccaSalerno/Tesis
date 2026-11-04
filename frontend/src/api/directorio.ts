@@ -32,7 +32,7 @@ async function despachar(): Promise<void> {
   for (const [id, resolvers] of lote) resolvers.forEach((r) => r(nombres.get(id) ?? null));
 }
 
-export function nombreDe(id: number): Promise<string | null> {
+function nombreDe(id: number): Promise<string | null> {
   return new Promise((resolver) => {
     pendientes.set(id, [...(pendientes.get(id) ?? []), resolver]);
     if (!programado) {

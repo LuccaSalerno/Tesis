@@ -22,7 +22,7 @@ import { Encabezado } from "@/componentes/marco";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
 import { Entrada, Etiqueta, Selector } from "@/componentes/ui/campos";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { Cargando, EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Panel } from "@/componentes/ui/panel";
 import { ESTADO_TAREA, ESTADO_TRABAJO, ESTADO_TRAMITE, ROL } from "@/lib/dominio";
@@ -199,10 +199,10 @@ function FilaCuenta({ cuenta, propia }: { cuenta: Cuenta; propia: boolean }) {
 }
 
 export function Administracion() {
-  const plantillas = usePlantillas(true);
-  const cuentas = useCuentas(true);
+  const plantillas = usePlantillas();
+  const cuentas = useCuentas();
   const sinAsignar = useTareasSinAsignar(true);
-  const estado = useEstadoGeneral(true);
+  const estado = useEstadoGeneral();
   const { yo } = useSesion();
   const asignar = useAsignar();
   const [eleccion, setEleccion] = useState<Record<number, string>>({});
@@ -212,15 +212,13 @@ export function Administracion() {
     <>
       <Encabezado titulo="Administración operativa" descripcion="Coordinación del trabajo sin acceso al contenido documental." />
       <div className="space-y-6">
-        <Panel titulo="Estado general" descripcion="Trámites, tareas y procesamiento, sin títulos ni contenido documental (RF-24).">
-          {estado.isPending ? <Cargando /> : null}
-          {estado.isError ? <ErrorConsulta error={estado.error} /> : null}
+        <Panel titulo="Estado general" descripcion="Trámites, tareas y procesamiento, sin títulos ni contenido documental.">
+          <EstadoConsulta consulta={estado} />
           {estado.data ? <EstadoGeneral datos={estado.data} /> : null}
         </Panel>
 
-        <Panel titulo="Tareas sin asignar" descripcion="Por ejemplo, cuando el revisor por defecto es el propio responsable (RC-P03.3).">
-          {sinAsignar.isPending ? <Cargando /> : null}
-          {sinAsignar.isError ? <ErrorConsulta error={sinAsignar.error} /> : null}
+        <Panel titulo="Tareas sin asignar" descripcion="Por ejemplo, cuando el revisor por defecto es el propio responsable.">
+          <EstadoConsulta consulta={sinAsignar} />
           {sinAsignar.data?.length === 0 ? <Vacio titulo="No hay tareas sin asignar" /> : null}
           <ul className="divide-y divide-borde">
             {sinAsignar.data?.map((t) => (
@@ -243,7 +241,7 @@ export function Administracion() {
           {asignar.isError ? <Aviso tono="peligro" titulo={mensajeDeError(asignar.error)} /> : null}
         </Panel>
 
-        <Panel titulo="Plantillas de flujo" descripcion="Versionadas e inmutables; una activa por alcance (RC-P03.1).">
+        <Panel titulo="Plantillas de flujo" descripcion="Versionadas e inmutables; una activa por alcance.">
           {plantillas.isPending ? <Cargando /> : null}
           <ul className="mb-6 divide-y divide-borde">
             {plantillas.data?.map((p) => (
@@ -258,8 +256,7 @@ export function Administracion() {
         </Panel>
 
         <Panel titulo="Cuentas" descripcion="El nombre visible identifica a las personas en la interfaz y en la evidencia.">
-          {cuentas.isPending ? <Cargando /> : null}
-          {cuentas.isError ? <ErrorConsulta error={cuentas.error} /> : null}
+          <EstadoConsulta consulta={cuentas} />
           {cuentas.data ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">

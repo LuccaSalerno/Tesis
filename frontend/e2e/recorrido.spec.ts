@@ -23,8 +23,9 @@ test("D: desde el historial se reconstruye la decisión observada", async ({ pag
   await page.getByRole("link", { name: "Evidencia de la decisión" }).first().click();
   await expect(page.getByRole("heading", { name: "Evidencia de la decisión" })).toBeVisible();
   await expect(page.getByText(/fuera de la vigencia del contrato/).first()).toBeVisible();
-  await page.getByRole("button", { name: /^R3 ·/ }).click();
-  await expect(page.getByRole("button", { name: /^R3 ·/ })).toHaveAttribute("aria-pressed", "true");
+  const control = page.getByRole("button", { name: /^Fecha de la orden de compra dentro de la vigencia/ });
+  await control.click();
+  await expect(control).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Ver en el documento" }).first().click();
   await expect(page.getByRole("dialog")).toContainText("C-v1_Contrato_Mantenimiento_ATLAS.pdf");
 });

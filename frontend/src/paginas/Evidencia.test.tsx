@@ -22,8 +22,9 @@ describe("Evidencia de la decisión (PD-03, V1 a V4)", () => {
     const filaFecha = screen.getByText("15 mar 2027").closest("tr")!;
     const filaMoneda = screen.getByText("ARS").closest("tr")!;
     expect(filaFecha.className).not.toMatch(/bg-advertencia-suave/);
-    await usuario.click(screen.getByRole("button", { name: /R3 ·/ }));
-    expect(screen.getByRole("button", { name: /R3 ·/ })).toHaveAttribute("aria-pressed", "true");
+    const control = screen.getByRole("button", { name: /Fecha de la orden dentro de la vigencia/ });
+    await usuario.click(control);
+    expect(control).toHaveAttribute("aria-pressed", "true");
     expect(filaFecha.className).toMatch(/bg-advertencia-suave/);
     expect(filaMoneda.className).not.toMatch(/bg-advertencia-suave/);
   });

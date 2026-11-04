@@ -5,7 +5,7 @@
  * `GET /decisiones/{id}/evidencia`: la vista no infiere relaciones que la API no devuelva.
  */
 import { ArrowLeft, ChevronRight, Download, FileText, Info, Scale } from "lucide-react";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import { Link, useParams } from "react-router";
 
 import { useEvidencia } from "@/api/consultas";
@@ -18,7 +18,7 @@ import { Boton } from "@/componentes/ui/boton";
 import { Cargando, ErrorConsulta } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Dato, Panel } from "@/componentes/ui/panel";
-import { DECISION, ESTADO_CICLO, ESTADO_TAREA, MOTIVO_AUSENCIA, rotuloAccion, rotuloCampo, TIPO_DOCUMENTAL, TIPO_VALIDACION, type Tono } from "@/lib/dominio";
+import { DECISION, ESTADO_CICLO, ESTADO_TAREA, MOTIVO_AUSENCIA, rotuloAccion, rotuloCampo, TIPO_VALIDACION, type Tono } from "@/lib/dominio";
 import { fechaHora, valorLegible } from "@/lib/formatos";
 import { cn } from "@/lib/utilidades";
 
@@ -33,7 +33,6 @@ function descargar(evidencia: TipoEvidencia) {
 
 function valorMostrado(v: ValidacionEvidencia): string {
   if (v.tipo === "ausente") return MOTIVO_AUSENCIA[v.motivo_ausencia ?? "no_consta"];
-  if (v.campo === "tipo_documental" && v.valor_validado) return TIPO_DOCUMENTAL[v.valor_validado as keyof typeof TIPO_DOCUMENTAL] ?? v.valor_validado;
   return valorLegible(v.campo, v.valor_validado);
 }
 
@@ -52,18 +51,12 @@ export function Evidencia() {
   const [controlElegido, setControlElegido] = useState<number | null>(null);
   const [fuente, setFuente] = useState<Fuente | null>(null);
 
-  const entradasElegidas = useMemo(() => {
-    const control = evidencia.data?.controles.find((c) => c.id === controlElegido);
-    return new Set(control?.valores.map((v) => v.validacion_id) ?? []);
-  }, [evidencia.data, controlElegido]);
-  const versionesElegidas = useMemo(() => {
-    const control = evidencia.data?.controles.find((c) => c.id === controlElegido);
-    return new Set(control?.versiones.map((v) => v.version_id) ?? []);
-  }, [evidencia.data, controlElegido]);
-
   if (evidencia.isPending) return <Cargando texto="Reconstruyendo la evidencia…" />;
   if (evidencia.isError) return <ErrorConsulta error={evidencia.error} reintentar={() => void evidencia.refetch()} />;
   const e = evidencia.data;
+  const elegido = e.controles.find((c) => c.id === controlElegido);
+  const entradasElegidas = new Set(elegido?.valores.map((v) => v.validacion_id));
+  const versionesElegidas = new Set(elegido?.versiones.map((v) => v.version_id));
   const decision = DECISION[e.decision.tipo];
   const advertencias = e.controles.filter((c) => c.resultado === "advertencia");
   const porDocumento = new Map<number, ValidacionEvidencia[]>();
@@ -148,7 +141,7 @@ export function Evidencia() {
           </ul>
         </Panel>
 
-        <Panel id="versiones" titulo="Versiones consideradas" descripcion="El conjunto exacto del ciclo, no las versiones vigentes hoy (V1).">
+        <Panel id="versiones" titulo="Versiones consideradas" descripcion="El conjunto exacto del ciclo, no las versiones vigentes hoy.">
           <ul className="divide-y divide-borde">
             {e.versiones.map((v) => (
               <li key={v.version_id} className={cn("flex items-center justify-between gap-3 py-2.5 text-sm", versionesElegidas.has(v.version_id) && "bg-primario-suave/60")}>
@@ -163,8 +156,8 @@ export function Evidencia() {
         </Panel>
       </div>
 
-      <Panel id="controles" titulo="Controles considerados" descripcion="Ejecuciones registradas en DECISION_CONTROL al decidir (V4). Elegí una para ver sus entradas resaltadas.">
-        {e.controles.length === 0 ? <p className="text-sm text-tenue">No había reglas aplicables al decidir (PD-02.4).</p> : null}
+      <Panel id="controles" titulo="Controles considerados" descripcion="Ejecuciones registradas al decidir. Elegí una para ver sus entradas resaltadas.">
+        {e.controles.length === 0 ? <p className="text-sm text-tenue">No había reglas aplicables al decidir.</p> : null}
         <ul className="grid gap-3 md:grid-cols-2">
           {[...e.controles].sort((a, b) => a.codigo_regla.localeCompare(b.codigo_regla)).map((c: Ejecucion) => (
             <li key={c.id}>
@@ -178,7 +171,7 @@ export function Evidencia() {
                 )}
               >
                 <span className="flex items-center justify-between gap-2">
-                  <span className="font-medium">{c.codigo_regla.split("-")[0]} · {c.descripcion}</span>
+                  <span className="font-medium">{c.descripcion}</span>
                   <ResultadoControl resultado={c.resultado} />
                 </span>
                 <span className="mt-1 block text-tenue">{c.explicacion}</span>
@@ -194,7 +187,7 @@ export function Evidencia() {
         ) : null}
       </Panel>
 
-      <Panel id="datos" titulo="Datos validados al decidir" descripcion="Valor sugerido, valor validado, quién lo validó, cuándo, en qué versión y con qué fuente (V2).">
+      <Panel id="datos" titulo="Datos validados al decidir" descripcion="Valor sugerido, valor validado, quién lo validó, cuándo, en qué versión y con qué fuente.">
         <div className="space-y-6">
           {[...porDocumento.entries()].map(([documentoId, validaciones]) => (
             <div key={documentoId}>
@@ -217,7 +210,7 @@ export function Evidencia() {
                         <tr key={v.validacion_id} className={cn("border-t border-borde", entradasElegidas.has(v.validacion_id) && "bg-advertencia-suave")}>
                           <td className="px-3 py-2 font-medium">{rotuloCampo(v.campo)}</td>
                           <td className="px-3 py-2 text-tenue">
-                            {v.valor_sugerido ? (v.campo === "tipo_documental" ? TIPO_DOCUMENTAL[v.valor_sugerido as keyof typeof TIPO_DOCUMENTAL] ?? v.valor_sugerido : valorLegible(v.campo, v.valor_sugerido)) : "—"}
+                            {valorLegible(v.campo, v.valor_sugerido)}
                           </td>
                           <td className="px-3 py-2">
                             <span className="font-medium">{valorMostrado(v)}</span>{" "}
@@ -246,7 +239,7 @@ export function Evidencia() {
       </Panel>
 
       {e.firma ? (
-        <Panel titulo="Firma digital simulada" descripcion="Aplicada a una versión de este ciclo aprobado (RF-23, V11).">
+        <Panel titulo="Firma digital simulada" descripcion="Aplicada a una versión de este ciclo aprobado.">
           <FirmaAplicada firma={e.firma} documento={e.versiones.find((v) => v.version_id === e.firma?.version_id)?.documento_nombre} />
         </Panel>
       ) : null}

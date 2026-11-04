@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useTareas } from "@/api/consultas";
 import { InsigniaEstado } from "@/componentes/dominio";
 import { Encabezado } from "@/componentes/marco";
-import { Cargando, ErrorConsulta, Vacio } from "@/componentes/ui/estados";
+import { EstadoConsulta, Vacio } from "@/componentes/ui/estados";
 import { ESTADO_TAREA, ESTADO_TRAMITE } from "@/lib/dominio";
 import { fechaHora } from "@/lib/formatos";
 
@@ -15,8 +15,7 @@ export function Tareas() {
   return (
     <>
       <Encabezado titulo="Mis tareas" descripcion="Tareas asignadas a vos en los ciclos de revisión." />
-      {tareas.isPending ? <Cargando /> : null}
-      {tareas.isError ? <ErrorConsulta error={tareas.error} reintentar={() => void tareas.refetch()} /> : null}
+      <EstadoConsulta consulta={tareas} reintentar={() => void tareas.refetch()} />
       {tareas.data?.length === 0 ? <Vacio titulo="No tenés tareas asignadas" /> : null}
       {lista.length ? (
         <div className="overflow-x-auto rounded-lg border border-borde bg-superficie">

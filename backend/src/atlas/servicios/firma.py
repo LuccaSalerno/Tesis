@@ -92,7 +92,7 @@ def firmar(
     if tramite.estado in ESTADOS_TERMINALES:
         raise Conflicto("El trámite está cerrado o cancelado y no admite una firma")
     if not autorizacion_cierre:
-        raise NoPermitido("Firmar exige la autorización de cierre (RC-P03.2)")
+        raise NoPermitido("Firmar exige la autorización de cierre")
     ciclo = ciclo_aprobado(sesion, tramite.id)
     if tramite.estado != EstadoTramite.APROBADO or ciclo is None:
         raise Conflicto("Solo se firma un trámite Aprobado")

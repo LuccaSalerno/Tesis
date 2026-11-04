@@ -11,7 +11,7 @@ import type { Ciclo } from "@/api/tipos";
 import { InsigniaEstado, Persona } from "@/componentes/dominio";
 import { Aviso } from "@/componentes/ui/aviso";
 import { Boton } from "@/componentes/ui/boton";
-import { Cargando, ErrorConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
+import { Cargando, ErrorConsulta, EstadoConsulta, mensajeDeError, Vacio } from "@/componentes/ui/estados";
 import { Insignia } from "@/componentes/ui/insignia";
 import { Panel } from "@/componentes/ui/panel";
 import { ESTADO_CICLO, ESTADO_TAREA } from "@/lib/dominio";
@@ -21,7 +21,7 @@ import { useContextoTramite, useIdTramite } from "./MarcoTramite";
 
 function FlujoSugerido({ tramiteId }: { tramiteId: number }) {
   const { tramite } = useContextoTramite();
-  const sugerido = useFlujoSugerido(tramiteId, true);
+  const sugerido = useFlujoSugerido(tramiteId);
   const confirmar = useConfirmarFlujo(tramiteId);
   if (sugerido.isPending) return <Cargando />;
   if (sugerido.isError) return <ErrorConsulta error={sugerido.error} />;
@@ -29,7 +29,7 @@ function FlujoSugerido({ tramiteId }: { tramiteId: number }) {
   const faltan = s.documentos_sin_validar;
   const nombre = (id: number) => tramite.documentos.find((d) => d.id === id)?.nombre ?? `Documento ${id}`;
   return (
-    <Panel titulo="Flujo de revisión sugerido" descripcion="Se calcula según los tipos documentales y no crea tareas hasta que lo confirmás (RF-17).">
+    <Panel titulo="Flujo de revisión sugerido" descripcion="Se calcula según los tipos documentales y no crea tareas hasta que lo confirmás.">
       {s.plantilla_id === null ? (
         <Aviso tono="advertencia" titulo="No hay una plantilla de flujo activa para este trámite">
           El administrador operativo debe configurar la plantilla {s.alcance === "contrato" ? "de contratos" : "general"}.
@@ -128,7 +128,7 @@ export function Revision() {
   return (
     <div className="space-y-6">
       {tramite.estado === "borrador" && esResponsable ? (
-        <Panel titulo="Enviar a validación" descripcion="Cuando el conjunto documental esté completo (Tabla 3.VI).">
+        <Panel titulo="Enviar a validación" descripcion="Cuando el conjunto documental esté completo.">
           <Boton disabled={transicion.isPending || tramite.documentos.length === 0} onClick={() => transicion.mutate("envio-a-validacion")}>
             <Send /> Enviar a validación
           </Boton>
@@ -141,8 +141,7 @@ export function Revision() {
           <CheckCircle2 className="mr-1 inline size-4" /> Todas las tareas del último ciclo fueron aprobadas.
         </Aviso>
       ) : null}
-      {ciclos.isPending ? <Cargando /> : null}
-      {ciclos.isError ? <ErrorConsulta error={ciclos.error} /> : null}
+      <EstadoConsulta consulta={ciclos} />
       {ciclos.data?.length === 0 ? <Vacio titulo="Todavía no hay ciclos de revisión" /> : null}
       {[...(ciclos.data ?? [])].reverse().map((c, i) => (
         <TarjetaCiclo key={c.id} ciclo={c} ultimo={i === 0} />

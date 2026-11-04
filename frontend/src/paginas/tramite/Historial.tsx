@@ -50,7 +50,7 @@ export function Historial() {
   return (
     <Panel
       titulo="Historial del trámite"
-      descripcion="Cada acción registrada con su actor, instante, resultado y versión relacionada (RF-21, RF-22)."
+      descripcion="Cada acción registrada con su actor, instante, resultado y versión relacionada."
       acciones={
         <Selector aria-label="Filtrar eventos" value={filtro} onChange={(e) => setFiltro(e.target.value as keyof typeof FILTROS)} className="w-56">
           {Object.entries(FILTROS).map(([clave, rotulo]) => (
