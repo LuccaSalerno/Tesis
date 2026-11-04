@@ -9,7 +9,7 @@ Cada etapa produce algo **funcionando de punta a punta**. Lo que se posterga se 
 
 ---
 
-**Cotización de referencia:** [informe preliminar](../operacion/RC-P10-13_Cotizacion_Preliminar_2026-10-21.md) y [modelo reproducible](../operacion/RC-P10-13_Modelo_Costos_2026-10-21.xlsx), todavía sin exportación de AWS Pricing Calculator ni autorización de gasto. Las compuertas 1.0 y 1.1 no se consideran verificadas por la existencia de estos documentos.
+**Cotización de referencia:** [por sesión E90A](../operacion/RC-P10-13_Cotizacion_Sesion_E90A.md), todavía sin exportación de AWS Pricing Calculator ni autorización de gasto. Las compuertas 1.0 y 1.1 no se consideran verificadas por la existencia de este documento.
 
 ## Etapa 0 — Prerrequisitos (los hace el equipo, no el agente)
 
@@ -81,7 +81,7 @@ Los hitos se construyen **en orden**. Cada uno marcado como «punto de demo» de
 - Implementar el oráculo de **30 preguntas RAG**, seis sin respuesta, y los oráculos de clasificación, extracción, procedencia y tres pruebas adversariales (RC-P05, RC-P06.2, DO-2026-10-21-E90-CORPUS).
 - Comparación de modelos y embeddings (RC-P07), pruebas técnicas y de rendimiento, actualización de la cotización previa y registro de costos reales (RC-P10-13). Cada campaña AWS tiene autorización manual y presupuesto; la cotización inicial no se difiere a esta etapa.
 
-**Evidencias de evaluación a recolectar:** `docs/evaluacion/Mapa_Evidencias_Pendientes_Capitulo_6.md` (instrumentos, resultados esperados, evidencias saneadas para 6.2–6.6). Los escenarios BDD declarados y el CSV de plan del corpus no constituyen ejecución.
+**Evidencias de evaluación:** `evaluacion/campanas/`. Los escenarios BDD declarados y el CSV de plan del corpus no constituyen ejecución.
 
 ## Etapa 5 — Resultados y tesis
 

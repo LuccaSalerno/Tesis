@@ -106,7 +106,7 @@ La versión de defensa se fija por commit y artefactos identificables; un push o
 
 ---
 
-**E90A — nueva decisión posterior del equipo (21/10/2026):** la demo es descartable. Cada encendido implica crear recursos nuevos y poblarlos con datos sintéticos, y cada apagado implica eliminación manual selectiva de los recursos propios de la sesión, incluida RDS. La persistencia entre sesiones no aplica al hito E90. [Decisión completa](../decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) y [runbook operativo](../../operaciones/aws/README_OPERACION_MANUAL.md).
+**E90A — nueva decisión posterior del equipo (21/10/2026):** la demo es descartable. Cada encendido implica crear recursos nuevos y poblarlos con datos sintéticos, y cada apagado implica eliminación manual selectiva de los recursos propios de la sesión, incluida RDS. La persistencia entre sesiones no aplica al hito E90. [Decisión completa](../decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) y [guía de sesión](../../operaciones/aws/Guia_Sesion_Seccion6.md).
 
 ## 3. Terraform
 
@@ -188,9 +188,9 @@ La versión de defensa se fija por commit y artefactos identificables; un push o
 
 ### 6.3. Semilla y límites de evaluación
 
-La especificación del seed está en [Seed demo E90](../operacion/Seed_Demo_E90_Especificacion.md). Las pruebas RNF-04/RN-10 siguen obligando a preservar la auditoría **mientras existe el trámite en una sesión**. La eliminación administrativa del entorno descarta también su base; la nueva sesión genera otro conjunto de identidades y registros. **Esto no demuestra la antigua verificación B (recuperar la misma evidencia tras apagar).** Si E90 exige esa demostración, debe constar como pendiente o realizarse un ensayo alternativo con backup/restauración aprobado para un hito posterior.
+La semilla está implementada en `atlas.herramientas.sembrar_demo`. Las pruebas RNF-04/RN-10 siguen obligando a preservar la auditoría **mientras existe el trámite en una sesión**. La eliminación administrativa del entorno descarta también su base; la nueva sesión genera otro conjunto de identidades y registros. **Esto no demuestra la antigua verificación B (recuperar la misma evidencia tras apagar).** Si E90 exige esa demostración, debe constar como pendiente o realizarse un ensayo alternativo con backup/restauración aprobado para un hito posterior.
 
-La destrucción de RDS no acarrea una tarifa directa de eliminación, pero la creación/uso, almacenamiento mientras exista, mínimos de facturación, backups retenidos y cargos residuales sí pueden costar dinero. Consultar el [runbook](../../operaciones/aws/README_OPERACION_MANUAL.md) antes de intentar cualquier ciclo.
+La destrucción de RDS no acarrea una tarifa directa de eliminación, pero la creación/uso, almacenamiento mientras exista, mínimos de facturación, backups retenidos y cargos residuales sí pueden costar dinero. Consultar la [guía de sesión](../../operaciones/aws/Guia_Sesion_Seccion6.md) antes de intentar cualquier ciclo.
 
 ---
 
@@ -255,7 +255,7 @@ Mitigación: limitar la concurrencia de tests (RC-P08) y, antes de la defensa, c
 
 ## 10. Costos (RC-P10-13, pendiente)
 
-**Investigación económica añadida (21/10/2026):** [cotización preliminar](../operacion/RC-P10-13_Cotizacion_Preliminar_2026-10-21.md) y [modelo con escenarios](../operacion/RC-P10-13_Modelo_Costos_2026-10-21.xlsx). Contienen hipótesis de precio **previas a la decisión E90A** (RDS detenido y almacenamiento mensual persistente): **no usar sus totales como cotización de la demo descartable**. No cierran RC-P10-13 ni autorizan despliegue. Recalcular por sesión con creación/destrucción efectiva de RDS Multi-AZ **DB instance**, Proxy, endpoints, recursos demo, seed e IA; contemplar mínimos, errores y residuos.
+**Cotización:** [por sesión E90A](../operacion/RC-P10-13_Cotizacion_Sesion_E90A.md), preliminar. No cierra RC-P10-13 ni autoriza despliegue.
 
 
 - `db.t4g.medium` Multi-AZ es la **hipótesis inicial** de dimensionamiento, sujeta a pruebas. Las instancias T4g funcionan en modo ilimitado: monitorear `CPUCreditBalance`, `CPUSurplusCreditBalance` y `CPUSurplusCreditsCharged`.

@@ -1,6 +1,6 @@
 # Guía paso a paso: sesión AWS de la sección 6 y demo (cuenta nueva)
 
-**Para:** el operador humano (Lucca). **Fecha:** 23/10/2026. **Autoridad:** DO-2026-10-21, DO-2026-10-21-E90A, DO-2026-10-22-OPS y las decisiones de cada ejecutor. Reúne en un solo lugar lo que estaba repartido en [infra/terraform/README.md](../../infra/terraform/README.md), [evaluacion/README.md](../../evaluacion/README.md) y [README_CONFIGURACION_ETAPA_0.md](README_CONFIGURACION_ETAPA_0.md); ante una duda de detalle, esos documentos siguen valiendo.
+**Para:** el operador humano (Lucca). **Fecha:** 23/10/2026. **Autoridad:** DO-2026-10-21, DO-2026-10-21-E90A, DO-2026-10-22-OPS y las decisiones de cada ejecutor. Reúne en un solo lugar lo que estaba repartido en [infra/terraform/README.md](../../infra/terraform/README.md) y [evaluacion/README.md](../../evaluacion/README.md); ante una duda de detalle, esos documentos siguen valiendo.
 
 Reglas que no cambian: todo lo ejecutás vos, con tus credenciales; nada desde GitHub ni desde el agente. Nunca pegues contraseñas, tokens ni claves en el chat ni en el repositorio. Nada de `terraform destroy` global ni `state rm`.
 
@@ -66,7 +66,6 @@ git checkout fundacion/local-backend && git pull
 git status --short          # debe quedar vacío
 ```
 
-- [ ] Commiteá o descartá `operaciones/aws/README_CONFIGURACION_ETAPA_0.md` (está modificado en tu copia). **La medición oficial de §6.3.1 se niega a correr con cambios sin commit.**
 
 ### 1.2 Archivar el estado de la cuenta anterior (solo si cambiás de cuenta)
 

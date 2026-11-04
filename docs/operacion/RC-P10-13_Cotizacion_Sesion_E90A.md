@@ -2,7 +2,7 @@
 
 **Fecha:** 22/10/2026. **Estado: PRELIMINAR, NO APROBADO.** Base: DO-2026-10-22-OPS (P13), el
 Terraform de `infra/terraform/` y las tarifas de referencia del
-[informe preliminar](RC-P10-13_Cotizacion_Preliminar_2026-10-21.md) (consultadas el
+informe preliminar de RC-P10-13, retirado del árbol y recuperable en git (consultadas el
 21/10/2026, sin Pricing Calculator). **No autoriza gasto ni despliegue.** Para aprobar hace
 falta: exportación oficial de AWS Pricing Calculator con esta configuración, importe aceptado
 por sesión y por mes, operador y revisor ([política de costos](Politica_Costos_AWS.md)).

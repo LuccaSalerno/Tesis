@@ -15,7 +15,7 @@ Modificaciones de las cuatro familias iniciales realizadas por el equipo de cons
 
 Los avisos de derechos y excepciones fueron comprobados antes de adaptar las fuentes aprobadas. No se utilizan identidades de partes reales, logotipos, firmas, materiales privados ni elementos de terceros excluidos. Los avisos generales de marca de los sitios no se interpretan como permiso para usar sus marcas ni como aval al corpus.
 
-Los archivos y sus familias se identifican en `oraculos/e90/inventario_candidato.csv`. La trazabilidad detallada de original, versión, enlace exacto, SHA-256, extractos y cambios está en `herramientas/corpus_e90/plantillas/contratos.json` y `docs/evaluacion/corpus_e90/Modelos_Publicos_Candidatos.md`. MED_C, MED_D y ARG_A no se utilizan en ajuste. PD-07 no se modifica ni se incorpora a medición.
+Los archivos y sus familias se identifican en `oraculos/e90/inventario_candidato.csv`. La trazabilidad detallada de original, versión, enlace exacto, SHA-256, extractos y cambios está en `herramientas/corpus_e90/plantillas/contratos.json`. MED_C, MED_D y ARG_A no se utilizan en ajuste. PD-07 no se modifica ni se incorpora a medición.
 
 ## Condiciones específicas de ARG_A — CPAU
 

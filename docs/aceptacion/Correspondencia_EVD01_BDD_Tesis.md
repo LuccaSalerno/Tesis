@@ -28,5 +28,4 @@ La cadena se verifica mediante API autenticada/autorizada y aserciones sobre est
 ## Relación con fuentes de la tesis
 
 - `docs/tesis/main.pdf`: PDF actualizado el 22/10/2026 con la redacción consolidada del capítulo 6; sirve de referencia para RF/RN/RNF, dominio, arquitectura y método de validación.
-- `docs/tesis/ATLAS_Seccion_6_Version_Final_6_0_a_6_3.md`: copia Markdown sincronizada con el método de 6.0–6.3 del PDF actualizado; no es un reporte de pruebas ejecutadas.
 - Si aparece diferencia editorial entre el PDF y el Markdown sobre 6.2, mantener la referencia al PDF vigente, aplicar la equivalencia de esta nota y preservar los requisitos contractuales. Si hay diferencia sustantiva, elevarla al equipo en vez de elegir silenciosamente.

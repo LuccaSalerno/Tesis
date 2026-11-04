@@ -10,7 +10,7 @@
 | **6.3.1 — evaluación cuantitativa** | Medir clasificación, extracción, procedencia, RAG, adversariales y comparaciones de modelos | Únicamente **50 documentos sintéticos de medición**; grupo de ajuste sintético separado | Oráculos previos, mediciones brutas, métricas y fallos | No completar métricas a partir de pruebas de demo ni de documentos operativos reales |
 | **6.4 — validación funcional/operativa** | Observar el funcionamiento integrado en un entorno operativo real | Documentación propia del entorno, manejada **fuera del repositorio y del agente**, con autorización y controles específicos | Resultados no confidenciales autorizados, operaciones verificadas, incidencias y límites | No adjuntar originales, extraer datos privados, publicar nombres ni confundir con el conjunto cuantitativo |
 
-**Demo AWS E90A:** un tercer propósito operativo: demostración **descartable con corpus sintético PD-07** (C-v1, O-v1/O-v2 y F-v1/F-v2) y seed reproducible manual. No equivale ni reemplaza la medición de 50 ni la validación operativa real. El script `herramientas/preparar_seed_demo_e90.py` **solo crea el manifiesto local** por ahora.
+**Demo AWS E90A:** un tercer propósito operativo: demostración **descartable con corpus sintético PD-07** (C-v1, O-v1/O-v2 y F-v1/F-v2) y seed reproducible manual. No equivale ni reemplaza la medición de 50 ni la validación operativa real. La semilla está implementada en `atlas.herramientas.sembrar_demo`.
 
 Ningún documento auténtico del escenario real ingresa en Git/GitHub, en este paquete, en herramientas de agentes, en CI ni en la demo sintética AWS. El uso operativo real exige consentimiento/permisos pertinentes, protección de datos y revisión RNF-03/RC-P09 de servicios/regiones/retención **antes de cualquier tratamiento**. La publicación se limita a resultados y evidencias previamente saneados/autorizados; no implica que deban difundirse originales ni detalles identificables.
 
@@ -40,7 +40,7 @@ Conservar **sin alteraciones** todos los umbrales/criterios definidos en el docu
 
 ## Plan de construcción adjunto (sin cambiar el protocolo aprobado)
 
-`Plan_Diseno_Corpus_E90.md` y `plan_diseno_corpus_e90.csv` ofrecen una distribución de trabajo (50 de medición, **15 de ajuste propuestos**, tres adversariales dentro de los 50). **No son inventario de documentos existentes ni congelación de oráculos**. La decisión aprobada sigue siendo 10–15 de ajuste hasta que el equipo confirme la concreción del grupo. El registro de preguntas `plan_oraculo_30_consultas_rag_e90.csv` contiene solo espacios reservados y no respuestas verificadas.
+`Plan_Diseno_Corpus_E90.md` y `plan_diseno_corpus_e90.csv` ofrecen una distribución de trabajo (50 de medición, **15 de ajuste propuestos**, tres adversariales dentro de los 50). **No son inventario de documentos existentes ni congelación de oráculos**. La decisión aprobada sigue siendo 10–15 de ajuste hasta que el equipo confirme la concreción del grupo.
 
 ## 4. Archivos de trabajo y congelación
 

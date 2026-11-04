@@ -6,7 +6,7 @@ Los únicos archivos de entrada están en `medicion/` y `ajuste/`, con nombres n
 
 Contenido de la v3 (misma estructura que la v2):
 
-- Razones sociales ficticias verosímiles, 12 en medición y 6 en ajuste, sin repetirse entre particiones; un comprador ficticio común. Los 12 CUIT de medición son los del reporte ARCA del equipo del 22/10/2026; los 6 de ajuste están pendientes de consulta. Las razones sociales también deben verificarse a mano: ver `docs/evaluacion/corpus_e90/Verificaciones_Pendientes_V2.md`.
+- Razones sociales ficticias verosímiles, 12 en medición y 6 en ajuste, sin repetirse entre particiones; un comprador ficticio común. Los 12 CUIT de medición son los del reporte ARCA del equipo del 22/10/2026; los 6 de ajuste y las razones sociales se verificaron a mano: ver `docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md`.
 - Formatos por familia de plantilla: fechas `dd/mm/aaaa`, `dd-mm-aaaa`, `dd/mm/aa` o en letras; importes con o sin símbolo; moneda por código, símbolo o nombre; CUIT con o sin guiones; numeración documental propia de cada tipo.
 - Estructuras distintas por familia: tabla (BASE_A), lista (BASE_B), detalle de ítems con neto, IVA y total (MED_C) y carta con los datos en la prosa (MED_D). 20 documentos no contractuales de medición tienen más de una página.
 - Cuatro trámites coherentes (mismo proveedor y moneda, importes relacionados, referencias por número); T3 tiene una diferencia deliberada entre orden y factura.

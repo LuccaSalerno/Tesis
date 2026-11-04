@@ -7,7 +7,7 @@ Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las regla
 ## Estado
 
 - **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React). Detalle y próximos pasos en [Estado_Implementacion.md](docs/plan/Estado_Implementacion.md).
-- **Evaluación:** resultados y pendientes del capítulo 6 en [Resumen_Estado_Seccion_6.md](docs/evaluacion/Resumen_Estado_Seccion_6.md); la evidencia está en [evaluacion/campanas](evaluacion/campanas).
+- **Evaluación:** la evidencia del capítulo 6 está en [evaluacion/campanas](evaluacion/campanas).
 - **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Las operaciones las ejecuta solo un integrante autorizado, de forma manual; la CI de GitHub no tiene acceso a AWS.
 - **Datos:** el agente, la CI y la demo usan exclusivamente datos sintéticos.
 

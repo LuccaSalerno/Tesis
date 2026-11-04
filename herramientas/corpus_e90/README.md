@@ -1,6 +1,6 @@
 # Construcción y validación local del corpus E90
 
-Decisiones: **DO-2026-10-22-CORPUS-CONSTRUCCION** y **DO-2026-10-22-CORPUS-REVISION** (diseño P0–P16 en `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`) y **DO-2026-10-23-CIERRE D5** (versión candidata **v3**: correcciones de REV-E90-16 a 19 en `docs/evaluacion/corpus_e90/Correcciones_V3.md`). Estado: candidato, no congelado, sin oráculos revisados por los autores. No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
+Decisiones: **DO-2026-10-22-CORPUS-CONSTRUCCION** y **DO-2026-10-22-CORPUS-REVISION** (diseño P0–P16) y **DO-2026-10-23-CIERRE D5** (versión **v3**: correcciones de REV-E90-16 a 19). Estado: congelado (DO-2026-10-23-E90-CONGELACION). No hay llamadas a AWS, cambios de backend/frontend, migraciones ni modificación de PD-07.
 
 ## Qué contiene
 
