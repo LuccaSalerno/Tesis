@@ -1,5 +1,7 @@
 # ATLAS — Especificación de seed de demo descartable E90A
 
+**Actualización 04/11/2026:** la semilla ya está implementada en `atlas.herramientas.sembrar_demo` (AWS, operador humano; ver `operaciones/aws/Guia_Sesion_Seccion6.md`) y `atlas.herramientas.sembrar_local` (desarrollo local). El estado que sigue es el del 21/10/2026.
+
 **Fecha:** 21/10/2026. **Estado:** especificación; **NO existe aún una implementación que pueble AWS**. La API/backend, Terraform y modelo físico todavía no están construidos. El script `herramientas/preparar_seed_demo_e90.py` genera solamente un **manifiesto local** de archivos/huellas: no se conecta a AWS ni crea trámites.
 
 **Distinción E90-CORPUS:** esta semilla PD-07 prepara el **recorrido funcional de demo/EVD**, no la muestra de 50 archivos usada para medir extracción y clasificación. Los documentos de medición y ajuste tienen manifiestos y oráculos propios; nunca se usan documentos de una validación operativa real para poblar la demo.

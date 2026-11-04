@@ -4,17 +4,12 @@ Contra la API autenticada y PostgreSQL real, con los valores del oráculo PD-07 
 por el responsable (las reglas nunca usan sugerencias, RN-02).
 """
 
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, then, when
-from sqlalchemy import Engine, text
+from sqlalchemy import text
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
-from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto, crear_tramite
 from tests.flujo_vinculos import (
     C_V1,
@@ -34,25 +29,6 @@ pytestmark = pytest.mark.integracion
 scenarios("vinculos_y_reglas.feature")
 
 ORACULO = {"O-v1": O_V1, "F-v2": F_V2}
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def estado() -> dict[str, Any]:
-    return {}
-
-
-@given("un responsable del trámite autenticado", target_fixture="ctx")
-def responsable_autenticado(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Contexto]:
-    usuario_id, sub = crear_cuenta(motor_aplicacion, "responsable_tramite")
-    with TestClient(aplicacion) as cliente:
-        yield Contexto(cliente, motor_aplicacion, usuario_id, portador(sub))
 
 
 @given("un trámite con el contrato C-v1 validado")

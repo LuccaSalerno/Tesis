@@ -85,6 +85,16 @@ def eventos_del_tramite(motor: Engine, tramite_id: int) -> list[dict[str, Any]]:
         ]
 
 
+def acciones_del_tramite(motor: Engine, tramite_id: int) -> list[str]:
+    with motor.connect() as conexion:
+        return list(
+            conexion.execute(
+                text("SELECT accion FROM atlas.evento_auditoria WHERE tramite_id = :t ORDER BY id"),
+                {"t": tramite_id},
+            ).scalars()
+        )
+
+
 def contar(motor: Engine, tabla: str, tramite_id: int) -> int:
     with motor.connect() as conexion:
         return int(

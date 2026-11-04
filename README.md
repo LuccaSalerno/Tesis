@@ -1,29 +1,61 @@
 # ATLAS — PFI UADE 2026
 
-Reconstrucción desde cero. Leer [AGENTS.md](AGENTS.md) y [estado de preparación](README_PRIMERO.md) antes de trabajar.
+Prototipo de la tesis «Arquitectura para la gestión inteligente de documentos y contratos con extracción automática de información, trazabilidad y firma digital».
 
-La decisión del equipo del 21/10/2026 exige operaciones AWS exclusivamente manuales por un integrante autorizado, con impacto y costos aprobados. GitHub Actions solo admite CI sin AWS; no se configura OIDC de GitHub. Terraform y la arquitectura de la tesis se preservan. Ver [operación manual](operaciones/aws/README_OPERACION_MANUAL.md) y [política de costos](docs/operacion/Politica_Costos_AWS.md).
+Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las reglas y el orden de los documentos que gobiernan el proyecto.
 
-Todavía no hay infraestructura ni aplicación implementadas o verificadas en este repositorio. ATLAS no funcionará permanentemente en AWS durante el desarrollo.
+## Estado
 
+- **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React). Detalle y próximos pasos en [Estado_Implementacion.md](docs/plan/Estado_Implementacion.md).
+- **Evaluación:** resultados y pendientes del capítulo 6 en [Resumen_Estado_Seccion_6.md](docs/evaluacion/Resumen_Estado_Seccion_6.md); la evidencia está en [evaluacion/campanas](evaluacion/campanas).
+- **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Las operaciones las ejecuta solo un integrante autorizado, de forma manual; la CI de GitHub no tiene acceso a AWS.
+- **Datos:** el agente, la CI y la demo usan exclusivamente datos sintéticos.
 
-## Operación E90: demo descartable
+## Estructura
 
-[Decisión E90A](docs/decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) · [runbook manual](operaciones/aws/README_OPERACION_MANUAL.md) · [especificación de seed](docs/operacion/Seed_Demo_E90_Especificacion.md). No hay despliegues automáticos GitHub ni AWS seed funcional implementado aún.
+| Carpeta | Contenido |
+|---|---|
+| `backend/` | API, servicios, procesamiento, migraciones y pruebas ([README](backend/README.md)) |
+| `frontend/` | Aplicación web ([README](frontend/README.md)) |
+| `infra/` | Terraform, base local con Docker y empaquetado ([README](infra/terraform/README.md)) |
+| `operaciones/` | Guías de operación manual en AWS y guion de la demo |
+| `corpus/`, `oraculos/` | Documentos sintéticos y oráculos, algunos congelados: no se modifican |
+| `evaluacion/` | Campañas y evidencia de la sección 6 |
+| `herramientas/`, `tests/` | Generación y validación del corpus; escenarios BDD en `tests/acceptance/` |
+| `docs/` | Tesis, decisiones, contratos de aceptación, diseño, plan y operación |
 
-## Evaluación E90: decisión final del corpus
+## Levantar el entorno local
 
-[Protocolo vigente de evaluación](docs/evaluacion/Protocolo_E90_Corpus_y_Validacion.md) · [Decisión DO-2026-10-21-E90-CORPUS](docs/decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) · [Guía de inicio para el agente](INICIO_CODEx_E90.md).
+Requiere Python 3.12, Node 20.19 o superior y Docker. La primera vez, seguí la puesta en marcha de [backend/README.md](backend/README.md).
 
-Medición: 50 **sintéticos** (10 por tipo), con 3 pruebas de *prompt injection* dentro de esos 50; 10–15 archivos separados de ajuste y 30 preguntas RAG. No se crean los 16 casos extra ni un conjunto público. La demo descartable y EVD-01 tienen su escenario sintético PD-07; la validación operativa real constituye un procedimiento distinto, sin ingreso de documentos auténticos al repositorio/CI/agente ni a la demo. Los resultados no confidenciales de esa validación se registran únicamente cuando existan y estén autorizados.
+```bash
+docker compose -f infra/local/docker-compose.yml up -d --wait
+```
 
-**El `docs/tesis/main.pdf` actualizado ya refleja el conjunto de medición de 50 documentos.** La nueva redacción de 6.0–6.3 está separada en Markdown y requiere incorporación a la fuente LaTeX. Esto no bloquea la fundación local del backend, frontend y base.
+```bash
+cd backend && .venv/bin/alembic upgrade head && .venv/bin/python -m atlas.herramientas.preparar_aws_local
+```
 
-## Preparación para implementar (actualización del equipo)
+```bash
+cd backend && .venv/bin/uvicorn --factory atlas.principal:crear_aplicacion --no-access-log
+```
 
-- [Correspondencia entre EVD-01, cadena de evidencia y BDD/Gherkin](docs/aceptacion/Correspondencia_EVD01_BDD_Tesis.md): mismos cuatro recorridos y criterios internos; cambios solo de presentación académica.
-- [Plan operativo de corpus E90](docs/evaluacion/Plan_Diseno_Corpus_E90.md): 50 medición y 15 ajuste **propuestos**, sin archivos ni oráculos inventados.
-- [Evidencias pendientes para completar el capítulo 6](docs/evaluacion/Mapa_Evidencias_Pendientes_Capitulo_6.md).
-- [Informe de preparación y compuertas](docs/operacion/Informe_Preparacion_Implementacion_2026-10-21.md).
+```bash
+cd backend && .venv/bin/python -m atlas.herramientas.sembrar_local
+```
 
-En `docs/tesis/` se guardan el PDF más reciente aportado y la última propuesta Markdown de 6.0–6.3 (aún no integrada en LaTeX). No tomar los escenarios `.feature` como tests ya aprobados.
+```bash
+cd frontend && npm ci && npm run dev
+```
+
+La semilla imprime un token por rol para ingresar en <http://localhost:5173>. moto guarda los archivos en memoria: si se reinicia, hay que preparar moto y volver a sembrar, y los trámites anteriores dejan de mostrar su PDF.
+
+## Verificar
+
+Antes de commitear un hito, desde la raíz del repositorio:
+
+```bash
+backend/herramientas_ci/ensayo_ci_limpio.sh
+```
+
+Corre lint, tipos, pruebas y cobertura en contenedores limpios, sin tocar la base local. Los recorridos e2e se describen en [frontend/README.md](frontend/README.md).

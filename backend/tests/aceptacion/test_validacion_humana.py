@@ -4,42 +4,17 @@ Contra la API autenticada y PostgreSQL real; el procesamiento usa respuestas fij
 las páginas del oráculo preliminar PD-07 (P1 de DO-2026-10-22-PROC).
 """
 
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, then, when
-from sqlalchemy import Engine
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
-from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto
 from tests.flujo_procesamiento import contrato_procesado_e_incorporado
 
 pytestmark = pytest.mark.integracion
 
 scenarios("validacion_humana.feature")
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def estado() -> dict[str, Any]:
-    return {}
-
-
-@given("un responsable del trámite autenticado", target_fixture="ctx")
-def responsable_autenticado(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Contexto]:
-    usuario_id, sub = crear_cuenta(motor_aplicacion, "responsable_tramite")
-    with TestClient(aplicacion) as cliente:
-        yield Contexto(cliente, motor_aplicacion, usuario_id, portador(sub))
 
 
 @given("el contrato sintético C-v1 procesado e incorporado a su trámite")

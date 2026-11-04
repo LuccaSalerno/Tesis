@@ -15,6 +15,7 @@ import psycopg
 import pytest
 from alembic import command
 from alembic.config import Config
+from fastapi.testclient import TestClient
 from moto.server import ThreadedMotoServer
 from sqlalchemy import Connection, Engine, create_engine
 from sqlalchemy.pool import NullPool
@@ -23,6 +24,7 @@ from atlas.autenticacion.claves_locales import CLIENTE_LOCAL, EMISOR_LOCAL, Clav
 from atlas.configuracion import Configuracion, ErrorConfiguracion
 from atlas.integraciones.aws import crear_cliente
 from atlas.integraciones.ciclo_vida_s3 import aplicar_ciclo_vida
+from atlas.principal import crear_aplicacion
 
 RAIZ_BACKEND = Path(__file__).resolve().parents[1]
 
@@ -195,3 +197,29 @@ def base_reiniciada(configuracion_tests: Configuracion) -> Configuracion:
     command.downgrade(config, "base")
     command.upgrade(config, "head")
     return configuracion_tests
+
+
+@pytest.fixture
+def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
+    aplicacion = crear_aplicacion(base_migrada)
+    yield aplicacion
+    aplicacion.state.motor.dispose()
+
+
+@pytest.fixture
+def cliente(base_migrada: Configuracion) -> Iterator[TestClient]:
+    aplicacion = crear_aplicacion(base_migrada)
+    with TestClient(aplicacion) as cliente:
+        yield cliente
+    aplicacion.state.motor.dispose()
+
+
+@pytest.fixture
+def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Any]:
+    # Importación local: flujo_revision usa tests.datos, que importa este conftest.
+    from tests.flujo_revision import equipo, plantilla_de_contratos
+
+    with TestClient(aplicacion) as cliente:
+        actual = equipo(cliente, motor_aplicacion)
+        plantilla_de_contratos(actual)
+        yield actual

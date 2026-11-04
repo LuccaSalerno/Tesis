@@ -14,6 +14,9 @@ coverage.xml
 !.env.example
 !.env.tests.example
 
+# Compilación de TypeScript
+*.tsbuildinfo
+
 # Terraform (conservar únicamente código, ejemplos y locks de proveedores)
 **/.terraform/
 **/*.tfstate

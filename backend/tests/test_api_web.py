@@ -25,11 +25,9 @@ from tests.flujo_revision import (
     Equipo,
     contexto,
     decidida,
-    equipo,
     flujo_sugerido,
     iniciar_ciclo,
     obtener,
-    plantilla_de_contratos,
     tramite,
     tramite_con_conjunto,
 )
@@ -46,14 +44,6 @@ def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
     aplicacion.state.modelo_generativo = ModeloConsultaFijo(buscar="28/02/2027")
     yield aplicacion
     aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
 
 
 def ausentar(

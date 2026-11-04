@@ -11,8 +11,6 @@ from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, then, when
 from sqlalchemy import Engine
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from tests.flujo_revision import (
     Equipo,
     ciclos,
@@ -31,18 +29,6 @@ from tests.flujo_revision import (
 pytestmark = pytest.mark.integracion
 
 scenarios("revision_y_evidencia.feature")
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def estado() -> dict[str, Any]:
-    return {}
 
 
 @given("una plantilla de contratos con revisión legal y aprobación final", target_fixture="e")

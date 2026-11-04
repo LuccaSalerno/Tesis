@@ -3,9 +3,7 @@
 React 19 + TypeScript + Vite, Tailwind CSS 4 y componentes al estilo shadcn/ui sobre Radix.
 Decisión: **DO-2026-10-22-WEB**. Reglas del repositorio: [AGENTS.md](../AGENTS.md).
 
-La aplicación usa y muestra solo lo que el backend implementa: no hay pantallas para la versión
-nueva de un documento (RF-06), la firma simulada (RF-23), la cancelación (RN-14) ni el panel del
-administrador (RF-24) hasta que existan.
+La aplicación usa y muestra solo lo que el backend implementa.
 
 ## Estructura
 

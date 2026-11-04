@@ -16,7 +16,6 @@ from sqlalchemy import Engine, text
 from atlas.configuracion import Configuracion
 from atlas.integraciones.aws import crear_cliente, nombre_ejecucion
 from atlas.integraciones.puertos import ErrorIntegracion
-from atlas.principal import crear_aplicacion
 from tests import archivos
 from tests.conftest import ARN_MAQUINA_PRUEBA, lineas_registro
 from tests.datos import crear_cuenta, portador
@@ -38,13 +37,6 @@ RESPONSABLE = "responsable_tramite"
 REVISOR = "revisor_aprobador"
 ADMIN = "administrador_operativo"
 TIPO_PDF = "application/pdf"
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
 
 
 @pytest.fixture

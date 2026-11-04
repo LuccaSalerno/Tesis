@@ -3,28 +3,22 @@ P6 y P8), contra PostgreSQL real. Cuentas y documentos sintéticos."""
 
 import hashlib
 import json
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from sqlalchemy import Engine, text
 from sqlalchemy.exc import DBAPIError
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from tests import archivos
-from tests.flujo_api import cargar, incorporar
+from tests.flujo_api import acciones_del_tramite, cargar, incorporar
 from tests.flujo_revision import (
     Equipo,
     contexto,
     decidida,
     enviar_a_validacion,
-    equipo,
     evidencia,
     iniciar_ciclo,
     obtener,
-    plantilla_de_contratos,
     tramite,
     tramite_con_conjunto,
 )
@@ -33,21 +27,6 @@ from tests.flujo_vinculos import validar, vincular
 pytestmark = pytest.mark.integracion
 
 LEYENDA = "Firma digital simulada — sin validez jurídica"
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
 
 
 @pytest.fixture
@@ -67,16 +46,6 @@ def firmar(ctx: Any, tramite_id: int, version_id: int) -> Any:
     return ctx.cliente.post(
         f"/tramites/{tramite_id}/firma", json={"version_id": version_id}, headers=ctx.encabezados
     )
-
-
-def _acciones(motor: Engine, tramite_id: int) -> list[str]:
-    with motor.connect() as conexion:
-        return list(
-            conexion.execute(
-                text("SELECT accion FROM atlas.evento_auditoria WHERE tramite_id = :t ORDER BY id"),
-                {"t": tramite_id},
-            ).scalars()
-        )
 
 
 # --- Firma y cierre (RF-23, P5, P6) -----------------------------------------------------
@@ -113,7 +82,7 @@ def test_rf_23_firma_simulada_cierra_el_tramite(e: Equipo, aprobado: dict[str, A
         ).scalar_one()
     assert firma["huella_archivo"] == huella
     assert tramite(e.responsable, tramite_id)["estado"] == "cerrado"
-    assert _acciones(e.responsable.motor, tramite_id)[-2:] == [
+    assert acciones_del_tramite(e.responsable.motor, tramite_id)[-2:] == [
         "firma_simulada_aplicada",
         "tramite_cerrado",
     ]
@@ -156,7 +125,7 @@ def test_rc_p03_2_solo_con_autorizacion_de_cierre(e: Equipo, aprobado: dict[str,
     otro = contexto(e.cliente, e.responsable.motor, "revisor_aprobador", autorizacion_cierre=True)
     assert firmar(otro, tramite_id, version).status_code == 404
     assert tramite(e.responsable, tramite_id)["estado"] == "aprobado"
-    assert "firma_simulada_aplicada" not in _acciones(e.responsable.motor, tramite_id)
+    assert "firma_simulada_aplicada" not in acciones_del_tramite(e.responsable.motor, tramite_id)
 
 
 def test_v11_solo_una_version_del_ciclo_aprobado(e: Equipo, aprobado: dict[str, Any]) -> None:
@@ -224,7 +193,7 @@ def test_rn_15_cerrado_no_admite_cambios(e: Equipo, aprobado: dict[str, Any]) ->
     with pytest.raises(AssertionError):
         validar(r, tramite_id, aprobado["contrato"], "moneda", "USD")
     assert tramite(r, tramite_id)["estado"] == "cerrado"
-    assert _acciones(r.motor, tramite_id)[-1] == "tramite_cerrado"
+    assert acciones_del_tramite(r.motor, tramite_id)[-1] == "tramite_cerrado"
 
 
 def test_rn_11_la_firma_es_inmutable(

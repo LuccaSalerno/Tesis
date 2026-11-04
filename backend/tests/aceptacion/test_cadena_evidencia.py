@@ -8,16 +8,11 @@ un escenario no acredita por sí solo el cumplimiento de EVD-01: eso exige el or
 congelado y la evidencia conservada (AGENTS.md §7).
 """
 
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, scenarios, then, when
-from sqlalchemy import Engine
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from atlas.servicios.tareas import TAREA_DESACTUALIZADA
 from tests import archivos
 from tests.flujo_api import cargar, incorporar
@@ -28,11 +23,9 @@ from tests.flujo_revision import (
     ciclos,
     decidida,
     decidir,
-    equipo,
     evidencia,
     iniciar_ciclo,
     obtener,
-    plantilla_de_contratos,
     tramite,
     tramite_con_conjunto,
 )
@@ -42,26 +35,6 @@ from tests.flujo_vinculos import validar
 pytestmark = pytest.mark.integracion
 
 scenarios("cadena_evidencia.feature")
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
-
-
-@pytest.fixture
-def estado() -> dict[str, Any]:
-    return {}
 
 
 def _versiones(e: Equipo, tramite_id: int) -> set[int]:

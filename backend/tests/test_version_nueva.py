@@ -3,28 +3,22 @@ DO-2026-10-23-VER P1 a P4), contra PostgreSQL real y S3 simulado. Datos sintéti
 
 import json
 import threading
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import Engine, text
+from sqlalchemy import text
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from atlas.servicios import cargas, tramites, versiones
 from atlas.servicios.errores import Conflicto
 from tests.conftest import lineas_registro
-from tests.flujo_api import contar, crear_tramite, incorporar
+from tests.flujo_api import acciones_del_tramite, contar, crear_tramite, incorporar
 from tests.flujo_revision import (
     O_COMPLETO,
     Equipo,
     ciclos,
     contexto,
     decidida,
-    equipo,
     iniciar_ciclo,
-    plantilla_de_contratos,
     tramite,
     tramite_con_conjunto,
 )
@@ -34,33 +28,8 @@ from tests.flujo_vinculos import CUIT, OTRO_CUIT, controles, documento, validar
 pytestmark = pytest.mark.integracion
 
 
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
-
-
 def _orden(e: Equipo, tramite_id: int, **campos: str) -> int:
     return documento(e.responsable, tramite_id, "Orden de compra", "orden_compra", campos)
-
-
-def _acciones(motor: Engine, tramite_id: int) -> list[str]:
-    with motor.connect() as conexion:
-        return list(
-            conexion.execute(
-                text("SELECT accion FROM atlas.evento_auditoria WHERE tramite_id = :t ORDER BY id"),
-                {"t": tramite_id},
-            ).scalars()
-        )
 
 
 def _sugerencia(e: Equipo, tramite_id: int, archivo_id: int) -> dict[str, Any] | None:
@@ -194,7 +163,7 @@ def test_rf_07_confirmar_la_version_la_hace_vigente(aplicacion: Any, e: Equipo) 
             {"v": cuerpo["version_vigente"]["id"]},
         ).scalar_one()
     assert previa == anterior["id"]  # RN-11: la anterior sigue en el historial
-    acciones = _acciones(e.responsable.motor, tramite_id)
+    acciones = acciones_del_tramite(e.responsable.motor, tramite_id)
     assert "version_incorporada" in acciones
     # Los valores validados son de la versión anterior: la nueva empieza sin validaciones.
     respuesta = e.cliente.get(
@@ -218,7 +187,7 @@ def test_rf_07_rechazar_la_relacion_crea_un_documento_independiente(
     assert respuesta.json()["version_vigente"]["numero"] == 1
     assert contar(e.responsable.motor, "documento", tramite_id) == 2
     assert (_sugerencia(e, tramite_id, nuevo["id"]) or {})["estado"] == "rechazada"
-    assert "sugerencia_version_rechazada" in _acciones(e.responsable.motor, tramite_id)
+    assert "sugerencia_version_rechazada" in acciones_del_tramite(e.responsable.motor, tramite_id)
 
 
 def test_rf_07_descartar_no_cambia_el_tramite(aplicacion: Any, e: Equipo) -> None:
@@ -232,7 +201,7 @@ def test_rf_07_descartar_no_cambia_el_tramite(aplicacion: Any, e: Equipo) -> Non
     despues = tramite(e.responsable, tramite_id)
     assert (despues["estado"], despues["documentos"]) == (antes["estado"], antes["documentos"])
     assert (_sugerencia(e, tramite_id, nuevo["id"]) or {})["estado"] == "descartada"
-    assert _acciones(e.responsable.motor, tramite_id)[-1] == "archivo_descartado"
+    assert acciones_del_tramite(e.responsable.motor, tramite_id)[-1] == "archivo_descartado"
     assert descartar(e.responsable, tramite_id, nuevo["id"]).status_code == 409
     assert como_version(e.responsable, tramite_id, nuevo["id"]).status_code == 409
 
@@ -289,7 +258,7 @@ def test_rn_12_la_version_desplaza_el_ciclo_y_renueva_los_controles(
     (desplazado,) = ciclos(e.responsable, tramite_id)
     assert desplazado["estado"] == "desplazado"
     assert [t["estado"] for t in desplazado["tareas"]] == ["aprobada", "anulada"]
-    acciones = _acciones(e.responsable.motor, tramite_id)
+    acciones = acciones_del_tramite(e.responsable.motor, tramite_id)
     inicio = acciones.index("version_incorporada")
     assert acciones[inicio : inicio + 4] == [
         "version_incorporada",
@@ -378,7 +347,7 @@ def test_pd_05_2_dos_confirmaciones_simultaneas_crean_una_sola_version(
             {"d": orden},
         ).scalars()
         assert sorted(numeros) == [1, 2]
-    assert _acciones(e.responsable.motor, tramite_id).count("version_incorporada") == 1
+    assert acciones_del_tramite(e.responsable.motor, tramite_id).count("version_incorporada") == 1
 
 
 def test_rf_06_la_deteccion_es_idempotente_y_solo_para_pendientes(

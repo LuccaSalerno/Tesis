@@ -1,3 +1,5 @@
+> **Documento histórico.** Instrucciones de arranque de octubre de 2026, conservadas como registro; ya no describen el estado del repositorio. El estado vigente está en [`README.md`](../../../README.md) y [`docs/plan/Estado_Implementacion.md`](../../plan/Estado_Implementacion.md).
+
 # INICIO CODEX — ATLAS E90, desarrollo desde cero
 
 **Estado del paquete:** decisiones de arquitectura/operación y método E90 consolidadas a 21/10/2026. **No incluye backend, frontend, Terraform, infraestructura desplegada, seed API, evaluación terminada ni datos medidos**. No constituye aceptación EVD-01 ni informe final de tesis.

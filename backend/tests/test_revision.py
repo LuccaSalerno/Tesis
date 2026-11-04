@@ -4,16 +4,12 @@ RF-17 a RF-22, RN-07, RN-08, RN-09, RN-12, RN-13, PD-02, PD-03, PD-05, RC-P03,
 DO-2026-10-22-TAR (P1 a P12). Contra la API autenticada y PostgreSQL real.
 """
 
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from sqlalchemy import Connection, Engine, text
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from atlas.servicios.tareas import TAREA_DESACTUALIZADA
 from tests import archivos
 from tests.flujo_api import cargar, crear_tramite, eventos_del_tramite, incorporar
@@ -27,7 +23,6 @@ from tests.flujo_revision import (
     decidida,
     decidir,
     enviar_a_validacion,
-    equipo,
     evidencia,
     flujo_sugerido,
     iniciar_ciclo,
@@ -42,21 +37,6 @@ from tests.flujo_vinculos import documento, validar
 from tests.procesamiento_fijo import EmbeddingsFijos
 
 pytestmark = pytest.mark.integracion
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
 
 
 @pytest.fixture

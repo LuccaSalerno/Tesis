@@ -1,22 +1,18 @@
 """Cancelación del trámite (RF-26, RN-14, RN-15, DO-2026-10-23-CIERRE P1 a P3), contra
 PostgreSQL real y S3 simulado. Cuentas y documentos sintéticos."""
 
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
-from fastapi.testclient import TestClient
 from sqlalchemy import Engine, text
 
-from atlas.configuracion import Configuracion
 from atlas.dominio.enumeraciones import TipoDocumental
-from atlas.principal import crear_aplicacion
 from atlas.procesamiento import esquemas
 from atlas.servicios import reconciliacion
 from atlas.servicios.tareas import TRAMITE_CANCELADO
 from tests import archivos
 from tests.datos import crear_archivo, crear_tramite, crear_usuario
-from tests.flujo_api import cargar, incorporar
+from tests.flujo_api import acciones_del_tramite, cargar, incorporar
 from tests.flujo_api import crear_tramite as nuevo_tramite
 from tests.flujo_procesamiento import recorrer, trabajo_de
 from tests.flujo_revision import (
@@ -26,11 +22,9 @@ from tests.flujo_revision import (
     decidida,
     decidir,
     enviar_a_validacion,
-    equipo,
     evidencia,
     iniciar_ciclo,
     obtener,
-    plantilla_de_contratos,
     tramite,
     tramite_con_conjunto,
 )
@@ -44,37 +38,12 @@ pytestmark = pytest.mark.integracion
 MOTIVO = "El proveedor desistió de la contratación"
 
 
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def e(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Equipo]:
-    with TestClient(aplicacion) as cliente:
-        actual = equipo(cliente, motor_aplicacion)
-        plantilla_de_contratos(actual)
-        yield actual
-
-
 def cancelar(ctx: Any, tramite_id: int, motivo: str | None = MOTIVO) -> Any:
     return ctx.cliente.post(
         f"/tramites/{tramite_id}/cancelacion",
         json={"motivo": motivo},
         headers=ctx.encabezados,
     )
-
-
-def _acciones(motor: Engine, tramite_id: int) -> list[str]:
-    with motor.connect() as conexion:
-        return list(
-            conexion.execute(
-                text("SELECT accion FROM atlas.evento_auditoria WHERE tramite_id = :t ORDER BY id"),
-                {"t": tramite_id},
-            ).scalars()
-        )
 
 
 # --- Estados admitidos y rechazados (RF-26, Tabla 3.VI) --------------------------------
@@ -87,7 +56,7 @@ def test_rf_26_cancelar_en_borrador_con_motivo(e: Equipo) -> None:
     cuerpo = respuesta.json()
     assert (cuerpo["estado"], cuerpo["motivo_cancelacion"]) == ("cancelado", MOTIVO)
     assert tramite(e.responsable, tramite_id)["motivo_cancelacion"] == MOTIVO
-    assert _acciones(e.responsable.motor, tramite_id)[-1] == "tramite_cancelado"
+    assert acciones_del_tramite(e.responsable.motor, tramite_id)[-1] == "tramite_cancelado"
 
 
 def test_rf_26_cancelar_en_pendiente_de_validacion(e: Equipo) -> None:
@@ -115,7 +84,7 @@ def test_rn_14_cancelar_en_aprobacion_anula_tareas_y_cancela_el_ciclo(e: Equipo)
     assert actual["decision"] == previa["decision"]
     assert actual["validaciones"] == previa["validaciones"]
     assert len(tramite(e.responsable, tramite_id)["documentos"]) == 3
-    acciones = _acciones(e.responsable.motor, tramite_id)
+    acciones = acciones_del_tramite(e.responsable.motor, tramite_id)
     assert acciones[-3:] == ["ciclo_cancelado", "tarea_anulada", "tramite_cancelado"]
     assert "tramite_aprobado" not in acciones and "firma_simulada_aplicada" not in acciones
 
@@ -127,7 +96,7 @@ def test_rn_14_cancelar_en_observado_conserva_el_ciclo_observado(e: Equipo) -> N
     assert cancelar(e.responsable, ids["tramite"]).status_code == 200
     (observado,) = ciclos(e.responsable, ids["tramite"])
     assert observado["estado"] == "observado"
-    assert "ciclo_cancelado" not in _acciones(e.responsable.motor, ids["tramite"])
+    assert "ciclo_cancelado" not in acciones_del_tramite(e.responsable.motor, ids["tramite"])
 
 
 def test_rf_26_no_se_cancela_aprobado_cerrado_ni_cancelado(e: Equipo) -> None:
@@ -213,7 +182,7 @@ def test_rn_15_cancelado_no_admite_cambios_y_conserva_la_historia(e: Equipo) -> 
         assert respuesta.status_code in (404, 409), (nombre, respuesta.text)
         assert respuesta.status_code == 409 or nombre == "firma", (nombre, respuesta.text)
     assert tramite(r, tramite_id)["estado"] == "cancelado"
-    assert _acciones(r.motor, tramite_id)[-1] == "tramite_cancelado"
+    assert acciones_del_tramite(r.motor, tramite_id)[-1] == "tramite_cancelado"
     hitos = obtener(r, f"{base}/linea-tiempo")
     assert hitos[-1]["accion"] == "tramite_cancelado"
     assert obtener(r, f"{base}/vinculos")["confirmados"]

@@ -8,7 +8,6 @@ sobre el conteo global del momento.
 
 import threading
 import uuid
-from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -25,7 +24,6 @@ from atlas.operacion import lambda_reconciliador
 from atlas.operacion.mantenimiento import LectorMantenimiento
 from atlas.persistencia.modelos import TrabajoProcesamiento
 from atlas.persistencia.motor import crear_fabrica_sesiones
-from atlas.principal import crear_aplicacion
 from atlas.servicios import admision, reconciliacion, resultados
 from tests import archivos
 from tests.conftest import ARN_MAQUINA_PRUEBA, configuracion_sin_base
@@ -239,14 +237,6 @@ def test_as_03_ejecucion_terminada_o_vencida_pasa_a_fallido(
 
 
 # --- RNF-06 y AS-04: intento manual, sin huérfanos y con descarte del intento anterior ------
-
-
-@pytest.fixture
-def cliente(base_migrada: Configuracion) -> Iterator[TestClient]:
-    aplicacion = crear_aplicacion(base_migrada)
-    with TestClient(aplicacion) as cliente:
-        yield cliente
-    aplicacion.state.motor.dispose()
 
 
 def test_rnf_06_as_04_intento_manual_tras_fallo(

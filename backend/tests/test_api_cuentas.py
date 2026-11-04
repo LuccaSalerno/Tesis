@@ -4,7 +4,6 @@ RF-01, RF-02, RF-21, RF-25, RN-01, RNF-01, RC-P03.2, DT-AUT-01, DT-AUT-02.
 """
 
 import uuid
-from collections.abc import Iterator
 from typing import Any
 
 import pytest
@@ -23,14 +22,6 @@ pytestmark = pytest.mark.integracion
 ADMIN = "administrador_operativo"
 RESPONSABLE = "responsable_tramite"
 REVISOR = "revisor_aprobador"
-
-
-@pytest.fixture
-def cliente(base_migrada: Configuracion) -> Iterator[TestClient]:
-    aplicacion = crear_aplicacion(base_migrada)
-    with TestClient(aplicacion) as cliente:
-        yield cliente
-    aplicacion.state.motor.dispose()
 
 
 def eventos(motor: Engine, usuario_id: int) -> list[dict[str, Any]]:

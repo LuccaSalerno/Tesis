@@ -5,17 +5,12 @@ Step Functions simulados con moto. RF-04, RF-05, RF-07, RNF-01, DO-2026-10-22-CA
 """
 
 import hashlib
-from collections.abc import Iterator
 from typing import Any
 
 import httpx
 import pytest
-from fastapi.testclient import TestClient
 from pytest_bdd import given, parsers, scenarios, then, when
-from sqlalchemy import Engine
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from tests import archivos
 from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto, cargar, eventos_del_tramite, incorporar
@@ -23,26 +18,6 @@ from tests.flujo_api import Contexto, cargar, eventos_del_tramite, incorporar
 pytestmark = pytest.mark.integracion
 
 scenarios("incorporacion_documental.feature")
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
-
-
-@pytest.fixture
-def estado() -> dict[str, Any]:
-    """Lo que un paso deja a los siguientes dentro del mismo escenario."""
-    return {}
-
-
-@given("un responsable del trámite autenticado", target_fixture="ctx")
-def responsable_autenticado(aplicacion: Any, motor_aplicacion: Engine) -> Iterator[Contexto]:
-    usuario_id, sub = crear_cuenta(motor_aplicacion, "responsable_tramite")
-    with TestClient(aplicacion) as cliente:
-        yield Contexto(cliente, motor_aplicacion, usuario_id, portador(sub))
 
 
 @given("un trámite en Borrador a su cargo")

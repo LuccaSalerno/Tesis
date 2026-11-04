@@ -13,8 +13,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Connection, Engine, text
 from sqlalchemy.exc import DBAPIError, IntegrityError
 
-from atlas.configuracion import Configuracion
-from atlas.principal import crear_aplicacion
 from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto, crear_tramite, eventos_del_tramite
 from tests.flujo_procesamiento import contrato_procesado_e_incorporado
@@ -40,13 +38,6 @@ from tests.flujo_vinculos import (
 pytestmark = pytest.mark.integracion
 
 RESPONSABLE = "responsable_tramite"
-
-
-@pytest.fixture
-def aplicacion(base_migrada: Configuracion) -> Iterator[Any]:
-    aplicacion = crear_aplicacion(base_migrada)
-    yield aplicacion
-    aplicacion.state.motor.dispose()
 
 
 @pytest.fixture
