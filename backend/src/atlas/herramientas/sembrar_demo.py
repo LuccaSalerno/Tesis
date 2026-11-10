@@ -27,11 +27,11 @@ procesamiento fallido detiene la semilla antes de incorporar: no se valida a man
 IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
 
 `--escenario surdelta` (DO-2026-11-09-DEMO-SURDELTA) siembra en cambio la cartera de SurDelta
-con los documentos de `corpus/surdelta/` y su oráculo: la historia completa (la factura v1
-supera la orden, R4; la v2 la corrige como versión nueva) cerrada, una compra de equipos
-observada por R1 (la factura llegó con el CUIT de otra empresa), una renovación de soporte
-pendiente de aprobación y una contratación cancelada. Sin trámite en vivo: la responsable lo
-crea en la grabación. No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
+con los documentos de `corpus/surdelta/` y su oráculo: una compra de equipos observada por
+R1 (la factura llegó con el CUIT de otra empresa), una renovación de soporte pendiente de
+aprobación y una contratación cancelada. El mantenimiento de planta (la factura v1 supera la
+orden, R4; la v2 la corrige como versión nueva) no se siembra: la responsable lo crea en la
+grabación. No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
 
 `--reanudar` continúa una semilla interrumpida sobre el mismo manifiesto, sin repetir ni
 ocultar lo hecho: reintenta por la API los procesamientos fallidos del trámite en vivo
@@ -655,12 +655,12 @@ class SembradorSurDelta(Sembrador):
         self.nombres = dict(NOMBRES_SURDELTA)
 
     def sembrar_historia(self) -> None:
-        """La factura v1 supera la orden (R4) y la fecha de la orden es anterior a la
-        vigencia (R3); el revisor observa, la v2 corrige la factura y el ciclo 2 cierra."""
+        """El recorrido de los videos: la factura v1 supera la orden (R4) y la fecha de la
+        orden es anterior a la vigencia (R3); el revisor observa, la v2 corrige la factura y
+        el ciclo 2 cierra. No forma parte de la cartera (en la grabación se crea en vivo y un
+        duplicado confundiría); lo usan las pruebas para verificar la historia por la API."""
         historia = self.cargar_documentos(
-            "cerrado",
-            "Mantenimiento integral de planta (historia completa)",
-            ("SD-C1", "SD-O1", "SD-F1"),
+            "cerrado", "Mantenimiento integral de planta", ("SD-C1", "SD-O1", "SD-F1")
         )
         self.validar(historia)
         self.vincular(historia, (("SD-O1", "SD-C1"), ("SD-F1", "SD-O1")))
@@ -695,7 +695,6 @@ class SembradorSurDelta(Sembrador):
         self.preparar_cuentas()
         self.crear_plantilla()
         self.m.plantilla_general_id = self.crear_plantilla("general", "Revisión de compras")
-        self.sembrar_historia()
         self.sembrar_compra()
         self.sembrar_renovacion()
         self.sembrar_cancelado("Contratación de limpieza", MOTIVO_CANCELACION_SURDELTA)

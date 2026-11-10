@@ -267,13 +267,18 @@ def _manifiesto_surdelta() -> sembrar_demo.Manifiesto:
 @pytest.mark.integracion
 def test_demo_surdelta_semilla_completa_por_api(entorno: dict[str, Any]) -> None:
     """DO-2026-11-09-DEMO-SURDELTA: la cartera de SurDelta con las reglas reales."""
-    manifiesto = sembrar_demo.SembradorSurDelta(
+    sembrador = sembrar_demo.SembradorSurDelta(
         entorno["api"], _manifiesto_surdelta(), ORACULO_SD, entorno["procesar"]
-    ).ejecutar()
+    )
+    manifiesto = sembrador.ejecutar()
     assert manifiesto.resultado == "completado"
     assert manifiesto.plantilla_id and manifiesto.plantilla_general_id
-    # Historia: la factura v1 supera la orden (R4) y la fecha de la orden es anterior a la
-    # vigencia (R3); la v2 corrige R4, entra por el CUIT del emisor (RF-06) y R3 sigue.
+    # La cartera no incluye el mantenimiento de planta: se crea en vivo en la grabación.
+    assert set(manifiesto.tramites) == {"observado", "pendiente", "cancelado"}
+    # El recorrido de los videos, por la API: la factura v1 supera la orden (R4) y la fecha
+    # de la orden es anterior a la vigencia (R3); la v2 corrige R4, entra por el CUIT del
+    # emisor (RF-06) y R3 sigue.
+    sembrador.sembrar_historia()
     historia = manifiesto.tramites["cerrado"]
     assert historia["controles"] == {
         "R1": "cumplimiento",
@@ -619,9 +624,7 @@ def test_demo_surdelta_semilla_local_simulada(base_migrada: Configuracion) -> No
     aplicacion.state.motor.dispose()
     assert manifiesto.resultado == "completado"
     assert manifiesto.oraculo.startswith("oraculo_surdelta_v1")
-    historia = manifiesto.tramites["cerrado"]
-    assert historia["estado"] == "cerrado" and historia["controles"]["R4"] == "advertencia"
-    assert historia["controles_corregidos"]["R4"] == "cumplimiento"
+    assert set(manifiesto.tramites) == {"observado", "pendiente", "cancelado"}
     assert manifiesto.tramites["observado"]["controles"]["R1"] == "advertencia"
 
 

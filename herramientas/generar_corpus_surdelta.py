@@ -134,13 +134,18 @@ class Pieza:
 
 
 def contrato_mantenimiento() -> Pieza:
+    """Contrato largo (10 páginas): la vigencia, el precio y los trabajos adicionales quedan
+    lejos de la carátula, para mostrar la fuente de cada dato en un documento real."""
     proveedor, cuit = ANDES
     r = Redactor("SurDelta Componentes S.R.L. · Contrato C-2026-014")
+    normal = r.d.styles["Normal"].paragraph_format
+    normal.line_spacing, normal.space_after = 1.4, Pt(9)
     r.titulo("Contrato de servicio de mantenimiento integral de planta")
     r.p(
         "En la localidad de Avellaneda, provincia de Buenos Aires, a los 15 días del mes de"
         " septiembre de 2026, se celebra el presente contrato de servicios entre las partes"
-        " que se identifican a continuación."
+        " que se identifican a continuación, que en adelante se denominarán «la comitente» y"
+        " «la prestadora»."
     )
     r.tabla(
         [
@@ -151,12 +156,39 @@ def contrato_mantenimiento() -> Pieza:
             ("Fecha de celebración", "15/09/2026"),
         ]
     )
+    r.d.add_heading("Antecedentes", level=1)
+    for texto in (
+        (
+            "La comitente opera una planta de fabricación de componentes industriales con una línea"
+            " de montaje automatizada, un depósito de insumos y oficinas administrativas, todos"
+            " ellos dependientes de una red de datos y de servidores locales."
+        ),
+        (
+            "Las interrupciones de esa infraestructura detienen la línea de montaje y demoran los"
+            " despachos, por lo que la comitente necesita un servicio de mantenimiento con tiempos"
+            " de respuesta acotados, registro de cada intervención y un costo previsible."
+        ),
+        (
+            "La prestadora declara contar con personal técnico propio, herramientas y repuestos"
+            " suficientes para prestar el servicio en las condiciones que se pactan, y haber"
+            " relevado la planta antes de presentar su propuesta."
+        ),
+        (
+            "En atención a lo expuesto, las partes acuerdan celebrar el presente contrato, que se"
+            " regirá por las cláusulas siguientes y por los anexos que lo integran."
+        ),
+    ):
+        r.p(texto)
+    r.pagina()
+
     r.h("1. Objeto")
     r.p(
-        "La prestadora realizará el mantenimiento preventivo y correctivo de la infraestructura"
-        " tecnológica de la planta de la comitente: equipos de red, servidores de respaldo,"
-        " estaciones de control de la línea de montaje y su cableado estructurado."
+        "1.1. La prestadora realizará el mantenimiento preventivo y correctivo de la"
+        " infraestructura tecnológica de la planta de la comitente: equipos de red, servidores"
+        " de respaldo, estaciones de control de la línea de montaje y su cableado estructurado,"
+        " según el inventario del Anexo A."
     )
+    r.p("1.2. El servicio comprende, como abono mensual:")
     for texto in (
         "Una visita preventiva mensual con informe técnico.",
         "Atención de incidentes críticos en un plazo máximo de 4 horas hábiles.",
@@ -164,26 +196,81 @@ def contrato_mantenimiento() -> Pieza:
         "Informe trimestral de estado de la infraestructura con recomendaciones.",
     ):
         r.item(texto)
+    r.p(
+        "1.3. Quedan fuera del objeto la provisión de equipos nuevos, el desarrollo de"
+        " programas, la reparación de maquinaria de producción y cualquier tarea sobre"
+        " instalaciones eléctricas que no sean las del cableado de datos."
+    )
+    r.p(
+        "1.4. Los niveles de servicio de cada tipo de incidente se detallan en el Anexo B y"
+        " forman parte de las obligaciones de la prestadora."
+    )
     r.h("2. Obligaciones de la prestadora")
     r.p(
-        "La prestadora designará un responsable técnico, registrará cada intervención con su"
-        " fecha, alcance y resultado, y entregará la documentación de respaldo junto con cada"
-        " factura mensual. No podrá modificar órdenes de compra ni aprobar gastos en nombre"
-        " de la comitente."
+        "2.1. Designar un responsable técnico, que será el interlocutor de la comitente para"
+        " toda cuestión operativa, y un reemplazante para sus ausencias."
+    )
+    r.p(
+        "2.2. Registrar cada intervención con su fecha, alcance, horas insumidas y resultado,"
+        " y entregar ese registro junto con cada factura mensual."
     )
     r.pagina()
-    r.h("3. Vigencia")
     r.p(
-        "El contrato rige desde el 01/10/2026 hasta el 30/09/2027, ambas fechas inclusive. Su"
-        " renovación requiere un nuevo instrumento firmado por ambas partes."
+        "2.3. Prestar el servicio con personal propio, debidamente capacitado y registrado,"
+        " del que será la única empleadora a todos los efectos legales."
     )
+    r.p(
+        "2.4. Utilizar repuestos nuevos u originales del fabricante, salvo acuerdo escrito en"
+        " contrario, y conservar los componentes reemplazados a disposición de la comitente."
+    )
+    r.p(
+        "2.5. Cumplir las normas internas de la planta sobre accesos, horarios, circulación y"
+        " uso de elementos de protección personal."
+    )
+    r.p(
+        "2.6. No modificar órdenes de compra ni aprobar gastos en nombre de la comitente, ni"
+        " comprometerla frente a terceros."
+    )
+    r.d.add_heading("Obligaciones de la comitente", level=2)
+    r.p(
+        "2.7. La comitente facilitará el acceso a la planta en los horarios convenidos,"
+        " designará un referente interno para recibir los informes y emitirá cada mes la"
+        " orden de compra correspondiente al abono."
+    )
+    r.p(
+        "2.8. La comitente comunicará con anticipación las paradas programadas de la línea de"
+        " montaje, para que las tareas preventivas se hagan sin afectar la producción."
+    )
+    r.p(
+        "2.9. La comitente informará cualquier cambio en el inventario del Anexo A, que podrá"
+        " actualizarse por acuerdo escrito sin modificar el resto del contrato."
+    )
+    r.pagina()
+
+    r.h("3. Vigencia")
+    r.p("3.1. El contrato rige desde el 01/10/2026 hasta el 30/09/2027, ambas fechas inclusive.")
     r.tabla([("Inicio de vigencia", "01/10/2026"), ("Fin de vigencia", "30/09/2027")])
+    r.p(
+        "3.2. Su renovación requiere un nuevo instrumento firmado por ambas partes. No habrá"
+        " renovación tácita ni automática, aunque la prestadora continúe prestando el servicio."
+    )
+    r.p(
+        "3.3. Durante los treinta días anteriores al fin de la vigencia, la prestadora entregará"
+        " un informe de cierre con el estado de cada equipo del inventario, las intervenciones"
+        " pendientes y las recomendaciones para el período siguiente."
+    )
+    r.p(
+        "3.4. Si al vencimiento el contrato no se renueva, la prestadora colaborará durante un"
+        " período de transición razonable con quien la reemplace, entregando la documentación"
+        " técnica, las credenciales de administración y los registros de intervenciones."
+    )
+    r.pagina()
+
     r.h("4. Precio y forma de pago")
     r.p(
-        "El precio total del contrato asciende a PESOS NOVENTA Y SEIS MILLONES"
+        "4.1. El precio total del contrato asciende a PESOS NOVENTA Y SEIS MILLONES"
         " (ARS 96.000.000,00), IVA incluido, pagadero en doce abonos mensuales de"
-        " ARS 8.000.000,00. Cada abono se factura a mes vencido contra la orden de compra"
-        " mensual emitida por la comitente."
+        " ARS 8.000.000,00."
     )
     r.tabla(
         [
@@ -192,30 +279,156 @@ def contrato_mantenimiento() -> Pieza:
             ("Abono mensual", "ARS 8.000.000,00"),
         ]
     )
-    r.h("5. Trabajos adicionales")
     r.p(
-        "Las horas de soporte que excedan las incluidas en el abono, y cualquier trabajo fuera"
-        " del objeto, se consideran trabajos adicionales. Los trabajos adicionales requieren"
-        " autorización previa y por escrito de la comitente, mediante una orden de compra"
-        " específica. Sin esa autorización no serán reconocidos ni podrán facturarse."
+        "4.2. Cada abono se factura a mes vencido contra la orden de compra mensual emitida por"
+        " la comitente. El precio es fijo durante toda la vigencia y no está sujeto a ajustes."
+    )
+    r.p(
+        "4.3. La comitente pagará cada factura conformada dentro de los treinta días corridos"
+        " de recibida, mediante transferencia bancaria a la cuenta que la prestadora informe"
+        " por escrito."
+    )
+    r.p(
+        "4.4. La comitente practicará las retenciones impositivas que correspondan según la"
+        " normativa vigente y entregará los comprobantes respectivos."
     )
     r.pagina()
+
+    r.h("5. Trabajos adicionales")
+    r.p(
+        "5.1. Las horas de soporte que excedan las incluidas en el abono, y cualquier trabajo"
+        " fuera del objeto, se consideran trabajos adicionales."
+    )
+    r.p(
+        "5.2. Los trabajos adicionales requieren autorización previa y por escrito de la"
+        " comitente, mediante una orden de compra específica. Sin esa autorización no serán"
+        " reconocidos ni podrán facturarse."
+    )
+    r.p(
+        "5.3. Para solicitar la autorización, la prestadora presentará un presupuesto con la"
+        " descripción del trabajo, las horas estimadas y su costo. La comitente responderá"
+        " dentro de los dos días hábiles."
+    )
+    r.p(
+        "5.4. Ante un incidente crítico que exceda las horas del abono, la prestadora podrá"
+        " iniciar la atención y deberá pedir la autorización en el mismo día. Las horas que la"
+        " comitente no autorice correrán por cuenta de la prestadora."
+    )
     r.h("6. Facturación y conformidad")
     r.p(
-        "La prestadora emitirá una factura por cada abono mensual, con referencia a la orden"
-        " de compra correspondiente. La comitente revisará cada factura contra el contrato y"
-        " la orden de compra antes de prestar conformidad. Una factura con importes no"
-        " autorizados será observada y deberá ser reemplazada."
+        "6.1. La prestadora emitirá una factura por cada abono mensual, con referencia a la"
+        " orden de compra correspondiente y al registro de intervenciones del mes."
     )
+    r.p(
+        "6.2. La comitente revisará cada factura contra el contrato y la orden de compra antes"
+        " de prestar conformidad. Una factura con importes no autorizados será observada y"
+        " deberá ser reemplazada, previa nota de crédito por la factura observada."
+    )
+    r.pagina()
+
     r.h("7. Confidencialidad")
     r.p(
-        "Las partes mantendrán reserva sobre la información técnica y comercial a la que"
+        "7.1. Las partes mantendrán reserva sobre la información técnica y comercial a la que"
         " accedan con motivo del contrato y la utilizarán solo para su ejecución."
+    )
+    r.p(
+        "7.2. La obligación de reserva se extiende al personal de cada parte y subsiste"
+        " durante dos años después de la finalización del contrato."
     )
     r.h("8. Rescisión")
     r.p(
-        "Cualquiera de las partes podrá rescindir el contrato con un preaviso de 60 días."
+        "8.1. Cualquiera de las partes podrá rescindir el contrato con un preaviso de 60 días."
         " La rescisión no afecta las obligaciones devengadas hasta esa fecha."
+    )
+    r.p(
+        "8.2. La comitente podrá rescindir sin preaviso si la prestadora incumple de manera"
+        " reiterada los niveles de servicio del Anexo B, previa intimación fehaciente."
+    )
+    r.h("9. Responsabilidad y seguros")
+    r.p(
+        "9.1. La prestadora responderá por los daños que su personal cause a los bienes de la"
+        " comitente o de terceros durante la prestación del servicio."
+    )
+    r.p(
+        "9.2. La prestadora mantendrá vigentes los seguros de riesgos del trabajo de su"
+        " personal y de responsabilidad civil, y entregará sus constancias cuando la comitente"
+        " lo solicite."
+    )
+    r.pagina()
+
+    r.h("10. Seguridad e higiene en planta")
+    r.p(
+        "10.1. El personal de la prestadora recibirá la inducción de seguridad de la planta"
+        " antes de su primera visita y respetará las indicaciones del referente de seguridad."
+    )
+    r.p(
+        "10.2. Ninguna intervención sobre las estaciones de control de la línea de montaje se"
+        " hará con la línea en marcha, salvo autorización del jefe de producción."
+    )
+    r.h("11. Penalidades por incumplimiento de los niveles de servicio")
+    r.p(
+        "11.1. Cada incidente crítico atendido fuera del plazo del Anexo B dará lugar a una"
+        " bonificación del 2 % del abono del mes, hasta un máximo del 10 % mensual."
+    )
+    r.h("12. Cesión y subcontratación")
+    r.p(
+        "12.1. La prestadora no podrá ceder el contrato ni subcontratar el servicio, total o"
+        " parcialmente, sin consentimiento previo y por escrito de la comitente."
+    )
+    r.h("13. Comunicaciones")
+    r.p(
+        "13.1. Las comunicaciones entre las partes se harán por escrito, al domicilio o a la"
+        " dirección de correo electrónico que cada una informe, y se tendrán por recibidas el"
+        " día hábil siguiente a su envío."
+    )
+    r.h("14. Jurisdicción")
+    r.p(
+        "14.1. Para cualquier controversia, las partes se someten a los tribunales ordinarios"
+        " de la ciudad de Avellaneda, con renuncia a cualquier otro fuero."
+    )
+    r.pagina()
+
+    r.h("Anexo A. Inventario de equipos comprendidos")
+    r.tabla(
+        [
+            ("Sector", "Equipo", "Cantidad"),
+            ("Centro de datos", "Servidores de respaldo", "2"),
+            ("Centro de datos", "Conmutadores de red principales", "3"),
+            ("Línea de montaje", "Estaciones de control", "6"),
+            ("Línea de montaje", "Puntos de acceso inalámbrico industriales", "4"),
+            ("Depósito", "Terminales de lectura de códigos", "5"),
+            ("Oficinas", "Puestos de trabajo y periféricos", "28"),
+            ("Toda la planta", "Cableado estructurado y racks", "1 instalación"),
+        ],
+        encabezado=True,
+    )
+    r.h("Anexo B. Niveles de servicio")
+    r.tabla(
+        [
+            ("Tipo de incidente", "Ejemplo", "Plazo de atención"),
+            ("Crítico", "Línea de montaje detenida", "4 horas hábiles"),
+            ("Alto", "Servidor de respaldo fuera de servicio", "1 día hábil"),
+            ("Medio", "Falla de un puesto o periférico", "2 días hábiles"),
+            ("Bajo", "Consulta o ajuste menor", "5 días hábiles"),
+        ],
+        encabezado=True,
+    )
+    r.pagina()
+
+    r.h("Firmas")
+    r.p(
+        "En prueba de conformidad, se firman dos ejemplares de un mismo tenor y a un solo"
+        " efecto, en el lugar y la fecha indicados en el encabezamiento."
+    )
+    r.tabla(
+        [
+            ("Por la comitente", "Por la prestadora"),
+            (COMPRADOR, proveedor),
+            ("Firma: ____________________", "Firma: ____________________"),
+            ("Aclaración: ________________", "Aclaración: ________________"),
+            ("Cargo: Gerencia de Administración", "Cargo: Apoderado/a"),
+        ],
+        encabezado=True,
     )
     return Pieza(
         "SD-C1",

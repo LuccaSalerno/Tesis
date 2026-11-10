@@ -13,8 +13,8 @@
     "SD-C1": {
       "archivo": "SD-C1_Contrato_Mantenimiento_Planta.pdf",
       "tipo_documental": "contrato",
-      "paginas": 3,
-      "sha256": "99ecd26bf1e40b0e2467051362ed5cc9fecdffc8292240c93648b959127df300",
+      "paginas": 10,
+      "sha256": "4596a1e474e1cdc794999549e6346ab3bcdc908e1774cae8f704a3985d426ffe",
       "campos": {
         "contraparte": "Andes Sistemas S.A.",
         "cuit_contraparte": "30-96472518-3",

@@ -162,10 +162,10 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 
 ### 7.1 Preparación
 
-- Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cuatro trámites: «Mantenimiento integral de planta (historia completa)» Cerrado, «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. No admite `--reanudar`.
+- Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja tres trámites: «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. El mantenimiento de planta no se siembra, para no duplicar el que se crea en la grabación. No admite `--reanudar`.
 - Archivos de la grabación, en `corpus/surdelta/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
 - **Ensayo local, sin AWS:** con la API y el frontend locales (`README.md`), `cd backend && .venv/bin/python -m atlas.herramientas.sembrar_local --escenario surdelta` siembra la misma cartera con procesamiento simulado (las sugerencias salen del oráculo y se rotulan «Simulación local») e imprime los tokens de cada rol. Sirve para practicar los clics; las sugerencias reales de la IA se ven recién en AWS.
-- Las esperas del procesamiento se cortan en la edición. Si algo falla, se graba sobre el trámite de historia completa y se dice.
+- Las esperas del procesamiento se cortan en la edición. Si algo falla, se restablece la foto «semilla» (§7.1 bis) y se repite la toma.
 
 | Campo | Contrato (SD-C1) | Orden (SD-O1) | Factura v1 (SD-F1) | Factura v2 (SD-F2) |
 |---|---|---|---|---|
@@ -173,7 +173,7 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 | Fecha | Celebración 15/09/2026 | **25/09/2026** | 31/10/2026 | 05/11/2026 |
 | Contraparte / proveedor / emisor | Andes Sistemas S.A. | Andes Sistemas S.A. | Andes Sistemas S.A. | Andes Sistemas S.A. |
 | CUIT | 30-96472518-3 | 30-96472518-3 | 30-96472518-3 | 30-96472518-3 |
-| Vigencia | 01/10/2026 a 30/09/2027 (página 2) | — | — | — |
+| Vigencia | 01/10/2026 a 30/09/2027 (página 4 de 10) | — | — | — |
 | Importe | 96.000.000,00 | 8.000.000,00 | **9.200.000,00** | 8.000.000,00 |
 | Moneda | ARS | ARS | ARS | ARS |
 
@@ -206,10 +206,10 @@ modo offline && sleep 20 && foto restablecer_estado semilla && modo active
 
 1. **Contexto (20 s):** «SurDelta fabrica componentes industriales. Llegó la factura de octubre del mantenimiento de planta; antes de pagarla, Laura arma el expediente».
 2. **Laura** crea «Mantenimiento integral de planta» y carga contrato, orden y factura v1. Corte. Los incorpora como documento nuevo.
-3. **Validación:** en el contrato, **Ver en el documento** de *Vigencia hasta* (página 2); confirma el resto. Valida la orden y la factura.
+3. **Validación:** en el contrato, **Ver en el documento** de *Vigencia hasta* (página 4 de 10); confirma el resto. Valida la orden y la factura.
 4. **Vínculos y controles:** confirma los dos vínculos sugeridos (mismo CUIT). R1 y R2 cumplen; **R4 advierte que la factura supera la orden en 1.200.000**; R3 advierte la fecha de la orden.
    > «Si nadie lo veía, SurDelta pagaba 1,2 millones de más. En un mes, con un solo proveedor.»
-5. **Consulta:** «¿El contrato permite facturar trabajos adicionales sin autorización?» → cláusula 5, página 2.
+5. **Consulta:** «¿El contrato permite facturar trabajos adicionales sin autorización?» → cláusula 5, página 6.
 
 ### 7.3 Video 3: la decisión y su evidencia
 
