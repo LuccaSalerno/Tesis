@@ -427,6 +427,21 @@ export function useCrearPlantilla() {
   });
 }
 
+/** RF-25: la autorización de cierre es un permiso adicional que otorga o retira el administrador. */
+export function useCambiarCierre() {
+  const invalidar = useInvalidar();
+  return useMutation({
+    mutationFn: ({ usuario, otorgada }: { usuario: number; otorgada: boolean }) =>
+      exigir(
+        api.PUT("/usuarios/{usuario_id}/autorizacion-cierre", {
+          params: { path: { usuario_id: usuario } },
+          body: { otorgada },
+        }),
+      ),
+    onSuccess: () => invalidar(claves.cuentas),
+  });
+}
+
 export function useCambiarNombre() {
   const invalidar = useInvalidar();
   return useMutation({

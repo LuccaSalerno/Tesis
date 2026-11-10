@@ -2,11 +2,12 @@
  * Administración operativa (Tabla 3.II, RF-19, RF-24, RF-25, RC-P03): estado general,
  * plantillas de flujo, tareas sin asignar y cuentas. Sin acceso al contenido documental.
  */
-import { Plus, Trash2, UserCheck, UserX } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { ArrowDown, ArrowRight, ArrowUp, Pencil, Plus, RotateCcw, Trash2, UserCheck, UserX } from "lucide-react";
+import { type FormEvent, Fragment, useState } from "react";
 
 import {
   useAsignar,
+  useCambiarCierre,
   useCambiarNombre,
   useCrearPlantilla,
   useCuentas,
@@ -15,7 +16,7 @@ import {
   useSuprimir,
   useTareasSinAsignar,
 } from "@/api/consultas";
-import type { Cuenta, EstadoGeneral as TipoEstadoGeneral } from "@/api/tipos";
+import type { Cuenta, EstadoGeneral as TipoEstadoGeneral, Plantilla } from "@/api/tipos";
 import { InsigniaEstado, Persona } from "@/componentes/dominio";
 import { AbrirDialogo, CerrarDialogo, ContenidoDialogo, RaizDialogo } from "@/componentes/ui/dialogo";
 import { Encabezado } from "@/componentes/marco";
@@ -33,11 +34,57 @@ function nombreCuenta(c: Cuenta) {
   return c.nombre_visible ?? `Usuario #${c.id}`;
 }
 
-function NuevaPlantilla({ revisores }: { revisores: Cuenta[] }) {
+const ALCANCES = [
+  { alcance: "contrato", titulo: "Trámites con contrato" },
+  { alcance: "general", titulo: "Demás trámites" },
+] as const;
+
+type Paso = { nombre: string; revisor: string };
+
+/** Los pasos de una plantilla, en orden, con quién resuelve cada uno. */
+function PasosPlantilla({ plantilla }: { plantilla: Plantilla }) {
+  return (
+    <ol className="flex flex-wrap items-center gap-2 text-sm">
+      {plantilla.pasos.map((paso) => (
+        <Fragment key={paso.orden}>
+          {paso.orden > 1 ? <ArrowRight className="size-4 text-tenue" aria-hidden /> : null}
+          <li className="rounded-md border border-borde px-3 py-1.5">
+            <span className="font-medium">{paso.nombre}</span> · <Persona id={paso.revisor_por_defecto_id} />
+          </li>
+        </Fragment>
+      ))}
+    </ol>
+  );
+}
+
+/**
+ * Las plantillas son inmutables (DO-2026-10-22-TAR P1): editar crea la versión siguiente y
+ * reemplaza a la activa. De uno a tres pasos; el último lo resuelve alguien con cierre.
+ */
+function EditorPlantilla({
+  alcance,
+  base,
+  version,
+  revisores,
+  alTerminar,
+}: {
+  alcance: Plantilla["alcance"];
+  base: Plantilla | undefined;
+  version: number;
+  revisores: Cuenta[];
+  alTerminar: () => void;
+}) {
   const crear = useCrearPlantilla();
-  const [nombre, setNombre] = useState("Revisión de contratos");
-  const [alcance, setAlcance] = useState<"contrato" | "general">("contrato");
-  const [pasos, setPasos] = useState([{ nombre: "Revisión legal", revisor: "" }, { nombre: "Aprobación final", revisor: "" }]);
+  const [nombre, setNombre] = useState(base?.nombre ?? "");
+  const [pasos, setPasos] = useState<Paso[]>(
+    base?.pasos.map((p) => ({ nombre: p.nombre, revisor: String(p.revisor_por_defecto_id) })) ?? [{ nombre: "", revisor: "" }],
+  );
+  const cambiar = (i: number, cambio: Partial<Paso>) => setPasos(pasos.map((p, j) => (j === i ? { ...p, ...cambio } : p)));
+  const mover = (i: number, destino: number) => {
+    const copia = [...pasos];
+    [copia[i], copia[destino]] = [copia[destino]!, copia[i]!];
+    setPasos(copia);
+  };
   async function enviar(evento: FormEvent) {
     evento.preventDefault();
     await crear.mutateAsync({
@@ -45,45 +92,139 @@ function NuevaPlantilla({ revisores }: { revisores: Cuenta[] }) {
       alcance,
       pasos: pasos.map((p) => ({ nombre: p.nombre.trim(), revisor_por_defecto_id: Number(p.revisor) })),
     });
+    alTerminar();
   }
   return (
-    <form onSubmit={enviar} className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Etiqueta htmlFor="nombre-plantilla">Nombre</Etiqueta>
-          <Entrada id="nombre-plantilla" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-        </div>
-        <div className="space-y-1">
-          <Etiqueta htmlFor="alcance">Se sugiere para</Etiqueta>
-          <Selector id="alcance" value={alcance} onChange={(e) => setAlcance(e.target.value as "contrato" | "general")}>
-            <option value="contrato">Trámites con contrato</option>
-            <option value="general">Los demás trámites</option>
-          </Selector>
-        </div>
+    <form onSubmit={enviar} className="space-y-3">
+      <div className="max-w-sm space-y-1">
+        <Etiqueta htmlFor={`nombre-${alcance}`}>Nombre del flujo</Etiqueta>
+        <Entrada id={`nombre-${alcance}`} value={nombre} onChange={(e) => setNombre(e.target.value)} required />
       </div>
       <ol className="space-y-2">
-        {pasos.map((paso, i) => (
-          <li key={i} className="grid gap-2 sm:grid-cols-[2rem_1fr_1fr_auto] sm:items-center">
-            <span className="text-sm text-tenue">{i + 1}.</span>
-            <Entrada aria-label={`Nombre del paso ${i + 1}`} value={paso.nombre} onChange={(e) => setPasos(pasos.map((p, j) => (j === i ? { ...p, nombre: e.target.value } : p)))} required />
-            <Selector aria-label={`Revisor del paso ${i + 1}`} value={paso.revisor} onChange={(e) => setPasos(pasos.map((p, j) => (j === i ? { ...p, revisor: e.target.value } : p)))} required>
-              <option value="">Revisor/Aprobador…</option>
-              {revisores.map((r) => (
-                <option key={r.id} value={r.id}>{nombreCuenta(r)}{r.autorizacion_cierre ? " (autorización de cierre)" : ""}</option>
-              ))}
-            </Selector>
-            <Boton variante="sutil" tamano="icono" aria-label="Quitar paso" disabled={pasos.length === 1} onClick={() => setPasos(pasos.filter((_, j) => j !== i))}><Trash2 /></Boton>
-          </li>
-        ))}
+        {pasos.map((paso, i) => {
+          // Solo quien tiene autorización de cierre puede resolver el último paso.
+          const elegibles = i === pasos.length - 1 ? revisores.filter((r) => r.autorizacion_cierre) : revisores;
+          const valor = elegibles.some((r) => String(r.id) === paso.revisor) ? paso.revisor : "";
+          return (
+            <li key={i} className="flex flex-wrap items-center gap-2">
+              <span className="w-5 text-sm text-tenue">{i + 1}.</span>
+              <Entrada className="min-w-40 flex-1" aria-label={`Nombre del paso ${i + 1}`} placeholder="Nombre del paso" value={paso.nombre} onChange={(e) => cambiar(i, { nombre: e.target.value })} required />
+              <Selector className="min-w-40 flex-1" aria-label={`Quién resuelve el paso ${i + 1}`} value={valor} onChange={(e) => cambiar(i, { revisor: e.target.value })} required>
+                <option value="">Elegí a alguien…</option>
+                {elegibles.map((r) => <option key={r.id} value={r.id}>{nombreCuenta(r)}</option>)}
+              </Selector>
+              <span className="flex">
+                <Boton variante="sutil" tamano="icono" aria-label={`Subir el paso ${i + 1}`} disabled={i === 0} onClick={() => mover(i, i - 1)}><ArrowUp /></Boton>
+                <Boton variante="sutil" tamano="icono" aria-label={`Bajar el paso ${i + 1}`} disabled={i === pasos.length - 1} onClick={() => mover(i, i + 1)}><ArrowDown /></Boton>
+                <Boton variante="sutil" tamano="icono" aria-label={`Quitar el paso ${i + 1}`} disabled={pasos.length === 1} onClick={() => setPasos(pasos.filter((_, j) => j !== i))}><Trash2 /></Boton>
+              </span>
+            </li>
+          );
+        })}
       </ol>
+      {crear.isError ? <Aviso tono="peligro" titulo={mensajeDeError(crear.error)} /> : null}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Boton variante="secundario" tamano="chico" disabled={pasos.length >= 3} onClick={() => setPasos([...pasos, { nombre: "", revisor: "" }])}><Plus /> Agregar paso</Boton>
-        <Boton type="submit" disabled={crear.isPending}>Crear plantilla</Boton>
+        <span className="flex gap-2">
+          <Boton variante="sutil" onClick={alTerminar}>Cancelar</Boton>
+          <Boton type="submit" disabled={crear.isPending}>{base ? `Guardar como versión ${version}` : "Crear flujo"}</Boton>
+        </span>
       </div>
-      <p className="text-xs text-tenue">De uno a tres pasos. El revisor del último paso necesita autorización de cierre. Reemplaza a la plantilla activa del mismo alcance.</p>
-      {crear.isError ? <Aviso tono="peligro" titulo={mensajeDeError(crear.error)} /> : null}
-      {crear.isSuccess ? <Aviso tono="info" titulo="Plantilla creada y activa" /> : null}
     </form>
+  );
+}
+
+/** Una plantilla de una versión anterior vuelve a regir como versión nueva, con los mismos pasos. */
+function VolverAUsar({ plantilla, version }: { plantilla: Plantilla; version: number }) {
+  const crear = useCrearPlantilla();
+  return (
+    <>
+      <Boton
+        tamano="chico"
+        variante="sutil"
+        disabled={crear.isPending}
+        onClick={() =>
+          crear.mutate({
+            nombre: plantilla.nombre,
+            alcance: plantilla.alcance,
+            pasos: plantilla.pasos.map((p) => ({ nombre: p.nombre, revisor_por_defecto_id: p.revisor_por_defecto_id })),
+          })
+        }
+      >
+        <RotateCcw /> Volver a usar como v{version}
+      </Boton>
+      {crear.isError ? <p className="w-full text-xs text-peligro">{mensajeDeError(crear.error)}</p> : null}
+    </>
+  );
+}
+
+/** El flujo vigente de un alcance, su edición y sus versiones anteriores. */
+function FlujoDelAlcance({ alcance, titulo, plantillas, revisores }: { alcance: Plantilla["alcance"]; titulo: string; plantillas: Plantilla[]; revisores: Cuenta[] }) {
+  const [editando, setEditando] = useState(false);
+  const versiones = plantillas.filter((p) => p.alcance === alcance).sort((a, b) => b.version - a.version);
+  const activa = versiones.find((p) => p.activa);
+  const anteriores = versiones.filter((p) => !p.activa);
+  const siguiente = (versiones[0]?.version ?? 0) + 1;
+  return (
+    <section className="rounded-md border border-borde p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-medium">
+          {titulo}
+          {activa ? <span className="ml-2 text-sm font-normal text-tenue">{activa.nombre} · v{activa.version}</span> : null}
+        </h3>
+        {!editando ? (
+          <Boton tamano="chico" variante="secundario" onClick={() => setEditando(true)}>
+            {activa ? <><Pencil /> Editar</> : <><Plus /> Crear flujo</>}
+          </Boton>
+        ) : null}
+      </div>
+      <div className="mt-3">
+        {editando ? (
+          <EditorPlantilla alcance={alcance} base={activa} version={siguiente} revisores={revisores} alTerminar={() => setEditando(false)} />
+        ) : activa ? (
+          <PasosPlantilla plantilla={activa} />
+        ) : (
+          <p className="text-sm text-tenue">Sin flujo configurado.</p>
+        )}
+      </div>
+      {anteriores.length && !editando ? (
+        <details className="mt-3 text-sm">
+          <summary className="cursor-pointer text-tenue">Versiones anteriores ({anteriores.length})</summary>
+          <ul className="mt-2 space-y-3">
+            {anteriores.map((p) => (
+              <li key={p.id} className="flex flex-wrap items-center gap-2">
+                <span className="w-full text-tenue">{p.nombre} · v{p.version}</span>
+                <PasosPlantilla plantilla={p} />
+                <VolverAUsar plantilla={p} version={siguiente} />
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
+/** RF-25: permiso adicional para aplicar la firma simulada y cerrar; lo otorga el administrador. */
+function AutorizacionCierre({ cuenta }: { cuenta: Cuenta }) {
+  const cambiar = useCambiarCierre();
+  if (cuenta.estado !== "habilitada" || !cuenta.roles.includes("revisor_aprobador")) {
+    return <span className="text-tenue">—</span>;
+  }
+  return (
+    <div className="flex items-center gap-2">
+      <Insignia tono={cuenta.autorizacion_cierre ? "exito" : "neutro"}>{cuenta.autorizacion_cierre ? "Otorgada" : "No"}</Insignia>
+      <Boton
+        tamano="chico"
+        variante="sutil"
+        disabled={cambiar.isPending}
+        aria-label={`${cuenta.autorizacion_cierre ? "Retirar" : "Otorgar"} la autorización de cierre a ${nombreCuenta(cuenta)}`}
+        onClick={() => cambiar.mutate({ usuario: cuenta.id, otorgada: !cuenta.autorizacion_cierre })}
+      >
+        {cuenta.autorizacion_cierre ? "Retirar" : "Otorgar"}
+      </Boton>
+      {cambiar.isError ? <span className="text-xs text-peligro">{mensajeDeError(cambiar.error)}</span> : null}
+    </div>
   );
 }
 
@@ -176,6 +317,7 @@ function FilaCuenta({ cuenta, propia }: { cuenta: Cuenta; propia: boolean }) {
         <td className="px-3 py-2">#{cuenta.id}</td>
         <td className="px-3 py-2">Cuenta suprimida</td>
         <td className="px-3 py-2">Sin roles</td>
+        <td className="px-3 py-2">—</td>
         <td className="px-3 py-2"><Insignia tono="neutro">suprimida</Insignia></td>
         <td className="px-3 py-2" />
       </tr>
@@ -186,12 +328,13 @@ function FilaCuenta({ cuenta, propia }: { cuenta: Cuenta; propia: boolean }) {
       <td className="px-3 py-2">#{cuenta.id}</td>
       <td className="px-3 py-2">
         <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); cambiar.mutate({ usuario: cuenta.id, nombre: nombre.trim() || null }); }}>
-          <Entrada aria-label={`Nombre visible de la cuenta ${cuenta.id}`} value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={120} className="h-8" />
+          <Entrada aria-label={`Nombre visible de la cuenta ${cuenta.id}`} value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={120} className="h-8 w-44" />
           <Boton type="submit" tamano="chico" variante="secundario" disabled={cambiar.isPending || nombre === (cuenta.nombre_visible ?? "")}>Guardar</Boton>
         </form>
         {cambiar.isError ? <p className="mt-1 text-xs text-peligro">{mensajeDeError(cambiar.error)}</p> : null}
       </td>
       <td className="px-3 py-2 text-tenue">{cuenta.roles.map((r) => ROL[r]).join(", ") || "Sin roles"}</td>
+      <td className="px-3 py-2"><AutorizacionCierre cuenta={cuenta} /></td>
       <td className="px-3 py-2"><Insignia tono={cuenta.estado === "habilitada" ? "exito" : "neutro"}>{cuenta.estado}</Insignia></td>
       <td className="px-3 py-2 text-right">{propia ? null : <SuprimirCuenta cuenta={cuenta} />}</td>
     </tr>
@@ -241,27 +384,24 @@ export function Administracion() {
           {asignar.isError ? <Aviso tono="peligro" titulo={mensajeDeError(asignar.error)} /> : null}
         </Panel>
 
-        <Panel titulo="Plantillas de flujo" descripcion="Versionadas e inmutables; una activa por alcance.">
+        <Panel titulo="Flujos de revisión" descripcion="Quién revisa cada tipo de trámite y en qué orden.">
           {plantillas.isPending ? <Cargando /> : null}
-          <ul className="mb-6 divide-y divide-borde">
-            {plantillas.data?.map((p) => (
-              <li key={p.id} className="flex flex-wrap items-center gap-3 py-2.5 text-sm">
-                <span className="min-w-56 flex-1 font-medium">{p.nombre} <span className="font-normal text-tenue">v{p.version} · {p.alcance === "contrato" ? "contratos" : "general"}</span></span>
-                <span className="text-tenue">{p.pasos.map((s) => s.nombre).join(" → ")}</span>
-                <Insignia tono={p.activa ? "exito" : "neutro"}>{p.activa ? "Activa" : "Inactiva"}</Insignia>
-              </li>
-            ))}
-          </ul>
-          {cuentas.data ? <NuevaPlantilla revisores={revisores} /> : null}
+          {plantillas.data ? (
+            <div className="space-y-4">
+              {ALCANCES.map(({ alcance, titulo }) => (
+                <FlujoDelAlcance key={alcance} alcance={alcance} titulo={titulo} plantillas={plantillas.data} revisores={revisores} />
+              ))}
+            </div>
+          ) : null}
         </Panel>
 
         <Panel titulo="Cuentas" descripcion="El nombre visible identifica a las personas en la interfaz y en la evidencia.">
           <EstadoConsulta consulta={cuentas} />
           {cuentas.data ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[46rem] text-sm">
                 <thead className="text-left text-xs text-tenue uppercase">
-                  <tr><th className="px-3 py-2">Cuenta</th><th className="px-3 py-2">Nombre visible</th><th className="px-3 py-2">Roles</th><th className="px-3 py-2">Estado</th><th className="px-3 py-2" /></tr>
+                  <tr><th className="px-3 py-2">Cuenta</th><th className="px-3 py-2">Nombre visible</th><th className="px-3 py-2">Roles</th><th className="px-3 py-2">Autorización de cierre</th><th className="px-3 py-2">Estado</th><th className="px-3 py-2" /></tr>
                 </thead>
                 <tbody>{cuentas.data.map((c) => <FilaCuenta key={c.id} cuenta={c} propia={c.id === yo?.id} />)}</tbody>
               </table>

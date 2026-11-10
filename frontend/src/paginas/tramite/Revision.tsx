@@ -3,7 +3,8 @@
  * responsable lo confirma, y ciclos de revisión con sus versiones y tareas. Las decisiones de
  * ciclos anteriores se muestran como historial, nunca como vigentes.
  */
-import { CheckCircle2, ListChecks, Scale, Send } from "lucide-react";
+import { ArrowRight, CheckCircle2, ListChecks, Scale, Send } from "lucide-react";
+import { Fragment } from "react";
 import { Link } from "react-router";
 
 import { useCiclos, useConfirmarFlujo, useFlujoSugerido, useTransicion } from "@/api/consultas";
@@ -19,6 +20,7 @@ import { fechaHora } from "@/lib/formatos";
 
 import { useContextoTramite, useIdTramite } from "./MarcoTramite";
 
+/** RF-17: el flujo se sugiere con los documentos validados y no crea tareas hasta confirmarse. */
 function FlujoSugerido({ tramiteId }: { tramiteId: number }) {
   const { tramite } = useContextoTramite();
   const sugerido = useFlujoSugerido(tramiteId);
@@ -29,47 +31,74 @@ function FlujoSugerido({ tramiteId }: { tramiteId: number }) {
   const faltan = s.documentos_sin_validar;
   const nombre = (id: number) => tramite.documentos.find((d) => d.id === id)?.nombre ?? `Documento ${id}`;
   return (
-    <Panel titulo="Flujo de revisión sugerido" descripcion="Se calcula según los tipos documentales y no crea tareas hasta que lo confirmás.">
-      {s.plantilla_id === null ? (
-        <Aviso tono="advertencia" titulo="No hay una plantilla de flujo activa para este trámite">
-          El administrador operativo debe configurar la plantilla {s.alcance === "contrato" ? "de contratos" : "general"}.
+    <Panel titulo="Flujo de revisión">
+      {faltan.length ? (
+        // La plantilla depende de la clasificación validada: hasta entonces no se sugiere ninguna.
+        <Aviso tono="advertencia" titulo="Validá los documentos para ver el flujo">
+          <ul className="mt-1 list-disc pl-5">
+            {faltan.map((d) => (
+              <li key={d}>
+                <Link to={`../documentos/${d}`} className="text-primario hover:underline">{nombre(d)}</Link>
+              </li>
+            ))}
+          </ul>
+        </Aviso>
+      ) : s.plantilla_id === null ? (
+        <Aviso tono="advertencia" titulo={`No hay un flujo configurado para ${s.alcance === "contrato" ? "trámites con contrato" : "este tipo de trámite"}`}>
+          Lo configura el administrador operativo.
         </Aviso>
       ) : (
         <>
-          <p className="text-sm">
-            Plantilla <span className="font-medium">{s.plantilla_nombre}</span> (versión {s.version_plantilla})
-          </p>
+          <p className="text-sm text-tenue">{s.plantilla_nombre} · v{s.version_plantilla}</p>
           <ol className="mt-3 space-y-2">
             {s.pasos.map((p) => (
-              <li key={p.orden} className="flex items-center justify-between gap-3 rounded-md border border-borde px-3 py-2 text-sm">
+              <li key={p.orden} className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-borde px-3 py-2 text-sm">
                 <span>{p.orden}. {p.nombre}</span>
                 <span className="text-tenue">{p.asignada_a_id ? <Persona id={p.asignada_a_id} /> : "Sin asignar: lo asigna el administrador"}</span>
               </li>
             ))}
           </ol>
+          {confirmar.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(confirmar.error)} /> : null}
+          <div className="mt-4 flex justify-end">
+            <Boton
+              disabled={confirmar.isPending}
+              onClick={() => confirmar.mutate({ plantilla_id: s.plantilla_id!, version_plantilla: s.version_plantilla! })}
+            >
+              <ListChecks /> Confirmar el flujo y enviar a aprobación
+            </Boton>
+          </div>
         </>
       )}
-      {faltan.length ? (
-        <Aviso className="mt-4" tono="advertencia" titulo="Faltan datos por resolver antes de confirmar">
-          <ul className="mt-1 list-disc pl-5">
-            {faltan.map((d) => (
-              <li key={d}>
-                <Link to={`../documentos/${d}`} className="text-primario hover:underline">{nombre(d)}</Link>: clasificación o campos sin validar o declarar ausentes.
-              </li>
-            ))}
-          </ul>
-        </Aviso>
-      ) : null}
-      {confirmar.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(confirmar.error)} /> : null}
-      <div className="mt-4 flex justify-end">
-        <Boton
-          disabled={s.plantilla_id === null || faltan.length > 0 || confirmar.isPending}
-          onClick={() => confirmar.mutate({ plantilla_id: s.plantilla_id!, version_plantilla: s.version_plantilla! })}
-        >
-          <ListChecks /> Confirmar el flujo y enviar a aprobación
-        </Boton>
-      </div>
     </Panel>
+  );
+}
+
+/** Los pasos del ciclo en orden, con quién los tiene y en qué quedaron (RF-18, RF-20). */
+function RecorridoCiclo({ tareas }: { tareas: Ciclo["tareas"] }) {
+  const ordenadas = [...tareas].sort((a, b) => a.orden - b.orden);
+  return (
+    <ol className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+      {ordenadas.map((t) => (
+        <Fragment key={t.id}>
+          {t.orden > 1 ? (
+            <li aria-hidden className="hidden self-center text-tenue sm:block"><ArrowRight className="size-4" /></li>
+          ) : null}
+          <li className={`flex flex-col rounded-md border p-3 text-sm sm:flex-1 ${t.estado === "pendiente" ? "border-primario" : "border-borde"}`}>
+            <p className="text-xs text-tenue">Paso {t.orden}</p>
+            <p className="font-medium">{t.nombre}</p>
+            <p className="text-xs text-tenue">{t.asignada_a_id ? <Persona id={t.asignada_a_id} /> : "Sin asignar"}</p>
+            <div className="mt-auto flex flex-col items-start gap-1.5 pt-2">
+              <InsigniaEstado catalogo={ESTADO_TAREA} valor={t.estado} />
+              {t.decision_id ? (
+                <Link to={`/decisiones/${t.decision_id}/evidencia`} className="inline-flex items-center gap-1 text-xs text-primario hover:underline">
+                  <Scale className="size-3" /> Evidencia de la decisión
+                </Link>
+              ) : null}
+            </div>
+          </li>
+        </Fragment>
+      ))}
+    </ol>
   );
 }
 
@@ -85,37 +114,14 @@ function TarjetaCiclo({ ciclo, ultimo }: { ciclo: Ciclo; ultimo: boolean }) {
       descripcion={`Confirmado por el responsable el ${fechaHora(ciclo.confirmado_en)}${ciclo.concluido_en ? ` · concluyó el ${fechaHora(ciclo.concluido_en)}` : ""}`}
       className={!ultimo ? "opacity-90" : undefined}
     >
-      <div className="grid gap-6 md:grid-cols-2">
-        <div>
-          <h3 className="mb-2 text-xs font-medium text-tenue uppercase">Versiones consideradas</h3>
-          <ul className="space-y-1 text-sm">
-            {ciclo.versiones.map((v) => (
-              <li key={v.version_id}>{v.documento_nombre} · v{v.version_numero}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-2 text-xs font-medium text-tenue uppercase">Tareas</h3>
-          <ul className="space-y-2">
-            {ciclo.tareas.map((t) => (
-              <li key={t.id} className="flex items-start justify-between gap-2 text-sm">
-                <div>
-                  <p className="font-medium">{t.orden}. {t.nombre}</p>
-                  <p className="text-xs text-tenue">{t.asignada_a_id ? <Persona id={t.asignada_a_id} /> : "Sin asignar"}</p>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <InsigniaEstado catalogo={ESTADO_TAREA} valor={t.estado} />
-                  {t.decision_id ? (
-                    <Link to={`/decisiones/${t.decision_id}/evidencia`} className="inline-flex items-center gap-1 text-xs text-primario hover:underline">
-                      <Scale className="size-3" /> Evidencia de la decisión
-                    </Link>
-                  ) : null}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <h3 className="mb-2 text-xs font-medium text-tenue uppercase">Recorrido</h3>
+      <RecorridoCiclo tareas={ciclo.tareas} />
+      <h3 className="mt-5 mb-2 text-xs font-medium text-tenue uppercase">Versiones consideradas</h3>
+      <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+        {ciclo.versiones.map((v) => (
+          <li key={v.version_id}>{v.documento_nombre} · v{v.version_numero}</li>
+        ))}
+      </ul>
     </Panel>
   );
 }

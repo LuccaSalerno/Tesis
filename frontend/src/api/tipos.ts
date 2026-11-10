@@ -29,6 +29,7 @@ export type Evidencia = S["EvidenciaRespuesta"];
 export type ValidacionEvidencia = S["ValidacionEvidencia"];
 export type Hito = S["HitoRespuesta"];
 export type Cuenta = S["CuentaRespuesta"];
+export type Plantilla = S["PlantillaRespuesta"];
 export type Yo = S["YoRespuesta"];
 export type CriterioVersion = S["CriterioVersion"];
 export type Firma = S["FirmaRespuesta"];

@@ -775,6 +775,15 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 5. **P5 — Documentos:** generador reproducible `herramientas/generar_corpus_surdelta.py` (python-docx y LibreOffice, entorno de `herramientas/corpus_e90/requisitos.txt`), salida en `corpus/surdelta/` y oráculo `oraculos/oraculo_surdelta_v1.json` con huellas. Sin texto de control visible. CUIT: solo los ya consultados por el equipo en ARCA (el de PD-07 y los de la partición de **ajuste** de E90; ninguno de medición). Separado de PD-07 y del corpus de 50 (§6.3).
 6. **P6 — Registro:** guion de los dos videos en `operaciones/demo/Guion_Demo.md`; pruebas de la semilla contra la API con PostgreSQL.
 
+### DO-2026-11-09-WEB-FLUJOS — Presentación de los flujos de revisión en la interfaz
+
+**Fecha:** 09/11/2026. **Aprobada por:** Lucca Salerno. **Estado:** cerrada. **Base:** RF-17, RF-18, RF-25, DO-2026-10-22-TAR (P1, P2), devolución de EP3. Solo frontend: sin cambios de reglas, API, datos ni modelo.
+
+1. **Administración:** un flujo por alcance (contrato y general) con sus pasos y quién resuelve cada uno. **Editar** crea la versión siguiente a partir de la vigente (las plantillas siguen inmutables); **Volver a usar** crea una versión nueva con los pasos de una anterior. Los pasos se renombran, reasignan, reordenan y quitan; para el último solo se ofrecen cuentas con autorización de cierre.
+2. **Cuentas:** se ve y se otorga o retira la autorización de cierre (API existente, RF-25).
+3. **Trámite:** el flujo se muestra recién con los documentos validados (la plantilla depende de la clasificación validada); el ciclo se ve como recorrido de pasos con estado, persona y evidencia.
+4. **Pendiente, para después de la entrega:** el modelo de dos alcances no refleja los tipos de gestión de una organización. Opción a decidir por el equipo: varios flujos activos con nombre propio y elección del responsable al confirmar (toca backend, RF-17 y DO-2026-10-22-TAR).
+
 ---
 
 ## 2. Decisiones en curso

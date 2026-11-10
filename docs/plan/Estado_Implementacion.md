@@ -54,6 +54,10 @@ DO-2026-11-09-DEMO-SURDELTA, rama `demo/surdelta`. Sin cambios de reglas, estado
 - **Ensayo de CI limpio:** 845 pruebas aprobadas y 2 omitidas; herramientas del corpus, 75 aprobadas y 1 omitida; cobertura 98 % y los 110 módulos ≥ 90 %. La tesis sigue citando las 842 de su versión (§6.5).
 - **Sin ejecutar en AWS:** las sugerencias reales de la IA sobre estos PDF se ven en la próxima sesión.
 
+## Flujos de revisión en la interfaz (09/11/2026)
+
+DO-2026-11-09-WEB-FLUJOS: Administración muestra un flujo por alcance con Editar y Volver a usar, Cuentas permite otorgar la autorización de cierre y el trámite muestra el ciclo como recorrido de pasos. Solo frontend. Pendiente para después de la entrega: decidir si hay varios flujos activos que el responsable elige al confirmar.
+
 ## Próximo paso
 
 - **Videos:** sesión AWS manual del operador, semilla `--escenario surdelta` y grabación según `Guion_Demo.md` §7.
