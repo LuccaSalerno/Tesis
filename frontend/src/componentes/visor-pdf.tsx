@@ -30,6 +30,20 @@ export function VisorDocumento({ tramiteId, fuente }: { tramiteId: number; fuent
   const [pagina, setPagina] = useState(fuente.pagina ?? 1);
   const [ancho, setAncho] = useState(640);
 
+  // Cada consulta firma una URL nueva para el mismo archivo. El PDF se carga con la primera de
+  // la versión y no se vuelve a descargar cuando la consulta se refresca (por ejemplo, después
+  // de validar un dato); el enlace «Abrir el original» sí usa la más reciente.
+  const [origen, setOrigen] = useState<{ version: number; url: string } | null>(null);
+  if (archivo.data && origen?.version !== fuente.versionId) {
+    setOrigen({ version: fuente.versionId, url: archivo.data.url });
+  }
+  // Ver otra fuente del mismo documento salta a su página sin recargar el PDF.
+  const [ubicacion, setUbicacion] = useState({ pagina: fuente.pagina, fragmento: fuente.fragmento });
+  if (ubicacion.pagina !== fuente.pagina || ubicacion.fragmento !== fuente.fragmento) {
+    setUbicacion({ pagina: fuente.pagina, fragmento: fuente.fragmento });
+    setPagina(Math.min(fuente.pagina ?? 1, paginas || Infinity));
+  }
+
   const medir = useCallback((nodo: HTMLDivElement | null) => {
     if (nodo) setAncho(Math.max(320, nodo.clientWidth - 16));
   }, []);
@@ -83,7 +97,7 @@ export function VisorDocumento({ tramiteId, fuente }: { tramiteId: number; fuent
       ) : (
         <div ref={medir} className="min-h-0 flex-1 overflow-auto rounded-md border border-borde bg-neutro-suave p-2">
           <Document
-            file={datos.url}
+            file={origen?.url ?? datos.url}
             onLoadSuccess={({ numPages }) => {
               setPaginas(numPages);
               setPagina((actual) => Math.min(Math.max(1, actual), numPages));

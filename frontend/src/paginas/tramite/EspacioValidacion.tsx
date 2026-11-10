@@ -231,7 +231,7 @@ export function EspacioValidacion() {
       ) : null}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(22rem,1fr)]">
         <div className="h-[calc(100vh-14rem)] min-h-[32rem] rounded-lg border border-borde bg-superficie p-4 lg:sticky lg:top-4">
-          <VisorDocumento key={`${fuente?.pagina}-${fuente?.fragmento}`} tramiteId={id} fuente={{ versionId: datos.version.id, ...fuente }} />
+          <VisorDocumento tramiteId={id} fuente={{ versionId: datos.version.id, ...fuente }} />
         </div>
         <div className="rounded-lg border border-borde bg-superficie px-5">
           <ul className="divide-y divide-borde">
