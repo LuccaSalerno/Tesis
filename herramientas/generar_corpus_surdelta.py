@@ -41,6 +41,7 @@ ANDES = ("Andes Sistemas S.A.", "30-96472518-3")  # PD-07, consulta del 23/10/20
 EQUIPAR = ("Distribuidora Equipar S.A.", "30-98641015-1")  # E90 ajuste, 23/10/2026
 HORIZONTE = ("Horizonte Servicios S.R.L.", "30-98641014-3")  # E90 ajuste, 23/10/2026
 NUBE = ("Nube Austral Tecnología S.R.L.", "30-98641017-8")  # E90 ajuste, 23/10/2026
+ACEROS = ("Aceros Cuatro Vientos S.A.", "30-98641018-6")  # E90 ajuste, 23/10/2026
 CONSULTAS_CUIT = {
     ANDES[1]: "oraculos/oraculo_PD07_v2.json (registro_cuit)",
     EQUIPAR[
@@ -50,6 +51,9 @@ CONSULTAS_CUIT = {
         1
     ]: "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
     NUBE[
+        1
+    ]: "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+    ACEROS[
         1
     ]: "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
 }
@@ -501,6 +505,82 @@ def contrato_soporte() -> Pieza:
     )
 
 
+def contrato_suministro() -> Pieza:
+    """Provisión de la materia prima de la planta: un trámite sin conflictos, cerrado."""
+    proveedor, cuit = ACEROS
+    r = Redactor("SurDelta Componentes S.R.L. · Contrato C-2026-009")
+    r.titulo("Contrato de provisión de acero inoxidable")
+    r.p(
+        "En la localidad de Avellaneda, provincia de Buenos Aires, a los 20 días del mes de"
+        " julio de 2026, se celebra el presente contrato de provisión entre las partes que se"
+        " identifican a continuación."
+    )
+    r.tabla(
+        [
+            ("Contrato N.º", "C-2026-009"),
+            ("Comitente", COMPRADOR),
+            ("Proveedora / contraparte", proveedor),
+            ("CUIT de la proveedora", cuit),
+            ("Fecha de celebración", "20/07/2026"),
+        ]
+    )
+    r.h("1. Objeto")
+    r.p(
+        "La proveedora entregará a la comitente barras y chapas de acero inoxidable AISI 316,"
+        " destinadas a la fabricación de cuerpos y vástagos de la línea de válvulas"
+        " industriales de la planta."
+    )
+    for texto in (
+        "Una entrega mensual de 1.800 kg, en la planta de la comitente.",
+        "Certificado de colada y de composición química con cada entrega.",
+        "Reposición sin cargo del material que no cumpla la especificación.",
+    ):
+        r.item(texto)
+    r.h("2. Calidad y recepción")
+    r.p(
+        "La comitente inspeccionará cada entrega dentro de los cinco días hábiles de recibida."
+        " El material rechazado se retirará a cargo de la proveedora, que deberá reponerlo"
+        " antes de la entrega siguiente."
+    )
+    r.pagina()
+    r.h("3. Vigencia")
+    r.p("El contrato rige desde el 01/08/2026 hasta el 31/07/2027, ambas fechas inclusive.")
+    r.tabla([("Inicio de vigencia", "01/08/2026"), ("Fin de vigencia", "31/07/2027")])
+    r.h("4. Precio y forma de pago")
+    r.p(
+        "El precio total del contrato asciende a PESOS CINCUENTA Y CUATRO MILLONES"
+        " (ARS 54.000.000,00), IVA incluido, en doce entregas mensuales de ARS 4.500.000,00."
+        " Cada entrega se factura contra la orden de compra mensual emitida por la comitente."
+    )
+    r.tabla(
+        [
+            ("Monto total del contrato", "ARS 54.000.000,00"),
+            ("Moneda", "Pesos argentinos (ARS)"),
+            ("Entrega mensual", "ARS 4.500.000,00"),
+        ]
+    )
+    r.h("5. Facturación")
+    r.p(
+        "La proveedora emitirá una factura por cada entrega, con referencia a la orden de"
+        " compra correspondiente y al remito firmado en la recepción."
+    )
+    return Pieza(
+        "SD-C4",
+        "SD-C4_Contrato_Provision_Acero.pdf",
+        "contrato",
+        {
+            "contraparte": proveedor,
+            "cuit_contraparte": cuit,
+            "fecha_celebracion": "2026-07-20",
+            "vigencia_desde": "2026-08-01",
+            "vigencia_hasta": "2027-07-31",
+            "monto_total": "54000000.00",
+            "moneda": "ARS",
+        },
+        r,
+    )
+
+
 # --- Órdenes, presupuestos y facturas -----------------------------------------------------
 
 
@@ -715,6 +795,26 @@ def piezas() -> list[Pieza]:
             NUBE,
             "18000000.00",
             [("Soporte informático anual, 40 puestos", "18000000.00")],
+        ),
+        # Provisión de acero: el caso habitual, sin advertencias, cerrado.
+        contrato_suministro(),
+        orden(
+            "SD-O4",
+            "OC-2026-112",
+            "2026-10-02",
+            ACEROS,
+            "4500000.00",
+            [("Entrega de octubre: 1.800 kg de barras y chapas AISI 316", "4500000.00")],
+            "Contrato C-2026-009",
+        ),
+        factura(
+            "SD-F4",
+            "0003-00000871",
+            "2026-10-16",
+            ACEROS,
+            "4500000.00",
+            [("Entrega de octubre: 1.800 kg de barras y chapas AISI 316", "4500000.00")],
+            "Orden de compra OC-2026-112",
         ),
     ]
 

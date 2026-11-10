@@ -27,8 +27,9 @@ procesamiento fallido detiene la semilla antes de incorporar: no se valida a man
 IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
 
 `--escenario surdelta` (DO-2026-11-09-DEMO-SURDELTA) siembra en cambio la cartera de SurDelta
-con los documentos de `corpus/surdelta/` y su oráculo: una compra de equipos observada por
-R1 (la factura llegó con el CUIT de otra empresa), una renovación de soporte pendiente de
+con los documentos de `corpus/surdelta/` y su oráculo: la provisión de acero de la planta,
+cerrada sin advertencias, una compra de equipos observada por R1 (la factura llegó con el
+CUIT de otra empresa), una renovación de soporte pendiente de
 aprobación y una contratación cancelada. El mantenimiento de planta (la factura v1 supera la
 orden, R4; la v2 la corrige como versión nueva) no se siembra: la responsable lo crea en la
 grabación. No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
@@ -107,6 +108,9 @@ NOMBRES_SURDELTA: Final = {
     "SD-F3": "Factura de equipos",
     "SD-C3": "Contrato de soporte informático",
     "SD-P3": "Presupuesto de soporte",
+    "SD-C4": "Contrato de provisión de acero",
+    "SD-O4": "Orden de compra OC-2026-112",
+    "SD-F4": "Factura de la entrega de octubre",
 }
 MOTIVO_OBSERVACION_SURDELTA: Final = (
     "La factura 0004-00001248 supera la orden de compra OC-2026-118 en ARS 1.200.000 por 40"
@@ -668,6 +672,17 @@ class SembradorSurDelta(Sembrador):
         self.corregir_con_version(historia, nueva="SD-F2", anterior="SD-F1")
         self.cerrar(historia, contrato="SD-C1")
 
+    def sembrar_suministro(self) -> None:
+        """El caso habitual de la planta: contrato, orden y factura coinciden y cierra."""
+        suministro = self.cargar_documentos(
+            "suministro",
+            "Provisión de acero inoxidable para la línea de válvulas",
+            ("SD-C4", "SD-O4", "SD-F4"),
+        )
+        self.validar(suministro)
+        self.vincular(suministro, (("SD-O4", "SD-C4"), ("SD-F4", "SD-O4")))
+        self.cerrar(suministro, contrato="SD-C4")
+
     def sembrar_compra(self) -> None:
         """La factura llegó con el CUIT de otra empresa: sin vínculo sugerido, R1 advierte."""
         compra = self.cargar_documentos(
@@ -695,6 +710,7 @@ class SembradorSurDelta(Sembrador):
         self.preparar_cuentas()
         self.crear_plantilla()
         self.m.plantilla_general_id = self.crear_plantilla("general", "Revisión de compras")
+        self.sembrar_suministro()
         self.sembrar_compra()
         self.sembrar_renovacion()
         self.sembrar_cancelado("Contratación de limpieza", MOTIVO_CANCELACION_SURDELTA)

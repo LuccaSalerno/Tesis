@@ -274,7 +274,11 @@ def test_demo_surdelta_semilla_completa_por_api(entorno: dict[str, Any]) -> None
     assert manifiesto.resultado == "completado"
     assert manifiesto.plantilla_id and manifiesto.plantilla_general_id
     # La cartera no incluye el mantenimiento de planta: se crea en vivo en la grabación.
-    assert set(manifiesto.tramites) == {"observado", "pendiente", "cancelado"}
+    assert set(manifiesto.tramites) == {"suministro", "observado", "pendiente", "cancelado"}
+    # Provisión de acero: el caso habitual, sin advertencias, aprobado y firmado.
+    suministro = manifiesto.tramites["suministro"]
+    assert suministro["controles"] == dict.fromkeys(("R1", "R2", "R3", "R4"), "cumplimiento")
+    assert suministro["estado"] == "cerrado" and suministro["firma"]["version_id"]
     # El recorrido de los videos, por la API: la factura v1 supera la orden (R4) y la fecha
     # de la orden es anterior a la vigencia (R3); la v2 corrige R4, entra por el CUIT del
     # emisor (RF-06) y R3 sigue.
@@ -624,7 +628,8 @@ def test_demo_surdelta_semilla_local_simulada(base_migrada: Configuracion) -> No
     aplicacion.state.motor.dispose()
     assert manifiesto.resultado == "completado"
     assert manifiesto.oraculo.startswith("oraculo_surdelta_v1")
-    assert set(manifiesto.tramites) == {"observado", "pendiente", "cancelado"}
+    assert set(manifiesto.tramites) == {"suministro", "observado", "pendiente", "cancelado"}
+    assert manifiesto.tramites["suministro"]["estado"] == "cerrado"
     assert manifiesto.tramites["observado"]["controles"]["R1"] == "advertencia"
 
 

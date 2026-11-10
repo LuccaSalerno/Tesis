@@ -7,7 +7,8 @@
     "30-96472518-3": "oraculos/oraculo_PD07_v2.json (registro_cuit)",
     "30-98641015-1": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
     "30-98641014-3": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
-    "30-98641017-8": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md"
+    "30-98641017-8": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md",
+    "30-98641018-6": "docs/evaluacion/corpus_e90/Verificacion_Manual_Ajuste_y_Razones_Sociales_2026-10-23.md"
   },
   "documentos": {
     "SD-C1": {
@@ -135,6 +136,49 @@
         "proveedor": "Nube Austral Tecnología S.R.L.",
         "cuit_proveedor": "30-98641017-8",
         "importe_total": "18000000.00",
+        "moneda": "ARS"
+      }
+    },
+    "SD-C4": {
+      "archivo": "SD-C4_Contrato_Provision_Acero.pdf",
+      "tipo_documental": "contrato",
+      "paginas": 2,
+      "sha256": "140e84c0c51d98a5e0ab7c6b0a2d8687a233feb8810eba1f731515d643a38e53",
+      "campos": {
+        "contraparte": "Aceros Cuatro Vientos S.A.",
+        "cuit_contraparte": "30-98641018-6",
+        "fecha_celebracion": "2026-07-20",
+        "vigencia_desde": "2026-08-01",
+        "vigencia_hasta": "2027-07-31",
+        "monto_total": "54000000.00",
+        "moneda": "ARS"
+      }
+    },
+    "SD-O4": {
+      "archivo": "SD-O4_Orden_Compra_OC-2026-112.pdf",
+      "tipo_documental": "orden_compra",
+      "paginas": 1,
+      "sha256": "b975d266dce33db9a23f10397a76fa26556557cb1d757ad3449a6a0c5f4a4bcb",
+      "campos": {
+        "numero": "OC-2026-112",
+        "fecha": "2026-10-02",
+        "proveedor": "Aceros Cuatro Vientos S.A.",
+        "cuit_proveedor": "30-98641018-6",
+        "importe_total": "4500000.00",
+        "moneda": "ARS"
+      }
+    },
+    "SD-F4": {
+      "archivo": "SD-F4_Factura_0003-00000871.pdf",
+      "tipo_documental": "factura",
+      "paginas": 1,
+      "sha256": "74e07eb83932c68645a4cd80c261819a7fa4bc6160b563f5ebf5bfcf7cc4c3f4",
+      "campos": {
+        "numero": "0003-00000871",
+        "fecha_emision": "2026-10-16",
+        "emisor": "Aceros Cuatro Vientos S.A.",
+        "cuit_emisor": "30-98641018-6",
+        "importe_total": "4500000.00",
         "moneda": "ARS"
       }
     }
