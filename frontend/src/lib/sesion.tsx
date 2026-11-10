@@ -3,6 +3,7 @@
  * Cognito, el de renovación se guarda en `sessionStorage` (se borra al cerrar la pestaña).
  * Los permisos efectivos los decide siempre el backend: aquí solo se ocultan acciones.
  */
+import { useQueryClient } from "@tanstack/react-query";
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { api, conectarSesion, exigir } from "@/api/cliente";
@@ -29,6 +30,8 @@ interface ValorSesion {
   ingresar: (usuario: string, clave: string) => Promise<void>;
   ingresarConToken: (token: string) => Promise<void>;
   salir: () => void;
+  /** La persona cerró la sesión: al volver a ingresar se empieza por Inicio. */
+  salidaVoluntaria: boolean;
 }
 
 const ContextoSesion = createContext<ValorSesion | null>(null);
@@ -56,13 +59,23 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
   const tokens = useRef<Tokens | null>(null);
   const [yo, setYo] = useState<Yo | null>(null);
   const [cargando, setCargando] = useState(true);
+  const [salidaVoluntaria, setSalidaVoluntaria] = useState(false);
+  const cliente = useQueryClient();
 
-  const salir = useCallback(() => {
-    tokens.current = null;
-    guardarRefresco(null);
-    guardar(CLAVE_TOKEN_LOCAL, null);
-    setYo(null);
-  }, []);
+  // Los datos en caché son de la persona que estaba: no se muestran a la siguiente.
+  const cerrar = useCallback(
+    (voluntaria: boolean) => {
+      tokens.current = null;
+      guardarRefresco(null);
+      guardar(CLAVE_TOKEN_LOCAL, null);
+      setSalidaVoluntaria(voluntaria);
+      setYo(null);
+      cliente.clear();
+    },
+    [cliente],
+  );
+  const salir = useCallback(() => cerrar(true), [cerrar]);
+  const perderSesion = useCallback(() => cerrar(false), [cerrar]);
 
   const tokenVigente = useCallback(async (): Promise<string | null> => {
     const actual = tokens.current;
@@ -75,20 +88,23 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    conectarSesion(tokenVigente, salir);
-  }, [tokenVigente, salir]);
+    conectarSesion(tokenVigente, perderSesion);
+  }, [tokenVigente, perderSesion]);
 
   const abrir = useCallback(async (nuevos: Tokens) => {
     tokens.current = nuevos;
     try {
-      setYo(await exigir(api.GET("/usuarios/yo")));
+      const persona = await exigir(api.GET("/usuarios/yo"));
+      cliente.clear();
+      setSalidaVoluntaria(false);
+      setYo(persona);
       guardarRefresco(nuevos.refresco);
       if (CONFIGURACION.autenticacion === "local") guardar(CLAVE_TOKEN_LOCAL, nuevos.acceso);
     } catch (error) {
       tokens.current = null;
       throw error;
     }
-  }, []);
+  }, [cliente]);
 
   useEffect(() => {
     if (CONFIGURACION.autenticacion === "local") {
@@ -124,8 +140,9 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
         await abrir({ acceso: token.trim(), refresco: null, expiraEn: carga.exp });
       },
       salir,
+      salidaVoluntaria,
     }),
-    [abrir, cargando, salir, yo],
+    [abrir, cargando, salidaVoluntaria, salir, yo],
   );
 
   return <ContextoSesion.Provider value={valor}>{children}</ContextoSesion.Provider>;

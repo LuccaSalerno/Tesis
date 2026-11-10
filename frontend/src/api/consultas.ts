@@ -148,7 +148,8 @@ export function useConsultas(t: number) {
 }
 
 export function useTareas() {
-  return useQuery({ queryKey: claves.tareas, queryFn: () => exigir(api.GET("/tareas")) });
+  // Las tareas llegan por acciones de otras personas: la bandeja se vuelve a pedir al abrirla.
+  return useQuery({ queryKey: claves.tareas, staleTime: 0, queryFn: () => exigir(api.GET("/tareas")) });
 }
 
 export function useTarea(id: number) {

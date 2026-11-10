@@ -53,7 +53,7 @@ export function Marco() {
         <div className="border-t border-borde px-4 py-4">
           <p className="truncate text-sm font-medium">{yo?.nombre_visible ?? `Usuario #${yo?.id}`}</p>
           <p className="truncate text-xs text-tenue">{yo?.roles.map((r) => ROL[r]).join(" · ")}</p>
-          <button type="button" onClick={salir} className="mt-3 inline-flex items-center gap-1.5 text-xs text-tenue hover:text-texto">
+          <button type="button" onClick={() => salir()} className="mt-3 inline-flex items-center gap-1.5 text-xs text-tenue hover:text-texto">
             <LogOut className="size-3.5" aria-hidden /> Cerrar sesión
           </button>
         </div>

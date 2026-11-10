@@ -36,10 +36,11 @@ export function crearClienteConsultas(): QueryClient {
 }
 
 function Protegida({ children }: { children: ReactNode }) {
-  const { yo, cargando } = useSesion();
+  const { yo, cargando, salidaVoluntaria } = useSesion();
   const ubicacion = useLocation();
   if (cargando) return <Cargando texto="Recuperando la sesión…" />;
-  if (!yo) return <Navigate to="/ingresar" state={{ desde: ubicacion.pathname }} replace />;
+  // Si la sesión venció se vuelve a la misma pantalla; si la persona salió, se empieza por Inicio.
+  if (!yo) return <Navigate to="/ingresar" state={salidaVoluntaria ? undefined : { desde: ubicacion.pathname }} replace />;
   return children;
 }
 
