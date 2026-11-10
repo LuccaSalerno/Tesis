@@ -44,6 +44,7 @@ from tests.procesamiento_fijo import ModeloFijo, dato
 
 ORACULO = json.loads(sembrar_demo.ORACULO.read_text(encoding="utf-8"))
 O_V2 = {c: ORACULO["documentos"]["O-v2"][c] for c in ("numero", "cuit_proveedor", "moneda")}
+ORACULO_SD = json.loads(sembrar_demo.ORACULO_SURDELTA.read_text(encoding="utf-8"))
 
 
 def transporte_de(cliente: TestClient) -> Any:
@@ -107,7 +108,21 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
                     )
                     continue
                 modelo = modelo_contrato(extraccion_c_v1_pdf())
-                if nombre.startswith("O-v2"):
+                if nombre.startswith("SD-"):
+                    # SurDelta: la IA sugiere lo que dice el documento (oráculo), así RF-06
+                    # relaciona la factura v2 con la v1 por el CUIT del emisor.
+                    doc = ORACULO_SD["documentos"][nombre.split("_")[0]]
+                    tipo = TipoDocumental(doc["tipo_documental"])
+                    modelo = ModeloFijo(
+                        {
+                            esquemas.HERRAMIENTA_CLASIFICACION: {"tipo": tipo.value},
+                            esquemas.HERRAMIENTA_EXTRACCION: {
+                                c.nombre: dato(doc["campos"][c.nombre])
+                                for c in esquemas.CAMPOS[tipo]
+                            },
+                        }
+                    )
+                elif nombre.startswith("O-v2"):
                     modelo = ModeloFijo(
                         {
                             esquemas.HERRAMIENTA_CLASIFICACION: {"tipo": "orden_compra"},
@@ -238,6 +253,97 @@ def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
     exportado = tmp_path / f"tramites/reemplazado-{incompleto['id']}/tramite.json"
     assert json.loads(exportado.read_text())["estado"] == "cancelado"
     assert f"tramites/reemplazado-{incompleto['id']}/tramite.json" in resumen["archivos"]
+
+
+def _manifiesto_surdelta() -> sembrar_demo.Manifiesto:
+    return sembrar_demo.Manifiesto(
+        sesion="surdelta-pruebas",
+        url_api="http://testserver",
+        oraculo=f"{ORACULO_SD['id']} ({ORACULO_SD['estado']})",
+        corpus=sembrar_demo.verificar_corpus_surdelta(ORACULO_SD),
+    )
+
+
+@pytest.mark.integracion
+def test_demo_surdelta_semilla_completa_por_api(entorno: dict[str, Any]) -> None:
+    """DO-2026-11-09-DEMO-SURDELTA: la cartera de SurDelta con las reglas reales."""
+    manifiesto = sembrar_demo.SembradorSurDelta(
+        entorno["api"], _manifiesto_surdelta(), ORACULO_SD, entorno["procesar"]
+    ).ejecutar()
+    assert manifiesto.resultado == "completado"
+    assert manifiesto.plantilla_id and manifiesto.plantilla_general_id
+    # Historia: la factura v1 supera la orden (R4) y la fecha de la orden es anterior a la
+    # vigencia (R3); la v2 corrige R4, entra por el CUIT del emisor (RF-06) y R3 sigue.
+    historia = manifiesto.tramites["cerrado"]
+    assert historia["controles"] == {
+        "R1": "cumplimiento",
+        "R2": "cumplimiento",
+        "R3": "advertencia",
+        "R4": "advertencia",
+    }
+    assert historia["controles_corregidos"]["R4"] == "cumplimiento"
+    assert historia["controles_corregidos"]["R3"] == "advertencia"
+    assert historia["criterio_version"] == "cuit"
+    assert len(historia["decisiones"]) == 1 and len(historia["decisiones_2"]) == 2
+    assert historia["estado"] == "cerrado"
+    assert historia["firma"]["version_id"] != historia["version_nueva"]
+    evidencia = entorno["api"].get(
+        f"/decisiones/{historia['decisiones'][0]}/evidencia", "responsable"
+    )
+    assert evidencia["decision"]["motivo"] == sembrar_demo.MOTIVO_OBSERVACION_SURDELTA
+    # Compra: la factura de otra empresa no se vincula sola; R1 advierte y se observa.
+    compra = manifiesto.tramites["observado"]
+    assert compra["estado"] == "observado"
+    assert compra["controles"] == {
+        "R1": "advertencia",
+        "R2": "no_aplicable",  # sin contrato en el trámite
+        "R3": "no_aplicable",
+        "R4": "cumplimiento",
+    }
+    assert manifiesto.tramites["pendiente"]["estado"] == "pendiente_aprobacion"
+    assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"
+    assert "token" not in json.dumps(manifiesto.__dict__).lower()
+
+
+def test_demo_surdelta_corpus_y_escenario() -> None:
+    for codigo, valores in sembrar_demo.escenario_surdelta(ORACULO_SD).items():
+        tipo = TipoDocumental(valores["tipo_documental"])
+        assert set(valores) - {"tipo_documental"} == {c.nombre for c in esquemas.CAMPOS[tipo]}, (
+            codigo
+        )
+    alterado = json.loads(json.dumps(ORACULO_SD))
+    alterado["documentos"]["SD-F1"]["sha256"] = "0" * 64
+    with pytest.raises(RuntimeError, match="SD-F1"):
+        sembrar_demo.verificar_corpus_surdelta(alterado)
+    with pytest.raises(RuntimeError, match="no se reanuda"):
+        sembrar_demo.SembradorSurDelta(None, _manifiesto_surdelta(), ORACULO_SD).reanudar()  # type: ignore[arg-type]
+
+
+def test_demo_surdelta_main_elige_el_escenario(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    base = ["--url-api", "http://x", "--sesion", "s", "--cliente-cognito", "c"]
+    usuarios = ["--usuarios", *(f"{r}={r}" for r in sembrar_demo.ROLES)]
+    escenario = ["--escenario", "surdelta"]
+    salida = tmp_path / "m.json"
+    assert (
+        sembrar_demo.main([*base, *usuarios, *escenario, "--reanudar", "--manifiesto", str(salida)])
+        == 2
+    )
+    monkeypatch.setattr(sembrar_demo, "tokens_cognito", lambda *_: {})
+    usados: list[type] = []
+
+    def ejecutar(self: sembrar_demo.Sembrador) -> sembrar_demo.Manifiesto:
+        usados.append(type(self))
+        return self.m
+
+    monkeypatch.setattr(sembrar_demo.Sembrador, "ejecutar", ejecutar)
+    monkeypatch.setattr(sembrar_demo.SembradorSurDelta, "ejecutar", ejecutar)
+    assert sembrar_demo.main([*base, *usuarios, *escenario, "--manifiesto", str(salida)]) == 0
+    assert usados == [sembrar_demo.SembradorSurDelta]
+    guardado = json.loads(salida.read_text())
+    assert guardado["oraculo"] == "oraculo_surdelta_v1 (demostracion)"
+    assert guardado["corpus"] == sembrar_demo.huellas_surdelta(ORACULO_SD)
 
 
 def test_p11_reanudar_exige_el_observado_completo() -> None:

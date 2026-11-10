@@ -764,6 +764,17 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 3. **Herramienta:** `metricas --con-calificaciones` usa `planillas/conjunta.csv` si existe (`planillas.consolidar_conjunta`, exige los conteos de las respondibles); si no, el flujo de dos planillas.
 4. **Resultado:** IA-M06 cumple con ambos modelos (Haiku: correctas 0,875, respaldo 0,949, abstenciones 1,000; Sonnet: 0,958, 0,980, 0,833).
 
+### DO-2026-11-09-DEMO-SURDELTA — Escenario de demostración SurDelta para los videos y la defensa
+
+**Fecha:** 09/11/2026. **Aprobada por:** Lucca Salerno. **Estado:** cerrada. **Base:** devolución de EP3 (escenario concreto, contratos de valor, caso de negocio), PD-07, EVD-01, DO-2026-10-22-OPS P11.
+
+1. **P1 — Escenario nuevo, no reemplazo:** `sembrar_demo --escenario surdelta`; el escenario PD-07 sigue siendo el predeterminado y conserva su evidencia y pruebas.
+2. **P2 — Trámites sembrados:** «Mantenimiento de planta (historia completa)» Cerrado; «Compra de equipos para el área comercial» Observado por R1 (factura con CUIT de otra empresa, vínculo manual); «Renovación de soporte informático» Pendiente de aprobación; «Contratación de limpieza» Cancelado. Sin trámite «en vivo»: la responsable lo crea en la grabación.
+3. **P3 — Historia:** la factura v1 supera la OC (R4, sobrefacturación de horas adicionales no autorizadas); la v2 la corrige como versión nueva (RF-06/07). La OC se fecha antes de la vigencia (R3): advertencia que el revisor acepta. Es el recorrido de EVD-01 con otros datos; no acredita EVD-01.
+4. **P4 — Flujo:** la plantilla de dos pasos del escenario PD-07; el revisor observa en el ciclo 1.
+5. **P5 — Documentos:** generador reproducible `herramientas/generar_corpus_surdelta.py` (python-docx y LibreOffice, entorno de `herramientas/corpus_e90/requisitos.txt`), salida en `corpus/surdelta/` y oráculo `oraculos/oraculo_surdelta_v1.json` con huellas. Sin texto de control visible. CUIT: solo los ya consultados por el equipo en ARCA (el de PD-07 y los de la partición de **ajuste** de E90; ninguno de medición). Separado de PD-07 y del corpus de 50 (§6.3).
+6. **P6 — Registro:** guion de los dos videos en `operaciones/demo/Guion_Demo.md`; pruebas de la semilla contra la API con PostgreSQL.
+
 ---
 
 ## 2. Decisiones en curso

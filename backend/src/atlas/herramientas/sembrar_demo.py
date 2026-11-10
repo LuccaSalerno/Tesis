@@ -26,6 +26,13 @@ confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. 
 procesamiento fallido detiene la semilla antes de incorporar: no se valida a mano lo que la
 IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
 
+`--escenario surdelta` (DO-2026-11-09-DEMO-SURDELTA) siembra en cambio la cartera de SurDelta
+con los documentos de `corpus/surdelta/` y su oráculo: la historia completa (la factura v1
+supera la orden, R4; la v2 la corrige como versión nueva) cerrada, una compra de equipos
+observada por R1 (la factura llegó con el CUIT de otra empresa), una renovación de soporte
+pendiente de aprobación y una contratación cancelada. Sin trámite en vivo: la responsable lo
+crea en la grabación. No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
+
 `--reanudar` continúa una semilla interrumpida sobre el mismo manifiesto, sin repetir ni
 ocultar lo hecho: reintenta por la API los procesamientos fallidos del trámite en vivo
 (RNF-06) y, si el trámite «cerrado» quedó a medias, lo cancela con el motivo real y siembra
@@ -86,6 +93,33 @@ MOTIVO_OBSERVACION: Final = (
 # Razón social del proveedor y emisor: en el oráculo v2 (`razon_social`) y en la fuente
 # reproducible del corpus (herramientas/generar_corpus.py, «Proveedor / emisor»).
 RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
+
+# Escenario SurDelta (DO-2026-11-09-DEMO-SURDELTA): fuente reproducible en
+# herramientas/generar_corpus_surdelta.py; el oráculo guarda tipo, campos y huella por código.
+ORACULO_SURDELTA: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_surdelta_v1.json"
+CORPUS_SURDELTA: Final = CORPUS / "surdelta"
+NOMBRES_SURDELTA: Final = {
+    "SD-C1": "Contrato de mantenimiento integral",
+    "SD-O1": "Orden de compra OC-2026-118",
+    "SD-F1": "Factura de octubre",
+    "SD-P2": "Presupuesto de equipos",
+    "SD-O2": "Orden de compra OC-2026-131",
+    "SD-F3": "Factura de equipos",
+    "SD-C3": "Contrato de soporte informático",
+    "SD-P3": "Presupuesto de soporte",
+}
+MOTIVO_OBSERVACION_SURDELTA: Final = (
+    "La factura 0004-00001248 supera la orden de compra OC-2026-118 en ARS 1.200.000 por 40"
+    " horas adicionales sin autorización previa por escrito (cláusula 5 del contrato). La"
+    " fecha de la orden, anterior al inicio de la vigencia, es aceptable: corresponde al"
+    " abono de octubre."
+)
+MOTIVO_OBSERVACION_CUIT: Final = (
+    "La factura 0002-00000519 fue emitida por Horizonte Servicios S.R.L. (CUIT"
+    " 30-98641014-3), que no es el proveedor de la orden de compra OC-2026-131. Pedir la"
+    " factura al proveedor correcto antes de aprobar."
+)
+MOTIVO_CANCELACION_SURDELTA: Final = "SurDelta resolvió internalizar la limpieza de la planta."
 
 
 def escenario(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
@@ -172,6 +206,7 @@ class Manifiesto:
     iniciado_en: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     cuentas: dict[str, int] = field(default_factory=dict)
     plantilla_id: int | None = None
+    plantilla_general_id: int | None = None
     tramites: dict[str, dict[str, Any]] = field(default_factory=dict)
     reemplazados: list[dict[str, Any]] = field(default_factory=list)
     reanudaciones: list[str] = field(default_factory=list)
@@ -189,8 +224,14 @@ class Sembrador:
     ) -> None:
         self.api = cliente
         self.m = manifiesto
-        self.valores = escenario(oraculo)
         self.esperar = esperar
+        self._preparar(oraculo)
+
+    def _preparar(self, oraculo: dict[str, Any]) -> None:
+        """Valores esperados, archivos y nombres de los documentos del escenario."""
+        self.valores = escenario(oraculo)
+        self.archivos = {c: CORPUS / a for c, a in ARCHIVOS.items()}
+        self.nombres = dict(NOMBRES)
 
     # --- Cuentas y plantilla --------------------------------------------------------
 
@@ -231,13 +272,15 @@ class Sembrador:
                 )
             self.m.cuentas[clave] = cuenta["id"]
 
-    def crear_plantilla(self) -> None:
+    def crear_plantilla(
+        self, alcance: str = "contrato", nombre: str = "Revisión de contratos"
+    ) -> int:
         plantilla = self.api.post(
             "/plantillas-flujo",
             "administrador",
             {
-                "nombre": "Revisión de contratos",
-                "alcance": "contrato",
+                "nombre": nombre,
+                "alcance": alcance,
                 "pasos": [
                     {
                         "nombre": "Revisión legal",
@@ -250,17 +293,20 @@ class Sembrador:
                 ],
             },
         )
-        self.m.plantilla_id = plantilla["id"]
+        if alcance == "contrato":
+            self.m.plantilla_id = plantilla["id"]
+        identificador: int = plantilla["id"]
+        return identificador
 
     # --- Documentos -----------------------------------------------------------------
 
     def _cargar(self, tramite_id: int, codigo: str) -> int:
-        archivo = ARCHIVOS[codigo]
-        datos = (CORPUS / archivo).read_bytes()
+        ruta = self.archivos[codigo]
+        datos = ruta.read_bytes()
         carga = self.api.post(
             f"/tramites/{tramite_id}/cargas",
             "responsable",
-            {"nombre": archivo, "formato": "pdf", "tamano_bytes": len(datos)},
+            {"nombre": ruta.name, "formato": "pdf", "tamano_bytes": len(datos)},
         )
         self.api.transferir(carga["url"], carga["encabezados"], datos)
         confirmado = self.api.post(
@@ -294,7 +340,7 @@ class Sembrador:
             documento = self.api.post(
                 f"/tramites/{registro['id']}/archivos/{archivo_id}/incorporacion",
                 "responsable",
-                {"nombre": NOMBRES[codigo]},
+                {"nombre": self.nombres[codigo]},
             )
             registro["documentos"][codigo] = documento["id"]
 
@@ -370,11 +416,17 @@ class Sembrador:
         controles = self.api.get(f"/tramites/{tramite_id}/controles", "responsable")["vigentes"]
         return {c["codigo_regla"][:2]: c["resultado"] for c in controles}
 
-    def vincular(self, registro: dict[str, Any]) -> None:
+    def vincular(
+        self,
+        registro: dict[str, Any],
+        pares: tuple[tuple[str, str], ...] = (("O-v1", "C-v1"), ("F-v2", "O-v1")),
+        tipo: str = "campos",
+        justificacion: str = "Comparten el CUIT validado del proveedor",
+    ) -> None:
         """RF-15: confirma el vínculo sugerido; si no lo hay, lo crea (RF-14)."""
         tramite_id, docs = registro["id"], registro["documentos"]
         registro["vinculos"] = []
-        for origen, destino in (("O-v1", "C-v1"), ("F-v2", "O-v1")):
+        for origen, destino in pares:
             par = {docs[origen], docs[destino]}
             sugeridos = self.api.get(f"/tramites/{tramite_id}/vinculos", "responsable")["sugeridos"]
             sugerido = next(
@@ -396,8 +448,8 @@ class Sembrador:
                     {
                         "documento_origen_id": docs[origen],
                         "documento_destino_id": docs[destino],
-                        "tipo": "campos",
-                        "justificacion": "Comparten el CUIT validado del proveedor",
+                        "tipo": tipo,
+                        "justificacion": justificacion,
                     },
                 )
             registro["vinculos"].append(vinculo["id"])
@@ -416,28 +468,34 @@ class Sembrador:
         )
         return ciclo
 
-    def revisar(self, registro: dict[str, Any]) -> None:
+    def revisar(
+        self, registro: dict[str, Any], observa: str = "aprobador", motivo: str = MOTIVO_OBSERVACION
+    ) -> None:
+        """Ciclo 1: observa el revisor en la primera tarea (las siguientes se descartan) o
+        el aprobador en la última, después de que el revisor apruebe la suya."""
         tramite_id = registro["id"]
         ciclo = self._ciclo(tramite_id)
         registro["ciclo"] = ciclo["id"]
         legal, final = ciclo["tareas"]
-        aprobacion = self.api.post(
-            f"/tareas/{legal['id']}/decision", "revisor", {"tipo": "aprobacion"}
-        )
-        observacion = self.api.post(
-            f"/tareas/{final['id']}/decision",
-            "aprobador",
-            {"tipo": "observacion", "motivo": MOTIVO_OBSERVACION},
-        )
-        registro["decisiones"] = [aprobacion["id"], observacion["id"]]
+        observar = {"tipo": "observacion", "motivo": motivo}
+        if observa == "revisor":
+            decisiones = [self.api.post(f"/tareas/{legal['id']}/decision", "revisor", observar)]
+        else:
+            decisiones = [
+                self.api.post(f"/tareas/{legal['id']}/decision", "revisor", {"tipo": "aprobacion"}),
+                self.api.post(f"/tareas/{final['id']}/decision", "aprobador", observar),
+            ]
+        registro["decisiones"] = [d["id"] for d in decisiones]
         registro["estado"] = self.api.get(f"/tramites/{tramite_id}", "responsable")["estado"]
 
-    def corregir_con_version(self, registro: dict[str, Any]) -> None:
-        """EVD-B 3: O-v2 como versión nueva confirmada de O-v1. Solo se confirma la relación
-        que sugiere el sistema (RF-06); si no la sugiere, la semilla se detiene."""
+    def corregir_con_version(
+        self, registro: dict[str, Any], nueva: str = "O-v2", anterior: str = "O-v1"
+    ) -> None:
+        """EVD-B 3: la versión nueva confirmada del documento observado. Solo se confirma la
+        relación que sugiere el sistema (RF-06); si no la sugiere, la semilla se detiene."""
         tramite_id = registro["id"]
-        archivo_id = self._cargar(tramite_id, "O-v2")
-        registro["archivos"]["O-v2"] = archivo_id
+        archivo_id = self._cargar(tramite_id, nueva)
+        registro["archivos"][nueva] = archivo_id
         self._procesar(tramite_id, [archivo_id])
         archivo = next(
             a
@@ -445,20 +503,20 @@ class Sembrador:
             if a["id"] == archivo_id
         )
         sugerencia = archivo.get("sugerencia_version") or {}
-        if sugerencia.get("documento_id") != registro["documentos"]["O-v1"]:
-            raise RuntimeError("RF-06 no sugirió O-v2 como versión nueva de O-v1")
+        if sugerencia.get("documento_id") != registro["documentos"][anterior]:
+            raise RuntimeError(f"RF-06 no sugirió {nueva} como versión nueva de {anterior}")
         registro["criterio_version"] = sugerencia["criterio"]
         documento = self.api.post(
             f"/tramites/{tramite_id}/archivos/{archivo_id}/version", "responsable"
         )
         registro["version_nueva"] = documento["version_vigente"]["id"]
-        registro["validaciones"]["O-v2"] = self._validar_documento(
-            tramite_id, documento["id"], "O-v2"
+        registro["validaciones"][nueva] = self._validar_documento(
+            tramite_id, documento["id"], nueva
         )
         registro["controles_corregidos"] = self._controles(tramite_id)
 
-    def cerrar(self, registro: dict[str, Any]) -> None:
-        """EVD-B 4 y V11: ciclo 2 aprobado por las dos tareas y firma simulada de C-v1."""
+    def cerrar(self, registro: dict[str, Any], contrato: str = "C-v1") -> None:
+        """EVD-B 4 y V11: ciclo 2 aprobado por las dos tareas y firma simulada del contrato."""
         tramite_id = registro["id"]
         ciclo = self._ciclo(tramite_id)
         registro["ciclo_2"] = ciclo["id"]
@@ -471,11 +529,11 @@ class Sembrador:
                 "id"
             ],
         ]
-        contrato = next(
-            v for v in ciclo["versiones"] if v["documento_id"] == registro["documentos"]["C-v1"]
+        firmada = next(
+            v for v in ciclo["versiones"] if v["documento_id"] == registro["documentos"][contrato]
         )
         firma = self.api.post(
-            f"/tramites/{tramite_id}/firma", "aprobador", {"version_id": contrato["version_id"]}
+            f"/tramites/{tramite_id}/firma", "aprobador", {"version_id": firmada["version_id"]}
         )
         registro["firma"] = {
             "id": firma["id"],
@@ -519,12 +577,14 @@ class Sembrador:
         self.corregir_con_version(cerrado)
         self.cerrar(cerrado)
 
-    def sembrar_cancelado(self) -> None:
-        tramite = self.api.post(
-            "/tramites", "responsable", {"titulo": "Mantenimiento de equipos (cancelado)"}
-        )
+    def sembrar_cancelado(
+        self,
+        titulo: str = "Mantenimiento de equipos (cancelado)",
+        motivo: str = MOTIVO_CANCELACION,
+    ) -> None:
+        tramite = self.api.post("/tramites", "responsable", {"titulo": titulo})
         cancelado = self.api.post(
-            f"/tramites/{tramite['id']}/cancelacion", "responsable", {"motivo": MOTIVO_CANCELACION}
+            f"/tramites/{tramite['id']}/cancelacion", "responsable", {"motivo": motivo}
         )
         self.m.tramites["cancelado"] = {"id": tramite["id"], "estado": cancelado["estado"]}
 
@@ -576,6 +636,91 @@ class Sembrador:
         return self._terminar()
 
 
+def escenario_surdelta(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
+    """Tipo validado y valores esperados por código, tal como los guarda el oráculo."""
+    return {
+        codigo: {"tipo_documental": doc["tipo_documental"], **doc["campos"]}
+        for codigo, doc in oraculo["documentos"].items()
+    }
+
+
+class SembradorSurDelta(Sembrador):
+    """La cartera de SurDelta (DO-2026-11-09-DEMO-SURDELTA), con los mismos pasos por la API."""
+
+    def _preparar(self, oraculo: dict[str, Any]) -> None:
+        self.valores = escenario_surdelta(oraculo)
+        self.archivos = {
+            c: CORPUS_SURDELTA / d["archivo"] for c, d in oraculo["documentos"].items()
+        }
+        self.nombres = dict(NOMBRES_SURDELTA)
+
+    def sembrar_historia(self) -> None:
+        """La factura v1 supera la orden (R4) y la fecha de la orden es anterior a la
+        vigencia (R3); el revisor observa, la v2 corrige la factura y el ciclo 2 cierra."""
+        historia = self.cargar_documentos(
+            "cerrado",
+            "Mantenimiento integral de planta (historia completa)",
+            ("SD-C1", "SD-O1", "SD-F1"),
+        )
+        self.validar(historia)
+        self.vincular(historia, (("SD-O1", "SD-C1"), ("SD-F1", "SD-O1")))
+        self.revisar(historia, observa="revisor", motivo=MOTIVO_OBSERVACION_SURDELTA)
+        self.corregir_con_version(historia, nueva="SD-F2", anterior="SD-F1")
+        self.cerrar(historia, contrato="SD-C1")
+
+    def sembrar_compra(self) -> None:
+        """La factura llegó con el CUIT de otra empresa: sin vínculo sugerido, R1 advierte."""
+        compra = self.cargar_documentos(
+            "observado", "Compra de equipos para el área comercial", ("SD-P2", "SD-O2", "SD-F3")
+        )
+        self.validar(compra)
+        self.vincular(
+            compra,
+            (("SD-F3", "SD-O2"),),
+            tipo="referencia",
+            justificacion="La factura cita la orden de compra OC-2026-131",
+        )
+        self.revisar(compra, observa="revisor", motivo=MOTIVO_OBSERVACION_CUIT)
+
+    def sembrar_renovacion(self) -> None:
+        renovacion = self.cargar_documentos(
+            "pendiente", "Renovación de soporte informático", ("SD-C3", "SD-P3")
+        )
+        self.validar(renovacion)
+        renovacion["ciclo"] = self._ciclo(renovacion["id"])["id"]
+        self._estado(renovacion)
+
+    def ejecutar(self) -> Manifiesto:
+        self._exigir_active()
+        self.preparar_cuentas()
+        self.crear_plantilla()
+        self.m.plantilla_general_id = self.crear_plantilla("general", "Revisión de compras")
+        self.sembrar_historia()
+        self.sembrar_compra()
+        self.sembrar_renovacion()
+        self.sembrar_cancelado("Contratación de limpieza", MOTIVO_CANCELACION_SURDELTA)
+        return self._terminar()
+
+    def reanudar(self) -> Manifiesto:
+        raise RuntimeError("El escenario SurDelta no se reanuda: sembrar una sesión nueva")
+
+
+def huellas_surdelta(oraculo: dict[str, Any]) -> dict[str, str]:
+    return {
+        d["archivo"]: hashlib.sha256((CORPUS_SURDELTA / d["archivo"]).read_bytes()).hexdigest()
+        for d in oraculo["documentos"].values()
+    }
+
+
+def verificar_corpus_surdelta(oraculo: dict[str, Any]) -> dict[str, str]:
+    """Rechaza documentos que no coinciden con las huellas del oráculo SurDelta."""
+    huellas = huellas_surdelta(oraculo)
+    for doc in oraculo["documentos"].values():
+        if huellas[doc["archivo"]] != doc["sha256"]:
+            raise RuntimeError(f"La huella de {doc['archivo']} no coincide con el oráculo")
+    return huellas
+
+
 def huellas_corpus() -> dict[str, str]:
     return {a: hashlib.sha256((CORPUS / a).read_bytes()).hexdigest() for a in ARCHIVOS.values()}
 
@@ -609,13 +754,23 @@ def main(argumentos: list[str] | None = None) -> int:
         action="store_true",
         help="Continúa la semilla interrumpida del manifiesto (misma sesión y API)",
     )
+    analizador.add_argument(
+        "--escenario",
+        choices=("pd07", "surdelta"),
+        default="pd07",
+        help="pd07 (predeterminado) o la cartera SurDelta (DO-2026-11-09-DEMO-SURDELTA)",
+    )
     opciones = analizador.parse_args(argumentos)
     usuarios = dict(u.split("=", 1) for u in opciones.usuarios)
     if set(usuarios) != set(ROLES):
         print(f"Se esperan exactamente los roles {', '.join(ROLES)}", file=sys.stderr)
         return 2
-    oraculo = json.loads(ORACULO.read_text(encoding="utf-8"))
-    corpus = verificar_corpus(oraculo)
+    surdelta = opciones.escenario == "surdelta"
+    if surdelta and opciones.reanudar:
+        print("El escenario SurDelta no se reanuda: sembrar una sesión nueva", file=sys.stderr)
+        return 2
+    oraculo = json.loads((ORACULO_SURDELTA if surdelta else ORACULO).read_text(encoding="utf-8"))
+    corpus = verificar_corpus_surdelta(oraculo) if surdelta else verificar_corpus(oraculo)
     if opciones.reanudar:
         if not opciones.manifiesto.exists():
             print("No hay manifiesto que reanudar", file=sys.stderr)
@@ -647,7 +802,7 @@ def main(argumentos: list[str] | None = None) -> int:
     cliente = ClienteApi(
         opciones.url_api, tokens_cognito(opciones.region, opciones.cliente_cognito, usuarios)
     )
-    sembrador = Sembrador(cliente, manifiesto, oraculo)
+    sembrador = (SembradorSurDelta if surdelta else Sembrador)(cliente, manifiesto, oraculo)
     try:
         sembrador.reanudar() if opciones.reanudar else sembrador.ejecutar()
     except (ErrorApi, RuntimeError) as error:

@@ -1,6 +1,6 @@
 # Guion de la demo de ATLAS
 
-Para presentar ATLAS en vivo sobre la sesión AWS levantada con la [guía de la sección 6](../aws/Guia_Sesion_Seccion6.md) y sembrada con `sembrar_demo`. Datos **sintéticos** del oráculo PD-07 v2. Duración: 20–25 minutos; recorte de 10 minutos en §6.
+Para presentar ATLAS en vivo sobre la sesión AWS levantada con la [guía de la sección 6](../aws/Guia_Sesion_Seccion6.md) y sembrada con `sembrar_demo`. Datos **sintéticos** del oráculo PD-07 v2. Duración: 20–25 minutos; recorte de 10 minutos en §6. Los **dos videos de 5 minutos con la historia SurDelta** están en §7 (DO-2026-11-09-DEMO-SURDELTA).
 
 ## 1. Antes de empezar (30 minutos antes)
 
@@ -155,3 +155,43 @@ Cargá la orden O-v2 → **Incorporar como versión nueva** (el trámite vuelve 
 ## 6. Recorte de 10 minutos
 
 Apertura (1 min) → 3.2 solo clasificación y vigencia con su página (2 min) → 3.3 solo la pregunta de vigencia (1 min) → en el trámite **Observado**: **Vínculos y controles** con la advertencia de vigencia (2 min) → su **Evidencia de la decisión** (3 min) → firma del trámite cerrado y cierre (1 min).
+
+## 7. Videos SurDelta (2 × 5 minutos)
+
+Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 1.200.000 más cara** que la orden de compra (R4). Martín la observa, la factura corregida entra como **versión nueva** y el trámite se cierra con la evidencia de cada decisión. La OC está fechada antes de la vigencia (R3): Martín la acepta con la advertencia a la vista. Todo es ficticio.
+
+### 7.1 Preparación
+
+- Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cuatro trámites: «Mantenimiento integral de planta (historia completa)» Cerrado, «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. No admite `--reanudar`.
+- Archivos de la grabación, en `corpus/surdelta/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
+- Las esperas del procesamiento se cortan en la edición. Si algo falla, se graba sobre el trámite de historia completa y se dice.
+
+| Campo | Contrato (SD-C1) | Orden (SD-O1) | Factura v1 (SD-F1) | Factura v2 (SD-F2) |
+|---|---|---|---|---|
+| Número | — | OC-2026-118 | 0004-00001248 | 0004-00001263 |
+| Fecha | Celebración 15/09/2026 | **25/09/2026** | 31/10/2026 | 05/11/2026 |
+| Contraparte / proveedor / emisor | Andes Sistemas S.A. | Andes Sistemas S.A. | Andes Sistemas S.A. | Andes Sistemas S.A. |
+| CUIT | 30-96472518-3 | 30-96472518-3 | 30-96472518-3 | 30-96472518-3 |
+| Vigencia | 01/10/2026 a 30/09/2027 (página 2) | — | — | — |
+| Importe | 96.000.000,00 | 8.000.000,00 | **9.200.000,00** | 8.000.000,00 |
+| Moneda | ARS | ARS | ARS | ARS |
+
+### 7.2 Video 2: la factura que no cierra
+
+1. **Contexto (20 s):** «SurDelta fabrica componentes industriales. Llegó la factura de octubre del mantenimiento de planta; antes de pagarla, Laura arma el expediente».
+2. **Laura** crea «Mantenimiento integral de planta» y carga contrato, orden y factura v1. Corte. Los incorpora como documento nuevo.
+3. **Validación:** en el contrato, **Ver en el documento** de *Vigencia hasta* (página 2); confirma el resto. Valida la orden y la factura.
+4. **Vínculos y controles:** confirma los dos vínculos sugeridos (mismo CUIT). R1 y R2 cumplen; **R4 advierte que la factura supera la orden en 1.200.000**; R3 advierte la fecha de la orden.
+   > «Si nadie lo veía, SurDelta pagaba 1,2 millones de más. En un mes, con un solo proveedor.»
+5. **Consulta:** «¿El contrato permite facturar trabajos adicionales sin autorización?» → cláusula 5, página 2.
+
+### 7.3 Video 3: la decisión y su evidencia
+
+1. **Laura** envía a validación y confirma el flujo (Revisión legal: Martín; Aprobación final: Sofía).
+2. **Martín** → **Mis tareas** → «Revisión legal» → **Observar**, con el motivo de `MOTIVO_OBSERVACION_SURDELTA` de la semilla: la factura supera la OC por 40 horas sin autorización (cláusula 5); la fecha de la orden es aceptable.
+3. **Laura** carga la factura v2. Corte. El sistema la sugiere como **versión nueva** de la v1 (mismo CUIT del emisor) → la confirma y la valida. R4 pasa a cumplir; R3 sigue advirtiendo.
+   > «No se pisa el archivo: la v1 queda en el historial y sus validaciones no se heredan.»
+4. Nuevo ciclo: Martín aprueba con R3 a la vista; Sofía aprueba y aplica la **firma simulada** sobre el contrato → **Cerrado**.
+5. **Seis meses después:** **Historial** y **Evidencia de la decisión**: versiones consideradas, observación con su motivo y controles que se veían al aprobar.
+6. **Cartera (20 s):** «Compra de equipos» (la factura llegó con el CUIT de otra empresa: R1 advierte, sin vínculo sugerido, observada), «Renovación de soporte» y «Contratación de limpieza» cancelada.
+   > «El producto no es el caso de mantenimiento: es poder reconstruir cualquier decisión documental.»

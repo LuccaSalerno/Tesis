@@ -44,8 +44,19 @@ git show ecf301f:docs/plan/Estado_Implementacion.md
 
 La lista completa de archivos retirados se obtiene con `git log --diff-filter=D --name-only`.
 
+## Escenario de demostración SurDelta (09/11/2026)
+
+DO-2026-11-09-DEMO-SURDELTA, rama `demo/surdelta`. Sin cambios de reglas, estados, API ni interfaz.
+
+- **Documentos:** 9 PDF sintéticos en `corpus/surdelta/`, generados con `herramientas/generar_corpus_surdelta.py`; oráculo `oraculos/oraculo_surdelta_v1.json`. CUIT: el de PD-07 y tres de la partición de ajuste de E90, todos ya consultados en ARCA.
+- **Semilla:** `sembrar_demo --escenario surdelta` (historia completa cerrada, compra observada por R1, renovación pendiente de aprobación, limpieza cancelada). El escenario PD-07 sigue siendo el predeterminado.
+- **Guion:** dos videos de 5 minutos en `operaciones/demo/Guion_Demo.md` §7.
+- **Ensayo de CI limpio:** 845 pruebas aprobadas y 2 omitidas; herramientas del corpus, 75 aprobadas y 1 omitida; cobertura 98 % y los 110 módulos ≥ 90 %. La tesis sigue citando las 842 de su versión (§6.5).
+- **Sin ejecutar en AWS:** las sugerencias reales de la IA sobre estos PDF se ven en la próxima sesión.
+
 ## Próximo paso
 
+- **Videos:** sesión AWS manual del operador, semilla `--escenario surdelta` y grabación según `Guion_Demo.md` §7.
 - **Local:** repetir el e2e sobre el código final, con la base recién sembrada (`README.md`).
 - **Equipo:** decidir si se repite EVD-01 sobre el código final.
 - **Exposición final:** reconstruir la infraestructura y seguir `operaciones/demo/Guion_Demo.md`.
