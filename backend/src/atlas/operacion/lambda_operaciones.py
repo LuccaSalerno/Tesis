@@ -11,6 +11,9 @@ documental ni credenciales (AGENTS.md §2.5).
 - `migrar` y `estado_migraciones`: Alembic con el usuario de migración, directo a RDS.
 - `crear_administrador`: primer administrador operativo (DT-AUT-02).
 - `verificar_drenaje`: conteos de lo que impide pasar a `offline` (RC-P10-09).
+- `guardar_estado` y `restablecer_estado`: fotos de la base para repetir la demo
+  (DO-2026-11-09-ESTADOS-DEMO, temporal; ver `estados_demo`). Solo en demo o en local, con la
+  operación en `offline`, sin ejecuciones en curso y repitiendo el nombre de la base.
 """
 
 import json
@@ -33,6 +36,8 @@ from sqlalchemy.pool import NullPool
 from atlas.configuracion import Configuracion, ErrorConfiguracion, obtener_configuracion
 from atlas.dominio.enumeraciones import EstadoIncorporacion, EstadoTrabajo
 from atlas.integraciones.aws import crear_cliente
+from atlas.operacion import estados_demo
+from atlas.operacion.mantenimiento import EstadoOperativo, LectorMantenimiento
 from atlas.persistencia.base import ESQUEMA
 from atlas.persistencia.modelos import Archivo, AutorizacionCarga, TrabajoProcesamiento
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
@@ -43,7 +48,15 @@ from atlas.servicios.errores import Conflicto
 _registrador = logging.getLogger("atlas.operacion")
 
 ACCIONES: Final = frozenset(
-    {"inicializar_base", "migrar", "estado_migraciones", "crear_administrador", "verificar_drenaje"}
+    {
+        "inicializar_base",
+        "migrar",
+        "estado_migraciones",
+        "crear_administrador",
+        "verificar_drenaje",
+        "guardar_estado",
+        "restablecer_estado",
+    }
 )
 
 
@@ -260,6 +273,53 @@ def verificar_drenaje(configuracion: Configuracion) -> dict[str, Any]:
     return {**conteos, "drenado": not any(conteos.values())}
 
 
+# --- Fotos de la base para la demo (temporal) --------------------------------------------
+
+
+def estado_operativo(configuracion: Configuracion) -> EstadoOperativo | None:
+    lector = (
+        LectorMantenimiento.desde_s3(
+            crear_cliente(configuracion, "s3"), configuracion.s3_bucket_documentos or "", 0
+        )
+        if configuracion.mantenimiento_fuente == "s3"
+        else LectorMantenimiento.fijo_active()
+    )
+    return lector.estado()
+
+
+LeerEstado = Callable[[Configuracion], EstadoOperativo | None]
+
+
+def foto_de_la_base(
+    evento: dict[str, Any], configuracion: Configuracion, leer_estado: LeerEstado
+) -> dict[str, Any]:
+    """Guarda o restablece una foto; nunca en un despliegue AWS que no sea demo."""
+    if configuracion.entorno != "demo" and configuracion.aws_endpoint_url is None:
+        raise ErrorOperacion("solo_en_demo")
+    if evento.get("confirmar") != configuracion.bd_nombre:
+        raise ErrorOperacion("confirmacion_invalida")
+    nombre = evento.get("nombre")
+    if not isinstance(nombre, str):
+        raise ErrorOperacion("falta_nombre")
+    if leer_estado(configuracion) != EstadoOperativo.OFFLINE:
+        raise ErrorOperacion("operacion_no_offline")
+    drenaje = verificar_drenaje(configuracion)
+    # La foto exige la base quieta; al restablecer alcanza con que no corra ningún trabajo
+    # (lo que haya quedado pendiente en la base se reemplaza igual).
+    guardar = evento["accion"] == "guardar_estado"
+    if (guardar and not drenaje["drenado"]) or drenaje["ejecuciones_activas"]:
+        raise ErrorOperacion("operacion_no_drenada")
+    motor = crear_motor(configuracion, migracion=True, poolclass=NullPool)
+    try:
+        if evento["accion"] == "guardar_estado":
+            return estados_demo.guardar(motor, nombre)
+        return estados_demo.restablecer(motor, nombre)
+    except estados_demo.EstadoInvalido as error:
+        raise ErrorOperacion(str(error)) from error
+    finally:
+        motor.dispose()
+
+
 # --- Punto de entrada --------------------------------------------------------------------
 
 
@@ -267,6 +327,7 @@ def ejecutar(
     evento: dict[str, Any],
     configuracion: Configuracion,
     conectar_maestro: Callable[[Configuracion], Conectar] = conector_maestro,
+    leer_estado: LeerEstado = estado_operativo,
 ) -> dict[str, Any]:
     accion = evento.get("accion")
     if accion not in ACCIONES:
@@ -282,6 +343,8 @@ def ejecutar(
         if not isinstance(identificador, str) or not identificador:
             raise ErrorOperacion("falta_identificador_externo")
         return crear_administrador(configuracion, identificador)
+    if accion in ("guardar_estado", "restablecer_estado"):
+        return foto_de_la_base(evento, configuracion, leer_estado)
     return verificar_drenaje(configuracion)
 
 

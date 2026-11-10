@@ -176,6 +176,31 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 | Importe | 96.000.000,00 | 8.000.000,00 | **9.200.000,00** | 8.000.000,00 |
 | Moneda | ARS | ARS | ARS | ARS |
 
+### 7.1 bis Repetir la demo desde el estado recién sembrado (temporal)
+
+Una vez, después de la semilla, se guarda una foto de la base; cada vez que se quiere volver a empezar, se restablece en segundos (DO-2026-11-09-ESTADOS-DEMO). Lo ejecuta el operador. Los PDF de S3 no se tocan y las cuentas de Cognito siguen iguales.
+
+```bash
+FN=$(terraform -chdir=infra/terraform/demo output -raw funcion_operaciones)
+BUCKET=$(terraform -chdir=infra/terraform/persistent output -raw bucket_documentos)
+BASE=$(aws lambda get-function-configuration --function-name "$FN" \
+  --query 'Environment.Variables.ATLAS_BD_NOMBRE' --output text)
+modo() { echo "{\"estado\":\"$1\"}" | aws s3 cp - "s3://$BUCKET/control/mantenimiento.json" --content-type application/json; }
+foto() {  # foto guardar_estado semilla | foto restablecer_estado semilla
+  aws lambda invoke --function-name "$FN" --cli-read-timeout 320 --cli-binary-format raw-in-base64-out \
+    --payload "{\"accion\":\"$1\",\"nombre\":\"$2\",\"confirmar\":\"$BASE\"}" /dev/stdout; echo
+}
+
+# Una sola vez, con la semilla terminada:
+modo offline && sleep 20 && foto guardar_estado semilla && modo active
+
+# Cada vez que se quiere volver a la cartera recién sembrada:
+modo offline && sleep 20 && foto restablecer_estado semilla && modo active
+```
+
+- Rechaza si la operación no está en `offline`, si queda algún procesamiento en curso (`operacion_no_drenada`: esperar y repetir) o si la confirmación no es el nombre de la base.
+- Después de restablecer, recargar la página en el navegador. Si se aplica una migración nueva, la foto queda inválida (`estado_incompatible_con_el_esquema`): volver a sembrar y guardar.
+
 ### 7.2 Video 2: la factura que no cierra
 
 1. **Contexto (20 s):** «SurDelta fabrica componentes industriales. Llegó la factura de octubre del mantenimiento de planta; antes de pagarla, Laura arma el expediente».

@@ -142,6 +142,11 @@ data "aws_iam_policy_document" "operaciones" {
     actions   = ["states:ListExecutions"]
     resources = [local.arn_maquina]
   }
+  statement {
+    sid       = "LeerMantenimiento" # fotos de la demo solo en `offline` (DO-2026-11-09-ESTADOS-DEMO)
+    actions   = ["s3:GetObject"]
+    resources = ["${local.bucket_arn}/control/mantenimiento.json"]
+  }
 }
 
 # --- Reconciliador (en la VPC): estado real de las ejecuciones e inicio idempotente -------

@@ -58,6 +58,10 @@ DO-2026-11-09-DEMO-SURDELTA, rama `demo/surdelta`. Sin cambios de reglas, estado
 
 DO-2026-11-09-WEB-FLUJOS: Administración muestra un flujo por alcance con Editar y Volver a usar, Cuentas permite otorgar la autorización de cierre y el trámite muestra el ciclo como recorrido de pasos. Solo frontend. Pendiente para después de la entrega: decidir si hay varios flujos activos que el responsable elige al confirmar.
 
+## Fotos de la base para la demo (09/11/2026, temporal)
+
+DO-2026-11-09-ESTADOS-DEMO: `guardar_estado` y `restablecer_estado` en la Lambda de operaciones para volver al estado recién sembrado en segundos (`Guion_Demo.md` §7.1 bis). Requiere aplicar el permiso IAM nuevo de `demo` y redesplegar el paquete Lambda. Retirar después de la exposición.
+
 ## Próximo paso
 
 - **Videos:** sesión AWS manual del operador, semilla `--escenario surdelta` y grabación según `Guion_Demo.md` §7.

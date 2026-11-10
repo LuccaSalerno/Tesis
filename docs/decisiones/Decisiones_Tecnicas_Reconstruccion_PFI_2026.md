@@ -782,7 +782,15 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 1. **Administración:** un flujo por alcance (contrato y general) con sus pasos y quién resuelve cada uno. **Editar** crea la versión siguiente a partir de la vigente (las plantillas siguen inmutables); **Volver a usar** crea una versión nueva con los pasos de una anterior. Los pasos se renombran, reasignan, reordenan y quitan; para el último solo se ofrecen cuentas con autorización de cierre.
 2. **Cuentas:** se ve y se otorga o retira la autorización de cierre (API existente, RF-25).
 3. **Trámite:** el flujo se muestra recién con los documentos validados (la plantilla depende de la clasificación validada); el ciclo se ve como recorrido de pasos con estado, persona y evidencia.
-4. **Pendiente, para después de la entrega:** el modelo de dos alcances no refleja los tipos de gestión de una organización. Opción a decidir por el equipo: varios flujos activos con nombre propio y elección del responsable al confirmar (toca backend, RF-17 y DO-2026-10-22-TAR).
+4. **Pendiente (flujos), para después de la entrega:** el modelo de dos alcances no refleja los tipos de gestión de una organización. Opción a decidir por el equipo: varios flujos activos con nombre propio y elección del responsable al confirmar (toca backend, RF-17 y DO-2026-10-22-TAR).
+
+### DO-2026-11-09-ESTADOS-DEMO — Fotos de la base para repetir la demo (temporal)
+
+**Fecha:** 09/11/2026. **Aprobada por:** Lucca Salerno, incluida la desactivación transitoria de las protecciones. **Estado:** cerrada; **se retira después de la exposición**. **Base:** DO-2026-10-21-E90A (eliminación administrativa de datos de una sesión descartable), RNF-04, RN-10.
+
+1. Acciones `guardar_estado` y `restablecer_estado` de la Lambda de operaciones (`atlas/operacion/estados_demo.py`), invocadas a mano por el operador; ninguna ruta de la API ni pantalla.
+2. Resguardos: solo en demo o en local, operación en `offline`, sin ejecuciones de procesamiento en curso (y base drenada para guardar) y confirmación con el nombre de la base. Rol IAM de operaciones: lectura de `control/mantenimiento.json`.
+3. Restablecer corre como dueño de las tablas en una sola transacción: desactiva los *triggers* de usuario (inmutabilidad, sin borrado ni TRUNCATE), reemplaza los datos y los reactiva. Las identidades no retroceden. No es una operación funcional de borrado ni acredita persistencia.
 
 ---
 
