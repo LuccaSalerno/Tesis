@@ -5,10 +5,11 @@ Uso (solo en desarrollo o pruebas, con S3 y Step Functions de moto):
     python -m atlas.herramientas.procesar_simulado            # trabajos pendientes
     python -m atlas.herramientas.procesar_simulado --archivo 12
 
-Sustituye Textract y Bedrock **solo para los archivos del corpus PD-07**, reconocidos por su
-huella: el texto sale del PDF (pypdf) y la clasificación y los campos, del oráculo
-preliminar. Las sugerencias quedan registradas con el modelo `simulacion-local-…`, que la
-interfaz rotula como simulación. Un archivo fuera del corpus se registra como fallo técnico.
+Sustituye Textract y Bedrock **solo para los archivos del corpus PD-07 y del escenario SurDelta**
+(DO-2026-11-09-DEMO-SURDELTA), reconocidos por su huella: el texto sale del PDF (pypdf) y la
+clasificación y los campos, de su oráculo. Las sugerencias quedan registradas con el modelo
+`simulacion-local-…`, que la interfaz rotula como simulación. Un archivo fuera de esos corpus se
+registra como fallo técnico.
 
 **No es evidencia de la IA ni se usa en la defensa.** Se niega a funcionar en demo o sin un
 endpoint local de AWS (DT-AWS-01).
@@ -29,7 +30,12 @@ from sqlalchemy import select
 
 from atlas.configuracion import Configuracion, ErrorConfiguracion, obtener_configuracion
 from atlas.dominio.enumeraciones import EstadoTrabajo, TipoDocumental
-from atlas.herramientas.sembrar_demo import ORACULO, RAZON_SOCIAL_PROVEEDOR
+from atlas.herramientas.sembrar_demo import (
+    ORACULO,
+    ORACULO_SURDELTA,
+    RAZON_SOCIAL_PROVEEDOR,
+    escenario_surdelta,
+)
 from atlas.integraciones.aws import AlmacenS3, crear_cliente
 from atlas.persistencia.modelos import Archivo, TrabajoProcesamiento
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
@@ -38,6 +44,7 @@ from atlas.procesamiento.modelo import RespuestaHerramienta
 
 PREFIJO_MODELO: Final = "simulacion-local"
 MODELO_SIMULADO: Final = f"{PREFIJO_MODELO}-oraculo-PD07"
+MODELO_SIMULADO_SURDELTA: Final = f"{PREFIJO_MODELO}-oraculo-surdelta"
 EMBEDDINGS_SIMULADOS: Final = f"{PREFIJO_MODELO}-embeddings"
 
 
@@ -83,6 +90,22 @@ def codigo_por_huella(oraculo: dict[str, Any], huella: str) -> str | None:
         if datos["sha256"] == huella:
             return str(archivo.split("_", 1)[0])
     return None
+
+
+def simulables() -> dict[str, tuple[dict[str, str], str]]:
+    """Por huella del PDF: los valores que «sugiere» la simulación y el modelo que la rotula."""
+    pd07 = json.loads(ORACULO.read_text(encoding="utf-8"))
+    escenario = escenario_completo(pd07)
+    por_huella = {
+        datos["sha256"]: (escenario[codigo], MODELO_SIMULADO)
+        for datos in pd07["archivos_pdf"].values()
+        if (codigo := codigo_por_huella(pd07, datos["sha256"])) in escenario
+    }
+    surdelta = json.loads(ORACULO_SURDELTA.read_text(encoding="utf-8"))
+    valores = escenario_surdelta(surdelta)
+    for codigo, doc in surdelta["documentos"].items():
+        por_huella[doc["sha256"]] = (valores[codigo], MODELO_SIMULADO_SURDELTA)
+    return por_huella
 
 
 def lineas_por_pagina(pdf: bytes) -> list[list[str]]:
@@ -207,8 +230,7 @@ LIMITES: Final = etapas.LimitesProcesamiento(
 
 def procesar(configuracion: Configuracion, archivo_id: int | None = None) -> dict[str, list[int]]:
     verificar_entorno(configuracion)
-    oraculo = json.loads(ORACULO.read_text(encoding="utf-8"))
-    escenario = escenario_completo(oraculo)
+    conocidos = simulables()
     almacen = AlmacenS3(
         crear_cliente(configuracion, "s3"), configuracion.s3_bucket_documentos or ""
     )
@@ -231,10 +253,10 @@ def procesar(configuracion: Configuracion, archivo_id: int | None = None) -> dic
             )
             pendientes = [(t.id, t.intento, a.id, a.huella) for t, a in sesion.execute(consulta)]
         for trabajo_id, intento, archivo, huella in pendientes:
-            codigo = codigo_por_huella(oraculo, huella)
+            simulable = conocidos.get(huella)
             with fabrica() as sesion, sesion.begin():
                 preparado = etapas.preparar(sesion, trabajo_id, intento)
-            if codigo is None or preparado["formato"] != "pdf":
+            if simulable is None or preparado["formato"] != "pdf":
                 with fabrica() as sesion, sesion.begin():
                     etapas.registrar_fallo(
                         sesion,
@@ -246,7 +268,8 @@ def procesar(configuracion: Configuracion, archivo_id: int | None = None) -> dic
                 continue
             paginas = lineas_por_pagina(almacen.leer(preparado["clave_objeto"]))
             analizador = AnalizadorSimulado(paginas)
-            modelo = ModeloSimulado(escenario[codigo], paginas)
+            valores, identificador = simulable
+            modelo = ModeloSimulado(valores, paginas, identificador)
             job = etapas.iniciar_textract(
                 analizador,  # type: ignore[arg-type]
                 clave_objeto=preparado["clave_objeto"],

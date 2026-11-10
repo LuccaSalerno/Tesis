@@ -87,3 +87,23 @@ def test_f9_formas_impresas_de_los_valores() -> None:
     assert procesar_simulado._formas("2027-02-28") == ["2027-02-28", "28/02/2027"]
     assert procesar_simulado._formas("1250000.00") == ["1250000.00", "1.250.000,00"]
     assert procesar_simulado.ubicar([["Sin datos"]], "ARS") == (None, None)
+
+
+def test_demo_surdelta_simula_sus_documentos(ctx: Contexto, base_migrada: Configuracion) -> None:
+    """DO-2026-11-09-DEMO-SURDELTA: los PDF de SurDelta también se simulan, con su rótulo."""
+    from atlas.herramientas import sembrar_demo
+
+    tramite_id = crear_tramite(ctx)["id"]
+    factura = cargar(
+        ctx,
+        tramite_id,
+        (sembrar_demo.CORPUS_SURDELTA / "SD-F1_Factura_0004-00001248.pdf").read_bytes(),
+    )
+    assert procesar_simulado.procesar(base_migrada, factura["id"])["procesados"] == [factura["id"]]
+    sugerencias = ctx.cliente.get(
+        f"/tramites/{tramite_id}/archivos/{factura['id']}/sugerencias", headers=ctx.encabezados
+    ).json()
+    assert sugerencias["clasificacion"]["valor"] == "factura"
+    assert sugerencias["clasificacion"]["modelo"] == procesar_simulado.MODELO_SIMULADO_SURDELTA
+    total = next(c for c in sugerencias["campos"] if c["campo"] == "importe_total")
+    assert total["valor"] == "9200000.00" and total["localizador"]["pagina"] == 1

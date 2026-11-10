@@ -607,6 +607,25 @@ def test_f9_semilla_local_con_procesamiento_simulado(
 
 
 @pytest.mark.integracion
+def test_demo_surdelta_semilla_local_simulada(base_migrada: Configuracion) -> None:
+    """La cartera SurDelta también se siembra en local para ensayar la demo sin AWS."""
+    from atlas.herramientas import sembrar_local
+
+    aplicacion = crear_aplicacion(base_migrada)
+    with TestClient(aplicacion) as cliente:
+        manifiesto, _ = sembrar_local.sembrar(
+            base_migrada, "http://testserver", CLAVES_PRUEBA, transporte_de(cliente), "surdelta"
+        )
+    aplicacion.state.motor.dispose()
+    assert manifiesto.resultado == "completado"
+    assert manifiesto.oraculo.startswith("oraculo_surdelta_v1")
+    historia = manifiesto.tramites["cerrado"]
+    assert historia["estado"] == "cerrado" and historia["controles"]["R4"] == "advertencia"
+    assert historia["controles_corregidos"]["R4"] == "cumplimiento"
+    assert manifiesto.tramites["observado"]["controles"]["R1"] == "advertencia"
+
+
+@pytest.mark.integracion
 def test_f9_semilla_local_usa_o_crea_el_administrador(base_reiniciada: Configuracion) -> None:
     from atlas.herramientas import sembrar_local
 

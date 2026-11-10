@@ -164,6 +164,7 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 
 - Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cuatro trámites: «Mantenimiento integral de planta (historia completa)» Cerrado, «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. No admite `--reanudar`.
 - Archivos de la grabación, en `corpus/surdelta/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
+- **Ensayo local, sin AWS:** con la API y el frontend locales (`README.md`), `cd backend && .venv/bin/python -m atlas.herramientas.sembrar_local --escenario surdelta` siembra la misma cartera con procesamiento simulado (las sugerencias salen del oráculo y se rotulan «Simulación local») e imprime los tokens de cada rol. Sirve para practicar los clics; las sugerencias reales de la IA se ven recién en AWS.
 - Las esperas del procesamiento se cortan en la edición. Si algo falla, se graba sobre el trámite de historia completa y se dice.
 
 | Campo | Contrato (SD-C1) | Orden (SD-O1) | Factura v1 (SD-F1) | Factura v2 (SD-F2) |

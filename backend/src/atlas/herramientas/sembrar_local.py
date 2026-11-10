@@ -1,9 +1,11 @@
-"""Semilla de **desarrollo local**: la misma semilla PD-07 de la demo, contra la API local, con
-tokens locales y el procesamiento simulado (DO-2026-10-22-WEB F8 y F9). Nunca en demo.
+"""Semilla de **desarrollo local**: la misma semilla de la demo (PD-07 o, con `--escenario
+surdelta`, la cartera SurDelta), contra la API local, con tokens locales y el procesamiento
+simulado (DO-2026-10-22-WEB F8 y F9). Nunca en demo.
 
 Uso, con la API local corriendo (uvicorn) y moto preparado:
 
     python -m atlas.herramientas.sembrar_local [--url-api http://127.0.0.1:8000]
+    python -m atlas.herramientas.sembrar_local --escenario surdelta
 
 Crea (o reutiliza) cuatro cuentas locales, siembra los trámites y muestra los tokens de cada
 rol para ingresar a la aplicación web en modo local. Las sugerencias quedan rotuladas como
@@ -23,10 +25,13 @@ from atlas.herramientas import procesar_simulado
 from atlas.herramientas.cliente_api import ClienteApi, Transporte, transporte_urllib
 from atlas.herramientas.sembrar_demo import (
     ORACULO,
+    ORACULO_SURDELTA,
     RAIZ_REPOSITORIO,
     Manifiesto,
     Sembrador,
+    SembradorSurDelta,
     verificar_corpus,
+    verificar_corpus_surdelta,
 )
 from atlas.persistencia.motor import crear_fabrica_sesiones, crear_motor
 from atlas.servicios import cuentas
@@ -85,22 +90,25 @@ def sembrar(
     url_api: str,
     claves: ClavesLocales,
     transporte: Transporte = transporte_urllib,
+    escenario: str = "pd07",
 ) -> tuple[Manifiesto, dict[str, str]]:
     procesar_simulado.verificar_entorno(configuracion)
     tokens = tokens_locales(claves, sub_administrador(configuracion))
-    oraculo = json.loads(ORACULO.read_text(encoding="utf-8"))
+    surdelta = escenario == "surdelta"
+    oraculo = json.loads((ORACULO_SURDELTA if surdelta else ORACULO).read_text(encoding="utf-8"))
     manifiesto = Manifiesto(
         sesion=f"local-{datetime.now(UTC):%Y%m%d-%H%M%S}",
         url_api=url_api,
         oraculo=f"{oraculo['id']} ({oraculo['estado']}) — procesamiento SIMULADO",
-        corpus=verificar_corpus(oraculo),
+        corpus=verificar_corpus_surdelta(oraculo) if surdelta else verificar_corpus(oraculo),
     )
 
     def esperar(_: ClienteApi, __: int, archivos: list[int]) -> None:
         for archivo in archivos:
             procesar_simulado.procesar(configuracion, archivo)
 
-    Sembrador(ClienteApi(url_api, tokens, transporte), manifiesto, oraculo, esperar).ejecutar()
+    clase = SembradorSurDelta if surdelta else Sembrador
+    clase(ClienteApi(url_api, tokens, transporte), manifiesto, oraculo, esperar).ejecutar()
     return manifiesto, tokens
 
 
@@ -108,12 +116,22 @@ def main(argumentos: list[str] | None = None) -> int:
     analizador = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     analizador.add_argument("--url-api", default="http://127.0.0.1:8000")
     analizador.add_argument("--claves", type=Path, default=Path(".claves_locales"))
+    analizador.add_argument(
+        "--escenario",
+        choices=("pd07", "surdelta"),
+        default="pd07",
+        help="pd07 (predeterminado) o la cartera SurDelta (DO-2026-11-09-DEMO-SURDELTA)",
+    )
     opciones = analizador.parse_args(argumentos)
     try:
         configuracion = obtener_configuracion()
         procesar_simulado.verificar_entorno(configuracion)
         manifiesto, tokens = sembrar(
-            configuracion, opciones.url_api, claves_locales(opciones.claves)
+            configuracion,
+            opciones.url_api,
+            claves_locales(opciones.claves),
+            transporte_urllib,
+            opciones.escenario,
         )
     except ErrorConfiguracion as error:
         print(f"No se sembró: {error}", file=sys.stderr)
