@@ -41,7 +41,7 @@ Pantalla de ingreso, sin datos.
 
 ### 3.1 Carga anticipada (Laura, 2 minutos)
 
-Trámite «(en vivo)» → **Documentos y datos** → «Cargar un archivo»: la orden O-v1 y la factura F-v2. Cada una tarda unos minutos en procesarse, por eso se cargan ahora.
+Trámite «(en vivo)» → **Documentos y datos** → «Elegir archivos»: la orden O-v1 y la factura F-v2, juntas. Cada una tarda unos minutos en procesarse, por eso se cargan ahora.
 
 > «El archivo va directo a un almacenamiento privado y el procesamiento sigue en segundo plano. Mientras tanto, validamos el contrato.»
 

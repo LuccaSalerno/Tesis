@@ -26,36 +26,64 @@ const ETAPAS: Record<Etapa, string> = {
 
 function Carga({ tramiteId }: { tramiteId: number }) {
   const [etapa, setEtapa] = useState<Etapa | null>(null);
+  const [progreso, setProgreso] = useState<{ actual: number; total: number; nombre: string } | null>(null);
+  const [resultado, setResultado] = useState<{ recibidos: number; fallidos: { nombre: string; motivo: string }[] } | null>(null);
   const entrada = useRef<HTMLInputElement>(null);
   const cargar = useCargarArchivo(tramiteId, setEtapa);
+
+  // Varios archivos a la vez: se cargan de a uno, en el orden elegido, y un fallo no detiene
+  // a los demás. Cada archivo sigue su propia autorización, transferencia y confirmación.
+  async function cargarVarios(archivos: File[]) {
+    setResultado(null);
+    const fallidos: { nombre: string; motivo: string }[] = [];
+    for (const [i, archivo] of archivos.entries()) {
+      setProgreso({ actual: i + 1, total: archivos.length, nombre: archivo.name });
+      try {
+        await cargar.mutateAsync(archivo);
+      } catch (error) {
+        fallidos.push({ nombre: archivo.name, motivo: mensajeDeError(error) });
+      } finally {
+        setEtapa(null);
+      }
+    }
+    setProgreso(null);
+    setResultado({ recibidos: archivos.length - fallidos.length, fallidos });
+  }
+
   return (
     <div className="rounded-md border border-dashed border-borde-fuerte bg-neutro-suave/40 px-4 py-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-medium">Cargar un archivo</p>
-          <p className="text-sm text-tenue">PDF o DOCX, hasta 20 MB. El procesamiento sigue en segundo plano.</p>
+          <p className="font-medium">Cargar archivos</p>
+          <p className="text-sm text-tenue">PDF o DOCX, hasta 20 MB cada uno. Podés elegir varios a la vez; el procesamiento sigue en segundo plano.</p>
         </div>
-        <Boton onClick={() => entrada.current?.click()} disabled={cargar.isPending}>
-          {cargar.isPending ? <Loader2 className="animate-spin" /> : <FileUp />} Elegir archivo
+        <Boton onClick={() => entrada.current?.click()} disabled={progreso !== null}>
+          {progreso ? <Loader2 className="animate-spin" /> : <FileUp />} Elegir archivos
         </Boton>
         <input
           ref={entrada}
           type="file"
+          multiple
           accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           className="sr-only"
-          aria-label="Archivo a cargar"
+          aria-label="Archivos a cargar"
           onChange={(e) => {
-            const archivo = e.target.files?.[0];
-            if (archivo) cargar.mutate(archivo, { onSettled: () => setEtapa(null) });
+            const archivos = Array.from(e.target.files ?? []);
             e.target.value = "";
+            if (archivos.length) void cargarVarios(archivos);
           }}
         />
       </div>
-      {cargar.isPending && etapa ? <p className="mt-3 text-sm text-tenue">{ETAPAS[etapa]}</p> : null}
-      {cargar.isError ? <Aviso className="mt-3" tono="peligro" titulo={mensajeDeError(cargar.error)} /> : null}
-      {cargar.isSuccess ? (
-        <Aviso className="mt-3" tono="info" titulo="Archivo recibido">
-          Quedó pendiente de incorporación; podés seguir trabajando mientras se procesa.
+      {progreso ? (
+        <p className="mt-3 text-sm text-tenue" aria-live="polite">
+          {progreso.total > 1 ? `Archivo ${progreso.actual} de ${progreso.total}, ${progreso.nombre}. ` : null}
+          {etapa ? ETAPAS[etapa] : null}
+        </p>
+      ) : null}
+      {resultado?.fallidos.map((f) => <Aviso key={f.nombre} className="mt-3" tono="peligro" titulo={`${f.nombre}: ${f.motivo}`} />)}
+      {resultado && resultado.recibidos > 0 ? (
+        <Aviso className="mt-3" tono="info" titulo={resultado.recibidos === 1 ? "Archivo recibido" : `${resultado.recibidos} archivos recibidos`}>
+          {resultado.recibidos === 1 ? "Quedó pendiente" : "Quedaron pendientes"} de incorporación; podés seguir trabajando mientras se procesa.
         </Aviso>
       ) : null}
     </div>
