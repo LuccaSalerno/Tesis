@@ -209,15 +209,15 @@ modo offline && sleep 20 && foto restablecer_estado semilla && modo active
 3. **Laura** carga el contrato (SD-C1). Corte. Lo incorpora como documento nuevo y lo valida: **Ver en el documento** de *Vigencia hasta* (página 4 de 10).
 4. **Vínculos y controles:** confirma los dos vínculos sugeridos (mismo CUIT). R1 y R2 cumplen; **R4 advierte que la factura supera la orden en 1.200.000**; R3 advierte la fecha de la orden.
    > «Si nadie lo veía, SurDelta pagaba 1,2 millones de más. En un mes, con un solo proveedor.»
-5. **Consulta:** «¿El contrato permite facturar horas de soporte adicionales sin una autorización previa?» → cláusula 5, página 6. El texto literal de cada paso está en el documento del speech.
+
+El texto literal de cada paso de los dos videos está en el documento del speech.
 
 ### 7.3 Video 3: la decisión y su evidencia
 
 1. **Laura** envía a validación y confirma el flujo (Revisión legal: Martín; Aprobación final: Sofía).
-2. **Martín** → **Mis tareas** → «Revisión legal» → **Observar**, con el motivo de `MOTIVO_OBSERVACION_SURDELTA` de la semilla: la factura supera la OC por 40 horas sin autorización (cláusula 5); la fecha de la orden es aceptable.
+2. **Martín** → **Mis tareas** → «Revisión legal». Antes de decidir, **Consulta**: «¿El contrato permite facturar horas de soporte adicionales sin una autorización previa?» → cláusula 5, página 6. Después → **Observar**, con el motivo de `MOTIVO_OBSERVACION_SURDELTA` de la semilla: la factura supera la OC por 40 horas sin autorización (cláusula 5); la fecha de la orden es aceptable.
 3. **Laura** carga la factura v2. Corte. El sistema la sugiere como **versión nueva** de la v1 (mismo CUIT del emisor) → la confirma y la valida. R4 pasa a cumplir; R3 sigue advirtiendo.
    > «No se pisa el archivo: la v1 queda en el historial y sus validaciones no se heredan.»
 4. Nuevo ciclo: Martín aprueba con R3 a la vista; Sofía aprueba y aplica la **firma simulada** sobre el contrato → **Cerrado**.
 5. **Seis meses después:** **Historial** y **Evidencia de la decisión**: versiones consideradas, observación con su motivo y controles que se veían al aprobar.
-6. **Cartera (20 s):** «Compra de equipos» (la factura llegó con el CUIT de otra empresa: R1 advierte, sin vínculo sugerido, observada), «Renovación de soporte» y «Contratación de limpieza» cancelada.
-   > «El producto no es el caso de mantenimiento: es poder reconstruir cualquier decisión documental.»
+6. La cartera ya se mostró al principio del video 2; no se repite.
