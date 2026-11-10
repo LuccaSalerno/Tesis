@@ -31,8 +31,9 @@ con los documentos de `corpus/surdelta/` y su oráculo: la provisión de acero d
 cerrada sin advertencias, una compra de equipos observada por R1 (la factura llegó con el
 CUIT de otra empresa), una renovación de soporte pendiente de
 aprobación y una contratación cancelada. El mantenimiento de planta (la factura v1 supera la
-orden, R4; la v2 la corrige como versión nueva) no se siembra: la responsable lo crea en la
-grabación. No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
+orden, R4; la v2 la corrige como versión nueva) queda en Borrador con la orden y la factura
+validadas y sin vínculos: en la grabación se carga el contrato y se confirman los vínculos.
+No admite `--reanudar`: ante un fallo se siembra una sesión nueva.
 
 `--reanudar` continúa una semilla interrumpida sobre el mismo manifiesto, sin repetir ni
 ocultar lo hecho: reintenta por la API los procesamientos fallidos del trámite en vivo
@@ -672,6 +673,16 @@ class SembradorSurDelta(Sembrador):
         self.corregir_con_version(historia, nueva="SD-F2", anterior="SD-F1")
         self.cerrar(historia, contrato="SD-C1")
 
+    def sembrar_en_vivo(self) -> None:
+        """El trámite de la grabación, a medio armar para que entre en 5 minutos: la orden y
+        la factura v1 ya validadas, sin vínculos confirmados (ningún control corre todavía).
+        En el video la responsable carga y valida el contrato y confirma los vínculos."""
+        en_vivo = self.cargar_documentos(
+            "en_vivo", "Mantenimiento integral de planta", ("SD-O1", "SD-F1")
+        )
+        self.validar(en_vivo)
+        self._estado(en_vivo)
+
     def sembrar_suministro(self) -> None:
         """El caso habitual de la planta: contrato, orden y factura coinciden y cierra."""
         suministro = self.cargar_documentos(
@@ -711,6 +722,7 @@ class SembradorSurDelta(Sembrador):
         self.crear_plantilla()
         self.m.plantilla_general_id = self.crear_plantilla("general", "Revisión de compras")
         self.sembrar_suministro()
+        self.sembrar_en_vivo()
         self.sembrar_compra()
         self.sembrar_renovacion()
         self.sembrar_cancelado("Contratación de limpieza", MOTIVO_CANCELACION_SURDELTA)

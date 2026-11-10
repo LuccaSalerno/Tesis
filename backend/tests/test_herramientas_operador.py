@@ -273,8 +273,14 @@ def test_demo_surdelta_semilla_completa_por_api(entorno: dict[str, Any]) -> None
     manifiesto = sembrador.ejecutar()
     assert manifiesto.resultado == "completado"
     assert manifiesto.plantilla_id and manifiesto.plantilla_general_id
-    # La cartera no incluye el mantenimiento de planta: se crea en vivo en la grabación.
-    assert set(manifiesto.tramites) == {"suministro", "observado", "pendiente", "cancelado"}
+    claves = {"suministro", "en_vivo", "observado", "pendiente", "cancelado"}
+    assert set(manifiesto.tramites) == claves
+    # Mantenimiento de planta para la grabación: orden y factura validadas, sin vínculos (ningún
+    # control aplica todavía); el contrato se carga en vivo.
+    en_vivo = manifiesto.tramites["en_vivo"]
+    assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"SD-O1", "SD-F1"}
+    controles = entorno["api"].get(f"/tramites/{en_vivo['id']}/controles", "responsable")
+    assert {c["resultado"] for c in controles["vigentes"]} == {"no_aplicable"}
     # Provisión de acero: el caso habitual, sin advertencias, aprobado y firmado.
     suministro = manifiesto.tramites["suministro"]
     assert suministro["controles"] == dict.fromkeys(("R1", "R2", "R3", "R4"), "cumplimiento")
@@ -628,8 +634,15 @@ def test_demo_surdelta_semilla_local_simulada(base_migrada: Configuracion) -> No
     aplicacion.state.motor.dispose()
     assert manifiesto.resultado == "completado"
     assert manifiesto.oraculo.startswith("oraculo_surdelta_v1")
-    assert set(manifiesto.tramites) == {"suministro", "observado", "pendiente", "cancelado"}
+    assert set(manifiesto.tramites) == {
+        "suministro",
+        "en_vivo",
+        "observado",
+        "pendiente",
+        "cancelado",
+    }
     assert manifiesto.tramites["suministro"]["estado"] == "cerrado"
+    assert manifiesto.tramites["en_vivo"]["estado"] == "borrador"
     assert manifiesto.tramites["observado"]["controles"]["R1"] == "advertencia"
 
 

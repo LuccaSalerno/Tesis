@@ -162,7 +162,7 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 
 ### 7.1 Preparación
 
-- Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cuatro trámites: «Provisión de acero inoxidable para la línea de válvulas» Cerrado sin advertencias, «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. El mantenimiento de planta no se siembra, para no duplicar el que se crea en la grabación. No admite `--reanudar`.
+- Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cinco trámites: «Provisión de acero inoxidable para la línea de válvulas» Cerrado sin advertencias, «Mantenimiento integral de planta» en Borrador con la orden y la factura v1 validadas y sin vínculos (el de la grabación), «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. No admite `--reanudar`.
 - Archivos de la grabación, en `corpus/surdelta/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
 - **Ensayo local, sin AWS:** con la API y el frontend locales (`README.md`), `cd backend && .venv/bin/python -m atlas.herramientas.sembrar_local --escenario surdelta` siembra la misma cartera con procesamiento simulado (las sugerencias salen del oráculo y se rotulan «Simulación local») e imprime los tokens de cada rol. Sirve para practicar los clics; las sugerencias reales de la IA se ven recién en AWS.
 - Las esperas del procesamiento se cortan en la edición. Si algo falla, se restablece la foto «semilla» (§7.1 bis) y se repite la toma.
@@ -204,12 +204,12 @@ modo offline && sleep 20 && foto restablecer_estado semilla && modo active
 
 ### 7.2 Video 2: la factura que no cierra
 
-1. **Contexto (20 s):** «SurDelta fabrica componentes industriales. Llegó la factura de octubre del mantenimiento de planta; antes de pagarla, Laura arma el expediente».
-2. **Laura** crea «Mantenimiento integral de planta» y carga contrato, orden y factura v1. Corte. Los incorpora como documento nuevo.
-3. **Validación:** en el contrato, **Ver en el documento** de *Vigencia hasta* (página 4 de 10); confirma el resto. Valida la orden y la factura.
+1. **Contexto (20 s):** la cartera de SurDelta y el mantenimiento de planta en Borrador, con la orden y la factura ya validadas.
+2. **Laura** abre la factura sin validar nada: importe 9.200.000 y la línea de 40 horas adicionales.
+3. **Laura** carga el contrato (SD-C1). Corte. Lo incorpora como documento nuevo y lo valida: **Ver en el documento** de *Vigencia hasta* (página 4 de 10).
 4. **Vínculos y controles:** confirma los dos vínculos sugeridos (mismo CUIT). R1 y R2 cumplen; **R4 advierte que la factura supera la orden en 1.200.000**; R3 advierte la fecha de la orden.
    > «Si nadie lo veía, SurDelta pagaba 1,2 millones de más. En un mes, con un solo proveedor.»
-5. **Consulta:** «¿El contrato permite facturar trabajos adicionales sin autorización?» → cláusula 5, página 6.
+5. **Consulta:** «¿El contrato permite facturar horas de soporte adicionales sin una autorización previa?» → cláusula 5, página 6. El texto literal de cada paso está en el documento del speech.
 
 ### 7.3 Video 3: la decisión y su evidencia
 
