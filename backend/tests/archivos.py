@@ -6,7 +6,7 @@ from pathlib import Path
 
 from pypdf import PdfWriter
 
-CORPUS = Path(__file__).resolve().parents[2] / "corpus"
+CORPUS = Path(__file__).resolve().parents[2] / "demo" / "cadena_evidencia" / "documentos"
 CONTRATO_PDF = CORPUS / "C-v1_Contrato_Mantenimiento_ATLAS.pdf"
 CONTRATO_DOCX = CORPUS / "C-v1_Contrato_Mantenimiento_ATLAS.docx"
 

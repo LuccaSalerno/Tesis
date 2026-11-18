@@ -27,7 +27,7 @@ procesamiento fallido detiene la semilla antes de incorporar: no se valida a man
 IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
 
 `--escenario surdelta` (DO-2026-11-09-DEMO-SURDELTA) siembra en cambio la cartera de SurDelta
-con los documentos de `corpus/surdelta/` y su oráculo: la provisión de acero de la planta,
+con los documentos de `demo/surdelta/documentos/` y su oráculo: la provisión de acero de la planta,
 cerrada sin advertencias, una compra de equipos observada por R1 (la factura llegó con el
 CUIT de otra empresa), una renovación de soporte pendiente de
 aprobación y una contratación cancelada. El mantenimiento de planta (la factura v1 supera la
@@ -58,10 +58,10 @@ from typing import Any, Final
 from atlas.herramientas.cliente_api import ClienteApi, ErrorApi, sub_del_token, tokens_cognito
 
 RAIZ_REPOSITORIO: Final = Path(__file__).resolve().parents[4]
-CORPUS: Final = RAIZ_REPOSITORIO / "corpus"
+CORPUS: Final = RAIZ_REPOSITORIO / "demo" / "cadena_evidencia" / "documentos"
 # Oráculo PD-07 v2, congelado: número estable en O y F (DO-2026-10-23-CIERRE D4,
 # DO-2026-10-23-DIF, DIF-84).
-ORACULO: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_PD07_v2.json"
+ORACULO: Final = CORPUS.parent / "oraculo_PD07_v2.json"
 ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 
 ARCHIVOS: Final = {
@@ -93,13 +93,14 @@ MOTIVO_OBSERVACION: Final = (
 )
 
 # Razón social del proveedor y emisor: en el oráculo v2 (`razon_social`) y en la fuente
-# reproducible del corpus (herramientas/generar_corpus.py, «Proveedor / emisor»).
+# reproducible (generadores/cadena_evidencia.py del repositorio atlas-tesis-datasets).
 RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
 
 # Escenario SurDelta (DO-2026-11-09-DEMO-SURDELTA): fuente reproducible en
-# herramientas/generar_corpus_surdelta.py; el oráculo guarda tipo, campos y huella por código.
-ORACULO_SURDELTA: Final = RAIZ_REPOSITORIO / "oraculos" / "oraculo_surdelta_v1.json"
-CORPUS_SURDELTA: Final = CORPUS / "surdelta"
+# generadores/surdelta.py del repositorio atlas-tesis-datasets; el oráculo guarda tipo,
+# campos y huella por código.
+CORPUS_SURDELTA: Final = RAIZ_REPOSITORIO / "demo" / "surdelta" / "documentos"
+ORACULO_SURDELTA: Final = CORPUS_SURDELTA.parent / "oraculo_surdelta_v1.json"
 NOMBRES_SURDELTA: Final = {
     "SD-C1": "Contrato de mantenimiento integral",
     "SD-O1": "Orden de compra OC-2026-118",

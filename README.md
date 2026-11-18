@@ -19,10 +19,12 @@ Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las regla
 | `frontend/` | Aplicación web ([README](frontend/README.md)) |
 | `infra/` | Terraform, base local con Docker y empaquetado ([README](infra/terraform/README.md)) |
 | `operaciones/` | Guías de operación manual en AWS y guion de la demo |
-| `corpus/`, `oraculos/` | Documentos sintéticos y oráculos, algunos congelados: no se modifican |
+| `demo/` | Documentos sintéticos y oráculos de las dos demos (cadena de evidencia y SurDelta): no se modifican |
 | `evaluacion/` | Campañas y evidencia de la sección 6 |
-| `herramientas/`, `tests/` | Generación y validación del corpus; escenarios BDD en `tests/acceptance/` |
+| `tests/acceptance/` | Escenarios BDD (Gherkin) |
 | `docs/` | Tesis, decisiones, contratos de aceptación, diseño, plan y operación |
+
+El corpus de evaluación de la sección 6.3, sus oráculos y los generadores de todos los documentos están en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets).
 
 ## Levantar el entorno local
 

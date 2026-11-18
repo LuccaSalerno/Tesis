@@ -792,6 +792,18 @@ La elaboración de las preguntas, la identificación de sus fuentes y las medici
 2. Resguardos: solo en demo o en local, operación en `offline`, sin ejecuciones de procesamiento en curso (y base drenada para guardar) y confirmación con el nombre de la base. Rol IAM de operaciones: lectura de `control/mantenimiento.json`.
 3. Restablecer corre como dueño de las tablas en una sola transacción: desactiva los *triggers* de usuario (inmutabilidad, sin borrado ni TRUNCATE), reemplaza los datos y los reactiva. Las identidades no retroceden. No es una operación funcional de borrado ni acredita persistencia.
 
+
+### DO-2026-11-17-DATASETS — El dataset pasa a su propio repositorio
+
+**Fecha:** 17/11/2026. **Aprobada por:** Lucca Salerno («Sí, recomendadas»). **Estado:** cerrada. **Base:** DO-2026-10-23-E90-CONGELACION y DO-2026-10-23-E90-MEDICION (corpus congelado y medido). Sin cambios de RF, RN, RNF, modelo ni API.
+
+1. **P1 — Demos:** este repositorio conserva solo los documentos y oráculos que usan la semilla, EVD-01 y el guion, sin cambiar sus bytes: `demo/cadena_evidencia/` (PD-07: cinco PDF, el DOCX de C-v1 y `oraculo_PD07_v2.json`) y `demo/surdelta/` (12 PDF y `oraculo_surdelta_v1.json`).
+2. **P2 — Corpus E90:** se retiran `corpus/e90/` y `oraculos/e90/`. El corpus, sus oráculos y los generadores están en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets), con otro formato de oráculos (sin estados ni huellas). El arnés de medición queda como código; para repetir una campaña se restaura el corpus desde `eab2954` (`evaluacion/README.md`).
+3. **P3 — Evaluación:** se conserva `evaluacion/campanas/` (evidencia del capítulo 6) y se retira `evaluacion/cache_ocr/`.
+4. **P4 — Generadores:** se retiran `herramientas/`, sus pruebas de `tests/` y el paso de la CI que las corría. `tests/acceptance/` (BDD) se queda.
+5. **P5 — Documentos:** se conservan `Protocolo_E90_Corpus_y_Validacion.md` y `Plan_Diseno_Corpus_E90.md` (documento rector n.º 7 de AGENTS.md) con una nota hacia el repositorio de datasets; se retiran `docs/evaluacion/corpus_e90/` y los CSV del plan y del inventario.
+6. **P6 — Registro:** esta decisión, AGENTS.md §2.4, README, `Registro_Destinos_y_Retencion.md` y `Estado_Implementacion.md`. Las decisiones anteriores no se reescriben: sus rutas quedan como historia.
+
 ---
 
 ## 2. Decisiones en curso

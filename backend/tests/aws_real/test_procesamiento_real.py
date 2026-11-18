@@ -37,9 +37,9 @@ pytestmark = [
     ),
 ]
 
-ORACULO = json.loads(
-    (archivos.CORPUS.parent / "oraculos" / "oraculo_PD07_v2.json").read_text("utf-8")
-)["documentos"]["C-v1"]
+ORACULO = json.loads((archivos.CORPUS.parent / "oraculo_PD07_v2.json").read_text("utf-8"))[
+    "documentos"
+]["C-v1"]
 
 
 def test_aws_real_c_v1_textract_clasificacion_y_extraccion() -> None:

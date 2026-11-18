@@ -2,7 +2,7 @@
 
 Requisito de aceptación de la reconstrucción («automatización de EVD-01», EVD-01 §1): los
 cuatro recorridos EVD-A, EVD-B, EVD-C y EVD-N12 por la API autenticada, con datos y
-resultados esperados fijados **antes** de ejecutar en `oraculos/oraculo_PD07_v2.json`
+resultados esperados fijados **antes** de ejecutar en `demo/cadena_evidencia/oraculo_PD07_v2.json`
 (congelado, DO-2026-10-23-DIF). Cada comprobación registra esperado y observado; un criterio
 cumple solo si cumplen todas las suyas. Con `ATLAS_EVIDENCIA_EVD01=<carpeta>` se escribe el
 paquete probatorio (EVD-01 §2): resultado por caso y criterio, versión del código, entorno,
@@ -937,7 +937,7 @@ def _paquete(reg: Registro, inicio: datetime) -> dict[str, Any]:
         "entorno": "local: API FastAPI (TestClient) + PostgreSQL 16 con pgvector; "
         "procesamiento con dobles controlados (EVD-01 §1, condición 6)",
         "oraculo": {
-            "archivo": "oraculos/oraculo_PD07_v2.json",
+            "archivo": "demo/cadena_evidencia/oraculo_PD07_v2.json",
             "id": ORACULO["id"],
             "estado": ORACULO["estado"],
             "sha256": HUELLA_ORACULO,

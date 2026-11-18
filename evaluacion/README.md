@@ -10,6 +10,16 @@ la API desplegada con `python -m atlas.evaluacion.operacion` (DO-2026-10-23-E90-
 **Lo ejecuta solo el operador autorizado**, con el plan y el costo aprobados (DO-2026-10-21).
 Ningún agente, push ni GitHub Action lo corre contra AWS.
 
+**Corpus fuera del repositorio (DO-2026-11-17-DATASETS).** `corpus/e90/`, `oraculos/e90/` y
+`evaluacion/cache_ocr/` se retiraron después de medir; el corpus y sus generadores están en
+[atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets), con otro formato de
+oráculos. Para repetir una campaña, restaurar antes el corpus congelado y la caché desde el
+último commit que los tenía:
+
+```bash
+git restore --source eab2954 -- corpus/e90 oraculos/e90 evaluacion/cache_ocr
+```
+
 ## Compuerta (P4)
 
 | Modo | Documentos | Preguntas RAG | Para qué |

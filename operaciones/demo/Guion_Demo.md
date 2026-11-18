@@ -20,10 +20,10 @@ Las contraseñas son las del paso 2.6 de la guía; no se escriben en el reposito
 
 | Archivo | Qué es | Cuándo |
 |---|---|---|
-| [`O-v1_Orden_Compra.pdf`](../../corpus/O-v1_Orden_Compra.pdf) | Orden OC-2026-0042, emitida el **15/03/2027** (fuera de la vigencia) | 3.1 |
-| [`F-v2_Factura.pdf`](../../corpus/F-v2_Factura.pdf) | Factura FC-A-0001-00000123 por $ 1.250.000,00 | 3.1 |
-| [`O-v2_Orden_Compra.pdf`](../../corpus/O-v2_Orden_Compra.pdf) | La orden corregida, emitida el **15/09/2026** | 3.10, opcional |
-| [`C-v1_Contrato_Mantenimiento_ATLAS.pdf`](../../corpus/C-v1_Contrato_Mantenimiento_ATLAS.pdf) | Contrato, ya cargado en el trámite en vivo | Solo si falta (§5) |
+| [`O-v1_Orden_Compra.pdf`](../../demo/cadena_evidencia/documentos/O-v1_Orden_Compra.pdf) | Orden OC-2026-0042, emitida el **15/03/2027** (fuera de la vigencia) | 3.1 |
+| [`F-v2_Factura.pdf`](../../demo/cadena_evidencia/documentos/F-v2_Factura.pdf) | Factura FC-A-0001-00000123 por $ 1.250.000,00 | 3.1 |
+| [`O-v2_Orden_Compra.pdf`](../../demo/cadena_evidencia/documentos/O-v2_Orden_Compra.pdf) | La orden corregida, emitida el **15/09/2026** | 3.10, opcional |
+| [`C-v1_Contrato_Mantenimiento_ATLAS.pdf`](../../demo/cadena_evidencia/documentos/C-v1_Contrato_Mantenimiento_ATLAS.pdf) | Contrato, ya cargado en el trámite en vivo | Solo si falta (§5) |
 
 **Control previo**, con `atlas-responsable`:
 
@@ -163,7 +163,7 @@ Historia: SurDelta Componentes S.R.L. recibe una factura de mantenimiento **ARS 
 ### 7.1 Preparación
 
 - Semilla: `python -m atlas.herramientas.sembrar_demo --escenario surdelta …` (mismos argumentos que la semilla PD-07, manifiesto nuevo). Deja cinco trámites: «Provisión de acero inoxidable para la línea de válvulas» Cerrado sin advertencias, «Mantenimiento integral de planta» en Borrador con la orden y la factura v1 validadas y sin vínculos (el de la grabación), «Compra de equipos para el área comercial» Observado por R1, «Renovación de soporte informático» Pendiente de aprobación y «Contratación de limpieza» Cancelado. No admite `--reanudar`.
-- Archivos de la grabación, en `corpus/surdelta/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
+- Archivos de la grabación, en `demo/surdelta/documentos/`: `SD-C1_Contrato_Mantenimiento_Planta.pdf`, `SD-O1_Orden_Compra_OC-2026-118.pdf`, `SD-F1_Factura_0004-00001248.pdf` y `SD-F2_Factura_0004-00001263.pdf`.
 - **Ensayo local, sin AWS:** con la API y el frontend locales (`README.md`), `cd backend && .venv/bin/python -m atlas.herramientas.sembrar_local --escenario surdelta` siembra la misma cartera con procesamiento simulado (las sugerencias salen del oráculo y se rotulan «Simulación local») e imprime los tokens de cada rol. Sirve para practicar los clics; las sugerencias reales de la IA se ven recién en AWS.
 - Las esperas del procesamiento se cortan en la edición. Si algo falla, se restablece la foto «semilla» (§7.1 bis) y se repite la toma.
 

@@ -72,6 +72,8 @@ Los hashes y el resumen de verificación se conservan en `docs/evaluacion/corpus
 
 **Actualización v2 (DO-2026-10-22-CORPUS-REVISION):** la regeneración del corpus usó los mismos componentes locales (LibreOffice 24.2.7.2 y pdftoppm 24.02.0 del sistema) y un entorno virtual temporal fuera del repositorio. No se agregan destinos, no se envió contenido a servicios externos ni se invocó AWS, Textract o Bedrock. La v1 se conserva en Git y su manifiesto en `docs/evaluacion/corpus_e90/v1/`.
 
+**Actualización 17/11/2026 (DO-2026-11-17-DATASETS):** el corpus de evaluación, sus oráculos y los generadores se trasladaron al repositorio público [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets) (datos ficticios; la generación sigue siendo local, sin AWS ni servicios externos). Este repositorio conserva solo los documentos y oráculos de las demos en `demo/`; el corpus E90 congelado sigue en el historial de Git (último commit que lo tiene: `eab2954`). Las referencias anteriores a `corpus/e90/`, `oraculos/e90/` y `docs/evaluacion/corpus_e90/` son históricas.
+
 ## Arnés de medición de §6.3 — 23/10/2026
 
 DO-2026-10-23-E90-MEDICION: el operador invoca Textract, Claude Haiku 4.5, Claude Sonnet 4.6, Cohere Embed Multilingual v3 y Titan Text Embeddings V2 desde su máquina, con sus credenciales y en us-east-1 (perfiles geográficos de EE. UU.), solo con el corpus sintético E90. Las respuestas de Textract, las salidas de los modelos y los índices de vectores quedan en `evaluacion/` (versionados, datos sintéticos); no se habilita el registro de invocaciones de Bedrock. Los mismos destinos y condiciones de esta tabla aplican; la verificación efectiva de retención sigue pendiente.

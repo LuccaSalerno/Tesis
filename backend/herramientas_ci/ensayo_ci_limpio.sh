@@ -46,5 +46,4 @@ docker run --rm --network "$red" -v "$copia/repo":/repo -w /repo/backend \
     mypy
     pytest -q --cov --cov-report=term --cov-report=json -rs 2>&1 | grep -E "TOTAL|passed|failed|FAILED|ERROR"
     python -m herramientas_ci.verificar_cobertura coverage.json --minimo 90
-    cd /repo && python -m pytest -q tests 2>&1 | tail -1
   '

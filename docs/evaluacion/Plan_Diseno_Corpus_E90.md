@@ -1,5 +1,7 @@
 # Diseño operativo de la muestra E90 — plan, no corpus construido
 
+> **17/11/2026 (DO-2026-11-17-DATASETS):** el corpus se construyó, congeló y midió. Sus documentos, oráculos, generadores y el plan de 65 filas (`generadores/evaluacion/plan.csv`) están en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets); el corpus congelado, en el historial de Git de este repositorio (último commit que lo tiene: `eab2954`). Las rutas de este documento son históricas.
+
 **Estado 21/10/2026:** diseño de filas y cobertura preparado para generación y revisión. **No hay 50 documentos de medición ni 15 de ajuste generados y validados en este ZIP.** El protocolo vigente de aceptación sigue admitiendo **10–15 documentos de ajuste (2–3 por tipo)**; para la implementación se propone concretarlo en **15 (3 por tipo)**, elección dentro del rango que debe confirmar el equipo antes de congelar el inventario. No cambiar la tesis para decir 15 hasta decidirlo y construirlos.
 
 **Adenda 22/10/2026 — DO-2026-10-22-CORPUS-ARG-A:** el equipo aprobó sustituir únicamente la plantilla de E90-M-CTR-03, de CTR-BASE_A a CTR-ARG_A (CPAU). Los 65 casos, tipos, formatos, particiones, dificultades y adversariales se conservan. Las cuatro familias iniciales siguen representadas; ARG_A es exclusiva de medición. El CSV sigue siendo diseño; los archivos construidos y sus referencias se encuentran en el inventario candidato separado. Esta adenda no modifica el protocolo E90.

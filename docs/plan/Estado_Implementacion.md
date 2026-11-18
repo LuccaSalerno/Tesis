@@ -9,10 +9,10 @@
 
 - **Aplicación:** RF-01 a RF-26 implementados, con backend y frontend.
 - **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Para reconstruirla: `operaciones/aws/Guia_Sesion_Seccion6.md`, desde la Parte 1.
-- **Corpus E90:** congelado (DO-2026-10-23-E90-CONGELACION).
+- **Corpus E90:** congelado y medido; desde el 17/11/2026 vive con sus generadores en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets) (DO-2026-11-17-DATASETS). Acá quedan solo los documentos de las demos, en `demo/`.
 - **Evidencia del capítulo 6:** `evaluacion/campanas/`. Incluye la campaña `e90-oficial-1`, medida en `20cf2d0`.
 - **EVD-01:** V1 a V11 verificados en `d461b6a` contra el oráculo PD-07 v2 (`evaluacion/campanas/evd01-2026-10-24/acta.md`). El código posterior no hereda esa verificación.
-- **Último ensayo de CI limpio:** 842 pruebas aprobadas y 2 omitidas; herramientas del corpus, 71 aprobadas y 1 omitida; cobertura 98 % y los 110 módulos ≥ 90 %.
+- **Último ensayo de CI limpio (17/11/2026, DO-2026-11-17-DATASETS):** 849 pruebas aprobadas y 2 omitidas; cobertura 98 % y los 111 módulos ≥ 90 %. Las pruebas del corpus se corren en el repositorio de datasets.
 
 ## Hitos de la Etapa 1
 
@@ -48,7 +48,7 @@ La lista completa de archivos retirados se obtiene con `git log --diff-filter=D 
 
 DO-2026-11-09-DEMO-SURDELTA, rama `demo/surdelta`. Sin cambios de reglas, estados, API ni interfaz.
 
-- **Documentos:** 12 PDF sintéticos en `corpus/surdelta/` (el contrato SD-C1 tiene 10 páginas, como el de PD-07), generados con `herramientas/generar_corpus_surdelta.py`; oráculo `oraculos/oraculo_surdelta_v1.json`. CUIT: el de PD-07 y cuatro de la partición de ajuste de E90, todos ya consultados en ARCA.
+- **Documentos:** 12 PDF sintéticos en `demo/surdelta/documentos/` (el contrato SD-C1 tiene 10 páginas, como el de PD-07), generados con `generadores/surdelta.py` del repositorio de datasets; oráculo `demo/surdelta/oraculo_surdelta_v1.json`. CUIT: el de PD-07 y cuatro de la partición de ajuste de E90, todos ya consultados en ARCA.
 - **Semilla:** `sembrar_demo --escenario surdelta` (provisión de acero cerrada sin advertencias, compra observada por R1, renovación pendiente de aprobación, limpieza cancelada; mantenimiento de planta en Borrador con la orden y la factura validadas, para cargar el contrato en la grabación; las pruebas verifican su recorrido completo por la API). El escenario PD-07 sigue siendo el predeterminado.
 - **Guion:** dos videos de 5 minutos en `operaciones/demo/Guion_Demo.md` §7.
 - **Ensayo de CI limpio:** 845 pruebas aprobadas y 2 omitidas; herramientas del corpus, 75 aprobadas y 1 omitida; cobertura 98 % y los 110 módulos ≥ 90 %. La tesis sigue citando las 842 de su versión (§6.5).
@@ -72,7 +72,6 @@ DO-2026-11-09-ESTADOS-DEMO: `guardar_estado` y `restablecer_estado` en la Lambda
 ## Preguntas abiertas al equipo
 
 - **Registro de diferencias:** `docs/tesis/Registro_Diferencias_con_la_Tesis.md`, con entradas pendientes de revisión por los autores.
-- **`herramientas/validar_inventario_e90.py`:** confirmar si sigue haciendo falta ahora que el corpus está congelado.
 
 ## Dónde está cada cosa
 
@@ -85,3 +84,5 @@ DO-2026-11-09-ESTADOS-DEMO: `guardar_estado` y `restablecer_estado` en la Lambda
 | Destinos y retención del contenido documental | `docs/operacion/Registro_Destinos_y_Retencion.md` |
 | Puesta en marcha local y ensayo de CI limpio | `backend/README.md` |
 | Operación en AWS | `operaciones/aws/Guia_Sesion_Seccion6.md`, `infra/terraform/README.md` |
+| Documentos de las demos | `demo/` |
+| Corpus de evaluación, oráculos y generadores | [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets) |

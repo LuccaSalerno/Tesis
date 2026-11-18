@@ -1,5 +1,7 @@
 # Protocolo vigente E90 — corpus sintético y validación operativa diferenciada
 
+> **17/11/2026 (DO-2026-11-17-DATASETS):** el corpus se construyó, congeló y midió. Sus documentos, oráculos, generadores y el plan de 65 filas (`generadores/evaluacion/plan.csv`) están en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets); el corpus congelado, en el historial de Git de este repositorio (último commit que lo tiene: `eab2954`). Las rutas de este documento son históricas.
+
 **Decisión aprobada:** DO-2026-10-21-E90-CORPUS · 21/10/2026.  
 **Estado:** método y cantidades decididos por el equipo; construcción de la muestra, congelación de oráculos, ejecución y resultados todavía pendientes. Este es un documento de trabajo **interno al repositorio**, no texto para copiar como resultado académico.
 

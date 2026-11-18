@@ -117,7 +117,6 @@ recorridos EVD-01 se ejecutan; ejecutarlos no acredita EVD-01 sin el oráculo co
 
 Las pruebas marcadas `integracion` usan la base real `atlas_tests` y fallan (no se omiten) si
 no está disponible. Solo corren con `ATLAS_ENTORNO=tests` sobre una base `*_tests`.
-Las de `tests/` en la raíz (herramientas del corpus) se ejecutan con `python -m pytest tests`.
 
 ## Ensayo de CI limpio (antes de cada commit de hito)
 
