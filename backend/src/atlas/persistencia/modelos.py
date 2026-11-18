@@ -1,8 +1,7 @@
-"""Modelo físico del núcleo de la Figura 5.4 (PD-04, incremento 1).
+"""Modelo físico del núcleo de la Figura 5.4 (incremento 1).
 
 Refleja la migración `0002`. Las restricciones que el ORM no expresa
 (triggers de inmutabilidad, privilegios por columna) viven solo en la migración.
-Detalle y justificación: docs/diseno/PD-04_Modelo_Fisico_Propuesta.md.
 """
 
 import uuid
@@ -65,7 +64,7 @@ from atlas.persistencia.vector import Vector
 def catalogo(enumeracion: type[StrEnum], longitud: int) -> Enum:
     """Columna `varchar(longitud)` con los valores de la enumeración.
 
-    El CHECK con el catálogo está en la migración (PD-04).
+    El CHECK con el catálogo está en la migración.
     """
     return Enum(
         enumeracion,
@@ -108,7 +107,7 @@ class Usuario(Base):
     autorizacion_cierre: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false")
     )
-    nombre_visible: Mapped[str | None] = mapped_column(String(120))  # 0010 (F5)
+    nombre_visible: Mapped[str | None] = mapped_column(String(120))  # 0010
     creado_en: Mapped[datetime] = _instante()
     actualizado_en: Mapped[datetime] = _instante()
 
@@ -241,7 +240,7 @@ class EventoAuditoria(Base):
 
 
 class AutorizacionCarga(Base):
-    """Técnica (+): URL prefirmada emitida para una carga (§5.3.1, RC-P04). Se usa una sola vez."""
+    """Técnica (+): URL prefirmada emitida para una carga (§5.3.1). Se usa una sola vez."""
 
     __tablename__ = "autorizacion_carga"
     __table_args__ = (CheckConstraint("tamano_bytes > 0", name="tamano_positivo"),)
@@ -260,7 +259,7 @@ class AutorizacionCarga(Base):
 
 
 class TrabajoProcesamiento(Base):
-    """Técnica (+): trabajo de procesamiento de un archivo (§5.3.1, RC-P08)."""
+    """Técnica (+): trabajo de procesamiento de un archivo (§5.3.1)."""
 
     __tablename__ = "trabajo_procesamiento"
     __table_args__ = (
@@ -366,14 +365,14 @@ class ValidacionHumana(Base):
     )
     validador_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"), nullable=False)
     fuente_id: Mapped[int | None] = mapped_column(ForeignKey("referencia_fuente.id"))
-    # Nulo solo en `ausente` (0010, DO-2026-10-22-WEB F10).
+    # Nulo solo en `ausente` (0010).
     valor_validado: Mapped[str | None] = mapped_column(Text)
     tipo: Mapped[TipoValidacion] = mapped_column(catalogo(TipoValidacion, 20), nullable=False)
     motivo_ausencia: Mapped[MotivoAusencia | None] = mapped_column(catalogo(MotivoAusencia, 20))
     validado_en: Mapped[datetime] = _instante_reloj()
 
 
-DIMENSIONES_EMBEDDING = 1024  # Cohere Embed Multilingual v3 (tesis §5.4.1, RC-P07.3)
+DIMENSIONES_EMBEDDING = 1024  # Cohere Embed Multilingual v3 (tesis §5.4.1)
 
 
 class Fragmento(Base):
@@ -400,7 +399,7 @@ class Fragmento(Base):
 
 
 class ConsultaAsistida(Base):
-    """Técnica (+): registro de cada consulta asistida (§5.2, §5.3.4, DO-2026-10-22-RAG P2)."""
+    """Técnica (+): registro de cada consulta asistida (§5.2, §5.3.4)."""
 
     __tablename__ = "consulta_asistida"
     __table_args__ = (
@@ -493,7 +492,7 @@ class VinculoDocumental(Base):
 
 
 class EjecucionRegla(Base):
-    """Figura 5.4: ejecución inmutable de una regla de consistencia (RF-16, §5.3.5, PD-01)."""
+    """Figura 5.4: ejecución inmutable de una regla de consistencia (RF-16, §5.3.5)."""
 
     __tablename__ = "ejecucion_regla"
     __table_args__ = (
@@ -542,7 +541,7 @@ class EjecucionReglaVersion(Base):
 
 
 class PlantillaFlujo(Base):
-    """Técnica (+): flujo configurado por el administrador (RC-P03.1, DO-2026-10-22-TAR P1).
+    """Técnica (+): flujo configurado por el administrador.
 
     Inmutable salvo la desactivación (migración 0009).
     """
@@ -567,7 +566,7 @@ class PlantillaFlujo(Base):
 
 
 class PlantillaFlujoPaso(Base):
-    """Técnica (+): paso de una plantilla con su revisor por defecto (RC-P03.1.2)."""
+    """Técnica (+): paso de una plantilla con su revisor por defecto."""
 
     __tablename__ = "plantilla_flujo_paso"
 
@@ -622,7 +621,7 @@ class CicloRevisionVersion(Base):
 
 
 class Tarea(Base):
-    """Figura 5.4: tarea de un ciclo con su rol requerido (RF-18, RF-19, PD-05.4)."""
+    """Figura 5.4: tarea de un ciclo con su rol requerido (RF-18, RF-19)."""
 
     __tablename__ = "tarea"
     __table_args__ = (UniqueConstraint("ciclo_revision_id", "orden"),)
@@ -665,7 +664,7 @@ class Decision(Base):
 
 
 class DecisionControl(Base):
-    """Figura 5.4: ejecución de regla considerada al decidir (PD-02, V4). Inmutable."""
+    """Figura 5.4: ejecución de regla considerada al decidir (V4). Inmutable."""
 
     __tablename__ = "decision_control"
 

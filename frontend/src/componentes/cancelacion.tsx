@@ -1,5 +1,5 @@
 /**
- * Cancelación del trámite por su responsable (RF-26, RN-14, DO-2026-10-23-CIERRE P10): exige
+ * Cancelación del trámite por su responsable (RF-26, RN-14): exige
  * un motivo y advierte que es terminal; la historia se conserva.
  */
 import { Ban } from "lucide-react";

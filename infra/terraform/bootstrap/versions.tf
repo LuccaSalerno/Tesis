@@ -1,5 +1,5 @@
-# Raíz bootstrap (RC-P10-07): estado remoto de las demás raíces. Se crea una sola vez y
-# nunca se destruye (DO-2026-10-21-E90A). Su propio estado queda en el equipo del operador.
+# Raíz bootstrap: estado remoto de las demás raíces. Se crea una sola vez y
+# nunca se destruye. Su propio estado queda en el equipo del operador.
 terraform {
   required_version = ">= 1.10.0"
   required_providers {

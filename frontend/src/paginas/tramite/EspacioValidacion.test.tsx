@@ -29,7 +29,7 @@ const validaciones = {
   fuera_de_esquema: [],
 };
 
-describe("espacio de validación (RF-12, WEB F10)", () => {
+describe("espacio de validación (RF-12)", () => {
   it("declara un campo ausente sin inventar un valor", async () => {
     const llamadas = simularApi({
       "/tramites/3": { id: 3, titulo: "En vivo", descripcion: null, estado: "borrador", responsable_id: 4, creado_en: ahora, actualizado_en: ahora, documentos: [{ id: 5, nombre: "Contrato", tipo: "contrato", version_vigente: { id: 21, numero: 1, archivo_id: 8 } }] },

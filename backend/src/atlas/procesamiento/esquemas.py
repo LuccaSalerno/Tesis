@@ -1,4 +1,4 @@
-"""Campos por tipo documental (RC-P04) y esquemas de salida del modelo (§5.3.2, §5.4.3).
+"""Campos por tipo documental y esquemas de salida del modelo (§5.3.2, §5.4.3).
 
 Los esquemas no admiten propiedades adicionales: la respuesta se valida contra ellos
 en el backend antes de registrar cualquier sugerencia.

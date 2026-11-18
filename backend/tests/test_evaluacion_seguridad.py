@@ -1,4 +1,4 @@
-"""Ejecutor de seguridad de §6.3.3 contra la aplicación local (DO-2026-10-23-SEG, P12).
+"""Ejecutor de seguridad de §6.3.3 contra la aplicación local.
 
 El escenario se arma por la API con cuentas y documentos sintéticos; la matriz de la Tabla
 3.II, el acceso directo por identificador, la consulta cruzada, la inmutabilidad del historial
@@ -90,7 +90,7 @@ def test_seg_01_03_rnf_08_matriz_completa_sin_fallas(
     resultado = matriz.resumen(filas)
     assert resultado["fallas"] == [], json.dumps(resultado["fallas"], ensure_ascii=False, indent=1)
     assert resultado["cumple"] and resultado["casos"] > 150
-    assert resultado["no_implementadas"] == []  # DO-2026-10-23-VER y CIERRE
+    assert resultado["no_implementadas"] == []  # CIERRE
     # Cada operación de la matriz se probó con los ocho actores.
     for caso in matriz.CASOS:
         actores = {f["actor"] for f in filas if f["caso"] == caso.codigo}
@@ -329,7 +329,7 @@ def test_seg_02_04_detectan_una_cuenta_mal_configurada() -> None:
     assert resultado["logs_api_con_correlacion"] and resultado["camino_de_error_ejercitado"]
 
 
-def test_p3_espera_del_procesamiento_real() -> None:
+def test_espera_del_procesamiento_real() -> None:
     from itertools import chain, repeat
 
     en_curso = [{"id": 7, "trabajo": {"estado": "en_ejecucion"}}]

@@ -1,4 +1,4 @@
-"""Vaciado de un bucket versionado de la sesión antes del plan de retiro (DO-2026-10-22-OPS P8).
+"""Vaciado de un bucket versionado de la sesión antes del plan de retiro.
 
 Uso (operador, solo en el paso de retiro aprobado del runbook):
 
@@ -6,10 +6,10 @@ Uso (operador, solo en el paso de retiro aprobado del runbook):
     python -m atlas.herramientas.vaciar_bucket_versionado --bucket <nombre> \\
         --confirmar <nombre> --ejecutar                                                   # borra
 
-Borra **todas** las versiones y marcadores de eliminación (DO-2026-10-21-E90A). Es
+Borra **todas** las versiones y marcadores de eliminación. Es
 irreversible. Se niega con un bucket que no tenga las etiquetas `proyecto=atlas` y
 `entorno=demo`, o que pertenezca a `bootstrap` (estado remoto). Sin `--ejecutar`, solo
-cuenta. Nunca lo ejecutan agentes ni GitHub Actions (DO-2026-10-21).
+cuenta. Nunca lo ejecutan agentes ni GitHub Actions.
 """
 
 import argparse

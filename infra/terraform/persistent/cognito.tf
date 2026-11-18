@@ -1,4 +1,4 @@
-# User Pool del entorno demo (RC-P10-05, P10). Usuarios ficticios creados por el operador.
+# User Pool del entorno demo. Usuarios ficticios creados por el operador.
 
 resource "aws_cognito_user_pool" "demo" {
   name                = "${local.prefijo}-usuarios"

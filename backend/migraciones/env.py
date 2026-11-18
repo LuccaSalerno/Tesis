@@ -1,4 +1,4 @@
-"""Entorno de migraciones de Alembic (RC-P10-15).
+"""Entorno de migraciones de Alembic.
 
 Se conecta con el usuario de migración de la base indicada por la
 configuración del proceso, toma un bloqueo consultivo para impedir migraciones
@@ -23,7 +23,7 @@ configuracion: Configuracion = (
 
 
 def ejecutar_migraciones() -> None:
-    # Conexión directa a RDS (no al proxy), con token IAM en AWS (RC-P10-15).
+    # Conexión directa a RDS (no al proxy), con token IAM en AWS.
     motor = crear_motor(configuracion, migracion=True, poolclass=NullPool, pool_pre_ping=False)
     with motor.connect() as conexion:
         # Bloqueo de sesión: sobrevive a las transacciones que abre Alembic.

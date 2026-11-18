@@ -1,4 +1,4 @@
-"""Comportamiento con concurrencia (§6.3.4, OP-01 a OP-03; DO-2026-10-23-E90-API P8, P9).
+"""Comportamiento con concurrencia (§6.3.4, OP-01 a OP-03).
 
 Interactiva: en cada nivel (1, 5 y 10) se envían 30 consultas y 30 lecturas del trámite con
 ese número de solicitudes simultáneas. Asíncrona: en cada nivel se suben k documentos

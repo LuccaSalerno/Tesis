@@ -1,4 +1,4 @@
-"""Campañas de medición: manifiesto, pasos y cálculo de métricas (P13, P16, RC-P07.7).
+"""Campañas de medición: manifiesto, pasos y cálculo de métricas.
 
 Una campaña vive en `evaluacion/campanas/<id>/`. El manifiesto fija antes de medir el commit,
 los modelos y perfiles, la configuración y las huellas del corpus, los oráculos, las
@@ -110,7 +110,7 @@ def iniciar(
     documentos = seleccionar(oraculos, modo)  # compuerta P4
     consultas = consultas_de(oraculos, modo)
     origen = _commit(raiz)
-    # Una campaña oficial se repite desde un commit identificado y sin cambios (RC-P07.7).
+    # Una campaña oficial se repite desde un commit identificado y sin cambios.
     if modo is Modo.OFICIAL and (not origen["commit"] or origen["cambios_sin_commit"] is not False):
         raise ErrorCampana("commit_no_identificado_o_con_cambios")
     manifiesto = {
@@ -242,7 +242,7 @@ def calcular(
         resultado["generativos"][alias] = {
             "repeticiones": por_repeticion,
             "promedios": promedios,
-            # La latencia IA-M08 se mide contra la API desplegada (fase 2, P17).
+            # La latencia IA-M08 se mide contra la API desplegada (fase 2).
             "criterios": metricas.criterios_generativos(
                 {k: v["promedio"] for k, v in promedios.items()}, None
             ),
@@ -256,7 +256,7 @@ def calcular(
 
 
 def _sustitucion(campana: Campana, resultado: dict[str, Any]) -> dict[str, Any]:
-    """Reglas de §6.3.1 sobre los promedios; la decisión real la registra el equipo (P13)."""
+    """Reglas de §6.3.1 sobre los promedios; la decisión real la registra el equipo."""
     salida: dict[str, Any] = {}
     generativos = list(campana.manifiesto["generativos"])
     if len(generativos) == 2 and all(

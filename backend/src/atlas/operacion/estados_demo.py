@@ -1,4 +1,4 @@
-"""Fotos de la base para repetir la demo (DO-2026-11-09-ESTADOS-DEMO). Temporal: se retira
+"""Fotos de la base para repetir la demo. Temporal: se retira
 después de la exposición.
 
 `guardar` copia los datos de cada tabla del esquema `atlas` a un esquema aparte

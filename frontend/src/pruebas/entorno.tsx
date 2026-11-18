@@ -1,6 +1,6 @@
 /**
  * Utilidades de prueba: la API se simula con un `fetch` que responde por ruta. Estos datos son
- * de prueba de componentes; nunca se presentan como evidencia de funcionamiento (WEB, §4).
+ * de prueba de componentes; nunca se presentan como evidencia de funcionamiento (§4).
  */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";

@@ -1,4 +1,4 @@
-"""El contrato que usa la aplicación web coincide con el de la API (DO-2026-10-22-WEB F2)."""
+"""El contrato que usa la aplicación web coincide con el de la API."""
 
 from pathlib import Path
 

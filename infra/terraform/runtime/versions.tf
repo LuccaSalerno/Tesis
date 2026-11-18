@@ -1,5 +1,5 @@
-# Raíz runtime (RC-P10-07): RDS Proxy, su rol y los endpoints de interfaz. Se crea y se
-# retira por sesión. Recrearla obliga a reaplicar demo antes de habilitar (RC-P10-04).
+# Raíz runtime: RDS Proxy, su rol y los endpoints de interfaz. Se crea y se
+# retira por sesión. Recrearla obliga a reaplicar demo antes de habilitar.
 terraform {
   required_version = ">= 1.10.0"
   required_providers {

@@ -1,8 +1,8 @@
-"""Tipo `vector` de pgvector para SQLAlchemy, sin dependencias adicionales (DO-2026-10-22-RAG).
+"""Tipo `vector` de pgvector para SQLAlchemy, sin dependencias adicionales.
 
 Se envía y se lee con la representación de texto de pgvector (`[0.1,0.2,...]`). La
-búsqueda por distancia se hace con SQL explícito (`<=>`, coseno, búsqueda exacta:
-RC-P07.3).
+búsqueda por distancia se hace con SQL explícito (`<=>`, coseno, búsqueda
+exacta).
 """
 
 from collections.abc import Callable, Sequence

@@ -1,4 +1,4 @@
-"""Adaptadores de S3 y Step Functions contra moto, sin AWS (DT-AWS-01)."""
+"""Adaptadores de S3 y Step Functions contra moto, sin AWS."""
 
 import json
 import uuid
@@ -27,14 +27,12 @@ from tests.conftest import ARN_MAQUINA_PRUEBA, BUCKET_PRUEBA, configuracion_sin_
         ({"sfn_maquina_procesamiento_arn": None}, "ATLAS_SFN_MAQUINA_PROCESAMIENTO_ARN"),
     ],
 )
-def test_dt_aws_01_configuracion_de_servicios_invalida(
-    campos: dict[str, object], mensaje: str
-) -> None:
+def test_configuracion_de_servicios_invalida(campos: dict[str, object], mensaje: str) -> None:
     with pytest.raises(ErrorConfiguracion, match=mensaje):
         configuracion_sin_base(**campos).validar_servicios_aws()
 
 
-def test_dt_aws_01_demo_sin_endpoint_usa_aws_real() -> None:
+def test_demo_sin_endpoint_usa_aws_real() -> None:
     configuracion_sin_base(entorno="demo", aws_endpoint_url=None).validar_servicios_aws()
 
 
@@ -62,14 +60,14 @@ def test_rf_04_url_prefirmada_permite_transferir_y_leer(almacen: AlmacenS3) -> N
     assert almacen.leer(clave) == b"%PDF-1.7 ficticio"
 
 
-def test_dt_aws_01_bucket_inexistente_es_error_de_integracion(moto_local: str) -> None:
+def test_bucket_inexistente_es_error_de_integracion(moto_local: str) -> None:
     configuracion = configuracion_sin_base(aws_endpoint_url=moto_local)
     ajeno = AlmacenS3(crear_cliente(configuracion, "s3"), "bucket-que-no-existe")
     with pytest.raises(ErrorIntegracion, match="s3_lectura_fallida"):
         ajeno.leer("x")
 
 
-def test_rc_p08_ejecucion_con_nombre_de_trabajo_e_intento_y_solo_identificadores(
+def test_ejecucion_con_nombre_de_trabajo_e_intento_y_solo_identificadores(
     cliente_sfn: object,
 ) -> None:
     trabajo_id = int(uuid.uuid4().int % 10**9)
@@ -87,7 +85,7 @@ def test_rc_p08_ejecucion_con_nombre_de_trabajo_e_intento_y_solo_identificadores
     assert nombre_ejecucion(trabajo_id, 2) == f"trabajo-{trabajo_id}-intento-2"
 
 
-def test_rc_p08_maquina_inexistente_rechaza_el_inicio(cliente_sfn: object) -> None:
+def test_maquina_inexistente_rechaza_el_inicio(cliente_sfn: object) -> None:
     orquestador = OrquestadorStepFunctions(
         cliente_sfn, "arn:aws:states:us-east-1:123456789012:stateMachine:no-existe"
     )
@@ -95,7 +93,7 @@ def test_rc_p08_maquina_inexistente_rechaza_el_inicio(cliente_sfn: object) -> No
         orquestador.iniciar(1, 1)
 
 
-def test_dt_aws_01_preparar_aws_local_es_idempotente_y_solo_local(
+def test_preparar_aws_local_es_idempotente_y_solo_local(
     moto_local: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from atlas.herramientas import preparar_aws_local
@@ -113,13 +111,13 @@ def test_dt_aws_01_preparar_aws_local_es_idempotente_y_solo_local(
     reglas = crear_cliente(configuracion, "s3").get_bucket_cors(
         Bucket=configuracion.s3_bucket_documentos
     )["CORSRules"]
-    assert set(reglas[0]["AllowedMethods"]) == {"PUT", "GET"}  # aplicación web local (WEB F7)
+    assert set(reglas[0]["AllowedMethods"]) == {"PUT", "GET"}  # aplicación web local
     sin_endpoint = configuracion.model_copy(update={"aws_endpoint_url": None})
     monkeypatch.setattr(preparar_aws_local, "obtener_configuracion", lambda: sin_endpoint)
     assert preparar_aws_local.main() == 1
 
 
-def test_dt_aws_01_preparar_aws_local_con_configuracion_incompleta(
+def test_preparar_aws_local_con_configuracion_incompleta(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     from atlas.herramientas import preparar_aws_local
@@ -130,7 +128,7 @@ def test_dt_aws_01_preparar_aws_local_con_configuracion_incompleta(
     assert "No se preparó" in capsys.readouterr().err
 
 
-def test_dif_97_firma_s3_solo_para_s3() -> None:
+def test_firma_s3_solo_para_s3() -> None:
     """Bedrock rechaza la firma de S3 con ID de modelo que llevan «:» (sesión e90-ensayo-2)."""
     configuracion = configuracion_sin_base(entorno="demo", aws_endpoint_url=None)
     assert crear_cliente(configuracion, "s3").meta.config.signature_version == "s3v4"

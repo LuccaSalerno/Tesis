@@ -1,4 +1,4 @@
-"""Admisión, reconciliador e intento manual: §6.3.2 nivel A (DO-2026-10-23-REC, RC-P08).
+"""Admisión, reconciliador e intento manual: §6.3.2 nivel A.
 
 AS-01 a AS-04 con fallos inyectados: un orquestador simulado da el estado «real» de cada
 ejecución, salvo donde se usa moto. La base de pruebas es compartida, así que el
@@ -113,10 +113,10 @@ def _reconciliar(
         )
 
 
-# --- RC-P08.9: admisión transaccional sin sobreasignación ----------------------------------
+# --- Admisión transaccional sin sobreasignación ----------------------------------
 
 
-def test_rc_p08_9_doce_confirmaciones_simultaneas_con_cupo_de_diez(
+def test_doce_confirmaciones_simultaneas_con_cupo_de_diez(
     fabrica: Any, motor_migracion: Engine
 ) -> None:
     with motor_migracion.begin() as conexion:
@@ -309,10 +309,10 @@ def _trabajo_de(motor: Engine, archivo_id: int) -> int:
         )
 
 
-# --- RC-P08.12: el reconciliador no actúa fuera de `active` ----------------------------------
+# --- El reconciliador no actúa fuera de `active` ----------------------------------
 
 
-def test_rc_p08_12_lambda_omitida_en_mantenimiento_y_completa_en_active(
+def test_lambda_omitida_en_mantenimiento_y_completa_en_active(
     fabrica: Any, motor_migracion: Engine, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     configuracion = configuracion_sin_base()
@@ -346,9 +346,7 @@ def test_rc_p08_12_lambda_omitida_en_mantenimiento_y_completa_en_active(
     assert respuesta["resultado"] == "completado" and respuesta["admitidos"] == 0
 
 
-def test_rc_p08_3_dependencias_de_la_lambda(
-    moto_local: str, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_dependencias_de_la_lambda(moto_local: str, monkeypatch: pytest.MonkeyPatch) -> None:
     for fuente in ("s3", "fija_active"):
         configuracion = configuracion_sin_base(
             aws_endpoint_url=moto_local, mantenimiento_fuente=fuente

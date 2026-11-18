@@ -2,7 +2,7 @@
  * Configuración de la aplicación, fijada por el despliegue (nunca elegida por el usuario).
  *
  * Servida con S3 y CloudFront, la aplicación lee `configuracion.json` al iniciar: así una
- * sesión nueva solo publica ese archivo, sin recompilar (DO-2026-10-23-WEB-HOST P4). Sin el
+ * sesión nueva solo publica ese archivo, sin recompilar. Sin el
  * archivo (desarrollo local, `npm run preview`), valen las variables `VITE_*` del build.
  */
 import { z } from "zod";

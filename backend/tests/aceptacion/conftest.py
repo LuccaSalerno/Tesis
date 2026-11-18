@@ -1,4 +1,4 @@
-"""Fixture y paso comunes de los escenarios BDD (DO-2026-10-22-BDD)."""
+"""Fixture y paso comunes de los escenarios BDD."""
 
 from collections.abc import Iterator
 from typing import Any

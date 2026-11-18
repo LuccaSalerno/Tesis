@@ -1,4 +1,4 @@
-"""Regla de S3 Lifecycle de respaldo para las cargas temporales (DO-2026-10-22-CARGAS).
+"""Regla de S3 Lifecycle de respaldo para las cargas temporales.
 
 Es la única definición de la regla: la herramienta local la aplica a moto y la
 IaC futura debe replicarla literalmente. Actúa solo sobre el prefijo exclusivo de
@@ -10,7 +10,7 @@ from typing import Any, Final
 
 PREFIJO_CARGAS_TEMPORALES: Final = "cargas-temporales/"
 PREFIJO_DOCUMENTOS: Final = "documentos/"
-# Resultados intermedios por trabajo e intento (DO-2026-10-22-PROC, P3): fuera de esta
+# Resultados intermedios por trabajo e intento: fuera de esta
 # regla; los elimina la limpieza junto con su carga vencida.
 PREFIJO_RESULTADOS: Final = "resultados/"
 DIAS_RESPALDO: Final = 2

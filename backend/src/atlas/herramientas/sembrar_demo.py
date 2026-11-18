@@ -1,4 +1,4 @@
-"""Semilla sintética de una sesión E90A, solo por la API (DO-2026-10-22-OPS P11, PD-07).
+"""Semilla sintética de una sesión E90A, solo por la API.
 
 Uso (operador, con la API en `active` y solo cuentas ficticias):
 
@@ -8,7 +8,7 @@ Uso (operador, con la API en `active` y solo cuentas ficticias):
         --cliente-cognito <id> --usuarios admin=… responsable=… revisor=… aprobador=… \\
         --manifiesto operaciones/sesiones/<sesion>/manifiesto_seed.json
 
-Deja cuatro trámites (DO-2026-10-22-WEB F8, DO-2026-10-23-VER P9, DO-2026-10-23-CIERRE P11):
+Deja cuatro trámites:
 
 1. **observado** (puntos de demo A a D): C-v1, O-v1 y F-v2 procesados, validados contra el
    oráculo y vinculados (R3 advierte que la orden está fuera de la vigencia); flujo
@@ -26,7 +26,7 @@ confirma; si no, se corrige al valor del oráculo; sin sugerencia, se registra. 
 procesamiento fallido detiene la semilla antes de incorporar: no se valida a mano lo que la
 IA no llegó a sugerir. Nada se inserta en la base ni se falsifica auditoría.
 
-`--escenario surdelta` (DO-2026-11-09-DEMO-SURDELTA) siembra en cambio la cartera de SurDelta
+`--escenario surdelta` siembra en cambio la cartera de SurDelta
 con los documentos de `demo/surdelta/documentos/` y su oráculo: la provisión de acero de la planta,
 cerrada sin advertencias, una compra de equipos observada por R1 (la factura llegó con el
 CUIT de otra empresa), una renovación de soporte pendiente de
@@ -40,7 +40,8 @@ ocultar lo hecho: reintenta por la API los procesamientos fallidos del trámite 
 (RNF-06) y, si el trámite «cerrado» quedó a medias, lo cancela con el motivo real y siembra
 uno nuevo. El reemplazado queda en el manifiesto (`reemplazados`).
 
-Aunque el oráculo PD-07 v2 está congelado, la semilla prepara la demo: no acredita EVD-01 ni
+Aunque el oráculo de la cadena de evidencia está congelado, la semilla prepara la demo: no
+acredita EVD-01 ni
 métricas. El manifiesto guarda identificadores y huellas, nunca tokens.
 """
 
@@ -59,8 +60,7 @@ from atlas.herramientas.cliente_api import ClienteApi, ErrorApi, sub_del_token, 
 
 RAIZ_REPOSITORIO: Final = Path(__file__).resolve().parents[4]
 CORPUS: Final = RAIZ_REPOSITORIO / "demo" / "cadena_evidencia" / "documentos"
-# Oráculo PD-07 v2, congelado: número estable en O y F (DO-2026-10-23-CIERRE D4,
-# DO-2026-10-23-DIF, DIF-84).
+# Oráculo de la cadena de evidencia, congelado: número estable en O y F.
 ORACULO: Final = CORPUS.parent / "oraculo_PD07_v2.json"
 ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 
@@ -96,7 +96,7 @@ MOTIVO_OBSERVACION: Final = (
 # reproducible (generadores/cadena_evidencia.py del repositorio atlas-tesis-datasets).
 RAZON_SOCIAL_PROVEEDOR: Final = "Servicios Integrales del Sur S.A."
 
-# Escenario SurDelta (DO-2026-11-09-DEMO-SURDELTA): fuente reproducible en
+# Escenario SurDelta: fuente reproducible en
 # generadores/surdelta.py del repositorio atlas-tesis-datasets; el oráculo guarda tipo,
 # campos y huella por código.
 CORPUS_SURDELTA: Final = RAIZ_REPOSITORIO / "demo" / "surdelta" / "documentos"
@@ -243,7 +243,7 @@ class Sembrador:
 
     def preparar_cuentas(self) -> None:
         """El administrador inicial ya existe (crear_administrador). Las demás cuentas se dan
-        de alta por su `sub` de Cognito, con roles mínimos (RF-25, RC-P03)."""
+        de alta por su `sub` de Cognito, con roles mínimos (RF-25)."""
         yo = self.api.get("/usuarios/yo", "administrador")
         self.m.cuentas["administrador"] = yo["id"]
         self.api.put(
@@ -395,7 +395,7 @@ class Sembrador:
         return tipo
 
     def _validar_documento(self, tramite_id: int, documento_id: int, codigo: str) -> dict[str, str]:
-        """Clasificación primero (DO-2026-10-22-VAL P3) y después cada campo del esquema."""
+        """Clasificación primero y después cada campo del esquema."""
         ruta = f"/tramites/{tramite_id}/documentos/{documento_id}/validaciones"
         valores = self.valores[codigo]
         tipos = {
@@ -651,7 +651,7 @@ def escenario_surdelta(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
 
 
 class SembradorSurDelta(Sembrador):
-    """La cartera de SurDelta (DO-2026-11-09-DEMO-SURDELTA), con los mismos pasos por la API."""
+    """La cartera de SurDelta, con los mismos pasos por la API."""
 
     def _preparar(self, oraculo: dict[str, Any]) -> None:
         self.valores = escenario_surdelta(oraculo)
@@ -754,7 +754,7 @@ def huellas_corpus() -> dict[str, str]:
 
 
 def verificar_corpus(oraculo: dict[str, Any]) -> dict[str, str]:
-    """Rechaza un corpus que no coincide con las huellas del oráculo (PD-07)."""
+    """Rechaza un corpus que no coincide con las huellas del oráculo."""
     huellas = huellas_corpus()
     for archivo, huella in huellas.items():
         if oraculo["archivos_pdf"][archivo]["sha256"] != huella:
@@ -786,7 +786,7 @@ def main(argumentos: list[str] | None = None) -> int:
         "--escenario",
         choices=("pd07", "surdelta"),
         default="pd07",
-        help="pd07 (predeterminado) o la cartera SurDelta (DO-2026-11-09-DEMO-SURDELTA)",
+        help="pd07 (predeterminado) o la cartera SurDelta",
     )
     opciones = analizador.parse_args(argumentos)
     usuarios = dict(u.split("=", 1) for u in opciones.usuarios)

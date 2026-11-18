@@ -25,7 +25,7 @@ class AlmacenDocumental(Protocol):
         ...
 
     def url_lectura(self, clave: str, vigencia_s: int, nombre: str) -> str:
-        """URL prefirmada de GET para consultar el original (HU-04, DO-2026-10-22-WEB F4)."""
+        """URL prefirmada de GET para consultar el original (HU-04)."""
         ...
 
     def metadatos(self, clave: str) -> MetadatosObjeto | None:

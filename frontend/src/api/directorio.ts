@@ -1,5 +1,5 @@
 /**
- * Nombres visibles de las personas (WEB F5). Los pedidos de un mismo ciclo de renderizado se
+ * Nombres visibles de las personas. Los pedidos de un mismo ciclo de renderizado se
  * agrupan en una sola llamada a `/usuarios/directorio`.
  */
 import { useQuery } from "@tanstack/react-query";

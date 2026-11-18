@@ -1,5 +1,5 @@
 variable "region" {
-  description = "Región principal (RC-P10-01)"
+  description = "Región principal"
   type        = string
   default     = "us-east-1"
 }

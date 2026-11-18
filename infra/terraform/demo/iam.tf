@@ -1,4 +1,4 @@
-# Roles de ejecución mínimos por función (RC-P10, AGENTS.md §3). Ninguno administra
+# Roles de ejecución mínimos por función (AGENTS.md §3). Ninguno administra
 # infraestructura: solo el procesamiento funcional de la tesis.
 
 data "aws_iam_policy_document" "confianza_lambda" {
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "api" {
     ]
   }
   statement {
-    sid       = "LeerMantenimiento" # solo lectura: nunca lo modifica (RC-P10-09)
+    sid       = "LeerMantenimiento" # solo lectura: nunca lo modifica
     actions   = ["s3:GetObject"]
     resources = ["${local.bucket_arn}/control/mantenimiento.json"]
   }
@@ -143,7 +143,7 @@ data "aws_iam_policy_document" "operaciones" {
     resources = [local.arn_maquina]
   }
   statement {
-    sid       = "LeerMantenimiento" # fotos de la demo solo en `offline` (DO-2026-11-09-ESTADOS-DEMO)
+    sid       = "LeerMantenimiento" # fotos de la demo solo en `offline`
     actions   = ["s3:GetObject"]
     resources = ["${local.bucket_arn}/control/mantenimiento.json"]
   }
@@ -163,7 +163,7 @@ data "aws_iam_policy_document" "reconciliador" {
     resources = ["${replace(local.arn_maquina, ":stateMachine:", ":execution:")}:*"]
   }
   statement {
-    sid       = "LeerMantenimiento" # no actúa fuera de `active` (RC-P08.12)
+    sid       = "LeerMantenimiento" # no actúa fuera de `active`
     actions   = ["s3:GetObject"]
     resources = ["${local.bucket_arn}/control/mantenimiento.json"]
   }
@@ -200,7 +200,7 @@ resource "aws_iam_role_policy" "lambda" {
   policy   = local.politicas[each.key]
 }
 
-# --- Step Functions: solo invoca las dos funciones de su entorno (RC-P10-05) -----------
+# --- Step Functions: solo invoca las dos funciones de su entorno -----------
 
 data "aws_iam_policy_document" "confianza_sfn" {
   statement {

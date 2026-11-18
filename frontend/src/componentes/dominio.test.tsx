@@ -13,7 +13,7 @@ import { TarjetaControl, ValorSugerido, ValorValidado } from "./dominio";
 const conConsultas = (nodo: ReactNode) =>
   render(<QueryClientProvider client={new QueryClient()}>{nodo}</QueryClientProvider>);
 
-describe("sugerencia de la IA frente a valor validado (RF-12, WEB)", () => {
+describe("sugerencia de la IA frente a valor validado (RF-12)", () => {
   it("rotula la sugerencia y marca la simulación local solo cuando corresponde", () => {
     const { rerender } = render(<ValorSugerido campo="vigencia_hasta" valor="2027-02-28" modelo="us.anthropic.claude-haiku" />);
     expect(screen.getByText("Sugerido")).toBeInTheDocument();

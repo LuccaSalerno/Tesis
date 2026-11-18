@@ -1,9 +1,8 @@
-"""Sugerencia de versión nueva y firma digital simulada (DO-2026-10-23-VER).
+"""Sugerencia de versión nueva y firma digital simulada.
 
 Revisión: 0012
 Anterior: 0011
-Trazabilidad: RF-06, RF-07, RF-23, RN-11, RN-12, RN-15, Figura 5.4 (`FIRMA_SIMULADA`),
-PD-04 (PD-04-013), DO-2026-10-23-VER (P2, P4, P5, P6).
+Trazabilidad: RF-06, RF-07, RF-23, RN-11, RN-12, RN-15, Figura 5.4 (`FIRMA_SIMULADA`).
 
 - `sugerencia_version` (técnica +): relación de versión sugerida al procesar un archivo
   pendiente, con su criterio explicable y su resolución por el responsable. Solo cambian

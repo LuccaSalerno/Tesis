@@ -3,19 +3,18 @@
 Revisión: 0009
 Anterior: 0008
 Trazabilidad: Figura 5.4 (CICLO_REVISION, CICLO_REVISION_VERSION, TAREA, DECISION,
-DECISION_CONTROL), RF-17 a RF-20, RN-07, RN-08, RN-09, RN-12, RN-13, PD-02, PD-05,
-RC-P03, DO-2026-10-22-TAR, PD-04 (PD-04-011).
+DECISION_CONTROL), RF-17 a RF-20, RN-07, RN-08, RN-09, RN-12, RN-13.
 
 - `plantilla_flujo` y `plantilla_flujo_paso` (técnicas): flujos configurados por el
-  administrador (RC-P03.1). Inmutables salvo la desactivación; a lo sumo una activa por
+  administrador. Inmutables salvo la desactivación; a lo sumo una activa por
   alcance.
 - `ciclo_revision`: agregados la plantilla usada, quién confirmó el flujo y cuándo, y cuándo
   concluyó. Un solo ciclo en curso por trámite. Solo cambian el estado y la conclusión, y
   únicamente en_curso → aprobado | observado | desplazado.
 - `ciclo_revision_version`: versiones consideradas; inmutable y del mismo trámite.
 - `tarea`: agregados nombre y fechas. Estados `en_espera`, `pendiente`, `aprobada`,
-  `observada`, `anulada` (PD-05.4) y `descartada`. Nunca asignada al responsable del trámite
-  (RC-P03.3).
+  `observada`, `anulada` y `descartada`. Nunca asignada al responsable del trámite
+.
 - `asignacion_tarea` (técnica): cada asignación o reasignación (RF-19).
 - `decision` (una por tarea; la observación exige motivo) y `decision_control`: inmutables.
 """

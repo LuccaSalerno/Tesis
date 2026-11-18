@@ -1,7 +1,7 @@
 """Herramientas del operador: seed, exportación de evidencia y vaciado de buckets.
 
-DO-2026-10-22-OPS (P8, P11, P12), PD-07. Contra la API local real (PostgreSQL y moto), con
-el procesamiento de respuestas fijas (DIF-43): no contactan AWS.
+Contra la API local real (PostgreSQL y moto), con el
+procesamiento de respuestas fijas: no contactan AWS.
 """
 
 import json
@@ -79,7 +79,7 @@ def entorno(base_migrada: Configuracion, motor_aplicacion: Engine) -> Iterator[d
             # Todo se procesa con el contrato fijo: O-v1 y F-v2 quedan sugeridos como
             # contrato y la semilla los corrige al tipo del oráculo. O-v2 se sugiere como
             # orden con el número estable del oráculo v2, para que RF-06 la relacione con
-            # O-v1 por su número (DIF-84).
+            # O-v1 por su número.
             for archivo in archivos:
                 with motor_aplicacion.connect() as conexion:
                     nombre, titulo, estado, intento = conexion.execute(
@@ -148,7 +148,7 @@ def _manifiesto() -> sembrar_demo.Manifiesto:
 
 
 @pytest.mark.integracion
-def test_p11_semilla_completa_por_api_y_p12_exportacion(
+def test_semilla_completa_por_api_y_p12_exportacion(
     entorno: dict[str, Any], tmp_path: Path
 ) -> None:
     manifiesto = sembrar_demo.Sembrador(
@@ -158,7 +158,7 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     observado, en_vivo = manifiesto.tramites["observado"], manifiesto.tramites["en_vivo"]
     assert observado["estado"] == "observado" and len(observado["decisiones"]) == 2
     assert en_vivo["estado"] == "borrador" and set(en_vivo["documentos"]) == {"C-v1"}
-    # DO-2026-10-23-VER P9: EVD-B completo hasta la firma.
+    # EVD-B completo hasta la firma.
     cerrado = manifiesto.tramites["cerrado"]
     assert cerrado["estado"] == "cerrado" and cerrado["criterio_version"] == "numero"
     assert cerrado["controles"]["R3"] == "advertencia"
@@ -166,8 +166,8 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
     assert cerrado["validaciones"]["O-v2"]["fecha"] == "sin_sugerencia"
     assert cerrado["firma"]["version_id"] != cerrado["version_nueva"]
     assert len(cerrado["decisiones_2"]) == 2
-    assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"  # RF-26 (CIERRE P11)
-    # PD-07, conjunto C-v1 + O-v1 + F-v2: solo R3 advierte.
+    assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"  # RF-26
+    # conjunto C-v1 + O-v1 + F-v2: solo R3 advierte.
     assert observado["controles"] == {
         "R1": "cumplimiento",
         "R2": "cumplimiento",
@@ -214,7 +214,7 @@ def test_p11_semilla_completa_por_api_y_p12_exportacion(
 
 
 @pytest.mark.integracion
-def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
+def test_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
     entorno: dict[str, Any], tmp_path: Path
 ) -> None:
     """Sesión del 24/10: Textract rechazó el token de trabajos del trámite en vivo y del
@@ -248,7 +248,7 @@ def test_p11_un_fallo_detiene_la_semilla_y_reanudar_completa_sin_ocultarlo(
     assert cerrado["criterio_version"] == "numero"
     assert manifiesto.tramites["cancelado"]["estado"] == "cancelado"
     assert not fallos
-    # P12: el reemplazado también se exporta, con su cancelación.
+    # El reemplazado también se exporta, con su cancelación.
     resumen = exportar_evidencia.exportar(entorno["api"], manifiesto.__dict__, tmp_path)
     exportado = tmp_path / f"tramites/reemplazado-{incompleto['id']}/tramite.json"
     assert json.loads(exportado.read_text())["estado"] == "cancelado"
@@ -266,7 +266,7 @@ def _manifiesto_surdelta() -> sembrar_demo.Manifiesto:
 
 @pytest.mark.integracion
 def test_demo_surdelta_semilla_completa_por_api(entorno: dict[str, Any]) -> None:
-    """DO-2026-11-09-DEMO-SURDELTA: la cartera de SurDelta con las reglas reales."""
+    """La cartera de SurDelta con las reglas reales."""
     sembrador = sembrar_demo.SembradorSurDelta(
         entorno["api"], _manifiesto_surdelta(), ORACULO_SD, entorno["procesar"]
     )
@@ -361,7 +361,7 @@ def test_demo_surdelta_main_elige_el_escenario(
     assert guardado["corpus"] == sembrar_demo.huellas_surdelta(ORACULO_SD)
 
 
-def test_p11_reanudar_exige_el_observado_completo() -> None:
+def test_reanudar_exige_el_observado_completo() -> None:
     class Api:
         def get(self, ruta: str, *_: Any) -> dict[str, str]:
             return {"operacion": "active"}
@@ -370,7 +370,7 @@ def test_p11_reanudar_exige_el_observado_completo() -> None:
         sembrar_demo.Sembrador(Api(), _manifiesto(), ORACULO).reanudar()  # type: ignore[arg-type]
 
 
-def test_p11_no_siembra_fuera_de_active() -> None:
+def test_no_siembra_fuera_de_active() -> None:
     def transporte(*_: Any) -> tuple[int, bytes]:
         return 200, json.dumps({"operacion": "offline"}).encode()
 
@@ -379,14 +379,14 @@ def test_p11_no_siembra_fuera_de_active() -> None:
         sembrar_demo.Sembrador(api, _manifiesto(), ORACULO).ejecutar()
 
 
-def test_pd_07_la_semilla_rechaza_un_corpus_alterado() -> None:
+def test_la_semilla_rechaza_un_corpus_alterado() -> None:
     alterado = json.loads(json.dumps(ORACULO))
     alterado["archivos_pdf"]["F-v2_Factura.pdf"]["sha256"] = "0" * 64
     with pytest.raises(RuntimeError, match=r"F-v2_Factura\.pdf"):
         sembrar_demo.verificar_corpus(alterado)
 
 
-def test_p11_escenario_cubre_todos_los_campos_del_esquema() -> None:
+def test_escenario_cubre_todos_los_campos_del_esquema() -> None:
     from atlas.dominio.enumeraciones import TipoDocumental
     from atlas.procesamiento import esquemas
 
@@ -397,7 +397,7 @@ def test_p11_escenario_cubre_todos_los_campos_del_esquema() -> None:
         )
 
 
-def test_p11_esperar_procesamiento_termina_o_vence(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_esperar_procesamiento_termina_o_vence(monkeypatch: pytest.MonkeyPatch) -> None:
     respuestas = iter(
         [
             [{"id": 1, "trabajo": {"estado": "en_ejecucion"}}],
@@ -420,7 +420,7 @@ def test_p11_esperar_procesamiento_termina_o_vence(monkeypatch: pytest.MonkeyPat
         sembrar_demo.esperar_procesamiento(Trabado(), 1, [1], maximo_s=0)  # type: ignore[arg-type]
 
 
-def test_p11_main_valida_argumentos_y_guarda_el_resultado(
+def test_main_valida_argumentos_y_guarda_el_resultado(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     base = ["--url-api", "https://api.ejemplo", "--sesion", "s", "--cliente-cognito", "c"]
@@ -465,7 +465,7 @@ def test_p11_main_valida_argumentos_y_guarda_el_resultado(
 # --- Cliente HTTP y tokens ---------------------------------------------------------------
 
 
-def test_p10_tokens_de_cognito_desde_la_terminal(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_tokens_de_cognito_desde_la_terminal(monkeypatch: pytest.MonkeyPatch) -> None:
     class Idp:
         def __init__(self) -> None:
             self.llamadas: list[dict[str, Any]] = []
@@ -485,11 +485,11 @@ def test_p10_tokens_de_cognito_desde_la_terminal(monkeypatch: pytest.MonkeyPatch
     assert idp.llamadas[0]["AuthFlow"] == "USER_PASSWORD_AUTH"
 
 
-def test_p11_sub_del_token() -> None:
+def test_sub_del_token() -> None:
     assert sub_del_token(CLAVES_PRUEBA.emitir("sub-ficticio")) == "sub-ficticio"
 
 
-def test_p11_transporte_solo_https_o_local(moto_local: str) -> None:
+def test_transporte_solo_https_o_local(moto_local: str) -> None:
     with pytest.raises(ValueError, match="Solo HTTPS"):
         transporte_urllib("GET", "http://api.ejemplo/salud", {}, None)
     estado, _ = transporte_urllib(
@@ -498,7 +498,7 @@ def test_p11_transporte_solo_https_o_local(moto_local: str) -> None:
     assert estado == 404
 
 
-def test_p11_cliente_informa_metodo_ruta_y_estado_sin_cuerpo() -> None:
+def test_cliente_informa_metodo_ruta_y_estado_sin_cuerpo() -> None:
     def transporte(*_: Any) -> tuple[int, bytes]:
         return 409, b'{"detalle": "dato documental"}'
 
@@ -510,7 +510,7 @@ def test_p11_cliente_informa_metodo_ruta_y_estado_sin_cuerpo() -> None:
         api.transferir("http://127.0.0.1:9/x", {}, b"")
 
 
-def test_p12_main_de_exportacion(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_main_de_exportacion(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     manifiesto = tmp_path / "m.json"
     manifiesto.write_text(
         json.dumps(
@@ -542,7 +542,7 @@ def test_p12_main_de_exportacion(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     assert exportar_evidencia.main([*base, "--salida", str(tmp_path / "otra")]) == 1
 
 
-# --- Vaciado de buckets versionados (P8) -------------------------------------------------
+# --- Vaciado de buckets versionados -------------------------------------------------
 
 
 @pytest.fixture
@@ -565,7 +565,7 @@ def _bucket(s3: Any, etiquetas: dict[str, str] | None) -> str:
     return nombre
 
 
-def test_p8_simula_por_defecto_y_borra_todas_las_versiones(s3: Any) -> None:
+def test_simula_por_defecto_y_borra_todas_las_versiones(s3: Any) -> None:
     bucket = _bucket(s3, {"proyecto": "atlas", "entorno": "demo", "raiz": "persistent"})
     simulado = vaciar_bucket_versionado.vaciar(s3, bucket, ejecutar=False)
     assert (simulado.versiones, simulado.marcadores, simulado.eliminados) == (2, 1, 0)
@@ -585,7 +585,7 @@ def test_p8_simula_por_defecto_y_borra_todas_las_versiones(s3: Any) -> None:
     "etiquetas",
     [None, {"proyecto": "atlas", "raiz": "bootstrap"}, {"proyecto": "otro", "entorno": "demo"}],
 )
-def test_p8_se_niega_fuera_de_la_demo_y_con_el_estado_remoto(
+def test_se_niega_fuera_de_la_demo_y_con_el_estado_remoto(
     s3: Any, etiquetas: dict[str, str] | None
 ) -> None:
     bucket = _bucket(s3, etiquetas)
@@ -593,7 +593,7 @@ def test_p8_se_niega_fuera_de_la_demo_y_con_el_estado_remoto(
     assert len(s3.list_object_versions(Bucket=bucket)["Versions"]) == 2
 
 
-# --- Semilla local de desarrollo (WEB F8, F9) --------------------------------------------
+# --- Semilla local de desarrollo --------------------------------------------
 
 
 @pytest.mark.integracion

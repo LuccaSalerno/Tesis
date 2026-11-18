@@ -1,7 +1,7 @@
-"""Pasos de `validacion_humana.feature`: punto de demo A (DO-2026-10-22-BDD, DO-2026-10-22-VAL).
+"""Pasos de `validacion_humana.feature`: punto de demo A.
 
 Contra la API autenticada y PostgreSQL real; el procesamiento usa respuestas fijas con
-las páginas del oráculo preliminar PD-07 (P1 de DO-2026-10-22-PROC).
+las páginas del oráculo de la cadena de evidencia.
 """
 
 from typing import Any

@@ -23,7 +23,7 @@ variable "paquete_lambda" {
 }
 
 variable "version_codigo" {
-  description = "Commit desplegado (RC-P10-11: versión identificable)"
+  description = "Commit desplegado (: versión identificable)"
   type        = string
 }
 
@@ -43,7 +43,7 @@ variable "usuario_bd_migracion" {
 }
 
 variable "perfil_generativo" {
-  description = "Perfil geográfico de EE. UU. de Claude Haiku 4.5 (RC-P09)"
+  description = "Perfil geográfico de EE. UU. de Claude Haiku 4.5"
   type        = string
   default     = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
 }
@@ -65,7 +65,7 @@ variable "modelo_embeddings" {
 }
 
 variable "origenes_web" {
-  description = "Orígenes de la aplicación web (CORS de API Gateway), p. ej. http://localhost:4173; vacío: sin CORS (DO-2026-10-22-WEB F7)"
+  description = "Orígenes de la aplicación web (CORS de API Gateway), p. ej. http://localhost:4173; vacío: sin CORS"
   type        = list(string)
   default     = []
 }
@@ -87,13 +87,13 @@ variable "retencion_registros_dias" {
 }
 
 variable "limite_concurrencia" {
-  description = "Trabajos de procesamiento simultáneos (RC-P08.5: 10 en demo, 5 en tests)"
+  description = "Trabajos de procesamiento simultáneos (: 10 en demo, 5 en tests)"
   type        = number
   default     = 10
 }
 
 variable "reconciliador_habilitado" {
-  description = "Programación del reconciliador cada 5 minutos (RC-P08.3); false la pausa"
+  description = "Programación del reconciliador cada 5 minutos; false la pausa"
   type        = bool
   default     = true
 }

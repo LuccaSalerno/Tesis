@@ -1,8 +1,8 @@
-"""Punto de entrada de la API en AWS Lambda detrás de API Gateway (§5.4.2, DO-2026-10-22-OPS P5).
+"""Punto de entrada de la API en AWS Lambda detrás de API Gateway (§5.4.2).
 
 Mangum traduce los eventos de API Gateway HTTP API (payload 2.0) a ASGI. La aplicación
 se crea una vez por contenedor con la configuración del despliegue: el entorno nunca se
-elige por la petición (RC-P10-05).
+elige por la petición.
 """
 
 import asyncio

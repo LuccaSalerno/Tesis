@@ -13,13 +13,13 @@ variable "bucket_estado" {
 }
 
 variable "usuario_bd_aplicacion" {
-  description = "Usuario PostgreSQL de aplicación del entorno (RC-P10-03)"
+  description = "Usuario PostgreSQL de aplicación del entorno"
   type        = string
   default     = "atlas_demo_app"
 }
 
 variable "endpoint_secrets_manager" {
-  description = "Endpoint temporal: solo durante la inicialización privilegiada (RC-P10-15)"
+  description = "Endpoint temporal: solo durante la inicialización privilegiada"
   type        = bool
   default     = true
 }

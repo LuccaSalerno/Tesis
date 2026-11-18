@@ -1,6 +1,6 @@
-"""Modo mantenimiento (RC-P10-09, V-MT) y despliegue en Lambda (DO-2026-10-22-OPS P2, P4, P5).
+"""Modo mantenimiento (V-MT) y despliegue en Lambda.
 
-Sin AWS: el objeto de control vive en el S3 simulado por moto (DT-AWS-01).
+Sin AWS: el objeto de control vive en el S3 simulado por moto.
 """
 
 import asyncio
@@ -34,7 +34,7 @@ class Reloj:
         return self.ahora
 
 
-def test_rc_p10_09_lector_usa_cache_y_deniega_lo_ilegible() -> None:
+def test_lector_usa_cache_y_deniega_lo_ilegible() -> None:
     contenido = {"valor": b'{"estado": "draining"}'}
     lecturas: list[int] = []
 
@@ -53,7 +53,7 @@ def test_rc_p10_09_lector_usa_cache_y_deniega_lo_ilegible() -> None:
     assert len(lecturas) == 2
 
 
-def test_rc_p10_09_objeto_ausente_se_deniega(capsys: pytest.CaptureFixture[str]) -> None:
+def test_objeto_ausente_se_deniega(capsys: pytest.CaptureFixture[str]) -> None:
     def leer() -> bytes:
         raise KeyError("NoSuchKey")
 
@@ -76,7 +76,7 @@ def test_rc_p10_09_objeto_ausente_se_deniega(capsys: pytest.CaptureFixture[str])
         (None, "GET", "/salud", True),
     ],
 )
-def test_rc_p10_09_matriz_de_admision(
+def test_matriz_de_admision(
     estado: EstadoOperativo | None, metodo: str, ruta: str, esperado: bool
 ) -> None:
     assert admite(estado, metodo, ruta) is esperado
@@ -146,12 +146,12 @@ def test_v_mt_active_opera_normalmente(control_s3: Any) -> None:
         ),
     ],
 )
-def test_rc_p10_demo_exige_iam_tls_y_mantenimiento(campos: dict[str, Any], mensaje: str) -> None:
+def test_demo_exige_iam_tls_y_mantenimiento(campos: dict[str, Any], mensaje: str) -> None:
     with pytest.raises(ErrorConfiguracion, match=mensaje):
         configuracion_sin_base(**campos).validar_despliegue()
 
 
-def test_rc_p10_04_cada_conexion_usa_un_token_iam_y_tls_verificado() -> None:
+def test_cada_conexion_usa_un_token_iam_y_tls_verificado() -> None:
     configuracion = configuracion_sin_base(
         bd_autenticacion="iam",
         bd_ca_certificados="/opt/rds/global-bundle.pem",
@@ -181,7 +181,7 @@ def test_rc_p10_04_cada_conexion_usa_un_token_iam_y_tls_verificado() -> None:
     migracion.dispose()
 
 
-def test_rc_p10_04_el_generador_firma_sin_contactar_aws(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_el_generador_firma_sin_contactar_aws(monkeypatch: pytest.MonkeyPatch) -> None:
     from atlas.persistencia.motor import generador_token_iam
 
     monkeypatch.setenv("AWS_ACCESS_KEY_ID", "testing")
@@ -213,7 +213,7 @@ def evento_http_api(metodo: str, ruta: str) -> dict[str, Any]:
     }
 
 
-def test_do_ops_p5_la_api_responde_eventos_de_api_gateway(
+def test_la_api_responde_eventos_de_api_gateway(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from atlas import lambda_api
@@ -235,7 +235,7 @@ def test_do_ops_p5_la_api_responde_eventos_de_api_gateway(
     lambda_api._manejador.cache_clear()
 
 
-def test_dif_98_verificacion_previa_antes_del_mantenimiento(control_s3: Any) -> None:
+def test_verificacion_previa_antes_del_mantenimiento(control_s3: Any) -> None:
     cliente = control_s3("offline")
     previa = cliente.options("/tramites", headers={"Access-Control-Request-Method": "POST"})
     assert previa.status_code == 204

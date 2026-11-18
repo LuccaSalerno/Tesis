@@ -50,7 +50,7 @@ export const ESTADO_CICLO: Catalogo<EstadoCiclo> = {
 
 export const ESTADO_TRABAJO: Catalogo<EstadoTrabajo> = {
   pendiente: { rotulo: "En cola", tono: "neutro" },
-  // RC-P08.13: la espera por capacidad no es un error.
+  // La espera por capacidad no es un error.
   en_espera: { rotulo: "En espera de capacidad", tono: "neutro" },
   en_ejecucion: { rotulo: "Procesando", tono: "info" },
   completado: { rotulo: "Procesado", tono: "exito" },
@@ -163,20 +163,20 @@ export const ACCION: Record<string, string> = {
   cuenta_suprimida: "Cuenta suprimida",
 };
 
-/** Criterio explicable de la versión nueva sugerida (RF-06, DO-2026-10-23-VER P1). */
+/** Criterio explicable de la versión nueva sugerida (RF-06). */
 export const CRITERIO_VERSION: Record<CriterioVersion, string> = {
   numero: "coincide el número documental",
   cuit: "coincide el CUIT",
 };
 
-/** Rótulo obligatorio de la firma (RF-23, P6): nunca se presenta como firma jurídica. */
+/** Rótulo obligatorio de la firma (RF-23): nunca se presenta como firma jurídica. */
 export const LEYENDA_FIRMA = "Firma digital simulada — sin validez jurídica";
 
 export function rotuloAccion(accion: string): string {
   return ACCION[accion] ?? accion.replaceAll("_", " ");
 }
 
-/** Prefijo con que el procesamiento simulado (WEB F9) rotula sus sugerencias. */
+/** Prefijo con que el procesamiento simulado rotula sus sugerencias. */
 const PREFIJO_SIMULACION = "simulacion-local";
 
 export function esSimulado(modelo: string | null | undefined): boolean {

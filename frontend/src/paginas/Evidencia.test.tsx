@@ -7,7 +7,7 @@ import { renderizarEn, simularApi } from "@/pruebas/entorno";
 
 import { Evidencia } from "./Evidencia";
 
-describe("Evidencia de la decisión (PD-03, V1 a V4)", () => {
+describe("Evidencia de la decisión (V1 a V4)", () => {
   it("responde quién, cuándo, qué y por qué, y resalta las entradas de un control", async () => {
     simularApi({
       "/decisiones/7/evidencia": evidencia,

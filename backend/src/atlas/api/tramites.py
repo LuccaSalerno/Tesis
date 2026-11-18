@@ -1,9 +1,9 @@
-"""Trámites, cargas e incorporación (RF-03, RF-04, RF-05, RF-07, RC-P04). Rutas: RC-P01-004.
+"""Trámites, cargas e incorporación (RF-03, RF-04, RF-05, RF-07).
 
 Permisos (Tabla 3.II): crear trámites, cargar e incorporar requieren el rol de
 responsable del trámite y ser el responsable de ese trámite. Las consultas también
 las hace el revisor/aprobador con una tarea asignada, limitadas a las versiones de sus
-ciclos (DO-2026-10-22-TAR, P8). Un trámite sin acceso responde 404, igual que uno
+ciclos. Un trámite sin acceso responde 404, igual que uno
 inexistente.
 """
 
@@ -169,7 +169,7 @@ class CargaRespuesta(BaseModel):
 class TrabajoRespuesta(BaseModel):
     estado: EstadoTrabajo
     intento: int
-    # OP-02: duración del trabajo con tiempos del servidor (DO-2026-10-23-E90-API P4).
+    # OP-02: duración del trabajo con tiempos del servidor.
     creado_en: datetime
     ejecucion_iniciada_en: datetime | None
     actualizado_en: datetime
@@ -207,9 +207,7 @@ class ArchivoRespuesta(BaseModel):
     huella: str
     estado_incorporacion: EstadoIncorporacion
     cargado_en: datetime
-    vence_en: datetime | None = Field(
-        description="Límite para incorporar una carga pendiente (DO-2026-10-22-CARGAS)"
-    )
+    vence_en: datetime | None = Field(description="Límite para incorporar una carga pendiente")
     trabajo: TrabajoRespuesta | None
     sugerencia_version: SugerenciaVersionRespuesta | None = None
 
@@ -354,7 +352,7 @@ def reintentar_procesamiento(
     limite_concurrencia: LimiteConcurrencia,
     solicitud_id: SolicitudId,
 ) -> ArchivoRespuesta:
-    """Intento nuevo tras un fallo definitivo (RNF-06, RC-P08.4; DO-2026-10-23-REC P6)."""
+    """Intento nuevo tras un fallo definitivo (RNF-06)."""
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id)
     archivo, trabajo = cargas.reintentar(
         sesion,
@@ -456,10 +454,10 @@ def incorporar_archivo(
 ) -> DocumentoRespuesta:
     """RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.
 
-    La carga debe estar vigente (24 h, DO-2026-10-22-CARGAS); el original se traslada
+    La carga debe estar vigente (24 h); el original se traslada
     al prefijo definitivo de S3 antes de registrar la versión.
     """
-    # PD-05.2: las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
+    # Las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     documento, version = cargas.incorporar_como_documento_nuevo(
         sesion,
@@ -489,8 +487,8 @@ def incorporar_version(
     solicitud_id: SolicitudId,
 ) -> DocumentoRespuesta:
     """RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la
-    nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
-    (DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo."""
+        nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
+    . Rechazar la relación es incorporarlo como documento nuevo."""
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     documento, version = cargas.incorporar_como_version(
         sesion,
@@ -530,7 +528,7 @@ def descartar_archivo(
 
 
 async def responder_archivo_rechazado(_: Request, error: Exception) -> JSONResponse:
-    """RC-P04: 422 con la causa y la acción necesaria; el archivo no produce efectos."""
+    """422 con la causa y la acción necesaria; el archivo no produce efectos."""
     if not isinstance(error, ArchivoRechazado):
         raise error
     return JSONResponse(
@@ -588,7 +586,7 @@ def _sugerencia(valor: ValorSugerido, fuente: ReferenciaFuente | None) -> Sugere
     )
 
 
-# --- Validación humana (hito 1.5, RF-09, RF-12, DO-2026-10-22-VAL) --------------------
+# --- Validación humana (hito 1.5, RF-09, RF-12) --------------------
 
 
 class FuenteEntrada(BaseModel):
@@ -717,7 +715,7 @@ def registrar_validacion(
     solicitud_id: SolicitudId,
 ) -> ValidacionRegistradaRespuesta:
     """RF-09 y RF-12: confirma o corrige la clasificación o un campo de la versión vigente."""
-    # PD-05.2: las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
+    # Las operaciones que cambian el trámite lo bloquean mientras se ejecutan.
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     registrada = validaciones.registrar(
         sesion,
@@ -738,7 +736,7 @@ def registrar_validacion(
     )
 
 
-# --- Archivo original de una versión (HU-04, DO-2026-10-22-WEB F4) ---------------------
+# --- Archivo original de una versión (HU-04) ---------------------
 
 
 VIGENCIA_URL_LECTURA_S = 300
@@ -760,7 +758,7 @@ def consultar_archivo_de_version(
     tramite_id: int, version_id: int, usuario: Autenticado, sesion: Sesion, almacen: Almacen
 ) -> ArchivoVersionRespuesta:
     """URL de lectura breve del original, con las mismas reglas de acceso que las demás
-    consultas: el responsable, o el revisor para las versiones de sus ciclos (P8)."""
+    consultas: el responsable, o el revisor para las versiones de sus ciclos."""
     acceso = acceso_de_consulta(sesion, tramite_id, usuario)
     fila = sesion.execute(
         select(VersionDocumental, Archivo)

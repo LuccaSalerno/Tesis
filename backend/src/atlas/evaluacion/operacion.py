@@ -1,4 +1,4 @@
-"""Campañas contra la API desplegada: latencia IA-M08 y carga §6.3.4 (DO-2026-10-23-E90-API).
+"""Campañas contra la API desplegada: latencia IA-M08 y carga §6.3.4.
 
 La ejecuta el operador con la sesión E90A en `active` y las cuentas de la semilla. Pasos sobre
 `evaluacion/campanas/<id>/`:
@@ -6,7 +6,7 @@ La ejecuta el operador con la sesión E90A en `active` y las cuentas de la semil
     iniciar → cargar → red → latencia (un bloque por modelo y repetición) → carga → metricas
 
 Entre bloques de distinto modelo, el operador reaplica `demo` con `perfil_generativo` y
-`modelo_generativo` (P5), en el orden H, S │ S, H │ H, S. La clave del responsable sale de
+`modelo_generativo`, en el orden H, S │ S, H │ H, S. La clave del responsable sale de
 `ATLAS_SEED_CLAVE_RESPONSABLE`; los tokens viven en memoria.
 """
 
@@ -159,7 +159,7 @@ def ejecutar(argumentos: argparse.Namespace, entorno: Entorno, raiz: Path | None
         return f"bloque_medido:{argumentos.modelo}:{argumentos.repeticion}:{cantidad}"
     if argumentos.paso == "carga":
         corpus = _leer(ruta_corpus) if ruta_corpus.exists() else {}
-        ajuste = seleccionar(oraculos, Modo.ENSAYO)  # P8: siempre la partición de ajuste
+        ajuste = seleccionar(oraculos, Modo.ENSAYO)  # Siempre la partición de ajuste
         api = entorno.cliente(manifiesto)
         if "E01" in corpus:
             tramite_id = corpus["E01"]["tramite_id"]

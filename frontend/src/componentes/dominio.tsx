@@ -1,5 +1,5 @@
 /**
- * Piezas visuales del dominio con un vocabulario fijo (DO-2026-10-22-WEB):
+ * Piezas visuales del dominio con un vocabulario fijo:
  * - la sugerencia de la IA va con borde punteado y el rótulo «Sugerido»;
  * - el valor validado, con borde sólido, quién lo validó y cuándo;
  * - una advertencia de consistencia es información de apoyo, nunca una decisión.

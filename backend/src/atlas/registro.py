@@ -36,7 +36,7 @@ METADATOS_PERMITIDOS: Final = frozenset(
         "versiones_eliminadas",
         "multipartes_abortadas",
         "diferidas",
-        # Reconciliador (DO-2026-10-23-REC): estados técnicos e intentos, sin contenido.
+        # Reconciliador: estados técnicos e intentos, sin contenido.
         "intento",
         "estado",
         "estado_ejecucion",
@@ -46,8 +46,8 @@ METADATOS_PERMITIDOS: Final = frozenset(
         "vencidos",
         "admitidos",
         "sin_resolver",
-        "terminales",  # trabajos en espera de trámites terminales (DO-2026-10-23-CIERRE P3)
-        "eliminada",  # supresión en Cognito: si había cuenta (DO-2026-10-23-CIERRE P7)
+        "terminales",  # trabajos en espera de trámites terminales
+        "eliminada",  # supresión en Cognito: si había cuenta
     }
 )
 

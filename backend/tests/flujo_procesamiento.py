@@ -1,4 +1,4 @@
-"""Recorrido de las etapas del procesamiento con respuestas fijas (P1), compartido por las
+"""Recorrido de las etapas del procesamiento con respuestas fijas, compartido por las
 pruebas de procesamiento, de validación humana y los escenarios BDD."""
 
 import json
@@ -28,7 +28,7 @@ PALABRAS_DEL_DOCUMENTO = ("Servicios Integrales", "1.250.000", "30-96472518-3", 
 
 
 class AnalizadorFijo:
-    """Sustituto de Textract con resultado fijo (P1)."""
+    """Sustituto de Textract con resultado fijo."""
 
     def __init__(self, paginas: list[Any]) -> None:
         self.paginas = paginas
@@ -174,7 +174,7 @@ PAGINAS_C_V1 = [
 
 
 def extraccion_c_v1_pdf() -> dict[str, Any]:
-    """Campos de C-v1 con las páginas del oráculo preliminar PD-07 (ubicacion_campos)."""
+    """Campos de C-v1 con las páginas del oráculo de la cadena de evidencia (ubicacion_campos)."""
     from tests.procesamiento_fijo import dato
 
     return {

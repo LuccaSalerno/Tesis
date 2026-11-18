@@ -1,8 +1,8 @@
-"""Cuentas de usuario y roles (RF-25, RC-P03.2). Rutas y esquemas: RC-P01-003.
+"""Cuentas de usuario y roles (RF-25).
 
 Todas las operaciones, salvo `GET /usuarios/yo` y `GET /usuarios/directorio`, requieren
 el rol de administrador operativo (Tabla 3.II). El directorio expone solo id y nombre
-visible, para mostrar quién actuó (DO-2026-10-22-WEB F5). La supresión (RF-25) requiere la Lambda de
+visible, para mostrar quién actuó. La supresión (RF-25) requiere la Lambda de
 operaciones de Cognito (§5.4.2) y todavía no está implementada.
 """
 
@@ -201,7 +201,7 @@ def cambiar_nombre(
     sesion: Sesion,
     solicitud_id: SolicitudId,
 ) -> CuentaRespuesta:
-    """DO-2026-10-22-WEB F5: nombre que muestra la interfaz; sin efectos de permisos."""
+    """Nombre que muestra la interfaz; sin efectos de permisos."""
     return CuentaRespuesta.desde(
         cuentas.cambiar_nombre(
             sesion,
@@ -228,7 +228,7 @@ def suprimir_cuenta(
 ) -> CuentaRespuesta:
     """RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las
     intervenciones conservan el identificador interno. Irreversible; no sobre la propia
-    cuenta (DO-2026-10-23-CIERRE P6)."""
+    cuenta."""
     return CuentaRespuesta.desde(
         cuentas.suprimir(
             sesion, gestor, actor_id=admin.id, usuario_id=usuario_id, solicitud_id=solicitud_id

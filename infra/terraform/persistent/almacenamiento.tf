@@ -1,6 +1,6 @@
-# Bucket documental de la sesión (RC-P10-06): originales, cargas temporales, resultados por
+# Bucket documental de la sesión: originales, cargas temporales, resultados por
 # trabajo e intento y el objeto de control de mantenimiento. Nunca force_destroy: se vacía
-# con `python -m atlas.herramientas.vaciar_bucket_versionado` antes del plan de retiro (P8).
+# con `python -m atlas.herramientas.vaciar_bucket_versionado` antes del plan de retiro.
 
 resource "aws_s3_bucket" "documentos" {
   bucket = var.nombre_bucket_documentos
@@ -17,7 +17,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "documentos" {
   bucket = aws_s3_bucket.documentos.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256" # SSE-S3 (P9)
+      sse_algorithm = "AES256" # SSE-S3
     }
   }
 }
@@ -63,7 +63,7 @@ resource "aws_s3_bucket_policy" "documentos" {
   policy = data.aws_iam_policy_document.documentos_solo_tls.json
 }
 
-# Réplica literal de atlas.integraciones.ciclo_vida_s3.REGLAS_CICLO_VIDA (DO-2026-10-22-CARGAS).
+# Réplica literal de atlas.integraciones.ciclo_vida_s3.REGLAS_CICLO_VIDA.
 resource "aws_s3_bucket_lifecycle_configuration" "documentos" {
   bucket = aws_s3_bucket.documentos.id
   rule {
@@ -106,7 +106,7 @@ resource "aws_s3_bucket_cors_configuration" "documentos" {
   }
 }
 
-# RC-P10-09: la sesión nace en offline. Solo el operador cambia el estado
+# La sesión nace en offline. Solo el operador cambia el estado
 # (aws s3 cp); Terraform no vuelve a escribirlo.
 resource "aws_s3_object" "control_mantenimiento" {
   bucket       = aws_s3_bucket.documentos.id

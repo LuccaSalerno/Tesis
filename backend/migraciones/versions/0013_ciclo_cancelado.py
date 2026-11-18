@@ -1,8 +1,8 @@
-"""Ciclo de revisión cancelado junto con su trámite (DO-2026-10-23-CIERRE P2).
+"""Ciclo de revisión cancelado junto con su trámite.
 
 Revisión: 0013
 Anterior: 0012
-Trazabilidad: RF-26, RN-14, PD-04 (PD-04-014), DO-2026-10-23-CIERRE (P2).
+Trazabilidad: RF-26, RN-14.
 
 - `ciclo_revision.estado` admite `cancelado`: el responsable canceló el trámite mientras el
   ciclo estaba en curso. Como los demás estados finales, solo se alcanza desde `en_curso` y

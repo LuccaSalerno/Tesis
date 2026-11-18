@@ -1,9 +1,9 @@
-"""Arranque en frío del contenedor de Lambda (IA-M08, DO-2026-10-23-E90-API P4).
+"""Arranque en frío del contenedor de Lambda (IA-M08).
 
 El manejador de Lambda marca cada invocación; la primera de un contenedor es un arranque
 en frío. Fuera de Lambda (uvicorn, pruebas) nunca se marca y el estado es «desconocido».
 Solo es un metadato técnico para separar la latencia de inicialización: no se excluye
-ninguna observación por esta marca (RC-P07.4).
+ninguna observación por esta marca.
 """
 
 from typing import Literal

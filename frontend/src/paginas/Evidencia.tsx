@@ -1,5 +1,5 @@
 /**
- * «Evidencia de la decisión» (PD-03, PD-06, V1 a V4). Parte de una decisión concreta y
+ * «Evidencia de la decisión» (V1 a V4). Parte de una decisión concreta y
  * recorre sus relaciones: tarea → ciclo → versiones consideradas → datos validados vigentes
  * al decidir → controles registrados en DECISION_CONTROL. Todo proviene de un único
  * `GET /decisiones/{id}/evidencia`: la vista no infiere relaciones que la API no devuelva.

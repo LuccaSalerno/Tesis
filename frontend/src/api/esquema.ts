@@ -119,7 +119,7 @@ export interface paths {
         };
         /**
          * Listar Tareas Sin Asignar
-         * @description RC-P03.3.2: tareas abiertas señaladas al administrador; solo metadatos (RF-24).
+         * @description Tareas abiertas señaladas al administrador; solo metadatos (RF-24).
          */
         get: operations["listar_tareas_sin_asignar_tareas_sin_asignar_get"];
         put?: never;
@@ -273,7 +273,7 @@ export interface paths {
          * Incorporar Archivo
          * @description RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.
          *
-         *     La carga debe estar vigente (24 h, DO-2026-10-22-CARGAS); el original se traslada
+         *     La carga debe estar vigente (24 h); el original se traslada
          *     al prefijo definitivo de S3 antes de registrar la versión.
          */
         post: operations["incorporar_archivo_tramites__tramite_id__archivos__archivo_id__incorporacion_post"];
@@ -294,7 +294,7 @@ export interface paths {
         put?: never;
         /**
          * Reintentar Procesamiento
-         * @description Intento nuevo tras un fallo definitivo (RNF-06, RC-P08.4; DO-2026-10-23-REC P6).
+         * @description Intento nuevo tras un fallo definitivo (RNF-06).
          */
         post: operations["reintentar_procesamiento_tramites__tramite_id__archivos__archivo_id__reintento_post"];
         delete?: never;
@@ -336,8 +336,8 @@ export interface paths {
         /**
          * Incorporar Version
          * @description RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la
-         *     nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
-         *     (DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo.
+         *         nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción
+         *     . Rechazar la relación es incorporarlo como documento nuevo.
          */
         post: operations["incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post"];
         delete?: never;
@@ -358,7 +358,7 @@ export interface paths {
         /**
          * Cancelar
          * @description RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de
-         *     admitir decisiones (DO-2026-10-23-CIERRE P1 y P2).
+         *     admitir decisiones.
          */
         post: operations["cancelar_tramites__tramite_id__cancelacion_post"];
         delete?: never;
@@ -435,7 +435,7 @@ export interface paths {
         };
         /**
          * Listar Consultas
-         * @description Historial de las consultas propias en el trámite (DO-2026-10-22-WEB F6).
+         * @description Historial de las consultas propias en el trámite.
          */
         get: operations["listar_consultas_tramites__tramite_id__consultas_get"];
         put?: never;
@@ -627,7 +627,7 @@ export interface paths {
         /**
          * Consultar Archivo De Version
          * @description URL de lectura breve del original, con las mismas reglas de acceso que las demás
-         *     consultas: el responsable, o el revisor para las versiones de sus ciclos (P8).
+         *     consultas: el responsable, o el revisor para las versiones de sus ciclos.
          */
         get: operations["consultar_archivo_de_version_tramites__tramite_id__versiones__version_id__archivo_get"];
         put?: never;
@@ -835,7 +835,7 @@ export interface paths {
         get?: never;
         /**
          * Cambiar Nombre
-         * @description DO-2026-10-22-WEB F5: nombre que muestra la interfaz; sin efectos de permisos.
+         * @description Nombre que muestra la interfaz; sin efectos de permisos.
          */
         put: operations["cambiar_nombre_usuarios__usuario_id__nombre_put"];
         post?: never;
@@ -876,7 +876,7 @@ export interface paths {
          * Suprimir Cuenta
          * @description RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las
          *     intervenciones conservan el identificador interno. Irreversible; no sobre la propia
-         *     cuenta (DO-2026-10-23-CIERRE P6).
+         *     cuenta.
          */
         post: operations["suprimir_cuenta_usuarios__usuario_id__supresion_post"];
         delete?: never;
@@ -898,7 +898,7 @@ export interface components {
         };
         /**
          * AlcancePlantilla
-         * @description A qué trámites se sugiere una plantilla de flujo (RC-P03.1.4, DO-2026-10-22-TAR P2).
+         * @description A qué trámites se sugiere una plantilla de flujo.
          * @enum {string}
          */
         AlcancePlantilla: "contrato" | "general";
@@ -930,7 +930,7 @@ export interface components {
             trabajo: components["schemas"]["TrabajoRespuesta"] | null;
             /**
              * Vence En
-             * @description Límite para incorporar una carga pendiente (DO-2026-10-22-CARGAS)
+             * @description Límite para incorporar una carga pendiente
              */
             vence_en: string | null;
         };
@@ -1113,7 +1113,7 @@ export interface components {
         };
         /**
          * CriterioVersion
-         * @description Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1).
+         * @description Por qué un archivo podría ser versión nueva de un documento (RF-06).
          * @enum {string}
          */
         CriterioVersion: "numero" | "cuit";
@@ -1146,7 +1146,7 @@ export interface components {
             actor_id: number;
             /**
              * Controles Considerados
-             * @description Ejecuciones de reglas registradas en DECISION_CONTROL (PD-02)
+             * @description Ejecuciones de reglas registradas en DECISION_CONTROL
              */
             controles_considerados: number[];
             /**
@@ -1164,7 +1164,7 @@ export interface components {
         };
         /**
          * DisparadorRegla
-         * @description Qué provocó una ejecución de reglas (§5.3.5, DO-2026-10-22-REG P4).
+         * @description Qué provocó una ejecución de reglas (§5.3.5).
          * @enum {string}
          */
         DisparadorRegla: "vinculo" | "validacion";
@@ -1218,7 +1218,7 @@ export interface components {
         };
         /**
          * EstadoCiclo
-         * @description Situación de un ciclo de revisión (RN-09, RN-12, DO-2026-10-22-TAR).
+         * @description Situación de un ciclo de revisión (RN-09, RN-12).
          * @enum {string}
          */
         EstadoCiclo: "en_curso" | "aprobado" | "observado" | "desplazado" | "cancelado";
@@ -1268,16 +1268,16 @@ export interface components {
         EstadoSugerenciaVersion: "pendiente" | "confirmada" | "rechazada" | "descartada";
         /**
          * EstadoTarea
-         * @description Estado de una tarea; no es un estado del trámite (PD-05.4).
+         * @description Estado de una tarea; no es un estado del trámite.
          * @enum {string}
          */
         EstadoTarea: "en_espera" | "pendiente" | "aprobada" | "observada" | "anulada" | "descartada";
         /**
          * EstadoTrabajo
-         * @description Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).
+         * @description Estado técnico del procesamiento de un archivo (§5.3.1).
          *
-         *     Es independiente del estado funcional del trámite. «En espera» (RC-P08.8): registrado
-         *     sin cupo de procesamiento; lo admite el reconciliador (DO-2026-10-23-REC).
+         *     Es independiente del estado funcional del trámite. «En espera»: registrado
+         *     sin cupo de procesamiento; lo admite el reconciliador.
          * @enum {string}
          */
         EstadoTrabajo: "pendiente" | "en_espera" | "en_ejecucion" | "completado" | "fallido";
@@ -1295,7 +1295,7 @@ export interface components {
         EstadoUsuario: "habilitada" | "deshabilitada" | "suprimida";
         /**
          * EstadoVinculo
-         * @description Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica (DO-2026-10-22-REG P2).
+         * @description Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica.
          * @enum {string}
          */
         EstadoVinculo: "pendiente" | "confirmado" | "rechazado" | "eliminado";
@@ -1327,7 +1327,7 @@ export interface components {
         /**
          * EvidenciaRespuesta
          * @description Cadena V1 a V4 desde una decisión. Mismo contrato para la vista, las pruebas EVD-01 y
-         *     la demo (PD-03.4).
+         *     la demo.
          */
         EvidenciaRespuesta: {
             ciclo: components["schemas"]["CicloResumen"];
@@ -1422,7 +1422,7 @@ export interface components {
         };
         /**
          * FormatoArchivo
-         * @description Formatos admitidos (RC-P04).
+         * @description Formatos admitidos.
          * @enum {string}
          */
         FormatoArchivo: "pdf" | "docx";
@@ -1492,13 +1492,13 @@ export interface components {
         };
         /**
          * MotivoAbstencion
-         * @description Por qué una consulta asistida no responde (RF-13, DO-2026-10-22-RAG, P3).
+         * @description Por qué una consulta asistida no responde (RF-13).
          * @enum {string}
          */
         MotivoAbstencion: "evidencia_insuficiente" | "sin_citas_validas" | "sin_fragmentos";
         /**
          * MotivoAusencia
-         * @description Por qué un campo del esquema no tiene valor en la versión (DO-2026-10-22-WEB F10).
+         * @description Por qué un campo del esquema no tiene valor en la versión.
          * @enum {string}
          */
         MotivoAusencia: "no_consta" | "no_aplica";
@@ -1685,7 +1685,7 @@ export interface components {
         ResultadoAuditoria: "exito" | "rechazo";
         /**
          * ResultadoRegla
-         * @description Los cuatro resultados de una regla de consistencia (§5.3.5, PD-01).
+         * @description Los cuatro resultados de una regla de consistencia (§5.3.5).
          * @enum {string}
          */
         ResultadoRegla: "cumplimiento" | "advertencia" | "falta_de_datos" | "no_aplicable";
@@ -1778,7 +1778,7 @@ export interface components {
             controles: components["schemas"]["ControlRespuesta"][];
             /**
              * Controles Pendientes
-             * @description PD-02.3; las reglas se ejecutan de forma síncrona (DO-2026-10-22-REG P4)
+             * @description las reglas se ejecutan de forma síncrona
              */
             controles_pendientes: boolean;
             /**
@@ -1871,7 +1871,7 @@ export interface components {
         TipoDecision: "aprobacion" | "observacion";
         /**
          * TipoDocumental
-         * @description Tipos documentales admitidos (§3.3.3, RC-P04).
+         * @description Tipos documentales admitidos (§3.3.3).
          * @enum {string}
          */
         TipoDocumental: "contrato" | "presupuesto" | "orden_compra" | "factura" | "comprobante";
@@ -1883,7 +1883,7 @@ export interface components {
         TipoValidacion: "confirmacion" | "correccion" | "sin_sugerencia" | "ausente";
         /**
          * TipoVinculo
-         * @description Qué justifica un vínculo entre documentos (RF-14, DO-2026-10-22-REG P1).
+         * @description Qué justifica un vínculo entre documentos (RF-14).
          * @enum {string}
          */
         TipoVinculo: "referencia" | "campos";
@@ -1936,7 +1936,7 @@ export interface components {
         };
         /**
          * TramiteGeneral
-         * @description Sin título ni descripción: pueden contener datos sensibles (P4).
+         * @description Sin título ni descripción: pueden contener datos sensibles.
          */
         TramiteGeneral: {
             /**
@@ -1995,7 +1995,7 @@ export interface components {
             id: number;
             /**
              * Titulo
-             * @description Nulo para el administrador operativo: solo ve el identificador (RF-24, DO-2026-10-23-DIF)
+             * @description Nulo para el administrador operativo: solo ve el identificador (RF-24)
              */
             titulo: string | null;
         };

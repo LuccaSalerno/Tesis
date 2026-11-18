@@ -37,7 +37,7 @@ export function Historial() {
   const [filtro, setFiltro] = useState<keyof typeof FILTROS>("todo");
   const [fuente, setFuente] = useState<Fuente | null>(null);
 
-  // Decisiones visibles para quien consulta: solo a ellas se enlaza la evidencia (PD-03).
+  // Decisiones visibles para quien consulta: solo a ellas se enlaza la evidencia.
   const decisiones = useMemo(
     () => new Set((ciclos.data ?? []).flatMap((c) => c.tareas.map((t) => t.decision_id))),
     [ciclos.data],

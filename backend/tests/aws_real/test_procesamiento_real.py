@@ -1,10 +1,10 @@
 """Nivel B: Textract y Claude Haiku 4.5 reales sobre el contrato sintético C-v1.
 
 Solo las ejecuta un operador del equipo en una sesión AWS autorizada y con costo
-aprobado (DO-2026-10-21, DO-2026-10-22-PROC). En la CI se omiten siempre: requieren
+aprobado. En la CI se omiten siempre: requieren
 `ATLAS_PRUEBAS_AWS_REAL=1` y credenciales de la sesión, que nunca están en GitHub.
 
-Comparan contra el oráculo preliminar PD-07 y fallan ante cualquier diferencia: no se
+Comparan contra el oráculo preliminar fallan ante cualquier diferencia: no se
 ajustan umbrales ni oráculos para que pasen (AGENTS.md §2.9). La evidencia saneada
 (aciertos, páginas, tokens, duración; sin contenido) se escribe en
 `ATLAS_EVIDENCIA_AWS_REAL` si está definida.
@@ -108,7 +108,7 @@ def test_aws_real_c_v1_textract_clasificacion_y_extraccion() -> None:
 
 def test_aws_real_c_v1_consulta_asistida_con_cita_y_abstencion() -> None:
     """Punto de demo B con Cohere y Haiku reales, sin base: se indexa C-v1 en memoria y se
-    recuperan los 5 fragmentos más cercanos por coseno, como en pgvector (RC-P07.3)."""
+    recuperan los 5 fragmentos más cercanos por coseno, como en pgvector."""
     import math
 
     from atlas.integraciones.bedrock import EmbeddingsCohereBedrock

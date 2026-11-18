@@ -1,4 +1,4 @@
-"""Escenario propio de la verificación de seguridad, armado por la API (P2, P3).
+"""Escenario propio de la verificación de seguridad, armado por la API.
 
 Las mismas llamadas sirven contra la aplicación local (CI) y contra la API desplegada. Crea:
 
@@ -6,7 +6,7 @@ Las mismas llamadas sirven contra la aplicación local (CI) y contra la API desp
   pendiente del revisor y la tarea en espera del aprobador.
 - A2: trámite del dueño en Borrador con un contrato sin validar, dos documentos con tipo
   validado y un archivo cargado sin incorporar, para validar, vincular, desvincular e
-  incorporar (incorporar en A desplazaría el ciclo, PD-05).
+  incorporar (incorporar en A desplazaría el ciclo).
 - A3: trámite del dueño listo para confirmar el flujo.
 - B: trámite del responsable ajeno, con su propio documento y marcador.
 - F: trámite del dueño con un DOCX vacío cuyo procesamiento falla (camino de error, SEG-04).
@@ -222,7 +222,7 @@ def construir(api: ClienteApi, *, esperar: Esperar | None = None) -> Escenario:
     o2 = _documento(
         api, DUENO, a2, "orden-a2.docx", documentos.orden(m["a"]), esperar, "orden_compra"
     )
-    # Cargado sin incorporar: en A2, porque incorporar en A desplazaría el ciclo (PD-05).
+    # Cargado sin incorporar: en A2, porque incorporar en A desplazaría el ciclo.
     pendiente = _subir(api, DUENO, a2, "pendiente.docx", documentos.orden(m["a"]), esperar)
     descartable = _subir(api, DUENO, a2, "descartable.docx", documentos.orden(m["a"]), esperar)
     vinculo = api.post(

@@ -1,5 +1,5 @@
 """Errores de las etapas. Su nombre es lo que Step Functions usa para decidir reintentos
-(RC-P08.1) y su mensaje es solo un código técnico: nunca contenido documental."""
+y su mensaje es solo un código técnico: nunca contenido documental."""
 
 
 class ErrorEtapa(Exception):

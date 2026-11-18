@@ -2,7 +2,7 @@
 
 Revisión: 0004
 Anterior: 0003
-Trazabilidad: DO-2026-10-22-CARGAS (DT-CARGA-01), RF-04, RF-05, RF-07, PD-04.
+Trazabilidad: RF-04, RF-05, RF-07.
 
 - `archivo.estado_incorporacion` admite `vencido`: una carga pendiente que no se
   incorporó dentro de su vigencia. Los estados distintos de `pendiente` son finales.

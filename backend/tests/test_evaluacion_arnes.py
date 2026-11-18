@@ -1,4 +1,4 @@
-"""Arnés de medición de §6.3 (DO-2026-10-23-E90-MEDICION, IA-M01 a IA-M12).
+"""Arnés de medición de §6.3 (IA-M01 a IA-M12).
 
 Sin AWS: corpus en miniatura, OCR en caché con la forma de Textract y modelos fijos. Las
 métricas se verifican contra valores calculados a mano; la calidad real de los modelos se
@@ -84,10 +84,10 @@ def _medir(raiz: Path, modelos: dict[str, Any], repeticiones: int = 1) -> list[d
     return registro.leer()
 
 
-# --- Oráculos y compuerta (P4) -------------------------------------------------------------
+# --- Oráculos y compuerta -------------------------------------------------------------
 
 
-def test_p4_ensayo_solo_ajuste_y_oficial_exige_congelado(tmp_path: Path) -> None:
+def test_ensayo_solo_ajuste_y_oficial_exige_congelado(tmp_path: Path) -> None:
     fijo.construir(tmp_path, congelado=False)
     oraculos = cargar(tmp_path)
     assert len(oraculos.documentos) == 3 and not oraculos.congelado
@@ -99,7 +99,7 @@ def test_p4_ensayo_solo_ajuste_y_oficial_exige_congelado(tmp_path: Path) -> None
         consultas_de(oraculos, Modo.OFICIAL)
 
 
-def test_p4_oficial_con_oraculos_congelados_y_archivos_verificados(raiz: Path) -> None:
+def test_oficial_con_oraculos_congelados_y_archivos_verificados(raiz: Path) -> None:
     oraculos = cargar(raiz)
     assert [d.doc_id for d in seleccionar(oraculos, Modo.OFICIAL)] == [
         "E90-M-CTR-01",
@@ -112,13 +112,13 @@ def test_p4_oficial_con_oraculos_congelados_y_archivos_verificados(raiz: Path) -
         seleccionar(oraculos, Modo.OFICIAL)
 
 
-def test_p4_un_solo_archivo_por_oraculo(raiz: Path) -> None:
+def test_un_solo_archivo_por_oraculo(raiz: Path) -> None:
     (raiz / "oraculos/e90/campos_congelados.json").write_text("{}", "utf-8")
     with pytest.raises(ErrorOraculo, match="se_esperaba_un_archivo:campos"):
         cargar(raiz)
 
 
-# --- Contenidos y OCR una sola vez (P6) ----------------------------------------------------
+# --- Contenidos y OCR una sola vez ----------------------------------------------------
 
 
 @dataclass
@@ -145,7 +145,7 @@ class AlmacenFijo:
         self.escritos.append(clave)
 
 
-def test_rc_p07_5_ocr_una_vez_en_cache_y_docx_local(raiz: Path) -> None:
+def test_ocr_una_vez_en_cache_y_docx_local(raiz: Path) -> None:
     oraculos = cargar(raiz)
     documento = oraculos.documentos["E90-M-CTR-01"]
     (raiz / "evaluacion/cache_ocr" / clave_cache(documento)).unlink()
@@ -167,7 +167,7 @@ def test_rc_p07_5_ocr_una_vez_en_cache_y_docx_local(raiz: Path) -> None:
     assert not docx.paginado
 
 
-def test_rc_p07_5_ocr_fallido_o_sin_servicios(raiz: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_ocr_fallido_o_sin_servicios(raiz: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     oraculos = cargar(raiz)
     documento = oraculos.documentos["E90-M-CTR-01"]
     (raiz / "evaluacion/cache_ocr" / clave_cache(documento)).unlink()
@@ -182,10 +182,10 @@ def test_rc_p07_5_ocr_fallido_o_sin_servicios(raiz: Path, monkeypatch: pytest.Mo
         lento.obtener(documento)
 
 
-# --- Ejecución (P7, P13) -------------------------------------------------------------------
+# --- Ejecución -------------------------------------------------------------------
 
 
-def test_rc_p07_2_orden_alternado_y_reintentos() -> None:
+def test_orden_alternado_y_reintentos() -> None:
     assert orden_modelos(["haiku", "sonnet"], 1) == ["haiku", "sonnet"]
     assert orden_modelos(["haiku", "sonnet"], 2) == ["sonnet", "haiku"]
     llamadas = iter([ErrorTransitorio("t"), "ok"])
@@ -208,7 +208,7 @@ def test_rc_p07_2_orden_alternado_y_reintentos() -> None:
     assert con_reintentos(permanente, lambda _: None)[1:3] == ("respuesta_invalida", 1)
 
 
-def test_p13_mediciones_intercaladas_y_reanudables(raiz: Path) -> None:
+def test_mediciones_intercaladas_y_reanudables(raiz: Path) -> None:
     filas = _medir(
         raiz, {"haiku": ModeloDocumentos(), "sonnet": ModeloDocumentos()}, repeticiones=2
     )
@@ -221,7 +221,7 @@ def test_p13_mediciones_intercaladas_y_reanudables(raiz: Path) -> None:
     assert len(_medir(raiz, {"haiku": ModeloDocumentos(), "sonnet": ModeloDocumentos()}, 2)) == 8
 
 
-def test_p13_fallo_definitivo_queda_registrado(raiz: Path) -> None:
+def test_fallo_definitivo_queda_registrado(raiz: Path) -> None:
     filas = _medir(raiz, {"haiku": ModeloDocumentos(falla=ErrorPermanente("respuesta_invalida"))})
     assert (
         filas[0]["clasificacion"] is None
@@ -248,7 +248,7 @@ def test_ia_m02_extraccion_correctos_incorrectos_omitidos_y_procedencia(raiz: Pa
     assert (contrato["correctos"], contrato["fp"], contrato["fn"]) == (5, 1, 2)
     assert contrato["f1"] == pytest.approx(10 / 13)
     factura = ext["por_tipo"]["factura"]
-    assert factura["correctos"] == 6 and factura["f1"] == 1.0  # incluye EUR (DIF-109)
+    assert factura["correctos"] == 6 and factura["f1"] == 1.0  # incluye EUR
     assert ext["exactitud_critica"]["numero"] == {"exactitud": 1.0, "correctos": 1, "esperados": 1}
     assert ext["inventados"] == {"proporcion": 0.0, "cantidad": 0}
     assert ext["procedencia_pdf"]["proporcion"] == 1.0 and ext["procedencia_pdf"]["evaluados"] == 6
@@ -310,7 +310,7 @@ def test_ia_m07_adversariales(raiz: Path) -> None:
     assert resultado["casos"][0]["sin_accion_disponible"] == ["estado_tramite"]
 
 
-# --- Recuperación y respuestas (IA-M05, P11, P14) ------------------------------------------
+# --- Recuperación y respuestas (IA-M05) ------------------------------------------
 
 
 def _indice(raiz: Path, embeddings: Any = None) -> recuperacion.Indice:
@@ -319,7 +319,7 @@ def _indice(raiz: Path, embeddings: Any = None) -> recuperacion.Indice:
     return recuperacion.construir_indice(chunks, embeddings or EmbeddingsFijos())
 
 
-def test_p11_indice_congelado_busqueda_y_cobertura(raiz: Path) -> None:
+def test_indice_congelado_busqueda_y_cobertura(raiz: Path) -> None:
     indice = _indice(raiz)
     ruta = raiz / "indice.json"
     recuperacion.guardar_indice(indice, ruta)
@@ -384,7 +384,7 @@ def test_ia_m05_recall_at_5_y_mrr(raiz: Path) -> None:
     assert manual["recall_at_5"] == pytest.approx(0.25) and manual["mrr"] == pytest.approx(0.25)
 
 
-def test_p14_respuestas_planillas_y_consolidacion(raiz: Path) -> None:
+def test_respuestas_planillas_y_consolidacion(raiz: Path) -> None:
     oraculos = cargar(raiz)
     consultas = consultas_de(oraculos, Modo.OFICIAL)
     indice = _indice(raiz)
@@ -457,7 +457,7 @@ def test_p14_respuestas_planillas_y_consolidacion(raiz: Path) -> None:
     assert (
         rag["correctas"] == 1.0 and rag["respaldo"] == 1.0 and rag["abstenciones_correctas"] == 1.0
     )
-    # DO-2026-10-24-IA-M06-CONJUNTA: una sola planilla, sin acuerdo entre evaluadores.
+    # Una sola planilla, sin acuerdo entre evaluadores.
     conjuntas, acuerdo = planillas.consolidar_conjunta(autor_a)
     assert conjuntas == planillas.consolidar(autor_a, autor_a, None)[0]
     assert acuerdo == {
@@ -480,7 +480,7 @@ def test_p14_respuestas_planillas_y_consolidacion(raiz: Path) -> None:
         planillas.consolidar_conjunta(sin_conteos)
 
 
-def test_p14_planillas_validan_conteos_y_grupos(raiz: Path) -> None:
+def test_planillas_validan_conteos_y_grupos(raiz: Path) -> None:
     import csv
 
     def escribir(ruta: Path, grupo: str, sustantivas: str) -> None:
@@ -503,10 +503,10 @@ def test_p14_planillas_validan_conteos_y_grupos(raiz: Path) -> None:
         planillas.discrepancias(raiz / "a.csv", raiz / "b.csv", raiz / "d.csv")
 
 
-# --- Agregación y reglas de sustitución (P13) ----------------------------------------------
+# --- Agregación y reglas de sustitución ----------------------------------------------
 
 
-def test_p13_promedios_y_reglas_de_sustitucion() -> None:
+def test_promedios_y_reglas_de_sustitucion() -> None:
     assert metricas.resumen_repeticiones([0.8, 0.9, None, 1.0])["promedio"] == pytest.approx(0.9)
     assert metricas.resumen_repeticiones([0.5])["desvio"] is None
     base = {"clasificacion_f1_macro": False, "latencia": None, "procedencia_pdf": True}
@@ -528,10 +528,10 @@ def test_p13_promedios_y_reglas_de_sustitucion() -> None:
     assert criterios["procedencia_pdf"] is None
 
 
-# --- Campaña, informe y línea de comandos (P16) --------------------------------------------
+# --- Campaña, informe y línea de comandos --------------------------------------------
 
 
-def test_p16_campana_manifiesto_y_cambios_detectados(raiz: Path) -> None:
+def test_campana_manifiesto_y_cambios_detectados(raiz: Path) -> None:
     directorio = raiz / "evaluacion" / "campanas"
     campana = cmp.iniciar(
         directorio, identificador="c1", modo=Modo.OFICIAL, generativos={"haiku": "h"},
@@ -560,7 +560,7 @@ def test_p16_campana_manifiesto_y_cambios_detectados(raiz: Path) -> None:
         cmp.abrir(directorio, "c1", raiz)
 
 
-def test_p16_configuracion_y_documentos_que_cambian(
+def test_configuracion_y_documentos_que_cambian(
     raiz: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     directorio = raiz / "campanas"
@@ -591,7 +591,7 @@ class EmbeddingsDeEntrada(EmbeddingsFijos):
     """Ignora el modelo pedido: el CLI construye los adaptadores por identificador."""
 
 
-def test_p16_linea_de_comandos_de_punta_a_punta(
+def test_linea_de_comandos_de_punta_a_punta(
     raiz: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     import atlas.evaluacion.__main__ as principal
@@ -652,7 +652,7 @@ def test_p16_linea_de_comandos_de_punta_a_punta(
     assert cli(["discrepancias", *base]) == 1  # planillas sin completar
 
 
-def test_p16_informe_rotula_ensayo() -> None:
+def test_informe_rotula_ensayo() -> None:
     resultado = {
         "campana": "e1",
         "modo": "ensayo",
@@ -675,12 +675,12 @@ def test_p16_informe_rotula_ensayo() -> None:
     assert "NO REPORTABLE" in texto and "| Cumple |" in texto and "| No cumple |" in texto
 
 
-def test_dif_109_ocr_y_cache_por_funciones(raiz: Path) -> None:
+def test_ocr_y_cache_por_funciones(raiz: Path) -> None:
     documento = cargar(raiz).documentos["E90-M-CTR-01"]
     assert clave_cache(documento).endswith(".tables-layout.textract.json")
 
 
-def test_p16_cli_valida_pares_y_elige_adaptadores(
+def test_cli_valida_pares_y_elige_adaptadores(
     raiz: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     import atlas.evaluacion.__main__ as principal
@@ -704,9 +704,7 @@ def test_p16_cli_valida_pares_y_elige_adaptadores(
     assert fuente._analizador is not None and fuente._almacen is not None
 
 
-def test_rc_p07_7_oficial_exige_commit_identificado(
-    raiz: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_oficial_exige_commit_identificado(raiz: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     def iniciar(identificador: str) -> None:
         cmp.iniciar(
             raiz / "c",
@@ -728,7 +726,7 @@ def test_rc_p07_7_oficial_exige_commit_identificado(
         iniciar("x2")
 
 
-def test_rc_p07_7_commit_sin_git_o_fuera_del_repositorio(
+def test_commit_sin_git_o_fuera_del_repositorio(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     import subprocess

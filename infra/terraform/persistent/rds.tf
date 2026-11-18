@@ -1,5 +1,5 @@
-# PostgreSQL Multi-AZ (instancia primaria + reserva), RC-P10-02, RC-P10-12, E90A.
-# Credencial maestra administrada por RDS en Secrets Manager: solo inicialización (RC-P10-15).
+# PostgreSQL Multi-AZ (instancia primaria + reserva), E90A.
+# Credencial maestra administrada por RDS en Secrets Manager: solo inicialización.
 
 resource "aws_db_subnet_group" "datos" {
   name       = "${local.prefijo}-datos"
@@ -33,7 +33,7 @@ resource "aws_db_instance" "principal" {
   parameter_group_name                = aws_db_parameter_group.postgres.name
   vpc_security_group_ids              = [aws_security_group.rds.id]
   publicly_accessible                 = false
-  backup_retention_period             = 7 # RC-P10-12, durante la sesión
+  backup_retention_period             = 7 # durante la sesión
   copy_tags_to_snapshot               = true
   auto_minor_version_upgrade          = true
   performance_insights_enabled        = false

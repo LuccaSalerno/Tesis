@@ -1,6 +1,6 @@
 """Flujo de revisión por la API, compartido por las pruebas y los escenarios BDD del hito 1.8.
 
-Cuentas, documentos y valores sintéticos (PD-07, AGENTS.md §2.4). DO-2026-10-22-TAR.
+Cuentas, documentos y valores sintéticos (AGENTS.md §2.4).
 """
 
 from dataclasses import dataclass
@@ -14,7 +14,7 @@ from tests.datos import crear_cuenta, portador
 from tests.flujo_api import Contexto, crear_tramite
 from tests.flujo_vinculos import C_V1, F_V1, O_V1, documento, resolver, vincular, vinculos
 
-# Todos los campos del esquema de cada tipo (RC-P04): los exige la confirmación del flujo.
+# Todos los campos del esquema de cada tipo: los exige la confirmación del flujo.
 C_COMPLETO = {"contraparte": "Servicios Ficticios SA", "fecha_celebracion": "2026-02-20", **C_V1}
 O_COMPLETO = {"numero": "OC-0001", "proveedor": "Servicios Ficticios SA", **O_V1}
 F_COMPLETO = {
@@ -81,7 +81,7 @@ def plantilla(admin: Contexto, alcance: str, revisores: list[int]) -> dict[str, 
 
 
 def plantilla_de_contratos(e: Equipo) -> dict[str, Any]:
-    """RC-P03.1: «revisión legal» y luego «aprobación final» por quien puede cerrar."""
+    """«Revisión legal» y luego «aprobación final» por quien puede cerrar."""
     return plantilla(e.administrador, "contrato", [e.revisor.usuario_id, e.aprobador.usuario_id])
 
 

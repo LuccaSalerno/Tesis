@@ -2,8 +2,8 @@
 
 Revisión: 0003
 Anterior: 0002
-Trazabilidad: PD-04 (§3, hito 1.3: estructuras operativas que la Figura 5.4 omite),
-RF-04, RC-P04, RC-P08, §5.3.1 (un trabajo por archivo, intento vigente).
+Trazabilidad: estructuras operativas que la Figura 5.4 omite;
+RF-04 (un trabajo por archivo, intento vigente).
 """
 
 from collections.abc import Sequence

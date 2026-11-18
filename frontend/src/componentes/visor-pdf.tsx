@@ -1,5 +1,5 @@
 /**
- * Visor del original de una versión (HU-04, RF-11, DO-2026-10-22-WEB F4). Pide a la API una
+ * Visor del original de una versión (HU-04, RF-11). Pide a la API una
  * URL de lectura de 5 minutos (con las mismas reglas de acceso que el resto del trámite), salta
  * a la página del localizador y resalta el fragmento citado si el texto coincide. Si no
  * coincide, igual muestra la página y el fragmento citado aparte: nunca inventa una ubicación.

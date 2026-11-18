@@ -1,4 +1,4 @@
-"""Reconciliador de trabajos de procesamiento (RC-P08.3, 8 a 12; DO-2026-10-23-REC P3, P10).
+"""Reconciliador de trabajos de procesamiento (8 a 12).
 
 Se ejecuta cada cinco minutos y hace tres cosas, en este orden:
 
@@ -7,9 +7,9 @@ Se ejecuta cada cinco minutos y hace tres cosas, en este orden:
    si existe, se reconoce. Nunca se crea una segunda ejecución del mismo intento.
 2. **Trabajos interrumpidos:** un trabajo `en_ejecucion` cuya ejecución terminó sin registrar
    resultado, o que supera el límite de 30 minutos, pasa a fallido y libera su cupo. Un
-   resultado tardío de ese intento se descarta (RC-P08.6).
+   resultado tardío de ese intento se descarta.
 3. **Admisión:** los trabajos `en_espera` se admiten por antigüedad mientras haya cupo, bajo
-   el mismo lock que la confirmación de cargas. No es un intento nuevo (RC-P08.11).
+   el mismo lock que la confirmación de cargas. No es un intento nuevo.
 
 Ningún paso modifica el estado funcional del trámite. Los registros llevan solo identificadores.
 """
@@ -159,7 +159,7 @@ def _interrumpidos(
 def _descartar_terminales(
     sesion: Session, resumen: Resumen, alcance: Collection[int] | None
 ) -> None:
-    """RN-14, RN-15 (DO-2026-10-23-CIERRE P3): un trabajo en espera de un trámite cerrado o
+    """RN-14, RN-15: un trabajo en espera de un trámite cerrado o
     cancelado no se inicia; queda fallido con un código técnico y no cambia el trámite."""
     consulta = (
         select(TrabajoProcesamiento)

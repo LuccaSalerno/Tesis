@@ -1,8 +1,8 @@
-"""Estado técnico «En espera» del trabajo de procesamiento (DO-2026-10-23-REC P1, RC-P08.8).
+"""Estado técnico «En espera» del trabajo de procesamiento.
 
 Revisión: 0011
 Anterior: 0010
-Trazabilidad: RC-P08 (5, 8 a 11), RNF-06, §5.3.1, DO-2026-10-23-REC (P1, P3).
+Trazabilidad: RNF-06, §5.3.1.
 
 - `trabajo_procesamiento.estado` admite `en_espera`: el trabajo quedó registrado, pero no
   hay cupo de procesamiento. Es técnico y no cambia el estado funcional del trámite.

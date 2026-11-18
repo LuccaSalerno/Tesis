@@ -1,4 +1,4 @@
-"""Metadatos comunes del modelo físico (PD-04).
+"""Metadatos comunes del modelo físico.
 
 Todas las tablas viven en el esquema `atlas`, propiedad del usuario de
 migración. Las restricciones usan una convención de nombres fija para que las

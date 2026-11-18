@@ -1,4 +1,4 @@
-"""Verificación de tokens de acceso de Cognito en el backend (DT-AUT-01, RF-01, RNF-01).
+"""Verificación de tokens de acceso de Cognito en el backend (RF-01, RNF-01).
 
 En AWS, API Gateway valida el token antes de invocar la API; el backend vuelve
 a verificarlo (defensa en profundidad) con el JWKS que recibe por configuración.

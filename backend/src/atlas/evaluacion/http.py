@@ -1,4 +1,4 @@
-"""Solicitud HTTP cronometrada a la API desplegada (DO-2026-10-23-E90-API P3, P7).
+"""Solicitud HTTP cronometrada a la API desplegada.
 
 Mide el tiempo completo desde que el cliente envía la solicitud hasta que recibe la respuesta
 entera, y conserva el estado y el encabezado `Server-Timing`. El cuerpo se devuelve a quien

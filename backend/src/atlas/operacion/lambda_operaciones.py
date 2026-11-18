@@ -1,4 +1,4 @@
-"""Lambda privada de operaciones, dentro de la VPC (RC-P10-15, DO-2026-10-22-OPS P3).
+"""Lambda privada de operaciones, dentro de la VPC.
 
 Solo la invoca el operador autorizado, de forma manual y con el plan aprobado. Cada
 acción devuelve únicamente identificadores, revisiones y conteos: nunca contenido
@@ -7,12 +7,12 @@ documental ni credenciales (AGENTS.md §2.5).
 - `inicializar_base`: con la credencial maestra (Secrets Manager), crea la base del
   entorno, sus usuarios con `rds_iam`, el esquema `atlas`, pgvector y los privilegios.
   Se niega si la base ya existe. Es de un solo uso: después la credencial maestra puede
-  quedar sin acceso por contraseña (DIF-95), y no se vuelve a usar en la sesión.
+  quedar sin acceso por contraseña, y no se vuelve a usar en la sesión.
 - `migrar` y `estado_migraciones`: Alembic con el usuario de migración, directo a RDS.
-- `crear_administrador`: primer administrador operativo (DT-AUT-02).
-- `verificar_drenaje`: conteos de lo que impide pasar a `offline` (RC-P10-09).
+- `crear_administrador`: primer administrador operativo.
+- `verificar_drenaje`: conteos de lo que impide pasar a `offline`.
 - `guardar_estado` y `restablecer_estado`: fotos de la base para repetir la demo
-  (DO-2026-11-09-ESTADOS-DEMO, temporal; ver `estados_demo`). Solo en demo o en local, con la
+  (temporal; ver `estados_demo`). Solo en demo o en local, con la
   operación en `offline`, sin ejecuciones en curso y repitiendo el nombre de la base.
 """
 
@@ -111,12 +111,12 @@ def sentencias_servidor(n: Nombres) -> list[sql.Composable]:
 
 def sentencias_base(n: Nombres) -> list[sql.Composable]:
     """En la base nueva: pgvector, esquema del usuario de migración y privilegios mínimos
-    del usuario de aplicación (sin DELETE ni TRUNCATE, RNF-04, PD-04-002).
+    del usuario de aplicación (sin DELETE ni TRUNCATE, RNF-04).
 
     `rds_iam` va al final y después no se abre otra conexión maestra: RDS exige IAM (PAM) a
     todo miembro directo o indirecto de `rds_iam` (`pg_hba.conf`: `+rds_iam ... pam`), y el
     maestro es miembro del usuario de migración mientras dura la inicialización. Verificado
-    en la sesión e90-ensayo-1 (DIF-95)."""
+    en la sesión e90-ensayo-1."""
     app, migracion = sql.Identifier(n.app), sql.Identifier(n.migracion)
     return [
         sql.SQL("CREATE EXTENSION IF NOT EXISTS vector"),

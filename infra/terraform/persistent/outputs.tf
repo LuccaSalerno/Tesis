@@ -1,4 +1,4 @@
-# Solo identificadores, sin secretos (RC-P10-07). El ARN del secreto maestro no es el secreto.
+# Solo identificadores, sin secretos. El ARN del secreto maestro no es el secreto.
 
 output "region" {
   value = var.region
@@ -53,7 +53,7 @@ output "rds_puerto" {
 }
 
 output "rds_id_recurso" {
-  description = "DbiResourceId (db-…), obtenido de AWS (RC-P10-04)"
+  description = "DbiResourceId (db-…), obtenido de AWS"
   value       = aws_db_instance.principal.resource_id
 }
 

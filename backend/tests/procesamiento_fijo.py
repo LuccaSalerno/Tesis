@@ -1,4 +1,4 @@
-"""Respuestas fijas para probar la lógica propia del procesamiento (DO-2026-10-22-PROC, P1).
+"""Respuestas fijas para probar la lógica propia del procesamiento.
 
 Construyen estructuras con la forma documentada de Textract y respuestas de herramienta
 del modelo, con texto sintético. No juzgan la calidad de los servicios reales: eso se
@@ -121,7 +121,7 @@ def dato(valor: str | None, cita: str | None = None, pagina: int | None = None) 
 
 
 def extraccion_c_v1_docx() -> dict[str, Any]:
-    """Campos de C-v1 según el oráculo preliminar PD-07, con citas reales del DOCX."""
+    """Campos de C-v1 según el oráculo preliminar con citas reales del DOCX."""
     return {
         "contraparte": dato(
             "Servicios Integrales del Sur S.A.", "Servicios Integrales del Sur S.A."
@@ -141,7 +141,7 @@ def extraccion_c_v1_docx() -> dict[str, Any]:
 
 @dataclass
 class EmbeddingsFijos:
-    """Vectores deterministas y léxicos (P1): bolsa de palabras proyectada en 1024
+    """Vectores deterministas y léxicos: bolsa de palabras proyectada en 1024
     dimensiones y normalizada. Textos con palabras en común quedan cerca; no simula la
     calidad semántica de Cohere, que se mide solo con el servicio real."""
 
@@ -170,7 +170,7 @@ class EmbeddingsFijos:
 
 @dataclass
 class ModeloConsultaFijo:
-    """Respuesta fija de la consulta asistida (P1): cita el fragmento recuperado cuyo texto
+    """Respuesta fija de la consulta asistida: cita el fragmento recuperado cuyo texto
     contiene `buscar`. Permite verificar el recorrido sin juzgar la calidad del modelo."""
 
     buscar: str | None = None

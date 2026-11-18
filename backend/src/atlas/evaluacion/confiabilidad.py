@@ -1,4 +1,4 @@
-"""§6.3.2 nivel B contra la API desplegada (DO-2026-10-23-REC P9, P11). La corre el operador.
+"""§6.3.2 nivel B contra la API desplegada. La corre el operador.
 
 Dos escenarios con documentos sintéticos, en una sesión E90A de ensayo:
 

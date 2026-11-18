@@ -2,7 +2,7 @@
 
 Revisión: 0001
 Anterior: ninguna
-Trazabilidad: RC-P10-15 (pgvector y esquema creados fuera de las migraciones), PD-04.
+pgvector y el esquema se crean fuera de las migraciones.
 No crea entidades del dominio; la Figura 5.4 se incorpora en revisiones siguientes.
 """
 
@@ -23,13 +23,9 @@ def upgrade() -> None:
         conexion.execute(text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")).first()
         is None
     ):
-        raise RuntimeError(
-            "Falta la extensión pgvector: ejecutar la inicialización privilegiada (RC-P10-15)"
-        )
+        raise RuntimeError("Falta la extensión pgvector: ejecutar la inicialización privilegiada")
     if conexion.execute(text("SELECT 1 FROM pg_namespace WHERE nspname = 'atlas'")).first() is None:
-        raise RuntimeError(
-            "Falta el esquema atlas: ejecutar la inicialización privilegiada (RC-P10-15)"
-        )
+        raise RuntimeError("Falta el esquema atlas: ejecutar la inicialización privilegiada")
 
 
 def downgrade() -> None:

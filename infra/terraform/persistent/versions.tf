@@ -1,5 +1,5 @@
-# Raíz persistent (RC-P10-07). En E90A se crea y se retira en cada sesión: el nombre es
-# histórico y no implica conservación de datos (DO-2026-10-21-E90A).
+# Raíz persistent. En E90A se crea y se retira en cada sesión: el nombre es
+# histórico y no implica conservación de datos.
 terraform {
   required_version = ">= 1.10.0"
   required_providers {

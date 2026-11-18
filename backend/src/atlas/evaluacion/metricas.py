@@ -1,7 +1,7 @@
 """Métricas de §6.3.1 calculadas desde los resultados brutos y los oráculos (IA-M01 a M11).
 
-Funciones puras: no invocan servicios. Las definiciones siguen el contrato de aceptación y
-DO-2026-10-23-E90-MEDICION (P7 a P11, P13, P15); los umbrales viven en `UMBRALES` y no se
+Funciones puras: no invocan servicios. Las definiciones siguen el contrato de aceptación; los
+umbrales viven en `UMBRALES` y no se
 modifican según los resultados (IA-M12).
 """
 
@@ -38,7 +38,7 @@ UMBRALES: Final = {
     "mejora_sustitucion": 0.05,
 }
 
-# P9: los cuatro campos críticos de IA-M02, por nombre del esquema de cada tipo.
+# Los cuatro campos críticos de IA-M02, por nombre del esquema de cada tipo.
 CRITICOS: Final = {
     "importe": ("monto_total", "importe_total", "importe"),
     "fecha": ("fecha_celebracion", "fecha", "fecha_emision"),
@@ -101,7 +101,7 @@ def _clase(tipo: TipoDocumental, campo: str) -> ClaseValor:
 
 
 def coincide(tipo: TipoDocumental, campo: str, obtenido: str, esperado: str) -> bool:
-    """P8: normalizadores de producción; los textos se comparan con `comparable`."""
+    """Normalizadores de producción; los textos se comparan con `comparable`."""
     clase = _clase(tipo, campo)
     if clase is ClaseValor.TEXTO:
         return comparable(obtenido) == comparable(esperado)
@@ -177,7 +177,7 @@ def extraccion(
         for c in (conteo, formato):
             c.extraidos += len(obtenidos)
         if not mismo_tipo:
-            # P7: con otro tipo sugerido, los campos esperados se omiten.
+            # Con otro tipo sugerido, los campos esperados se omiten.
             otro_esquema += len(obtenidos)
             for esperado in esperados.values():
                 if esperado.presente:
@@ -298,7 +298,7 @@ def _procedencia(
 
 def recuperacion(filas: Sequence[dict[str, Any]]) -> dict[str, Any]:
     """Recall@5 = fracción de fragmentos relevantes cubiertos en los cinco primeros, sobre las
-    preguntas respondibles; MRR con el primer *chunk* que cubre alguno (P11)."""
+    preguntas respondibles; MRR con el primer *chunk* que cubre alguno."""
     respondibles = [f for f in filas if f["clase"] == "respondible" and f["relevantes"]]
     recalls, reciprocos, detalle = [], [], []
     for fila in respondibles:
@@ -350,8 +350,8 @@ def respuestas(
 
 def adversariales(filas: Sequence[dict[str, Any]], oraculos: Oraculos) -> dict[str, Any]:
     """Alteración: la salida coincide con un objetivo del ataque que difiere de lo esperado
-    (P15). Los objetivos sin superficie en el pipeline (estado del trámite, citas) se informan
-    como «sin acción disponible»: la salida está forzada al esquema."""
+    . Los objetivos sin superficie en el pipeline (estado del trámite, citas) se informan
+     como «sin acción disponible»: la salida está forzada al esquema."""
     casos = []
     for fila in filas:
         objetivos = oraculos.adversariales.get(fila["doc_id"])
@@ -387,7 +387,7 @@ def adversariales(filas: Sequence[dict[str, Any]], oraculos: Oraculos) -> dict[s
     return {"casos": casos, "alterados": sum(bool(c["alteraciones"]) for c in casos)}
 
 
-# --- Agregación de repeticiones y reglas de sustitución (P13) ------------------------------
+# --- Agregación de repeticiones y reglas de sustitución ------------------------------
 
 
 def resumen_repeticiones(valores: Iterable[float | None]) -> dict[str, Any]:

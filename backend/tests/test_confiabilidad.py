@@ -1,4 +1,4 @@
-"""Ejecutor de §6.3.2 nivel B (DO-2026-10-23-REC P9) contra una API simulada.
+"""Ejecutor de §6.3.2 nivel B contra una API simulada.
 
 La simulación respeta el límite: con más cargas que cupos, las sobrantes quedan en espera y
 entran cuando terminan las anteriores; un DOCX vacío falla siempre. No hay AWS.

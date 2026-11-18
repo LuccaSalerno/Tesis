@@ -1,9 +1,9 @@
-"""Ejecución y consulta de las reglas de consistencia (RF-16, RN-02, RN-06, §5.3.5, PD-01).
+"""Ejecución y consulta de las reglas de consistencia (RF-16, RN-02, RN-06, §5.3.5).
 
-DO-2026-10-22-REG: las reglas se ejecutan en la misma transacción que la acción que las
-dispara (P4), sobre cada vínculo confirmado cuyos documentos tienen tipos validados que
-corresponden a la regla (P5), con los valores validados vigentes de la versión vigente de
-cada documento (P6). Solo se registra una ejecución nueva si cambiaron las versiones o las
+Las reglas se ejecutan en la misma transacción que la acción que las
+dispara, sobre cada vínculo confirmado cuyos documentos tienen tipos validados que
+corresponden a la regla, con los valores validados vigentes de la versión vigente de
+cada documento. Solo se registra una ejecución nueva si cambiaron las versiones o las
 validaciones de entrada; las anteriores nunca se modifican. Las reglas no cambian el
 estado del trámite ni deciden nada (RN-06).
 """
@@ -44,7 +44,7 @@ SIN_VINCULO = "No hay documentos vinculados con los tipos que compara la regla."
 @dataclass(frozen=True)
 class EstadoValidado:
     """Lo validado de la versión vigente de un documento: tipo y campos de su esquema, con
-    valor (`campos`) o declarados ausentes por una persona (`ausentes`, DO-2026-10-22-WEB)."""
+    valor (`campos`) o declarados ausentes por una persona (`ausentes`)."""
 
     documento: Documento
     version: VersionDocumental
@@ -123,7 +123,7 @@ def ejecutar(
     vinculo_id: int | None = None,
     solicitud_id: uuid.UUID | None = None,
 ) -> list[EjecucionRegla]:
-    """Ejecuta las reglas pertinentes de los vínculos confirmados afectados (P4, P5)."""
+    """Ejecuta las reglas pertinentes de los vínculos confirmados afectados."""
     consulta = select(VinculoDocumental).where(
         VinculoDocumental.tramite_id == tramite_id,
         VinculoDocumental.estado == EstadoVinculo.CONFIRMADO,
@@ -232,7 +232,7 @@ class DetalleEjecucion:
 
 @dataclass(frozen=True)
 class Control:
-    """Situación actual de una regla en un vínculo, o sin vínculo pertinente (P5)."""
+    """Situación actual de una regla en un vínculo, o sin vínculo pertinente."""
 
     regla: reglas.Regla
     vinculo_id: int | None
@@ -314,7 +314,7 @@ def historial(sesion: Session, tramite_id: int) -> list[DetalleEjecucion]:
 
 def vigentes(sesion: Session, tramite_id: int) -> list[Control]:
     """Última ejecución de cada regla pertinente por vínculo confirmado, más las reglas sin
-    vínculo pertinente como no aplicables (P5: calculado, no se guarda)."""
+    vínculo pertinente como no aplicables (: calculado, no se guarda)."""
     controles: list[Control] = []
     con_vinculo: set[str] = set()
     vinculos = sesion.scalars(

@@ -1,8 +1,8 @@
 """Validación humana de la clasificación y de los campos (RF-09, RF-12, RN-02, RN-03).
 
-Reglas (DO-2026-10-22-VAL): solo la versión vigente (P1); trámite en Borrador o
-Pendiente de validación (P2); los campos, después de validar la clasificación y según el
-esquema del tipo validado (P3); valores en formato canónico (P4).
+Reglas: solo la versión vigente; trámite en Borrador o
+Pendiente de validación; los campos, después de validar la clasificación y según el
+esquema del tipo validado; valores en formato canónico.
 
 Cada validación es una fila nueva: una corrección posterior referencia la que
 reemplaza, y quien valida debe indicar cuál es la vigente (si otra persona validó antes,
@@ -162,9 +162,9 @@ def registrar(
 ) -> ValidacionRegistrada:
     """Registra una confirmación, una corrección, un valor sin sugerencia o una ausencia.
 
-    Una ausencia (DO-2026-10-22-WEB F10) declara que el campo no consta en la versión o no
+    Una ausencia declara que el campo no consta en la versión o no
     aplica: no lleva valor ni fuente y puede descartar la sugerencia. Nunca se inventa un
-    valor. El trámite llega bloqueado por el llamador (PD-05.2).
+    valor. El trámite llega bloqueado por el llamador.
     """
     if tramite.estado not in ESTADOS_QUE_ADMITEN:
         raise Conflicto("El estado del trámite no admite validar datos")
@@ -265,7 +265,7 @@ def registrar(
         version_id=actual.version.id,
         solicitud_id=solicitud_id,
     )
-    # §5.3.5 y DO-2026-10-22-REG (P3, P4): con el dato validado, sugerir vínculos y volver a
+    # §5.3.5: con el dato validado, sugerir vínculos y volver a
     # ejecutar las reglas de los vínculos confirmados del documento, en esta transacción.
     vinculos.sugerir(
         sesion, tramite_id=tramite.id, documento_id=actual.documento.id, solicitud_id=solicitud_id

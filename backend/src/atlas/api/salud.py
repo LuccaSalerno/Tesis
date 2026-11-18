@@ -1,6 +1,6 @@
-"""Estado del proceso de la API, sin consultar PostgreSQL (RC-P01-001, RC-P10-09).
+"""Estado del proceso de la API, sin consultar PostgreSQL.
 
-No afirma disponibilidad fuera de `active` (DO-2026-10-22-OPS P2).
+No afirma disponibilidad fuera de `active`.
 """
 
 from typing import Annotated, Literal

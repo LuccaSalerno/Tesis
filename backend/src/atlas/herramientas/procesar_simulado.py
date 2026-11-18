@@ -1,18 +1,18 @@
-"""Procesamiento **simulado** para desarrollo y pruebas E2E locales (DO-2026-10-22-WEB F9).
+"""Procesamiento **simulado** para desarrollo y pruebas E2E locales.
 
 Uso (solo en desarrollo o pruebas, con S3 y Step Functions de moto):
 
     python -m atlas.herramientas.procesar_simulado            # trabajos pendientes
     python -m atlas.herramientas.procesar_simulado --archivo 12
 
-Sustituye Textract y Bedrock **solo para los archivos del corpus PD-07 y del escenario SurDelta**
-(DO-2026-11-09-DEMO-SURDELTA), reconocidos por su huella: el texto sale del PDF (pypdf) y la
+Sustituye Textract y Bedrock **solo para los archivos del corpus del escenario SurDelta**
+, reconocidos por su huella: el texto sale del PDF (pypdf) y la
 clasificación y los campos, de su oráculo. Las sugerencias quedan registradas con el modelo
 `simulacion-local-…`, que la interfaz rotula como simulación. Un archivo fuera de esos corpus se
 registra como fallo técnico.
 
 **No es evidencia de la IA ni se usa en la defensa.** Se niega a funcionar en demo o sin un
-endpoint local de AWS (DT-AWS-01).
+endpoint local de AWS.
 """
 
 import argparse
@@ -54,7 +54,7 @@ def verificar_entorno(configuracion: Configuracion) -> None:
 
 
 def escenario_completo(oraculo: dict[str, Any]) -> dict[str, dict[str, str]]:
-    """Valores esperados de los cinco documentos de PD-07 con los nombres de RC-P04."""
+    """Valores esperados de los cinco documentos de la cadena de evidencia, por campo."""
     escenario: dict[str, dict[str, str]] = {}
     for codigo, doc in oraculo["documentos"].items():
         if doc["clase"] == "contrato":

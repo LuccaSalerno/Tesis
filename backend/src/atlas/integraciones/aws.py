@@ -1,4 +1,4 @@
-"""Adaptadores boto3 de S3 y Step Functions (DT-AWS-01).
+"""Adaptadores boto3 de S3 y Step Functions.
 
 El mismo código corre en AWS y contra moto: solo cambia la configuración. Con un
 endpoint local se usan credenciales ficticias fijas; sin endpoint, la cadena de
@@ -32,9 +32,9 @@ def crear_cliente(configuracion: Configuracion, servicio: str) -> Any:
 
 def crear_cliente_region(servicio: str, region: str, endpoint_url: str | None = None) -> Any:
     """Cliente con la configuración común; lo usan también las herramientas del operador que
-    no levantan la aplicación (arnés de §6.3, DO-2026-10-23-E90-MEDICION)."""
+    no levantan la aplicación (arnés de §6.3)."""
     # La firma de S3 solo para S3 (URL prefirmadas): en otros servicios no codifica la ruta
-    # como SigV4 estándar y Bedrock rechaza los ID de modelo con «:» (DIF-97).
+    # como SigV4 estándar y Bedrock rechaza los ID de modelo con «:».
     firma = {"signature_version": "s3v4"} if servicio == "s3" else {}
     opciones: dict[str, Any] = {
         "region_name": region,
@@ -189,7 +189,7 @@ class OrquestadorStepFunctions:
             raise ErrorIntegracion("sfn_inicio_incierto") from error
 
     def estado(self, trabajo_id: int, intento: int) -> str:
-        """Estado real de la ejecución del intento (RC-P08.3): `inexistente`, `RUNNING`,
+        """Estado real de la ejecución del intento: `inexistente`, `RUNNING`,
         `SUCCEEDED`, `FAILED`, `TIMED_OUT`, `ABORTED` o `PENDING_REDRIVE`."""
         arn = (
             self._maquina_arn.replace(":stateMachine:", ":execution:", 1)

@@ -1,9 +1,9 @@
-"""Clasificación y extracción medidas con el código de producción (P6, P7, P13).
+"""Clasificación y extracción medidas con el código de producción.
 
 Para cada repetición y documento se invoca cada modelo generativo con el mismo contenido,
 instrucciones y esquemas. El orden de los modelos se alterna entre repeticiones (H→S, S→H,
 H→S) y las llamadas se intercalan por documento. La extracción usa el tipo **sugerido**,
-como en producción (P7). Los fallos transitorios se reintentan con espera creciente y se
+como en producción. Los fallos transitorios se reintentan con espera creciente y se
 registran sus intentos; un fallo definitivo queda como error, sin descartar la muestra.
 """
 
@@ -24,7 +24,7 @@ INTENTOS_MAXIMOS: Final = 3
 
 
 def orden_modelos(alias: Sequence[str], repeticion: int) -> list[str]:
-    """Repetición 1: orden dado; 2: inverso; 3: dado (RC-P07.2)."""
+    """Repetición 1: orden dado; 2: inverso; 3: dado."""
     return list(alias) if repeticion % 2 == 1 else list(reversed(alias))
 
 

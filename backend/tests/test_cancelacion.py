@@ -1,4 +1,4 @@
-"""Cancelación del trámite (RF-26, RN-14, RN-15, DO-2026-10-23-CIERRE P1 a P3), contra
+"""Cancelación del trámite (RF-26, RN-14, RN-15), contra
 PostgreSQL real y S3 simulado. Cuentas y documentos sintéticos."""
 
 from typing import Any
@@ -188,7 +188,7 @@ def test_rn_15_cancelado_no_admite_cambios_y_conserva_la_historia(e: Equipo) -> 
     assert obtener(r, f"{base}/vinculos")["confirmados"]
 
 
-# --- Trabajo asíncrono posterior (RN-14, P3) --------------------------------------------
+# --- Trabajo asíncrono posterior (RN-14) --------------------------------------------
 
 
 def test_rn_14_un_resultado_tardio_no_modifica_el_cancelado(aplicacion: Any, e: Equipo) -> None:

@@ -1,4 +1,4 @@
-# Un solo paquete arm64 para todas las funciones, con su propio manejador (P6).
+# Un solo paquete arm64 para todas las funciones, con su propio manejador.
 
 data "http" "jwks" {
   url = "${local.p.cognito_emisor}/.well-known/jwks.json"
@@ -13,7 +13,7 @@ locals {
     ATLAS_BD_NOMBRE                         = var.base_datos
     ATLAS_BD_USUARIO                        = var.usuario_bd_aplicacion
     ATLAS_BD_AUTENTICACION                  = "iam"
-    ATLAS_BD_CA_CERTIFICADOS                = "/var/task/certificados/ca-bd.pem" # RDS + Amazon Root CA (DIF-96)
+    ATLAS_BD_CA_CERTIFICADOS                = "/var/task/certificados/ca-bd.pem" # RDS + Amazon Root CA
     ATLAS_S3_BUCKET_DOCUMENTOS              = local.p.bucket_documentos
     ATLAS_MANTENIMIENTO_FUENTE              = "s3"
     ATLAS_BEDROCK_PERFIL_GENERATIVO         = var.perfil_generativo
@@ -34,7 +34,7 @@ locals {
         ATLAS_JWT_EMISOR  = local.p.cognito_emisor
         ATLAS_JWT_CLIENTE = local.p.cognito_cliente_id
         ATLAS_JWT_JWKS    = data.http.jwks.response_body
-        # RF-25: supresión en Cognito por la Lambda `cuentas` (DO-2026-10-23-CIERRE P7).
+        # RF-25: supresión en Cognito por la Lambda `cuentas`.
         ATLAS_CUENTAS_FUNCION = local.nombre_funcion_cuentas
       })
     }

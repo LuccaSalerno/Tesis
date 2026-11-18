@@ -1,6 +1,6 @@
 """Valores cerrados del dominio (tesis §5.2: se representan mediante enumeraciones).
 
-En la base se guardan como `varchar` con `CHECK` (PD-04); estos valores son la
+En la base se guardan como `varchar` con `CHECK`; estos valores son la
 única fuente de los catálogos y la migración `0002` los replica literalmente.
 """
 
@@ -41,18 +41,18 @@ class EstadoIncorporacion(StrEnum):
     PENDIENTE = "pendiente"
     INCORPORADO = "incorporado"
     DESCARTADO = "descartado"
-    VENCIDO = "vencido"  # no se incorporó dentro de su vigencia (DO-2026-10-22-CARGAS)
+    VENCIDO = "vencido"  # no se incorporó dentro de su vigencia
 
 
 class FormatoArchivo(StrEnum):
-    """Formatos admitidos (RC-P04)."""
+    """Formatos admitidos."""
 
     PDF = "pdf"
     DOCX = "docx"
 
 
 class TipoDocumental(StrEnum):
-    """Tipos documentales admitidos (§3.3.3, RC-P04)."""
+    """Tipos documentales admitidos (§3.3.3)."""
 
     CONTRATO = "contrato"
     PRESUPUESTO = "presupuesto"
@@ -76,10 +76,10 @@ class ResultadoAuditoria(StrEnum):
 
 
 class EstadoTrabajo(StrEnum):
-    """Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).
+    """Estado técnico del procesamiento de un archivo (§5.3.1).
 
-    Es independiente del estado funcional del trámite. «En espera» (RC-P08.8): registrado
-    sin cupo de procesamiento; lo admite el reconciliador (DO-2026-10-23-REC).
+    Es independiente del estado funcional del trámite. «En espera»: registrado
+    sin cupo de procesamiento; lo admite el reconciliador.
     """
 
     PENDIENTE = "pendiente"  # registrado; inicio de la ejecución no confirmado
@@ -110,18 +110,18 @@ class TipoValidacion(StrEnum):
     CONFIRMACION = "confirmacion"  # aceptó la sugerencia tal cual
     CORRECCION = "correccion"  # registró un valor distinto del sugerido
     SIN_SUGERENCIA = "sin_sugerencia"  # el dato no tenía sugerencia
-    AUSENTE = "ausente"  # una persona declara que no consta o no aplica (DO-2026-10-22-WEB F10)
+    AUSENTE = "ausente"  # una persona declara que no consta o no aplica
 
 
 class MotivoAusencia(StrEnum):
-    """Por qué un campo del esquema no tiene valor en la versión (DO-2026-10-22-WEB F10)."""
+    """Por qué un campo del esquema no tiene valor en la versión."""
 
     NO_CONSTA = "no_consta"  # el dato no figura en el documento
     NO_APLICA = "no_aplica"  # el dato no corresponde a este caso documental
 
 
 class MotivoAbstencion(StrEnum):
-    """Por qué una consulta asistida no responde (RF-13, DO-2026-10-22-RAG, P3)."""
+    """Por qué una consulta asistida no responde (RF-13)."""
 
     EVIDENCIA_INSUFICIENTE = "evidencia_insuficiente"  # lo indicó el modelo
     SIN_CITAS_VALIDAS = "sin_citas_validas"  # ninguna afirmación citó fragmentos recuperados
@@ -129,7 +129,7 @@ class MotivoAbstencion(StrEnum):
 
 
 class TipoVinculo(StrEnum):
-    """Qué justifica un vínculo entre documentos (RF-14, DO-2026-10-22-REG P1)."""
+    """Qué justifica un vínculo entre documentos (RF-14)."""
 
     REFERENCIA = "referencia"  # un documento cita al otro
     CAMPOS = "campos"  # los documentos comparten datos validados
@@ -143,7 +143,7 @@ class OrigenVinculo(StrEnum):
 
 
 class EstadoVinculo(StrEnum):
-    """Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica (DO-2026-10-22-REG P2)."""
+    """Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica."""
 
     PENDIENTE = "pendiente"  # sugerido, sin efecto hasta confirmarse
     CONFIRMADO = "confirmado"
@@ -152,7 +152,7 @@ class EstadoVinculo(StrEnum):
 
 
 class ResultadoRegla(StrEnum):
-    """Los cuatro resultados de una regla de consistencia (§5.3.5, PD-01)."""
+    """Los cuatro resultados de una regla de consistencia (§5.3.5)."""
 
     CUMPLIMIENTO = "cumplimiento"
     ADVERTENCIA = "advertencia"
@@ -161,37 +161,37 @@ class ResultadoRegla(StrEnum):
 
 
 class DisparadorRegla(StrEnum):
-    """Qué provocó una ejecución de reglas (§5.3.5, DO-2026-10-22-REG P4)."""
+    """Qué provocó una ejecución de reglas (§5.3.5)."""
 
     VINCULO = "vinculo"  # vínculo creado o confirmado
     VALIDACION = "validacion"  # validación de la clasificación o de un campo
 
 
 class AlcancePlantilla(StrEnum):
-    """A qué trámites se sugiere una plantilla de flujo (RC-P03.1.4, DO-2026-10-22-TAR P2)."""
+    """A qué trámites se sugiere una plantilla de flujo."""
 
     CONTRATO = "contrato"  # algún documento vigente clasificado como contrato
     GENERAL = "general"
 
 
 class EstadoCiclo(StrEnum):
-    """Situación de un ciclo de revisión (RN-09, RN-12, DO-2026-10-22-TAR)."""
+    """Situación de un ciclo de revisión (RN-09, RN-12)."""
 
     EN_CURSO = "en_curso"
     APROBADO = "aprobado"
     OBSERVADO = "observado"
-    DESPLAZADO = "desplazado"  # cambió el conjunto documental (RN-12, PD-05.1)
-    CANCELADO = "cancelado"  # el responsable canceló el trámite (RN-14, DO-2026-10-23-CIERRE)
+    DESPLAZADO = "desplazado"  # cambió el conjunto documental (RN-12)
+    CANCELADO = "cancelado"  # el responsable canceló el trámite (RN-14)
 
 
 class EstadoTarea(StrEnum):
-    """Estado de una tarea; no es un estado del trámite (PD-05.4)."""
+    """Estado de una tarea; no es un estado del trámite."""
 
     EN_ESPERA = "en_espera"  # espera la aprobación de la tarea anterior
     PENDIENTE = "pendiente"  # habilitada para decidir
     APROBADA = "aprobada"
     OBSERVADA = "observada"
-    ANULADA = "anulada"  # por cambio documental (RN-12, PD-05.4)
+    ANULADA = "anulada"  # por cambio documental (RN-12)
     DESCARTADA = "descartada"  # el ciclo concluyó por una observación anterior
 
 
@@ -215,7 +215,7 @@ class AccionAuditoria(StrEnum):
     TRAMITE_CREADO = "tramite_creado"
     CARGA_CONFIRMADA = "carga_confirmada"
     CARGA_VENCIDA = "carga_vencida"
-    PROCESAMIENTO_REINTENTADO = "procesamiento_reintentado"  # RNF-06, RC-P08.4
+    PROCESAMIENTO_REINTENTADO = "procesamiento_reintentado"  # RNF-06
     VERSION_INCORPORADA = "version_incorporada"  # RF-07: relación de versión confirmada
     SUGERENCIA_VERSION_RECHAZADA = "sugerencia_version_rechazada"  # RF-07
     ARCHIVO_DESCARTADO = "archivo_descartado"  # RF-07
@@ -258,7 +258,7 @@ class AccionAuditoria(StrEnum):
 
 
 class CriterioVersion(StrEnum):
-    """Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1)."""
+    """Por qué un archivo podría ser versión nueva de un documento (RF-06)."""
 
     NUMERO = "numero"  # mismo tipo y mismo número documental
     CUIT = "cuit"  # mismo tipo y mismo CUIT de la contraparte, proveedor o emisor

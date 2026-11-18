@@ -3,12 +3,12 @@
 Revisión: 0008
 Anterior: 0007
 Trazabilidad: Figura 5.4 (VINCULO_DOCUMENTAL, EJECUCION_REGLA, ENTRADA_REGLA), §5.3.5,
-RF-14, RF-15, RF-16, RN-05, RN-06, PD-01, DO-2026-10-22-REG, PD-04 (PD-04-010).
+RF-14, RF-15, RF-16, RN-05, RN-06.
 
 - `vinculo_documental`: agregados `tramite_id` (clave foránea compuesta: los dos documentos
   son del mismo trámite), `fuente_id`, autoría y resolución. A lo sumo un vínculo pendiente o
   confirmado por par de documentos, en cualquier dirección. Solo cambian el estado y la
-  resolución, y únicamente pendiente → confirmado | rechazado y confirmado → eliminado (P2).
+  resolución, y únicamente pendiente → confirmado | rechazado y confirmado → eliminado.
 - `ejecucion_regla`: agregados `vinculo_id`, `explicacion` (§5.3.5), `disparador` y
   `ejecutada_en`. `entrada_regla` referencia las validaciones usadas (V3).
 - `ejecucion_regla_version` (técnica): versiones consideradas por cada ejecución, también

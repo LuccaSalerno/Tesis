@@ -1,9 +1,9 @@
-"""Latencia de la consulta asistida contra la API (IA-M08, DO-2026-10-23-E90-API P3, P6, P7).
+"""Latencia de la consulta asistida contra la API (IA-M08).
 
 Las 30 preguntas se envían de a una, en orden fijo, por bloque de (modelo, repetición): el
-cambio de modelo exige reaplicar `demo` entre bloques (P5). Cada respuesta se verifica contra
+cambio de modelo exige reaplicar `demo` entre bloques. Cada respuesta se verifica contra
 el perfil declarado. Mediana y p95 por rango más cercano sobre todas las respuestas
-completadas, sin excluir arranques en frío ni observaciones lentas (P6).
+completadas, sin excluir arranques en frío ni observaciones lentas.
 """
 
 import math
@@ -48,7 +48,7 @@ def resumen(valores: Sequence[float]) -> dict[str, Any]:
 def linea_base_red(
     envio: Envio, url_api: str, registro: Registro, muestras: int = MUESTRAS_RED
 ) -> None:
-    """P7: `GET /salud` no consulta la base ni Bedrock; aproxima el tiempo de red y de API."""
+    """`GET /salud` no consulta la base ni Bedrock; aproxima el tiempo de red y de API."""
     for numero in range(1, muestras + 1):
         medida = medir(envio, "GET", url_api.rstrip("/") + "/salud")
         registro.escribir(
@@ -100,7 +100,7 @@ def medir_bloque(
                 "duracion_ms": round(medida.duracion_ms, 1),
                 "servidor": medida.server_timing,
                 "modelo_generacion": cuerpo.get("modelo_generacion"),
-                # Una respuesta de otro perfil indica un despliegue equivocado (P3).
+                # Una respuesta de otro perfil indica un despliegue equivocado.
                 "perfil_coincide": cuerpo.get("modelo_generacion") in (perfil, None)
                 if completada
                 else None,

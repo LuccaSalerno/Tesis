@@ -1,6 +1,7 @@
-"""Procesamiento simulado para desarrollo y E2E locales (DO-2026-10-22-WEB F9).
+"""Procesamiento simulado para desarrollo y E2E locales.
 
-Comprueba que solo corre fuera de demo, que reconoce el corpus PD-07 por su huella, que las
+Comprueba que solo corre fuera de demo, que reconoce los documentos de la demo
+por su huella, que las
 sugerencias quedan rotuladas como simulación y que lo ajeno al corpus se registra como fallo.
 """
 
@@ -90,7 +91,7 @@ def test_f9_formas_impresas_de_los_valores() -> None:
 
 
 def test_demo_surdelta_simula_sus_documentos(ctx: Contexto, base_migrada: Configuracion) -> None:
-    """DO-2026-11-09-DEMO-SURDELTA: los PDF de SurDelta también se simulan, con su rótulo."""
+    """Los PDF de SurDelta también se simulan, con su rótulo."""
     from atlas.herramientas import sembrar_demo
 
     tramite_id = crear_tramite(ctx)["id"]

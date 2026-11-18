@@ -4,7 +4,7 @@ output "proxy_direccion" {
 }
 
 output "proxy_id_recurso" {
-  description = "Identificador prx-…, obtenido del ARN del proxy (RC-P10-04)"
+  description = "Identificador prx-…, obtenido del ARN del proxy"
   value       = element(split(":", aws_db_proxy.principal.arn), 6)
 }
 

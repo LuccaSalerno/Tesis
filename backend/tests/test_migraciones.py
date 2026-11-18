@@ -1,4 +1,4 @@
-"""Migraciones e inicialización de PostgreSQL con pgvector real (RC-P10-15, PD-04)."""
+"""Migraciones e inicialización de PostgreSQL con pgvector real."""
 
 import pytest
 from alembic import command
@@ -19,7 +19,7 @@ def _revision_actual(motor: Engine) -> str | None:
         return conexion.execute(text("SELECT version_num FROM atlas.alembic_version")).scalar()
 
 
-def test_rc_p10_15_migraciones_reproducibles_desde_cero(
+def test_migraciones_reproducibles_desde_cero(
     configuracion_tests: Configuracion, motor_migracion: Engine
 ) -> None:
     config = configuracion_alembic(configuracion_tests)
@@ -33,7 +33,7 @@ def test_rc_p10_15_migraciones_reproducibles_desde_cero(
         )
 
 
-def test_rc_p10_15_pgvector_disponible_para_usuario_de_aplicacion(
+def test_pgvector_disponible_para_usuario_de_aplicacion(
     motor_aplicacion: Engine,
 ) -> None:
     with motor_aplicacion.connect() as conexion:
@@ -70,7 +70,7 @@ def test_rnf_04_rn_10_usuario_de_aplicacion_no_borra_ni_altera_esquema(
     assert crea_en_esquema is False
 
 
-def test_rc_p10_usuario_de_aplicacion_no_accede_a_otra_base(
+def test_usuario_de_aplicacion_no_accede_a_otra_base(
     configuracion_tests: Configuracion,
 ) -> None:
     otra = configuracion_tests.url_aplicacion().set(database="atlas_dev")
@@ -80,7 +80,7 @@ def test_rc_p10_usuario_de_aplicacion_no_accede_a_otra_base(
     motor.dispose()
 
 
-def test_rc_p10_motor_de_aplicacion_conecta_con_su_usuario(
+def test_motor_de_aplicacion_conecta_con_su_usuario(
     configuracion_tests: Configuracion,
 ) -> None:
     motor = crear_motor(configuracion_tests)

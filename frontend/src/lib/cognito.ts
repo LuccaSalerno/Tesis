@@ -1,5 +1,5 @@
 /**
- * Inicio de sesión con Cognito sin SDK (DO-2026-10-22-WEB F3): `InitiateAuth` con
+ * Inicio de sesión con Cognito sin SDK: `InitiateAuth` con
  * USER_PASSWORD_AUTH y renovación con REFRESH_TOKEN_AUTH. La contraseña solo viaja a Cognito.
  */
 import { CONFIGURACION } from "./configuracion";

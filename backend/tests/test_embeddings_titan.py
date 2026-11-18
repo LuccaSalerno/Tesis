@@ -1,4 +1,4 @@
-"""Adaptador de Titan Text Embeddings V2 (RC-P07.3, DO-2026-10-23-E90-MEDICION P12).
+"""Adaptador de Titan Text Embeddings V2.
 
 Stubber valida cada `InvokeModel` contra el modelo de servicio; no contacta AWS.
 """
@@ -31,7 +31,7 @@ def esperado(texto: str) -> dict[str, str]:
     }
 
 
-def test_rc_p07_3_titan_un_texto_por_llamada_1024_y_normalizado() -> None:
+def test_titan_un_texto_por_llamada_1024_y_normalizado() -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         for texto, valor in (("a", 0.1), ("b", 0.2)):
@@ -46,7 +46,7 @@ def test_rc_p07_3_titan_un_texto_por_llamada_1024_y_normalizado() -> None:
     assert vectores[1][0] == pytest.approx(0.2)
 
 
-def test_rc_p07_3_titan_rechaza_dimensiones_distintas() -> None:
+def test_titan_rechaza_dimensiones_distintas() -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_response(
@@ -62,7 +62,7 @@ def test_rc_p07_3_titan_rechaza_dimensiones_distintas() -> None:
     ("excepcion", "error"),
     [("ThrottlingException", ErrorTransitorio), ("AccessDeniedException", ErrorPermanente)],
 )
-def test_rc_p08_errores_de_titan(excepcion: str, error: type[Exception]) -> None:
+def test_errores_de_titan(excepcion: str, error: type[Exception]) -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_client_error("invoke_model", excepcion)

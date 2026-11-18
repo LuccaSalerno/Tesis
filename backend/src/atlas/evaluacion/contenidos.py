@@ -1,7 +1,7 @@
-"""Contenido normalizado de cada documento, con el OCR una sola vez (P6, RC-P07.5).
+"""Contenido normalizado de cada documento, con el OCR una sola vez.
 
 Los PDF pasan por Textract asíncrono, igual que en producción: el archivo se sube al bucket
-de evaluación (P5), se analiza con TABLES y LAYOUT y la respuesta cruda se guarda en una
+de evaluación, se analiza con TABLES y LAYOUT y la respuesta cruda se guarda en una
 caché por huella del archivo. Las repeticiones y los modelos reutilizan esa respuesta, de
 modo que el OCR no se repite ni se cuenta dos veces. Los DOCX se leen con `desde_docx`.
 """

@@ -1,4 +1,4 @@
-# CI sin acceso a AWS (RC-P02, DO-2026-10-21): linting, análisis estático,
+# CI sin acceso a AWS: linting, análisis estático,
 # pruebas y cobertura con PostgreSQL + pgvector temporal en el runner.
 # Prohibido agregar OIDC, id-token, credenciales AWS o pasos de despliegue.
 name: CI
@@ -40,7 +40,7 @@ jobs:
       ATLAS_BD_NOMBRE: atlas_tests
       ATLAS_BD_USUARIO: atlas_tests_app
       ATLAS_BD_USUARIO_MIGRACION: atlas_tests_migracion
-      # Superusuario efímero del runner: prueba la inicialización privilegiada (RC-P10-15).
+      # Superusuario efímero del runner: prueba la inicialización privilegiada.
       ATLAS_PRUEBAS_PG_SUPERUSUARIO: "host=localhost user=postgres"
     defaults:
       run:
@@ -54,7 +54,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -c requisitos-bloqueados.txt -e ".[desarrollo]"
-      - name: Inicializar PostgreSQL (equivalente local de RC-P10-15)
+      - name: Inicializar PostgreSQL
         run: ../infra/local/inicializar_base.sh
       - name: Linting
         run: |
@@ -67,7 +67,7 @@ jobs:
       - name: Cobertura mínima del 90 % por módulo
         run: python -m herramientas_ci.verificar_cobertura coverage.json --minimo 90
 
-  # Aplicación web (DO-2026-10-22-WEB F13): sin AWS. Los recorridos E2E con Playwright
+  # Aplicación web: sin AWS. Los recorridos E2E con Playwright
   # necesitan el stack local levantado y se ejecutan fuera de la CI (frontend/README.md).
   frontend:
     runs-on: ubuntu-24.04

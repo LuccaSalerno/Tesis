@@ -1,5 +1,5 @@
 /**
- * Administración operativa (Tabla 3.II, RF-19, RF-24, RF-25, RC-P03): estado general,
+ * Administración operativa (Tabla 3.II, RF-19, RF-24, RF-25): estado general,
  * plantillas de flujo, tareas sin asignar y cuentas. Sin acceso al contenido documental.
  */
 import { ArrowDown, ArrowRight, ArrowUp, Pencil, Plus, RotateCcw, Trash2, UserCheck, UserX } from "lucide-react";
@@ -58,7 +58,7 @@ function PasosPlantilla({ plantilla }: { plantilla: Plantilla }) {
 }
 
 /**
- * Las plantillas son inmutables (DO-2026-10-22-TAR P1): editar crea la versión siguiente y
+ * Las plantillas son inmutables: editar crea la versión siguiente y
  * reemplaza a la activa. De uno a tres pasos; el último lo resuelve alguien con cierre.
  */
 function EditorPlantilla({

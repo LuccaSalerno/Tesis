@@ -1,5 +1,5 @@
 /**
- * Formatos canónicos de los valores validados (DO-2026-10-22-VAL P4), verificados antes de
+ * Formatos canónicos de los valores validados, verificados antes de
  * enviar. El backend vuelve a validarlos: esto solo evita un viaje y explica el formato.
  */
 import { z } from "zod";

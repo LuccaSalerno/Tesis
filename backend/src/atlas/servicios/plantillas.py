@@ -1,9 +1,9 @@
-"""Plantillas de flujo configuradas por el administrador operativo (RC-P03.1, RF-17).
+"""Plantillas de flujo configuradas por el administrador operativo (RF-17).
 
-DO-2026-10-22-TAR, P1: inmutables y versionadas por alcance, de uno a tres pasos con un
+Inmutables y versionadas por alcance, de uno a tres pasos con un
 revisor/aprobador por defecto; a lo sumo una activa por alcance. Una plantilla nueva
 reemplaza a la activa de su alcance. Se desactivan, nunca se borran. El revisor del
-último paso necesita autorización de cierre (RC-P03.2.5).
+último paso necesita autorización de cierre.
 """
 
 import uuid
@@ -17,7 +17,7 @@ from atlas.persistencia.modelos import PlantillaFlujo, PlantillaFlujoPaso, Usuar
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado
 
-MAX_PASOS = 3  # RC-P03.1.1: flujos secuenciales de una a tres tareas
+MAX_PASOS = 3  # flujos secuenciales de una a tres tareas
 
 
 @dataclass(frozen=True)

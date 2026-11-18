@@ -1,4 +1,4 @@
-"""Emite un token de acceso local para desarrollo (DT-AUT-01). Nunca en demo.
+"""Emite un token de acceso local para desarrollo. Nunca en demo.
 
 Uso: `python -m atlas.herramientas.token_local --sub <sub> [--directorio .claves_locales]`
 

@@ -1,4 +1,4 @@
-"""Modelo físico del núcleo de la Figura 5.4 contra PostgreSQL real (PD-04, migración 0002)."""
+"""Modelo físico del núcleo de la Figura 5.4 contra PostgreSQL real (migración 0002)."""
 
 import re
 import threading
@@ -61,9 +61,7 @@ def verificar_diferidas(conexion: Connection) -> None:
 # --- Coherencia entre el modelo Python y la migración ------------------------------
 
 
-def test_pd_04_modelos_coinciden_con_la_migracion(
-    configuracion_tests: Any, base_migrada: Any
-) -> None:
+def test_modelos_coinciden_con_la_migracion(configuracion_tests: Any, base_migrada: Any) -> None:
     # Con `atlas` fuera del search_path, la reflexión informa el esquema de todas las FK.
     motor = create_engine(
         configuracion_tests.url_migracion(),
@@ -97,7 +95,7 @@ def test_pd_04_modelos_coinciden_con_la_migracion(
         ("ck_valor_sugerido_motivo_sin_fuente", MotivoSinFuente),
     ],
 )
-def test_pd_04_catalogos_de_la_base_coinciden_con_las_enumeraciones(
+def test_catalogos_de_la_base_coinciden_con_las_enumeraciones(
     conexion_migracion: Connection, restriccion: str, enumeracion: type[StrEnum]
 ) -> None:
     definicion = conexion_migracion.execute(
@@ -122,7 +120,7 @@ def test_rf_05_documento_y_version_inicial_se_crean_juntos(conexion_aplicacion: 
         {"id": escenario["documento"]},
     ).one()
     assert vigente.version_vigente_id == escenario["version"]
-    assert vigente.tipo is None  # P3: sin tipo hasta validar la clasificación
+    assert vigente.tipo is None  # Sin tipo hasta validar la clasificación
 
 
 def test_rf_05_documento_sin_version_vigente_rechazado(conexion_aplicacion: Connection) -> None:
@@ -383,7 +381,7 @@ def test_rnf_04_privilegios_de_borrado_de_la_aplicacion(
         ).one()
         for tabla in TABLAS_DEL_NUCLEO
     }
-    # Solo usuario_rol representa la asignación actual de roles (PD-04-004).
+    # Solo usuario_rol representa la asignación actual de roles.
     assert {t for t, (borra, vacia) in privilegios.items() if borra or vacia} == {"usuario_rol"}
     assert privilegios["usuario_rol"] == (True, False)
 
@@ -400,7 +398,7 @@ def test_rf_07_aplicacion_actualiza_estado_de_incorporacion(
     )
 
 
-# --- RF-03, RF-25, RF-26, RF-21, RC-P04: restricciones de valores ------------------
+# --- RF-03, RF-25, RF-26, RF-21: restricciones de valores ------------------
 
 
 def test_rf_26_cancelacion_exige_motivo(conexion_aplicacion: Connection) -> None:
@@ -490,7 +488,7 @@ def test_rf_25_supresion_conserva_id_interno_y_referencias(conexion_aplicacion: 
     assert responsable == e["usuario"]
 
 
-def test_rc_p03_2_autorizacion_de_cierre_por_defecto_ausente(
+def test_autorizacion_de_cierre_por_defecto_ausente(
     conexion_aplicacion: Connection,
 ) -> None:
     usuario = datos.crear_usuario(conexion_aplicacion)
@@ -518,7 +516,7 @@ def test_rf_25_rol_fuera_del_catalogo_rechazado(conexion_aplicacion: Connection)
         ("tamano_bytes", 0, "ck_archivo_tamano_positivo"),
     ],
 )
-def test_rc_p04_valores_del_archivo(
+def test_valores_del_archivo(
     conexion_aplicacion: Connection, columna: str, valor: object, restriccion: str
 ) -> None:
     usuario = datos.crear_usuario(conexion_aplicacion)

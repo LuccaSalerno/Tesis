@@ -1,9 +1,9 @@
 """Hito 1.5: validación humana de clasificación y campos (RF-09, RF-10, RF-12, RN-02, RN-03).
 
-DO-2026-10-22-VAL: versión vigente (P1), Borrador o Pendiente de validación (P2), campos
-después de la clasificación según el esquema del tipo validado (P3), formatos canónicos
-con advertencia por dígito de CUIT (P4). PostgreSQL real y procesamiento con respuestas
-fijas (P1 de DO-2026-10-22-PROC).
+Versión vigente, Borrador o Pendiente de validación, campos
+después de la clasificación según el esquema del tipo validado, formatos canónicos
+con advertencia por dígito de CUIT. PostgreSQL real y procesamiento con respuestas
+fijas.
 """
 
 from collections.abc import Iterator
@@ -88,7 +88,7 @@ def test_rf_09_clasificacion_sugerida_pendiente_y_sin_campos(escenario: dict[str
     assert datos["tipo_validado"] is None
     assert datos["clasificacion"]["sugerencia"]["valor"] == "contrato"
     assert datos["clasificacion"]["vigente"] is None
-    assert datos["campos"] == []  # P3: primero la clasificación
+    assert datos["campos"] == []  # Primero la clasificación
     assert datos["version"]["numero"] == 1
 
 
@@ -125,7 +125,7 @@ def test_rf_09_tipo_fuera_del_catalogo_rechazado(escenario: dict[str, Any]) -> N
 # --- Campos -----------------------------------------------------------------------------
 
 
-def test_p3_campos_no_se_validan_antes_que_la_clasificacion(escenario: dict[str, Any]) -> None:
+def test_campos_no_se_validan_antes_que_la_clasificacion(escenario: dict[str, Any]) -> None:
     respuesta = validar(escenario, campo="monto_total", valor_validado="1250000.00")
     assert respuesta.status_code == 409
     assert "clasificación" in respuesta.json()["detalle"]
@@ -219,7 +219,7 @@ def test_rf_12_correccion_sin_otra_fuente_usa_la_de_la_sugerencia(
     assert respuesta.json()["localizador"] == sugerida["localizador"]
 
 
-def test_dt_val_reemplazo_encadenado_y_validacion_desactualizada(escenario: dict[str, Any]) -> None:
+def test_reemplazo_encadenado_y_validacion_desactualizada(escenario: dict[str, Any]) -> None:
     confirmar_clasificacion(escenario)
     sugerida = dato(escenario, "vigencia_hasta")["sugerencia"]
     primera = validar(
@@ -259,7 +259,7 @@ def test_dt_val_reemplazo_encadenado_y_validacion_desactualizada(escenario: dict
         ("numero_inexistente", "x", "esquema"),
     ],
 )
-def test_p4_formatos_canonicos(
+def test_formatos_canonicos(
     escenario: dict[str, Any], campo: str, valor: str, mensaje: str
 ) -> None:
     confirmar_clasificacion(escenario)
@@ -268,7 +268,7 @@ def test_p4_formatos_canonicos(
     assert mensaje in respuesta.json()["detalle"]
 
 
-def test_p4_cuit_con_digito_invalido_se_acepta_con_advertencia(escenario: dict[str, Any]) -> None:
+def test_cuit_con_digito_invalido_se_acepta_con_advertencia(escenario: dict[str, Any]) -> None:
     confirmar_clasificacion(escenario)
     sugerida = dato(escenario, "cuit_contraparte")["sugerencia"]
     respuesta = validar(
@@ -289,7 +289,7 @@ def test_p4_cuit_con_digito_invalido_se_acepta_con_advertencia(escenario: dict[s
     assert (valida.json()["tipo"], valida.json()["advertencias"]) == ("confirmacion", [])
 
 
-def test_dt_val_sugerencia_de_otro_dato_rechazada(escenario: dict[str, Any]) -> None:
+def test_sugerencia_de_otro_dato_rechazada(escenario: dict[str, Any]) -> None:
     confirmar_clasificacion(escenario)
     ajena = dato(escenario, "moneda")["sugerencia"]
     respuesta = validar(
@@ -298,7 +298,7 @@ def test_dt_val_sugerencia_de_otro_dato_rechazada(escenario: dict[str, Any]) -> 
     assert respuesta.status_code == 422
 
 
-def test_p3_corregir_el_tipo_cambia_el_esquema_y_conserva_el_historial(
+def test_corregir_el_tipo_cambia_el_esquema_y_conserva_el_historial(
     escenario: dict[str, Any],
 ) -> None:
     clasificacion = confirmar_clasificacion(escenario)
@@ -351,9 +351,7 @@ def test_p3_corregir_el_tipo_cambia_el_esquema_y_conserva_el_historial(
         ("cancelado", 409),
     ],
 )
-def test_p2_estados_que_admiten_validar(
-    escenario: dict[str, Any], estado: str, codigo: int
-) -> None:
+def test_estados_que_admiten_validar(escenario: dict[str, Any], estado: str, codigo: int) -> None:
     cambiar_estado(escenario["ctx"].motor, escenario["tramite"]["id"], estado)
     sugerida = consultar(escenario).json()["clasificacion"]["sugerencia"]
     respuesta = validar(
@@ -407,7 +405,7 @@ def test_rn_09_validacion_inmutable(escenario: dict[str, Any], motor_migracion: 
     ],
     ids=["dos_primeras", "dos_reemplazos", "reemplazo_de_otro_campo", "sugerencia_de_otro_campo"],
 )
-def test_dt_val_una_sola_cadena_por_dato_en_la_base(
+def test_una_sola_cadena_por_dato_en_la_base(
     escenario: dict[str, Any], columnas: dict[str, Any], restriccion: str
 ) -> None:
     confirmar_clasificacion(escenario)

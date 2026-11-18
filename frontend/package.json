@@ -2,7 +2,7 @@
   "name": "atlas-web",
   "private": true,
   "version": "0.1.0",
-  "description": "Aplicación web de ATLAS (DO-2026-10-22-WEB)",
+  "description": "Aplicación web de ATLAS",
   "type": "module",
   "engines": {
     "node": ">=20.19.0"

@@ -32,7 +32,7 @@ function mostrar(ruta: string, rutas: Parameters<typeof createMemoryRouter>[0]) 
   );
 }
 
-// --- Administración: plantillas y autorización de cierre (RF-17, RF-25, DO-2026-10-22-TAR P1) ---
+// --- Administración: plantillas y autorización de cierre (RF-17, RF-25) ---
 
 const cuentas: Cuenta[] = [
   { id: 1, identificador_externo: "sub-admin", estado: "habilitada", roles: ["administrador_operativo"], autorizacion_cierre: false, nombre_visible: "Administración" },

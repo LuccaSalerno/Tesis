@@ -1,7 +1,7 @@
-"""Catálogo de reglas de consistencia R1 a R4 (PD-01, RF-16, RN-06, §5.3.5).
+"""Catálogo de reglas de consistencia R1 a R4 (RF-16, RN-06, §5.3.5).
 
 Reglas explícitas y deterministas sobre valores **validados** y en formato canónico
-(DO-2026-10-22-VAL, P4) de dos documentos vinculados. No acceden a la base ni a
+ de dos documentos vinculados. No acceden a la base ni a
 sugerencias: reciben solo lo validado y devuelven resultado y explicación. La explicación
 contiene valores del documento: se guarda en la base y nunca va a los registros.
 """
@@ -14,7 +14,7 @@ from decimal import Decimal
 from atlas.dominio.enumeraciones import ResultadoRegla, TipoDocumental
 
 Valores = Mapping[TipoDocumental, Mapping[str, str]]
-# Campos que una persona declaró ausentes en la versión (DO-2026-10-22-WEB F10).
+# Campos que una persona declaró ausentes en la versión.
 Ausentes = Mapping[TipoDocumental, frozenset[str]]
 SIN_AUSENTES: Ausentes = {}
 
@@ -76,8 +76,8 @@ class Regla:
         return f"{_NOMBRE_CAMPO[campo]} ({_NOMBRE_TIPO[tipo]})"
 
     def evaluar(self, valores: Valores, ausentes: Ausentes = SIN_AUSENTES) -> Evaluacion:
-        """Falta de datos si algún campo necesario no tiene valor validado (PD-01), sea porque
-        falta validarlo o porque una persona lo declaró ausente (DO-2026-10-22-WEB F10)."""
+        """Falta de datos si algún campo necesario no tiene valor validado, sea porque
+        falta validarlo o porque una persona lo declaró ausente."""
         if self.faltantes(valores, ausentes) or self.ausentes(valores, ausentes):
             return self._falta_de_datos(valores, ausentes)
         return self._comparar(valores)
@@ -110,7 +110,7 @@ def _del(tipo: TipoDocumental) -> str:
 
 
 def _vigencia(valores: Valores) -> Evaluacion:
-    """R3: vigencia desde ≤ fecha de la orden ≤ vigencia hasta, extremos incluidos (PD-07.2)."""
+    """R3: vigencia desde ≤ fecha de la orden ≤ vigencia hasta, extremos incluidos."""
     fecha = date.fromisoformat(valores[TipoDocumental.ORDEN_COMPRA]["fecha"])
     contrato = valores[TipoDocumental.CONTRATO]
     desde = date.fromisoformat(contrato["vigencia_desde"])
@@ -204,7 +204,7 @@ CATALOGO: tuple[Regla, ...] = (
 
 
 def pertinentes(tipo_a: TipoDocumental | None, tipo_b: TipoDocumental | None) -> tuple[Regla, ...]:
-    """Reglas cuyo par de tipos coincide con el de los documentos, en cualquier orden (P5)."""
+    """Reglas cuyo par de tipos coincide con el de los documentos, en cualquier orden."""
     if tipo_a is None or tipo_b is None:
         return ()
     return tuple(r for r in CATALOGO if r.tipos == {tipo_a, tipo_b})

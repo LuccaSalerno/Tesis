@@ -1,8 +1,8 @@
-"""Puerto del modelo generativo: una invocación con herramienta forzada (DO-2026-10-22-PROC).
+"""Puerto del modelo generativo: una invocación con herramienta forzada.
 
 Las instrucciones viajan separadas del contenido documental (§5.4.3). El adaptador
 real usa Bedrock Converse (`atlas.integraciones.bedrock`); las pruebas de la lógica
-propia usan respuestas fijas (P1).
+propia usan respuestas fijas.
 """
 
 from dataclasses import dataclass

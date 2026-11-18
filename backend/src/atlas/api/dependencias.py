@@ -134,7 +134,7 @@ Nombre = Annotated[str, Field(min_length=1, max_length=120, pattern=r"\S")]
 
 
 def es_revisor(usuario: UsuarioActual) -> bool:
-    """El acceso derivado de una tarea exige el rol de revisor/aprobador (RF-19, P8)."""
+    """El acceso derivado de una tarea exige el rol de revisor/aprobador (RF-19)."""
     return Rol.REVISOR_APROBADOR in usuario.roles
 
 

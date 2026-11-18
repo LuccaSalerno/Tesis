@@ -1,11 +1,11 @@
-# API Gateway HTTP API con autorizador JWT del User Pool del entorno (RC-P10-05, §2.1).
+# API Gateway HTTP API con autorizador JWT del User Pool del entorno.
 # Los permisos del dominio se verifican además en el backend.
 
 resource "aws_apigatewayv2_api" "principal" {
   name          = "${local.prefijo}-api"
   protocol_type = "HTTP"
 
-  # La aplicación web corre en la máquina del presentador (F7). API Gateway responde las
+  # La aplicación web corre en la máquina del presentador. API Gateway responde las
   # verificaciones previas de CORS sin pasar por el autorizador.
   dynamic "cors_configuration" {
     for_each = length(var.origenes_web) > 0 ? [1] : []
@@ -46,7 +46,7 @@ resource "aws_apigatewayv2_route" "salud" {
 
 # Las verificaciones previas de CORS no llevan token: sin esta ruta, `$default` las manda al
 # autorizador y responde 401. Sin integración API Gateway la ignora; con ella, el backend
-# responde 204 (MiddlewareVerificacionPrevia) y API Gateway agrega el CORS (DIF-98).
+# responde 204 (MiddlewareVerificacionPrevia) y API Gateway agrega el CORS.
 resource "aws_apigatewayv2_route" "verificacion_cors" {
   count     = length(var.origenes_web) > 0 ? 1 : 0
   api_id    = aws_apigatewayv2_api.principal.id

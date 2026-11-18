@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Paleta sobria: blancos, grises y azul pizarra; el color se reserva para estados y
-   acciones (DO-2026-10-22-WEB). Tipografía del sistema: sin fuentes externas. */
+   acciones. Tipografía del sistema: sin fuentes externas. */
 @theme {
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;

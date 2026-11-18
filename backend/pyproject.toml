@@ -16,7 +16,7 @@ dependencies = [
     "PyJWT[crypto]>=2.15,<3",
     "boto3>=1.43,<2",
     "pypdf>=6.21,<7",
-    # FastAPI en Lambda detrás de API Gateway (DO-2026-10-22-OPS P5).
+    # FastAPI en Lambda detrás de API Gateway.
     "mangum>=0.19,<0.20",
 ]
 
@@ -28,9 +28,9 @@ desarrollo = [
     "pytest-cov>=7.1,<8",
     "ruff>=0.17,<0.18",
     "mypy>=2.4,<3",
-    # Simulación local de S3 y Step Functions (DT-AWS-01): nunca en el paquete desplegado.
+    # Simulación local de S3 y Step Functions: nunca en el paquete desplegado.
     "moto[server]>=5.2,<6",
-    # Escenarios de aceptación en Gherkin (DO-2026-10-22-BDD).
+    # Escenarios de aceptación en Gherkin.
     "pytest-bdd>=8.1,<9",
 ]
 

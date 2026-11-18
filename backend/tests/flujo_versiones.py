@@ -1,6 +1,6 @@
-"""Archivos procesados con respuestas fijas para sugerir una versión nueva (RF-06, RF-07,
-DO-2026-10-23-VER), compartidos por las pruebas y los escenarios BDD EVD-A y EVD-B.
-Valores sintéticos del oráculo PD-07 (AGENTS.md §2.4)."""
+"""Archivos procesados con respuestas fijas para sugerir una versión nueva (RF-06, RF-07),
+compartidos por las pruebas y los escenarios BDD EVD-A y EVD-B.
+Valores sintéticos del oráculo de la cadena de evidencia."""
 
 from typing import Any
 

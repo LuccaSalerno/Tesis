@@ -1,4 +1,4 @@
-"""Línea de comandos del arnés (DO-2026-10-23-E90-MEDICION). La ejecuta el operador.
+"""Línea de comandos del arnés. La ejecuta el operador.
 
 Pasos, en orden, sobre `evaluacion/campanas/<id>/`:
 
@@ -176,7 +176,7 @@ def ejecutar(argumentos: argparse.Namespace) -> str:
     if argumentos.con_calificaciones:
         conjunta = c.ruta("planillas/conjunta.csv")
         consenso = c.ruta("planillas/consenso.csv")
-        if conjunta.exists():  # DO-2026-10-24-IA-M06-CONJUNTA
+        if conjunta.exists():
             calificaciones, acuerdo = planillas.consolidar_conjunta(conjunta)
         else:
             calificaciones, acuerdo = planillas.consolidar(

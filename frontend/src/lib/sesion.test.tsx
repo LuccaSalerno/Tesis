@@ -22,7 +22,7 @@ const tarea = (id: number, nombre: string) => ({
   tramite: { id: 2, titulo: "Mantenimiento integral de planta", estado: "pendiente_aprobacion" },
 });
 
-describe("sesión (DO-2026-10-22-WEB F3)", () => {
+describe("sesión", () => {
   it("al cerrar sesión no muestra datos de la persona anterior y el ingreso empieza por Inicio", async () => {
     let actual = "martin";
     simularApi({

@@ -1,5 +1,5 @@
-"""Versión nueva sugerida y confirmada por el responsable (RF-06, RF-07, RN-11, RN-12,
-DO-2026-10-23-VER P1 a P4), contra PostgreSQL real y S3 simulado. Datos sintéticos."""
+"""Versión nueva sugerida y confirmada por el responsable (RF-06, RF-07, RN-11, RN-12),
+contra PostgreSQL real y S3 simulado. Datos sintéticos."""
 
 import json
 import threading
@@ -39,7 +39,7 @@ def _sugerencia(e: Equipo, tramite_id: int, archivo_id: int) -> dict[str, Any] |
     return datos
 
 
-# --- Detección (RF-06, P1) ---------------------------------------------------------------
+# --- Detección (RF-06) ---------------------------------------------------------------
 
 
 def test_rf_06_coincide_el_numero_documental(aplicacion: Any, e: Equipo) -> None:
@@ -137,7 +137,7 @@ def test_rf_06_compara_con_lo_validado_y_no_con_lo_sugerido(aplicacion: Any, e: 
     assert _sugerencia(e, tramite_id, nuevo["id"]) is None
 
 
-# --- Confirmación, rechazo y descarte (RF-07, P3, P4) -----------------------------------
+# --- Confirmación, rechazo y descarte (RF-07) -----------------------------------
 
 
 def test_rf_07_confirmar_la_version_la_hace_vigente(aplicacion: Any, e: Equipo) -> None:
@@ -234,7 +234,7 @@ def test_rnf_01_rn_07_solo_el_responsable_con_acceso(aplicacion: Any, e: Equipo)
     assert archivo(e.responsable, tramite_id, nuevo["id"])["estado_incorporacion"] == "pendiente"
 
 
-# --- RN-12 con una versión nueva (P4) ---------------------------------------------------
+# --- RN-12 con una versión nueva ---------------------------------------------------
 
 
 def test_rn_12_la_version_desplaza_el_ciclo_y_renueva_los_controles(
@@ -302,12 +302,10 @@ def test_regla_5_sin_contenido_documental_en_los_registros(
     assert "OC-0001" not in registro and CUIT not in registro
 
 
-# --- Concurrencia (PD-05.2, P11) ----------------------------------------------------------
+# --- Concurrencia ----------------------------------------------------------
 
 
-def test_pd_05_2_dos_confirmaciones_simultaneas_crean_una_sola_version(
-    aplicacion: Any, e: Equipo
-) -> None:
+def test_dos_confirmaciones_simultaneas_crean_una_sola_version(aplicacion: Any, e: Equipo) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]
     orden = _orden(e, tramite_id, numero="OC-0001")
     nuevo = procesado(aplicacion, e.responsable, tramite_id, "orden_compra", {"numero": "OC-0001"})

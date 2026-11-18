@@ -1,4 +1,4 @@
-# Raíz evaluacion (DO-2026-10-23-E90-MEDICION P5): un único bucket para que Textract asíncrono
+# Raíz evaluacion: un único bucket para que Textract asíncrono
 # lea los PDF del corpus sintético E90 durante una campaña de §6.3.1. No depende de las demás
 # raíces ni necesita RDS. Se crea y se retira por campaña, con el plan aprobado por el operador.
 terraform {

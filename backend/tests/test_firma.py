@@ -1,5 +1,5 @@
-"""Firma digital simulada y cierre terminal (RF-23, RN-11, RN-15, V11, DO-2026-10-23-VER P5,
-P6 y P8), contra PostgreSQL real. Cuentas y documentos sintéticos."""
+"""Firma digital simulada y cierre terminal (RF-23, RN-11, RN-15, V11),
+contra PostgreSQL real. Cuentas y documentos sintéticos."""
 
 import hashlib
 import json
@@ -48,7 +48,7 @@ def firmar(ctx: Any, tramite_id: int, version_id: int) -> Any:
     )
 
 
-# --- Firma y cierre (RF-23, P5, P6) -----------------------------------------------------
+# --- Firma y cierre (RF-23) -----------------------------------------------------
 
 
 def test_rf_23_firma_simulada_cierra_el_tramite(e: Equipo, aprobado: dict[str, Any]) -> None:
@@ -63,7 +63,7 @@ def test_rf_23_firma_simulada_cierra_el_tramite(e: Equipo, aprobado: dict[str, A
         e.aprobador.usuario_id,
     )
     assert firma["documento_id"] == aprobado["contrato"]
-    # P6: la referencia se recalcula desde el registro canónico expuesto.
+    # La referencia se recalcula desde el registro canónico expuesto.
     registro = json.loads(firma["registro_canonico"])
     assert registro["version_id"] == aprobado["version"]
     assert registro["huella_archivo"] == firma["huella_archivo"]
@@ -100,7 +100,7 @@ def test_rf_23_la_firma_sigue_consultable(e: Equipo, aprobado: dict[str, Any]) -
     firmado = next(h for h in hitos if h["accion"] == "firma_simulada_aplicada")
     assert firmado["version"]["version_id"] == aprobado["version"]
     assert hitos[-1]["accion"] == "tramite_cerrado"
-    # P8: la evidencia de la decisión del ciclo firmado incluye la firma.
+    # La evidencia de la decisión del ciclo firmado incluye la firma.
     datos = evidencia(e.responsable, aprobado["decision"]["id"])
     assert datos["firma"] == firma
     assert ("firma_simulada", firma["id"]) in {
@@ -113,10 +113,10 @@ def test_rf_23_sin_firma_la_consulta_responde_404(e: Equipo, aprobado: dict[str,
     assert evidencia(e.responsable, aprobado["decision"]["id"])["firma"] is None
 
 
-# --- Quién firma (RC-P03.2, RN-07, P5) --------------------------------------------------
+# --- Quién firma (RN-07) --------------------------------------------------
 
 
-def test_rc_p03_2_solo_con_autorizacion_de_cierre(e: Equipo, aprobado: dict[str, Any]) -> None:
+def test_solo_con_autorizacion_de_cierre(e: Equipo, aprobado: dict[str, Any]) -> None:
     tramite_id, version = aprobado["tramite"], aprobado["version"]
     assert firmar(e.revisor, tramite_id, version).status_code == 403  # sin autorización
     for ctx in (e.responsable, e.administrador):

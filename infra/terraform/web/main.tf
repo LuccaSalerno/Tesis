@@ -1,4 +1,4 @@
-# Bucket privado: solo CloudFront lo lee, con Origin Access Control (P1, P2). Solo archivos
+# Bucket privado: solo CloudFront lo lee, con Origin Access Control. Solo archivos
 # estáticos y `configuracion.json` (URL de la API y cliente de Cognito, sin secretos): admite
 # force_destroy para el retiro al cerrar el proyecto.
 
@@ -78,7 +78,7 @@ resource "aws_s3_bucket_policy" "web" {
   policy = data.aws_iam_policy_document.web.json
 }
 
-# --- Encabezados de seguridad (P3) ---------------------------------------------------------
+# --- Encabezados de seguridad ---------------------------------------------------------
 
 locals {
   # Comodines por servicio y región: la API y el bucket documental cambian por sesión.
@@ -123,7 +123,7 @@ resource "aws_cloudfront_response_headers_policy" "seguridad" {
   }
 }
 
-# --- Distribución (P2) ---------------------------------------------------------------------
+# --- Distribución ---------------------------------------------------------------------
 
 data "aws_cloudfront_cache_policy" "sin_cache" {
   name = "Managed-CachingDisabled"
@@ -135,7 +135,7 @@ data "aws_cloudfront_cache_policy" "optimizada" {
 
 resource "aws_cloudfront_distribution" "web" {
   enabled             = true
-  comment             = "ATLAS: aplicación web (DO-2026-10-23-WEB-HOST)"
+  comment             = "ATLAS: aplicación web"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
   http_version        = "http2and3"
@@ -190,7 +190,7 @@ resource "aws_cloudfront_distribution" "web" {
   }
 
   # Certificado de *.cloudfront.net: con él CloudFront no admite fijar el mínimo de TLS
-  # (DIF-114); los navegadores actuales negocian TLS 1.2 o 1.3.
+  #; los navegadores actuales negocian TLS 1.2 o 1.3.
   viewer_certificate {
     cloudfront_default_certificate = true
   }

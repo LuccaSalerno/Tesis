@@ -1,4 +1,4 @@
-"""Corpus, oráculos y compuerta de congelación (DO-2026-10-23-E90-MEDICION P4).
+"""Corpus, oráculos y compuerta de congelación.
 
 Lee el inventario, los oráculos de campos, fragmentos y consultas, y los objetivos de los
 documentos adversariales. El modo `oficial` exige oráculos congelados y revisados por los
@@ -211,7 +211,7 @@ def seleccionar(oraculos: Oraculos, modo: Modo) -> list[Documento]:
 
 
 def consultas_de(oraculos: Oraculos, modo: Modo) -> list[Consulta]:
-    """Las 30 preguntas son de la partición de medición: el ensayo no las usa (P4)."""
+    """Las 30 preguntas son de la partición de medición: el ensayo no las usa."""
     if modo is Modo.ENSAYO:
         return []
     if not oraculos.congelado:

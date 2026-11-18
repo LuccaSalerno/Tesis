@@ -1,6 +1,6 @@
 """Hito 1.2: autenticación, autorización por rol y cuentas con auditoría, contra PostgreSQL real.
 
-RF-01, RF-02, RF-21, RF-25, RN-01, RNF-01, RC-P03.2, DT-AUT-01, DT-AUT-02.
+RF-01, RF-02, RF-21, RF-25, RN-01, RNF-01.
 """
 
 import uuid
@@ -290,7 +290,7 @@ def test_rf_25_rol_fuera_del_catalogo_responde_422(
     assert respuesta.status_code == 422
 
 
-def test_rc_p03_2_autorizacion_de_cierre_otorgada_y_retirada_auditada(
+def test_autorizacion_de_cierre_otorgada_y_retirada_auditada(
     cliente: TestClient, motor_aplicacion: Engine, administrador: tuple[int, dict[str, str]]
 ) -> None:
     objetivo, _ = crear_cuenta(motor_aplicacion, REVISOR)
@@ -312,10 +312,10 @@ def test_rf_25_cuenta_inexistente_responde_404(
     assert cliente.get("/usuarios/999999999", headers=administrador[1]).status_code == 404
 
 
-# --- DT-AUT-02: primer administrador y escenario de los tres usuarios ficticios -----
+# --- Primer administrador y escenario de los tres usuarios ficticios -----
 
 
-def test_dt_aut_02_inicializacion_manual_unica(
+def test_inicializacion_manual_unica(
     base_reiniciada: Configuracion,
     motor_aplicacion: Engine,
     monkeypatch: pytest.MonkeyPatch,

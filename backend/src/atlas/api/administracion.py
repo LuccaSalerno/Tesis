@@ -1,6 +1,6 @@
-"""Estado general para el administrador operativo (RF-24, HU-10, DO-2026-10-23-CIERRE P4, P5).
+"""Estado general para el administrador operativo (RF-24, HU-10).
 
-Ruta RC-P01-014. Solo metadatos y conteos: el administrador no ve títulos, contenido
+ Solo metadatos y conteos: el administrador no ve títulos, contenido
 documental ni datos validados; los demás roles reciben 403.
 """
 
@@ -17,7 +17,7 @@ enrutador = APIRouter(prefix="/administracion", tags=["administracion"])
 
 
 class TramiteGeneral(BaseModel):
-    """Sin título ni descripción: pueden contener datos sensibles (P4)."""
+    """Sin título ni descripción: pueden contener datos sensibles."""
 
     id: int
     estado: EstadoTramite

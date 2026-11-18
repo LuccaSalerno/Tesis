@@ -1,8 +1,8 @@
-"""Lambda del reconciliador, invocada por EventBridge Scheduler cada 5 minutos (RC-P08.3).
+"""Lambda del reconciliador, invocada por EventBridge Scheduler cada 5 minutos.
 
-DO-2026-10-23-REC P3 a P5. Fuera de `active` no actúa: durante el mantenimiento no se
+Fuera de `active` no actúa: durante el mantenimiento no se
 admiten trabajos nuevos y, al volver a `active`, los pendientes se recuperan en orden
-(RC-P08.12). La respuesta y los registros llevan solo conteos e identificadores.
+. La respuesta y los registros llevan solo conteos e identificadores.
 """
 
 from functools import lru_cache

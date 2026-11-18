@@ -49,7 +49,7 @@ def test_rf_11_las_lineas_de_una_tabla_no_se_repiten() -> None:
     assert "Monto total" not in textos and "ARS 1.250.000,00" not in textos
 
 
-def test_dt_proc_textract_sin_texto_es_fallo_permanente() -> None:
+def test_textract_sin_texto_es_fallo_permanente() -> None:
     with pytest.raises(ErrorPermanente, match="contenido_vacio"):
         desde_textract(textract_fijo([[]]))
 
@@ -69,12 +69,12 @@ def test_rf_11_docx_sin_paginas_con_parrafos_tablas_y_secciones() -> None:
     ("datos", "codigo"),
     [(archivos.docx(""), "contenido_vacio"), (b"PK\x03\x04roto", "docx_ilegible")],
 )
-def test_dt_proc_docx_invalido_es_fallo_permanente(datos: bytes, codigo: str) -> None:
+def test_docx_invalido_es_fallo_permanente(datos: bytes, codigo: str) -> None:
     with pytest.raises(ErrorPermanente, match=codigo):
         desde_docx(datos)
 
 
-def test_dt_proc_serializacion_reversible() -> None:
+def test_serializacion_reversible() -> None:
     contenido = desde_textract(textract_fijo(PAGINAS))
     assert ContenidoNormalizado.desde_json(contenido.a_json()) == contenido
     assert json.loads(contenido.a_json())["origen"] == "textract"
@@ -92,7 +92,7 @@ def test_rnf_seg_contenido_no_puede_cerrar_sus_delimitadores() -> None:
     assert comparable(neutralizar(malicioso)) == comparable(malicioso)
 
 
-def test_dt_proc_renderizado_identifica_paginas_y_titulos() -> None:
+def test_renderizado_identifica_paginas_y_titulos() -> None:
     texto = renderizar(desde_textract(textract_fijo(PAGINAS)))
     assert texto.startswith('<documento origen="textract">')
     assert '<pagina numero="2">' in texto

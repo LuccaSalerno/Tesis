@@ -1,4 +1,4 @@
-"""Documentos sintéticos del escenario de seguridad, con marcadores únicos (P3, P8, P10).
+"""Documentos sintéticos del escenario de seguridad, con marcadores únicos.
 
 DOCX mínimos generados en memoria: no son del corpus E90 ni de un trámite real. Cada uno lleva
 un marcador propio (`SEGMARCA…`) que no debe aparecer en registros técnicos ni filtrarse a

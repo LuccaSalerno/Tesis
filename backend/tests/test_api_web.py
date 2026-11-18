@@ -1,7 +1,7 @@
-"""Backend que usa la aplicación web (DO-2026-10-22-WEB): campos ausentes (F10), URL de
-lectura del original (F4), nombres visibles (F5) e historial de consultas (F6).
+"""Backend que usa la aplicación web: campos ausentes, URL de
+lectura del original, nombres visibles e historial de consultas.
 
-Contra la API autenticada, PostgreSQL real y moto; documentos sintéticos (PD-07).
+Contra la API autenticada, PostgreSQL real y moto; documentos sintéticos.
 """
 
 from collections.abc import Iterator
@@ -61,7 +61,7 @@ def ausentar(
     )
 
 
-# --- F10: campos ausentes (DIF-67) -------------------------------------------------------
+# --- F10: campos ausentes -------------------------------------------------------
 
 
 def test_f10_un_campo_ausente_no_inventa_valor_y_resuelve_el_flujo(e: Equipo) -> None:
@@ -277,7 +277,7 @@ def test_f6_historial_de_consultas_propias(aplicacion: Any, motor_aplicacion: En
             ruta, json={"pregunta": "¿Vigencia hasta cuándo?"}, headers=ctx.encabezados
         )
         nueva = respuesta.json()
-        # IA-M08: duraciones por componente y arranque, sin contenido (DO-2026-10-23-E90-API P4).
+        # IA-M08: duraciones por componente y arranque, sin contenido.
         tiempos = respuesta.headers["server-timing"]
         for componente in ("embeddings", "recuperacion", "generacion", "total"):
             assert f"{componente};dur=" in tiempos

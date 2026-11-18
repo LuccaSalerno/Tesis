@@ -1,6 +1,6 @@
 /**
- * Intento nuevo del procesamiento tras una falla técnica (RNF-06, RC-P08.4;
- * DO-2026-10-23-REC P7). Solo lo ofrece la pantalla al responsable; el backend lo vuelve a
+ * Intento nuevo del procesamiento tras una falla técnica (RNF-06).
+ * Solo lo ofrece la pantalla al responsable; el backend lo vuelve a
  * exigir. El nuevo intento puede quedar en espera de capacidad, que no es un error.
  */
 import { RotateCcw } from "lucide-react";

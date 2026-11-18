@@ -1,7 +1,7 @@
-"""Adaptador de Amazon Textract para el análisis asíncrono de PDF (§5.3.1, RC-P08, P4).
+"""Adaptador de Amazon Textract para el análisis asíncrono de PDF (§5.3.1).
 
 `StartDocumentAnalysis` con TABLES y LAYOUT y un `ClientRequestToken` estable por
-trabajo e intento: un reintento no inicia un segundo análisis (RC-P08.7). El token incluye
+trabajo e intento: un reintento no inicia un segundo análisis. El token incluye
 la huella del objeto: los identificadores de trabajo se repiten entre sesiones E90A de una
 misma cuenta, y Textract rechaza un token conocido con otro documento
 (`IdempotentParameterMismatchException`).

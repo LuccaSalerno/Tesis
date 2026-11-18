@@ -1,8 +1,8 @@
 """Hito 1.6: consulta asistida con recuperación autorizada (RF-13, RN-04, §5.3.4).
 
-DO-2026-10-22-RAG: versiones vigentes (P1), consulta conservada (P2), abstención del
-modelo y descarte de afirmaciones sin cita válida (P3). PostgreSQL con pgvector real;
-embeddings deterministas y respuestas fijas del modelo (P1 de DO-2026-10-22-PROC).
+Versiones vigentes, consulta conservada, abstención del
+modelo y descarte de afirmaciones sin cita válida. PostgreSQL con pgvector real;
+embeddings deterministas y respuestas fijas del modelo.
 """
 
 from collections.abc import Iterator
@@ -109,7 +109,7 @@ def test_rf_13_respuesta_con_cita_a_documento_version_y_pagina(entorno: dict[str
     assert datos["modelo_embeddings"] == "cohere.embed-multilingual-v3"
 
 
-def test_p2_la_consulta_se_conserva_con_su_evidencia(entorno: dict[str, Any]) -> None:
+def test_la_consulta_se_conserva_con_su_evidencia(entorno: dict[str, Any]) -> None:
     datos = consultar(entorno).json()
     fila = fila_consulta(entorno["ctx"].motor, datos["id"])
     assert fila["pregunta"] == PREGUNTA
@@ -132,10 +132,10 @@ def test_regla_5_registros_sin_pregunta_ni_respuesta(
     assert any(r["evento"] == "consulta_asistida" for r in lineas_registro(salida))
 
 
-# --- Abstención (P3) --------------------------------------------------------------------
+# --- Abstención --------------------------------------------------------------------
 
 
-def test_p3_el_modelo_se_abstiene_por_evidencia_insuficiente(entorno: dict[str, Any]) -> None:
+def test_el_modelo_se_abstiene_por_evidencia_insuficiente(entorno: dict[str, Any]) -> None:
     entorno["aplicacion"].state.modelo_generativo = ModeloConsultaFijo(suficiente=False)
     datos = consultar(entorno, "¿Cuál es el número de cuenta bancaria del proveedor?").json()
     assert (datos["suficiente"], datos["respuesta"], datos["afirmaciones"]) == (False, None, [])
@@ -143,7 +143,7 @@ def test_p3_el_modelo_se_abstiene_por_evidencia_insuficiente(entorno: dict[str, 
     assert all(not f["citado"] for f in fragmentos_de(entorno["ctx"].motor, datos["id"]))
 
 
-def test_p3_afirmaciones_sin_cita_valida_se_descartan(entorno: dict[str, Any]) -> None:
+def test_afirmaciones_sin_cita_valida_se_descartan(entorno: dict[str, Any]) -> None:
     entorno["aplicacion"].state.modelo_generativo = ModeloConsultaFijo(
         entrada_cruda={
             "suficiente": True,
@@ -158,7 +158,7 @@ def test_p3_afirmaciones_sin_cita_valida_se_descartan(entorno: dict[str, Any]) -
     assert datos["respuesta"] is None
 
 
-def test_p3_se_conserva_solo_lo_citado_correctamente(entorno: dict[str, Any]) -> None:
+def test_se_conserva_solo_lo_citado_correctamente(entorno: dict[str, Any]) -> None:
     entorno["aplicacion"].state.modelo_generativo = ModeloConsultaFijo(
         buscar="28/02/2027", etiquetas_extra=("F42",)
     )
@@ -167,7 +167,7 @@ def test_p3_se_conserva_solo_lo_citado_correctamente(entorno: dict[str, Any]) ->
     assert len(afirmacion["referencias"]) == 1  # F42 no fue recuperado: se descarta
 
 
-def test_p3_sin_documentacion_indexada_no_se_invoca_el_modelo(entorno: dict[str, Any]) -> None:
+def test_sin_documentacion_indexada_no_se_invoca_el_modelo(entorno: dict[str, Any]) -> None:
     ctx = entorno["ctx"]
     vacio = crear_tramite(ctx)
     modelo = ModeloConsultaFijo(buscar="28/02/2027")
@@ -180,7 +180,7 @@ def test_p3_sin_documentacion_indexada_no_se_invoca_el_modelo(entorno: dict[str,
     assert modelo.invocaciones == []
 
 
-# --- Alcance autorizado (RN-04, P1) -----------------------------------------------------
+# --- Alcance autorizado (RN-04) -----------------------------------------------------
 
 
 def test_rn_04_no_recupera_fragmentos_de_otro_tramite_ni_archivos_pendientes(
@@ -202,7 +202,7 @@ def test_rn_04_no_recupera_fragmentos_de_otro_tramite_ni_archivos_pendientes(
     assert pendiente["id"] not in archivos_usados
 
 
-def test_p1_solo_la_version_vigente(entorno: dict[str, Any]) -> None:
+def test_solo_la_version_vigente(entorno: dict[str, Any]) -> None:
     ctx, aplicacion = entorno["ctx"], entorno["aplicacion"]
     nuevo = cargar(ctx, entorno["tramite"]["id"], archivos.CONTRATO_PDF.read_bytes())
     recorrer(
@@ -261,7 +261,7 @@ def test_rnf_01_rf_24_el_administrador_no_consulta(entorno: dict[str, Any]) -> N
 
 
 def test_rnf_01_revisor_sin_tarea_asignada_no_accede(entorno: dict[str, Any]) -> None:
-    """DO-2026-10-22-TAR P8: el acceso del revisor se deriva de una tarea asignada."""
+    """El acceso del revisor se deriva de una tarea asignada."""
     _, sub = crear_cuenta(entorno["ctx"].motor, "revisor_aprobador")
     assert consultar(entorno, encabezados=portador(sub)).status_code == 404
 
@@ -274,7 +274,7 @@ def test_rnf_01_otro_responsable_no_accede(entorno: dict[str, Any]) -> None:
 # --- Fallas de servicios y garantías ------------------------------------------------------
 
 
-def test_rc_p08_falla_de_embeddings_responde_503_sin_registrar(entorno: dict[str, Any]) -> None:
+def test_falla_de_embeddings_responde_503_sin_registrar(entorno: dict[str, Any]) -> None:
     class EmbeddingsCaidos:
         identificador = "cohere.embed-multilingual-v3"
 
@@ -309,7 +309,7 @@ def test_rnf_seg_tipos_invalidos_en_la_respuesta(entorno: dict[str, Any], entrad
     assert consultar(entorno).status_code == 503
 
 
-def test_p2_consultas_inmutables(entorno: dict[str, Any], motor_migracion: Engine) -> None:
+def test_consultas_inmutables(entorno: dict[str, Any], motor_migracion: Engine) -> None:
     consulta_id = consultar(entorno).json()["id"]
     sentencia = text("UPDATE atlas.consulta_asistida SET pregunta = 'otra' WHERE id = :c")
     with pytest.raises(DBAPIError, match="permission denied"), entorno["ctx"].motor.begin() as c:
@@ -325,10 +325,10 @@ def _cantidad_consultas(motor: Engine) -> int:
         )
 
 
-def test_p8_el_alcance_del_revisor_se_limita_a_las_versiones_de_sus_ciclos(
+def test_el_alcance_del_revisor_se_limita_a_las_versiones_de_sus_ciclos(
     entorno: dict[str, Any],
 ) -> None:
-    """DO-2026-10-22-TAR P8: vigentes ∩ versiones de los ciclos de sus tareas."""
+    """Vigentes ∩ versiones de los ciclos de sus tareas."""
     from atlas.servicios.consultas import recuperar
 
     vector = EmbeddingsFijos().embeber([PREGUNTA], "search_query")[0]

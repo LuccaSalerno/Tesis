@@ -1,4 +1,4 @@
-"""Modo mantenimiento por entorno, independiente de PostgreSQL (RC-P10-09, DO-2026-10-22-OPS P2).
+"""Modo mantenimiento por entorno, independiente de PostgreSQL.
 
 El estado vive en un objeto de control de S3 del propio entorno. Solo el operador lo
 modifica; la aplicación solo lo lee. Si no puede leerse o no es válido, se deniega:

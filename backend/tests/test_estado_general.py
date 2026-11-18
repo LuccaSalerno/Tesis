@@ -1,4 +1,4 @@
-"""Estado general del administrador operativo (RF-24, HU-10, DO-2026-10-23-CIERRE P4, P5)."""
+"""Estado general del administrador operativo (RF-24, HU-10)."""
 
 import json
 from collections.abc import Iterator
@@ -100,7 +100,7 @@ def test_rnf_01_solo_el_administrador_ve_el_estado_general(e: Equipo) -> None:
 
 def test_rf_24_el_administrador_sigue_sin_acceso_al_tramite(e: Equipo) -> None:
     ids = tramite_con_conjunto(e)
-    # Sin acceso al trámite responde como si no existiera (RC-P01).
+    # Sin acceso al trámite responde como si no existiera.
     base = f"/tramites/{ids['tramite']}"
     obtener(e.administrador, base, 404)
     obtener(e.administrador, f"{base}/documentos/{ids['contrato']}/validaciones", 404)

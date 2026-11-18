@@ -1,8 +1,8 @@
-"""Cancelación del trámite por su responsable (RF-26, RN-14, DO-2026-10-23-CIERRE P1 y P2).
+"""Cancelación del trámite por su responsable (RF-26, RN-14).
 
 Desde Borrador, Pendiente de validación, Pendiente de aprobación u Observado (Tabla 3.VI),
 con un motivo. El ciclo en curso queda cancelado y sus tareas abiertas anuladas, en la misma
-transacción, con el trámite bloqueado por el llamador (PD-05.2). Documentos, versiones,
+transacción, con el trámite bloqueado por el llamador. Documentos, versiones,
 decisiones y eventos se conservan; no genera aprobación ni firma. Cancelado es terminal (RN-15).
 """
 

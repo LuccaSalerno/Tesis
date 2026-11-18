@@ -1,4 +1,4 @@
-"""Supresión de cuentas (RF-25, §5.4.2, §5.4.3, DO-2026-10-23-CIERRE P6, P7 y P9).
+"""Supresión de cuentas (RF-25, §5.4.2, §5.4.3).
 
 La API contra PostgreSQL real con un proveedor de identidad sustituto; la Lambda `cuentas`
 contra Cognito simulado por moto. Cuentas ficticias (AGENTS.md §2.4).
@@ -80,7 +80,7 @@ def _sub(motor: Engine, usuario_id: int) -> str | None:
         return valor
 
 
-# --- Supresión (RF-25, P6) --------------------------------------------------------------
+# --- Supresión (RF-25) --------------------------------------------------------------
 
 
 def test_rf_25_suprimir_desvincula_los_datos_identificatorios(
@@ -99,7 +99,7 @@ def test_rf_25_suprimir_desvincula_los_datos_identificatorios(
     assert cuenta["estado"] == "suprimida"
     assert (cuenta["identificador_externo"], cuenta["nombre_visible"]) == (None, None)
     assert (cuenta["roles"], cuenta["autorizacion_cierre"]) == ([], False)
-    assert gestor.suprimidos == [sub]  # primero el proveedor de identidad (P7)
+    assert gestor.suprimidos == [sub]  # primero el proveedor de identidad
     with e.revisor.motor.connect() as conexion:
         accion = conexion.execute(
             text(
@@ -123,7 +123,7 @@ def test_rf_25_las_intervenciones_conservan_el_identificador_interno(e: Equipo) 
     directorio = obtener(e.responsable, f"/usuarios/directorio?ids={e.revisor.usuario_id}")
     assert directorio == [{"id": e.revisor.usuario_id, "nombre_visible": None, "suprimida": True}]
     # La tarea del suprimido ya estaba decidida y la abierta es del aprobador habilitado:
-    # nada de este trámite queda por reasignar (P4).
+    # nada de este trámite queda por reasignar.
     bloqueadas = obtener(e.administrador, "/administracion/estado-general")["tareas_bloqueadas"]
     assert all(t["tramite_id"] != ids["tramite"] for t in bloqueadas)
 
@@ -181,7 +181,7 @@ def test_rf_25_si_falla_el_proveedor_la_cuenta_no_cambia(e: Equipo, gestor: Gest
     assert cuenta["estado"] == "habilitada" and cuenta["identificador_externo"] is not None
 
 
-# --- Adaptadores (P7, P9) ---------------------------------------------------------------
+# --- Adaptadores ---------------------------------------------------------------
 
 
 @dataclass
@@ -201,7 +201,7 @@ class ClienteLambdaFijo:
         return respuesta
 
 
-def test_p7_el_adaptador_invoca_la_lambda_con_el_sub() -> None:
+def test_el_adaptador_invoca_la_lambda_con_el_sub() -> None:
     cliente = ClienteLambdaFijo({"resultado": "completada", "eliminada": True})
     GestorIdentidadesLambda(cliente, "atlas-cuentas").suprimir("sub-1")
     (llamada,) = cliente.llamadas
@@ -221,13 +221,13 @@ def test_p7_el_adaptador_invoca_la_lambda_con_el_sub() -> None:
         ),
     ],
 )
-def test_p7_el_adaptador_informa_las_fallas(cliente: ClienteLambdaFijo, codigo: str) -> None:
+def test_el_adaptador_informa_las_fallas(cliente: ClienteLambdaFijo, codigo: str) -> None:
     with pytest.raises(ErrorIntegracion) as error:
         GestorIdentidadesLambda(cliente, "atlas-cuentas").suprimir("sub-1")
     assert error.value.codigo == codigo
 
 
-def test_p9_sin_lambda_solo_fuera_de_demo() -> None:
+def test_sin_lambda_solo_fuera_de_demo() -> None:
     assert isinstance(_gestor_identidades(configuracion_sin_base()), GestorIdentidadesLocal)
     assert GestorIdentidadesLocal().suprimir("sub-1") is None
     with pytest.raises(ErrorConfiguracion):
@@ -236,7 +236,7 @@ def test_p9_sin_lambda_solo_fuera_de_demo() -> None:
     assert isinstance(_gestor_identidades(configurada), GestorIdentidadesLambda)
 
 
-# --- Lambda `cuentas` contra Cognito simulado (P7) --------------------------------------
+# --- Lambda `cuentas` contra Cognito simulado --------------------------------------
 
 
 @pytest.fixture
@@ -261,7 +261,7 @@ def _alta(cliente: Any, grupo: str, usuario: str) -> str:
     return next(a["Value"] for a in atributos["Attributes"] if a["Name"] == "sub")
 
 
-def test_p7_la_lambda_elimina_la_cuenta_por_su_sub(
+def test_la_lambda_elimina_la_cuenta_por_su_sub(
     cognito: tuple[Any, str], capsys: pytest.CaptureFixture[str]
 ) -> None:
     cliente, grupo = cognito
@@ -286,13 +286,13 @@ def test_p7_la_lambda_elimina_la_cuenta_por_su_sub(
         {"accion": "deshabilitar", "sub": str(uuid.uuid4())},
     ],
 )
-def test_p7_la_lambda_rechaza_eventos_fuera_de_contrato(
+def test_la_lambda_rechaza_eventos_fuera_de_contrato(
     cognito: tuple[Any, str], evento: dict[str, Any]
 ) -> None:
     assert lambda_cuentas.manejar(evento, None) == {"resultado": "rechazada"}
 
 
-def test_p7_la_lambda_informa_la_falla_de_cognito(
+def test_la_lambda_informa_la_falla_de_cognito(
     cognito: tuple[Any, str], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     def fallar(*_: Any, **__: Any) -> None:
@@ -303,7 +303,7 @@ def test_p7_la_lambda_informa_la_falla_de_cognito(
     assert respuesta == {"resultado": "fallida"}
 
 
-def test_p7_carrera_la_cuenta_desaparece_entre_buscar_y_eliminar() -> None:
+def test_carrera_la_cuenta_desaparece_entre_buscar_y_eliminar() -> None:
     class Cliente:
         def list_users(self, **_: Any) -> dict[str, Any]:
             return {"Users": [{"Username": "x"}]}
@@ -321,7 +321,7 @@ def test_p7_carrera_la_cuenta_desaparece_entre_buscar_y_eliminar() -> None:
         lambda_cuentas.suprimir(Denegado(), "grupo", "sub")
 
 
-def test_p7_cliente_de_cognito_en_la_region_del_despliegue(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_cliente_de_cognito_en_la_region_del_despliegue(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("ATLAS_AWS_REGION", "us-east-1")
     lambda_cuentas._cliente.cache_clear()
     try:

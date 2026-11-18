@@ -1,4 +1,4 @@
-"""Verificación de seguridad en una sesión AWS (nivel B, DO-2026-10-23-SEG). La corre el operador.
+"""Verificación de seguridad en una sesión AWS (nivel B). La corre el operador.
 
 Pasos sobre `evaluacion/campanas/<id>/`:
 

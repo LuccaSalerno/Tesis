@@ -1,7 +1,7 @@
 """Flujo de revisión: plantillas, ciclos, tareas, decisiones, línea de tiempo y evidencia.
 
-RF-17 a RF-22, RN-07, RN-08, RN-09, RN-13, PD-02, PD-03, RC-P03, DO-2026-10-22-TAR.
-Rutas: RC-P01-009 y PD-06-001.
+RF-17 a RF-22, RN-07, RN-08, RN-09, RN-13.
+
 
 Permisos (Tabla 3.II): el administrador operativo configura plantillas y asigna tareas,
 sin acceso al contenido documental (RF-24); el responsable envía a validación, confirma
@@ -66,7 +66,7 @@ from atlas.servicios.errores import NoEncontrado
 enrutador = APIRouter(tags=["revision"])
 
 
-# --- Plantillas (RC-P03.1, P1) ----------------------------------------------------------
+# --- Plantillas ----------------------------------------------------------
 
 
 class PasoEntrada(BaseModel):
@@ -157,7 +157,7 @@ def desactivar_plantilla(
     )
 
 
-# --- Transiciones del responsable (Tabla 3.VI, P3, P9) ----------------------------------
+# --- Transiciones del responsable (Tabla 3.VI) ----------------------------------
 
 
 @enrutador.post("/tramites/{tramite_id}/envio-a-validacion", response_model=TramiteRespuesta)
@@ -193,7 +193,7 @@ def cancelar(
     solicitud_id: SolicitudId,
 ) -> TramiteRespuesta:
     """RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de
-    admitir decisiones (DO-2026-10-23-CIERRE P1 y P2)."""
+    admitir decisiones."""
     tramite = tramites.obtener_accesible(sesion, tramite_id, usuario.id, bloquear=True)
     return TramiteRespuesta.desde(
         cancelacion.cancelar(
@@ -202,7 +202,7 @@ def cancelar(
     )
 
 
-# --- Flujo sugerido y ciclos (RF-17, RF-18, P2, P4) -------------------------------------
+# --- Flujo sugerido y ciclos (RF-17, RF-18) -------------------------------------
 
 
 class PasoSugeridoRespuesta(BaseModel):
@@ -379,14 +379,13 @@ def listar_ciclos(tramite_id: int, usuario: Autenticado, sesion: Sesion) -> list
     ]
 
 
-# --- Tareas (RF-19, RF-20, P5 a P7) -----------------------------------------------------
+# --- Tareas (RF-19, RF-20) -----------------------------------------------------
 
 
 class TramiteResumen(BaseModel):
     id: int
     titulo: str | None = Field(
-        description="Nulo para el administrador operativo: solo ve el identificador "
-        "(RF-24, DO-2026-10-23-DIF)"
+        description="Nulo para el administrador operativo: solo ve el identificador (RF-24)"
     )
     estado: EstadoTramite
 
@@ -428,7 +427,7 @@ class DecisionRespuesta(BaseModel):
     motivo: str | None
     decidida_en: datetime
     controles_considerados: list[int] = Field(
-        description="Ejecuciones de reglas registradas en DECISION_CONTROL (PD-02)"
+        description="Ejecuciones de reglas registradas en DECISION_CONTROL"
     )
 
     @classmethod
@@ -468,9 +467,7 @@ class TareaDetalle(TareaListada):
         description="Decidida: los registrados en DECISION_CONTROL; abierta: los vigentes del "
         "ciclo, que son los que se registrarán al decidir"
     )
-    controles_pendientes: bool = Field(
-        description="PD-02.3; las reglas se ejecutan de forma síncrona (DO-2026-10-22-REG P4)"
-    )
+    controles_pendientes: bool = Field(description="las reglas se ejecutan de forma síncrona")
     decision: DecisionRespuesta | None
     asignaciones: list[AsignacionRespuesta]
 
@@ -508,7 +505,7 @@ def listar_mis_tareas(usuario: Autenticado, sesion: Sesion) -> list[TareaListada
 
 @enrutador.get("/tareas/sin-asignar", response_model=list[TareaListada])
 def listar_tareas_sin_asignar(_: Administrador, sesion: Sesion) -> list[TareaListada]:
-    """RC-P03.3.2: tareas abiertas señaladas al administrador; solo metadatos (RF-24)."""
+    """Tareas abiertas señaladas al administrador; solo metadatos (RF-24)."""
     return [
         TareaListada.con_contexto(sesion, c, con_titulo=False)
         for c in tareas.listar_sin_asignar(sesion)
@@ -590,7 +587,7 @@ def decidir(
     return DecisionRespuesta.desde(sesion, decision)
 
 
-# --- Línea de tiempo (RF-22, P11) -------------------------------------------------------
+# --- Línea de tiempo (RF-22) -------------------------------------------------------
 
 
 class EventoRespuesta(BaseModel):
@@ -659,7 +656,7 @@ def consultar_linea_de_tiempo(
     ]
 
 
-# --- Firma digital simulada (RF-23, RN-11, RN-15, DO-2026-10-23-VER P5 y P6) -----------
+# --- Firma digital simulada (RF-23, RN-11, RN-15) -----------
 
 
 class NuevaFirma(BaseModel):
@@ -713,7 +710,7 @@ class FirmaRespuesta(BaseModel):
         )
 
 
-# --- Evidencia de la decisión (PD-03, PD-06, P12) ---------------------------------------
+# --- Evidencia de la decisión ---------------------------------------
 
 
 class ValidacionEvidencia(BaseModel):
@@ -736,7 +733,7 @@ class ValidacionEvidencia(BaseModel):
 
 class EvidenciaRespuesta(BaseModel):
     """Cadena V1 a V4 desde una decisión. Mismo contrato para la vista, las pruebas EVD-01 y
-    la demo (PD-03.4)."""
+    la demo."""
 
     decision: DecisionRespuesta
     tarea: TareaResumen
@@ -809,7 +806,7 @@ def firmar(
     """RF-23: firma simulada de una versión del ciclo aprobado; el trámite queda Cerrado.
     Solo el revisor/aprobador con autorización de cierre y una tarea en ese ciclo."""
     acceso = tramites.obtener_para_consulta(sesion, tramite_id, usuario.id, revisor=True)
-    # PD-05.2: bloquea el trámite; una incorporación simultánea espera o ya terminó.
+    # Bloquea el trámite; una incorporación simultánea espera o ya terminó.
     sesion.refresh(acceso.tramite, with_for_update=True)
     aplicada = firma.firmar(
         sesion,

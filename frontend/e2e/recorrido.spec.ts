@@ -1,6 +1,6 @@
 /**
- * Recorridos críticos (DO-2026-10-22-WEB): la evidencia de una decisión observada (punto D) y
- * la validación de un dato con su fuente (punto A), sobre la semilla local PD-07.
+ * Recorridos críticos: la evidencia de una decisión observada (punto D) y
+ * la validación de un dato con su fuente (punto A), sobre la semilla local.
  * Requiere ATLAS_E2E_TOKEN_RESPONSABLE (token local del responsable de la semilla).
  */
 import { expect, type Page, test } from "@playwright/test";

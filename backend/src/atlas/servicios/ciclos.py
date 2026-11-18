@@ -1,7 +1,6 @@
 """Sugerencia y confirmación del flujo, ciclos de revisión y su desplazamiento.
 
-RF-17, RF-18, RN-09, RN-12, Tabla 3.VI, PD-02, PD-05, RC-P03.1 y RC-P03.3,
-DO-2026-10-22-TAR (P2, P4, P6 y P10).
+RF-17, RF-18, RN-09, RN-12, Tabla 3.VI.
 """
 
 import uuid
@@ -35,7 +34,7 @@ from atlas.servicios.errores import Conflicto, NoEncontrado
 ABIERTAS = frozenset({EstadoTarea.EN_ESPERA, EstadoTarea.PENDIENTE})
 
 
-# --- Sugerencia (RF-17, P2) -------------------------------------------------------------
+# --- Sugerencia (RF-17) -------------------------------------------------------------
 
 
 @dataclass(frozen=True)
@@ -43,7 +42,7 @@ class PasoSugerido:
     orden: int
     nombre: str
     revisor_por_defecto_id: int
-    asignada_a_id: int | None  # None: el revisor por defecto es el responsable (RC-P03.3)
+    asignada_a_id: int | None  # None: el revisor por defecto es el responsable
 
 
 @dataclass(frozen=True)
@@ -93,18 +92,18 @@ def sugerir(sesion: Session, tramite: Tramite) -> Sugerencia:
     return Sugerencia(alcance=alcance, plantilla=plantilla, pasos=pasos)
 
 
-# --- Confirmación (Tabla 3.VI, RF-18, P4) -----------------------------------------------
+# --- Confirmación (Tabla 3.VI, RF-18) -----------------------------------------------
 
 
 def datos_faltantes(sesion: Session, tramite_id: int) -> list[int]:
     """Documentos cuya versión vigente no tiene validada la clasificación o algún campo del
-    esquema de su tipo sin resolver (RC-P04, DO-2026-10-22-WEB F10)."""
+    esquema de su tipo sin resolver."""
     faltantes: list[int] = []
     for documento in sesion.scalars(
         select(Documento).where(Documento.tramite_id == tramite_id).order_by(Documento.id)
     ):
         validado = reglas.estado_validado(sesion, documento)
-        # DO-2026-10-22-WEB F10: cada campo resuelto por una persona, con valor o ausente.
+        # Cada campo resuelto por una persona, con valor o ausente.
         if validado.tipo is None or set(validado.campos) | set(validado.ausentes) != {
             c.nombre for c in esquemas.CAMPOS[validado.tipo]
         }:
@@ -122,7 +121,7 @@ def confirmar_flujo(
     solicitud_id: uuid.UUID | None = None,
 ) -> CicloRevision:
     """Pendiente de validación → Pendiente de aprobación: crea el ciclo con las versiones
-    vigentes y todas sus tareas en una transacción. El trámite llega bloqueado (PD-05.2)."""
+    vigentes y todas sus tareas en una transacción. El trámite llega bloqueado."""
     if tramite.estado != EstadoTramite.PENDIENTE_VALIDACION:
         raise Conflicto("El flujo se confirma con el trámite en Pendiente de validación")
     sugerencia = sugerir(sesion, tramite)
@@ -186,7 +185,7 @@ def confirmar_flujo(
             sesion.add(AsignacionTarea(tarea_id=tarea.id, asignada_a_id=paso.asignada_a_id))
             sesion.flush()
         # La asignación por defecto proviene de la configuración del administrador
-        # (RC-P03.1.3): se atribuye al sistema. Sin asignar queda señalada (RC-P03.3.2).
+        #: se atribuye al sistema. Sin asignar queda señalada.
         registrar_evento_auditoria(
             sesion,
             accion=(
@@ -260,7 +259,7 @@ def tareas(sesion: Session, ciclo_id: int) -> list[Tarea]:
 
 
 def controles(sesion: Session, ciclo: CicloRevision) -> list[reglas.Control]:
-    """PD-02.1, P6: las ejecuciones vigentes cuyas versiones pertenecen todas al ciclo, más las
+    """Las ejecuciones vigentes cuyas versiones pertenecen todas al ciclo, más las
     reglas no aplicables. Es lo que muestra la tarea y lo que registra DECISION_CONTROL."""
     del_ciclo = {v.version.id for v in versiones(sesion, ciclo.id)}
     return [
@@ -270,7 +269,7 @@ def controles(sesion: Session, ciclo: CicloRevision) -> list[reglas.Control]:
     ]
 
 
-# --- Desplazamiento (RN-12, PD-05.1, P10) -----------------------------------------------
+# --- Desplazamiento (RN-12) -----------------------------------------------
 
 
 def desplazar_en_curso(

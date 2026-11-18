@@ -75,7 +75,7 @@ def crear_aplicacion(configuracion: Configuracion | None = None) -> FastAPI:
     aplicacion.state.motor = crear_motor(configuracion_efectiva)
     aplicacion.state.fabrica_sesiones = crear_fabrica_sesiones(aplicacion.state.motor)
     aplicacion.dependency_overrides[obtener_configuracion] = lambda: configuracion_efectiva
-    # RC-P10-09: el mantenimiento se evalúa antes de cualquier operación; el registro de
+    # El mantenimiento se evalúa antes de cualquier operación; el registro de
     # solicitudes queda por fuera para correlacionar también las respuestas 503.
     aplicacion.state.mantenimiento = (
         LectorMantenimiento.desde_s3(
@@ -120,14 +120,14 @@ def _incluir_rutas(aplicacion: FastAPI) -> None:
 
 def esquema_openapi() -> dict[str, Any]:
     """Contrato OpenAPI de la API, sin configuración ni servicios: lo usa la aplicación web
-    para generar sus tipos (DO-2026-10-22-WEB F2)."""
+    para generar sus tipos."""
     aplicacion = FastAPI(title="ATLAS", version=__version__)
     _incluir_rutas(aplicacion)
     return aplicacion.openapi()
 
 
 async def _responder_http(_: Request, error: Exception) -> JSONResponse:
-    """Errores HTTP con el mismo formato que el resto de la API (RC-P01-002)."""
+    """Errores HTTP con el mismo formato que el resto de la API."""
     if not isinstance(error, HTTPException):
         raise error
     return JSONResponse(

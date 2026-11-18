@@ -24,7 +24,7 @@ vi.mock("react-pdf", () => ({
   Page: ({ pageNumber }: { pageNumber: number }) => <p>Página mostrada {pageNumber}</p>,
 }));
 
-describe("visor del original (RF-11, WEB F4)", () => {
+describe("visor del original (RF-11)", () => {
   it("no vuelve a descargar el PDF cuando la consulta se refresca y salta de página sin recargarlo", async () => {
     let firmas = 0;
     const llamadas = simularApi({

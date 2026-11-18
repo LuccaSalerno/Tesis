@@ -1,4 +1,4 @@
-"""Corpus E90 en miniatura para probar el arnés de §6.3 (DO-2026-10-23-E90-MEDICION).
+"""Corpus E90 en miniatura para probar el arnés de §6.3.
 
 Tres documentos sintéticos con la forma de los archivos reales: un contrato PDF y una
 factura DOCX adversarial de medición, y un contrato PDF de ajuste. Los PDF tienen su OCR en

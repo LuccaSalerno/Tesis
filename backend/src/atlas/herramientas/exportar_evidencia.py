@@ -1,4 +1,4 @@
-"""Exportación de evidencia saneada de una sesión, por la API (DO-2026-10-22-OPS P12).
+"""Exportación de evidencia saneada de una sesión, por la API.
 
 Uso (operador, con la API en `active` o `draining`, antes de retirar la sesión):
 
@@ -13,7 +13,7 @@ cada decisión y la firma) como JSON, más un índice con la huella SHA-256 de c
 Los archivos, documentos, decisiones y la firma se descubren en la API, no solo en el
 manifiesto: así queda lo que las personas hicieron después de la semilla (por ejemplo, el
 recorrido en vivo de la demo). También se exportan los trámites reemplazados del manifiesto
-y los que se indiquen con `--tramites-adicionales`. Los datos son sintéticos (PD-07); no se
+y los que se indiquen con `--tramites-adicionales`. Los datos son sintéticos; no se
 exportan tokens ni contraseñas. Se conserva fuera de AWS.
 """
 

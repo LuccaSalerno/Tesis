@@ -1,5 +1,5 @@
 """Estado general de trámites, tareas y procesamiento para el administrador operativo (RF-24,
-HU-10, DO-2026-10-23-CIERRE P4).
+HU-10).
 
 Solo metadatos y conteos: ni títulos ni descripciones de trámites, ni contenido documental,
 ni datos validados. Sirve para coordinar (asignar y reasignar tareas, RF-19) sin sustituir las

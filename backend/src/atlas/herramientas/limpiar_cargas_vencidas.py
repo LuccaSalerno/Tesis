@@ -1,4 +1,4 @@
-"""Limpia las cargas temporales vencidas (DO-2026-10-22-CARGAS). Operación del operador.
+"""Limpia las cargas temporales vencidas. Operación del operador.
 
 Uso: `python -m atlas.herramientas.limpiar_cargas_vencidas [--lote 100]`
 

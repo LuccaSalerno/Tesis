@@ -1,4 +1,4 @@
-# Raíz web (DO-2026-10-23-WEB-HOST): la aplicación web servida con S3 y CloudFront (§5.4.2).
+# Raíz web: la aplicación web servida con S3 y CloudFront (§5.4.2).
 # Independiente de las demás y persistente entre sesiones, como bootstrap: la URL queda estable.
 # Solo guarda archivos estáticos compilados, sin contenido documental. Se retira al cerrar el
 # proyecto, con un plan de retiro revisado por el operador.

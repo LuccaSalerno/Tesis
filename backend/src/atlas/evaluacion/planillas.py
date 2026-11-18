@@ -1,11 +1,11 @@
-"""Planillas de calificación de las respuestas por los autores (IA-M06, P14, RC-P06.2.7).
+"""Planillas de calificación de las respuestas por los autores (IA-M06).
 
 Cada respuesta distinta (misma pregunta, afirmaciones, citas y motivo) aparece una sola vez,
 con la lista de modelos y repeticiones que la produjeron. Cada autor completa su planilla por
 separado; `discrepancias` lista los grupos en que difieren y `consolidar` aplica el consenso
 sin sobrescribir las calificaciones individuales. No hay juez automático.
 
-Si los autores califican juntos una sola planilla (DO-2026-10-24-IA-M06-CONJUNTA),
+Si los autores califican juntos una sola planilla,
 `consolidar_conjunta` la carga directamente: no hay acuerdo entre evaluadores que informar.
 """
 

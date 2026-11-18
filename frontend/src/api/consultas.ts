@@ -208,7 +208,7 @@ export function useEstadoGeneral() {
   });
 }
 
-/** URL de lectura breve del original de una versión (WEB F4): se pide al abrir el visor. */
+/** URL de lectura breve del original de una versión: se pide al abrir el visor. */
 export function useArchivoVersion(t: number, version: number | undefined) {
   return useQuery({
     queryKey: ["tramite", t, "archivo-version", version],
@@ -325,7 +325,7 @@ export function useFirmar(t: number) {
   });
 }
 
-/** Intento nuevo tras una falla técnica, por decisión del responsable (RNF-06, RC-P08.4). */
+/** Intento nuevo tras una falla técnica, por decisión del responsable (RNF-06). */
 export function useReintentar(t: number) {
   const invalidar = useInvalidar();
   return useMutation({

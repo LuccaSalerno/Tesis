@@ -1,13 +1,12 @@
 """Vínculos entre documentos del mismo trámite (RF-14, RF-15, RN-05, §5.3.5).
 
-DO-2026-10-22-REG:
-- P1: el tipo indica qué justifica el vínculo: una referencia (con fuente opcional en el
+- El tipo indica qué justifica el vínculo: una referencia (con fuente opcional en el
   documento de origen) o campos compartidos.
-- P2: eliminar es una baja lógica; la fila y sus ejecuciones quedan en el historial.
-- P3: el sistema sugiere vínculos solo con valores validados y coincidentes (los CUIT que
+- Eliminar es una baja lógica; la fila y sus ejecuciones quedan en el historial.
+- El sistema sugiere vínculos solo con valores validados y coincidentes (los CUIT que
   comparan R1 y R2); quedan pendientes y sin efecto hasta que el responsable los confirma.
   Un par que ya tuvo un vínculo, en cualquier estado, no se vuelve a sugerir.
-- P7: se crean, confirman, rechazan y eliminan con el trámite en Borrador o Pendiente de
+- Se crean, confirman, rechazan y eliminan con el trámite en Borrador o Pendiente de
   validación. Un vínculo no cambia la vigencia de las versiones ni transfiere validaciones.
 """
 
@@ -129,7 +128,7 @@ def crear(
 ) -> VinculoDocumental:
     """RF-14 y RN-05: el vínculo manual rige de inmediato y dispara las reglas.
 
-    El trámite llega bloqueado por el llamador (PD-05.2).
+    El trámite llega bloqueado por el llamador.
     """
     _exigir_estado(tramite)
     origen = documento_del_tramite(sesion, tramite, documento_origen_id)

@@ -1,11 +1,11 @@
-"""Recuperación y respuestas de la consulta asistida (P11, P13, P14).
+"""Recuperación y respuestas de la consulta asistida.
 
 Cada modelo de embeddings tiene su índice propio y congelado: los mismos *chunks* de
 `segmentar` (producción), vectores de 1024 dimensiones y búsqueda exacta por coseno, con el
 filtro de documentos autorizados de cada pregunta y k = 5. Es el mismo cálculo que pgvector
 con `<=>` sin índice aproximado. Las respuestas usan `consultas.generar` (producción) con
 los fragmentos que recupera el modelo de embeddings principal: ambos modelos generativos
-reciben fragmentos idénticos (RC-P07.2).
+reciben fragmentos idénticos.
 """
 
 import hashlib
@@ -132,7 +132,7 @@ def _palabras(texto: str) -> list[str]:
 
 
 def contiene(chunk: Chunk, fragmento: Fragmento) -> bool:
-    """P11: mismo documento, misma página si ambos la tienen y cobertura de palabras."""
+    """Mismo documento, misma página si ambos la tienen y cobertura de palabras."""
     if chunk.doc_id != fragmento.doc_id:
         return False
     if (

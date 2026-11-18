@@ -1,4 +1,4 @@
-"""Verificación de tokens de acceso sin AWS (DT-AUT-01, RF-01, RNF-01)."""
+"""Verificación de tokens de acceso sin AWS (RF-01, RNF-01)."""
 
 import base64
 import hashlib
@@ -115,7 +115,7 @@ def test_rnf_01_confusion_de_algoritmo_hs256_rechazada(verificador: VerificadorJ
         verificador.verificar(f"{encabezado}.{carga}.{firma}")
 
 
-def test_dt_aut_01_jwks_sin_claves_rsa_rechazado() -> None:
+def test_jwks_sin_claves_rsa_rechazado() -> None:
     with pytest.raises(ValueError, match="RSA"):
         VerificadorJwt({"keys": []}, emisor=EMISOR_LOCAL, cliente=CLIENTE_LOCAL)
 
@@ -129,17 +129,17 @@ def test_dt_aut_01_jwks_sin_claves_rsa_rechazado() -> None:
         ({"jwt_jwks_archivo": Path("jwks.json")}, "exactamente uno"),
     ],
 )
-def test_rc_p10_configuracion_de_tokens_invalida(campos: dict[str, object], mensaje: str) -> None:
+def test_configuracion_de_tokens_invalida(campos: dict[str, object], mensaje: str) -> None:
     with pytest.raises(ErrorConfiguracion, match=mensaje):
         configuracion_sin_base(**campos).cargar_jwks()
 
 
-def test_rc_p10_demo_acepta_emisor_de_cognito() -> None:
+def test_demo_acepta_emisor_de_cognito() -> None:
     configuracion = configuracion_sin_base(entorno="demo", jwt_emisor=EMISOR_COGNITO)
     assert configuracion.cargar_jwks() == CLAVES_PRUEBA.jwks()
 
 
-def test_dt_aut_01_token_local_genera_claves_y_emite(
+def test_token_local_genera_claves_y_emite(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(token_local, "obtener_configuracion", configuracion_sin_base)
@@ -155,9 +155,7 @@ def test_dt_aut_01_token_local_genera_claves_y_emite(
     assert verificador.verificar(capsys.readouterr().out.strip()).identificador_externo == "otro"
 
 
-def test_dt_aut_01_token_local_rechazado_en_demo(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_token_local_rechazado_en_demo(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         token_local,
         "obtener_configuracion",

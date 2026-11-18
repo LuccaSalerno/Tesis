@@ -1,4 +1,4 @@
-"""Validación del archivo por su contenido (RC-P04, RF-04)."""
+"""Validación del archivo por su contenido (RF-04)."""
 
 import pytest
 
@@ -27,7 +27,7 @@ PDF, DOCX = FormatoArchivo.PDF, FormatoArchivo.DOCX
     ],
     ids=["contrato_pdf_corpus", "contrato_docx_corpus", "pdf_50_paginas", "docx_150000"],
 )
-def test_rc_p04_archivos_admitidos(datos: bytes, formato: FormatoArchivo) -> None:
+def test_archivos_admitidos(datos: bytes, formato: FormatoArchivo) -> None:
     validar_contenido(datos, formato, LIMITES)
 
 
@@ -66,7 +66,7 @@ def test_rc_p04_archivos_admitidos(datos: bytes, formato: FormatoArchivo) -> Non
         "docx_150001",
     ],
 )
-def test_rc_p04_archivos_rechazados_con_causa_y_accion(
+def test_archivos_rechazados_con_causa_y_accion(
     datos: bytes, formato: FormatoArchivo, codigo: str
 ) -> None:
     with pytest.raises(ArchivoRechazado) as rechazo:
@@ -75,7 +75,7 @@ def test_rc_p04_archivos_rechazados_con_causa_y_accion(
     assert "volvé" in rechazo.value.mensaje.lower() or "dividilo" in rechazo.value.mensaje.lower()
 
 
-def test_rc_p04_limites_configurables() -> None:
+def test_limites_configurables() -> None:
     estrictos = LimitesCarga(
         tamano_maximo_bytes=10, paginas_maximas_pdf=1, caracteres_maximos_docx=3
     )
@@ -87,7 +87,7 @@ def test_rc_p04_limites_configurables() -> None:
         validar_tamano(11, 11, estrictos)
 
 
-def test_rc_p04_tamano_recibido_debe_coincidir_con_el_autorizado() -> None:
+def test_tamano_recibido_debe_coincidir_con_el_autorizado() -> None:
     with pytest.raises(ArchivoRechazado, match="tamano_no_coincide"):
         validar_tamano(1000, 999, LIMITES)
     validar_tamano(1000, 1000, LIMITES)

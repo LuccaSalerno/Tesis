@@ -1,4 +1,4 @@
-"""Formato de los errores de la API (RC-P01-002) y fallas de servicios externos."""
+"""Formato de los errores de la API y fallas de servicios externos."""
 
 import asyncio
 from collections.abc import Iterator
@@ -21,12 +21,12 @@ from tests.flujo_api import Contexto, crear_tramite
     "manejador",
     [principal._responder_http, principal._responder_dominio, principal._responder_integracion],
 )
-def test_rc_p01_002_cada_manejador_solo_atiende_su_error(manejador: Any) -> None:
+def test_cada_manejador_solo_atiende_su_error(manejador: Any) -> None:
     with pytest.raises(KeyError):
         asyncio.run(manejador(None, KeyError("otro")))
 
 
-def test_rc_p01_002_error_de_dominio_generico_responde_422() -> None:
+def test_error_de_dominio_generico_responde_422() -> None:
     respuesta = asyncio.run(principal._responder_dominio(None, ErrorDominio("Operación inválida")))
     assert respuesta.status_code == 422
 
@@ -43,7 +43,7 @@ def contexto(
 
 
 @pytest.mark.integracion
-def test_rc_p01_002_falla_de_s3_responde_503_sin_efectos(contexto: tuple[Any, Contexto]) -> None:
+def test_falla_de_s3_responde_503_sin_efectos(contexto: tuple[Any, Contexto]) -> None:
     aplicacion, ctx = contexto
     tramite = crear_tramite(ctx)
 
@@ -64,7 +64,7 @@ def test_rc_p01_002_falla_de_s3_responde_503_sin_efectos(contexto: tuple[Any, Co
 
 
 @pytest.mark.integracion
-def test_rc_p01_002_la_respuesta_espera_la_confirmacion_de_la_sesion(
+def test_la_respuesta_espera_la_confirmacion_de_la_sesion(
     contexto: tuple[Any, Contexto], monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """La sesión se confirma antes de responder: una confirmación fallida no llega al cliente

@@ -1,6 +1,7 @@
-"""Semilla de **desarrollo local**: la misma semilla de la demo (PD-07 o, con `--escenario
+"""Semilla de **desarrollo local**: la misma semilla de la demo (cadena
+de evidencia o, con `--escenario
 surdelta`, la cartera SurDelta), contra la API local, con tokens locales y el procesamiento
-simulado (DO-2026-10-22-WEB F8 y F9). Nunca en demo.
+simulado. Nunca en demo.
 
 Uso, con la API local corriendo (uvicorn) y moto preparado:
 
@@ -120,7 +121,7 @@ def main(argumentos: list[str] | None = None) -> int:
         "--escenario",
         choices=("pd07", "surdelta"),
         default="pd07",
-        help="pd07 (predeterminado) o la cartera SurDelta (DO-2026-11-09-DEMO-SURDELTA)",
+        help="pd07 (predeterminado) o la cartera SurDelta",
     )
     opciones = analizador.parse_args(argumentos)
     try:

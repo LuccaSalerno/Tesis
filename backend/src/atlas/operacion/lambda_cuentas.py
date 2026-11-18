@@ -1,5 +1,4 @@
-"""Lambda `cuentas`: operaciones administrativas sobre Cognito (RF-25, §5.4.2,
-DO-2026-10-23-CIERRE P7).
+"""Lambda `cuentas`: operaciones administrativas sobre Cognito (RF-25, §5.4.2).
 
 Fuera de la VPC; solo la invoca la API, que ya verificó el permiso del administrador. Busca
 la cuenta por su `sub` y la elimina; si ya no existe, la supresión está completa

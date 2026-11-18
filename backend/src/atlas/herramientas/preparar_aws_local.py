@@ -1,4 +1,4 @@
-"""Prepara el bucket y la máquina de estados ficticia en moto (DT-AWS-01). Solo desarrollo.
+"""Prepara el bucket y la máquina de estados ficticia en moto. Solo desarrollo.
 
 Uso: `python -m atlas.herramientas.preparar_aws_local`
 
@@ -34,10 +34,10 @@ def main(argumentos: list[str] | None = None) -> int:
     bucket = configuracion.s3_bucket_documentos
     if bucket not in {b["Name"] for b in s3.list_buckets().get("Buckets", [])}:
         s3.create_bucket(Bucket=bucket)
-    # Como en AWS (RC-P10): bucket versionado y regla de respaldo para cargas temporales.
+    # Como en AWS: bucket versionado y regla de respaldo para cargas temporales.
     s3.put_bucket_versioning(Bucket=bucket, VersioningConfiguration={"Status": "Enabled"})
     aplicar_ciclo_vida(s3, bucket or "")
-    # La aplicación web local carga y lee con URL prefirmada desde el navegador (WEB F7).
+    # La aplicación web local carga y lee con URL prefirmada desde el navegador.
     s3.put_bucket_cors(
         Bucket=bucket,
         CORSConfiguration={

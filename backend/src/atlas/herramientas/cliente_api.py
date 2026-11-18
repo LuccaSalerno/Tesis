@@ -1,4 +1,4 @@
-"""Cliente HTTP mínimo de la API para las herramientas del operador (DO-2026-10-22-OPS P11, P12).
+"""Cliente HTTP mínimo de la API para las herramientas del operador.
 
 Usa solo la biblioteca estándar. Los tokens nunca se escriben en archivos ni en la salida:
 viven en memoria mientras corre la herramienta. Los mensajes de error informan método, ruta
@@ -51,7 +51,7 @@ def sub_del_token(token: str) -> str:
 def tokens_cognito(
     region: str, cliente_id: str, usuarios: Mapping[str, str], cliente_idp: Any = None
 ) -> dict[str, str]:
-    """Inicia sesión con USER_PASSWORD_AUTH (P10). La contraseña de cada rol sale de la
+    """Inicia sesión con USER_PASSWORD_AUTH. La contraseña de cada rol sale de la
     variable de entorno `ATLAS_SEED_CLAVE_<ROL>` de la terminal del operador."""
     if cliente_idp is None:
         import boto3

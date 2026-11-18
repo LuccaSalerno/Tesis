@@ -6,7 +6,7 @@ archivo pendiente y su trabajo en una transacción, y recién después inicia la
 ejecución de Step Functions. Si el inicio falla, el trabajo queda pendiente para
 el reconciliador. La carga no modifica versiones ni el estado del trámite.
 
-Vencimiento (DO-2026-10-22-CARGAS): la carga vive en el prefijo de cargas
+Vencimiento: la carga vive en el prefijo de cargas
 temporales y tiene 24 h para confirmarse; al incorporarse, el original se
 traslada al prefijo definitivo. La limpieza retira los objetos temporales que ya
 no se necesitan, de forma idempotente y sin tocar los documentos confirmados.
@@ -108,7 +108,7 @@ def autorizar(
     tamano_bytes: int,
     vigencia_s: int,
 ) -> CargaAutorizada:
-    """Comprobaciones preliminares (RC-P04) y URL prefirmada de un solo uso."""
+    """Comprobaciones preliminares y URL prefirmada de un solo uso."""
     tramites.exigir_no_terminal(tramite)
     if tamano_bytes > limites.tamano_maximo_bytes:
         validar_tamano(tamano_bytes, tamano_bytes, limites)
@@ -193,7 +193,7 @@ def confirmar(
     trabajo = TrabajoProcesamiento(archivo_id=archivo.id, intento=1)
     sesion.add(trabajo)
     autorizacion.archivo_id = archivo.id
-    # RC-P08.8: sin cupo queda «en espera»; el reconciliador lo admite después.
+    # Sin cupo queda «en espera»; el reconciliador lo admite después.
     admision.admitir(sesion, trabajo, limite_concurrencia)
     registrar_evento_auditoria(
         sesion,
@@ -226,7 +226,7 @@ def iniciar_procesamiento(
     try:
         orquestador.iniciar(trabajo.id, trabajo.intento)
     except ErrorIntegracion as error:
-        # El trabajo sigue pendiente y registrado: lo recupera el reconciliador (RC-P08.3).
+        # El trabajo sigue pendiente y registrado: lo recupera el reconciliador.
         registrar_evento(
             _registrador,
             "inicio_procesamiento_pendiente",
@@ -252,7 +252,7 @@ def reintentar(
     solicitud_id: uuid.UUID | None = None,
 ) -> tuple[Archivo, TrabajoProcesamiento]:
     """Intento nuevo tras un fallo definitivo, por decisión explícita del responsable
-    (RNF-06, RC-P08.4). Pasa por la admisión: puede quedar en espera de cupo."""
+    (RNF-06). Pasa por la admisión: puede quedar en espera de cupo."""
     tramites.exigir_no_terminal(tramite)
     archivo = sesion.get(Archivo, archivo_id)
     if archivo is None or archivo.tramite_id != tramite.id:
@@ -265,7 +265,7 @@ def reintentar(
     if trabajo is None or trabajo.estado != EstadoTrabajo.FALLIDO:
         raise Conflicto("Solo se reintenta un procesamiento fallido")
     anterior = trabajo.intento
-    trabajo.intento = anterior + 1  # el intento anterior queda descartado (RC-P08.6)
+    trabajo.intento = anterior + 1  # el intento anterior queda descartado
     trabajo.codigo_error = None
     trabajo.ejecucion_iniciada_en = None
     admitido = admision.admitir(sesion, trabajo, limite_concurrencia)
@@ -355,7 +355,7 @@ def _cambio_documental(
     version_id: int,
     solicitud_id: uuid.UUID | None,
 ) -> None:
-    """RN-12, PD-05.1: el ciclo en curso queda desplazado, sus tareas abiertas anuladas y el
+    """RN-12: el ciclo en curso queda desplazado, sus tareas abiertas anuladas y el
     trámite vuelve a Borrador, en la misma transacción que la incorporación."""
     ciclos.desplazar_en_curso(
         sesion,
@@ -473,7 +473,7 @@ def incorporar_como_version(
     """RF-07: confirma la relación de versión sugerida (RF-06). El archivo se incorpora al
     historial del documento candidato como su nueva versión vigente; la anterior queda
     inmutable con sus validaciones. RN-12: ciclo desplazado, tareas anuladas y trámite a
-    Borrador (DO-2026-10-23-VER P4). La versión nueva empieza sin valores validados: sus
+    Borrador. La versión nueva empieza sin valores validados: sus
     controles dejan de usar la anterior y se ejecutan al validarla (RN-02, RN-06)."""
     tramites.exigir_no_terminal(tramite)
     existente = sesion.get(Archivo, archivo_id)
@@ -503,7 +503,7 @@ def incorporar_como_version(
     sesion.add(version)
     sesion.flush()
     documento.version_vigente_id = version.id
-    # `tipo` refleja la clasificación validada de la versión vigente (P3 del modelo): la
+    # `tipo` refleja la clasificación validada de la versión vigente (del modelo): la
     # nueva todavía no la tiene y no hereda la de la anterior (RN-02).
     documento.tipo = None
     sesion.flush()
@@ -576,7 +576,7 @@ def limpiar_cargas_vencidas(
     ahora: datetime | None = None,
     lote: int = 100,
 ) -> ResumenLimpieza:
-    """Limpieza segura e idempotente de cargas temporales (DO-2026-10-22-CARGAS).
+    """Limpieza segura e idempotente de cargas temporales.
 
     Revisa las autorizaciones con más de 24 h y sin limpiar:
     - sin archivo registrado: la carga nunca se confirmó;
@@ -634,7 +634,7 @@ def limpiar_cargas_vencidas(
             resumen.versiones_eliminadas += almacen.eliminar_definitivamente(
                 autorizacion.clave_objeto
             )
-            # DO-2026-10-22-PROC (P3): los resultados intermedios de una carga vencida
+            # Los resultados intermedios de una carga vencida
             # se eliminan con ella; los de archivos incorporados se conservan.
             for prefijo in prefijos:
                 resumen.versiones_eliminadas += almacen.eliminar_prefijo(prefijo)

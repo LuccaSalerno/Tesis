@@ -1,7 +1,7 @@
 """Hito 1.3: trámite, carga prefirmada, confirmación, trabajo y versión inicial.
 
-Contra PostgreSQL real y S3/Step Functions simulados con moto (DT-AWS-01).
-RF-02, RF-03, RF-04, RF-05, RF-07, RF-21, RN-15, RC-P04, RC-P08, §5.3.1.
+Contra PostgreSQL real y S3/Step Functions simulados con moto.
+RF-02, RF-03, RF-04, RF-05, RF-07, RF-21, RN-15
 """
 
 import hashlib
@@ -57,14 +57,14 @@ def estado_trabajo(archivo: dict[str, Any]) -> dict[str, Any]:
 def test_rf_03_crear_tramite_en_borrador_y_auditado(ctx: Contexto) -> None:
     respuesta = ctx.cliente.post(
         "/tramites",
-        json={"titulo": "Mantenimiento 2026", "descripcion": "Escenario ficticio PD-07"},
+        json={"titulo": "Mantenimiento 2026", "descripcion": "Escenario ficticio"},
         headers=ctx.encabezados,
     )
     assert respuesta.status_code == 201
     tramite = respuesta.json()
     assert tramite["estado"] == "borrador"
     assert tramite["responsable_id"] == ctx.usuario_id
-    assert tramite["descripcion"] == "Escenario ficticio PD-07"
+    assert tramite["descripcion"] == "Escenario ficticio"
     assert tramite["creado_en"] and tramite["actualizado_en"]
     assert eventos_del_tramite(ctx.motor, tramite["id"]) == [
         {
@@ -104,7 +104,7 @@ def test_rf_03_listar_y_abrir_solo_tramites_con_acceso(ctx: Contexto) -> None:
 
     abierto = ctx.cliente.get(f"/tramites/{propio['id']}", headers=ctx.encabezados).json()
     assert abierto["documentos"] == []
-    # Inexistente y sin acceso responden igual (RC-P01-004).
+    # Inexistente y sin acceso responden igual.
     for ruta in (f"/tramites/{ajeno['id']}", "/tramites/999999999"):
         assert ctx.cliente.get(ruta, headers=ctx.encabezados).status_code == 404
 
@@ -200,7 +200,7 @@ def test_rf_04_docx_del_corpus_se_admite(ctx: Contexto) -> None:
     ],
     ids=["contenido_distinto", "pdf_protegido", "tamano_distinto", "sin_transferencia"],
 )
-def test_rc_p04_archivo_invalido_rechazado_sin_efectos(
+def test_archivo_invalido_rechazado_sin_efectos(
     ctx: Contexto,
     datos_declarados: bytes,
     datos_enviados: bytes | None,
@@ -231,7 +231,7 @@ def test_rc_p04_archivo_invalido_rechazado_sin_efectos(
     ],
     ids=["excede_20mb", "formato_no_admitido", "sin_nombre", "tamano_cero"],
 )
-def test_rc_p04_comprobaciones_preliminares_antes_de_autorizar(
+def test_comprobaciones_preliminares_antes_de_autorizar(
     ctx: Contexto, cuerpo: dict[str, Any], estado: int
 ) -> None:
     tramite = crear_tramite(ctx)
@@ -247,9 +247,7 @@ def test_rc_p04_comprobaciones_preliminares_antes_de_autorizar(
     assert autorizaciones == 0
 
 
-def test_do_2026_10_22_carga_sin_confirmar_vence_a_las_24_horas(
-    ctx: Contexto, motor_migracion: Engine
-) -> None:
+def test_carga_sin_confirmar_vence_a_las_24_horas(ctx: Contexto, motor_migracion: Engine) -> None:
     tramite = crear_tramite(ctx)
     datos = archivos.pdf()
     carga = autorizar(ctx, tramite["id"], datos)
@@ -286,7 +284,7 @@ def test_rnf_01_otro_responsable_no_confirma_ni_carga_en_tramite_ajeno(ctx: Cont
     assert contar(ctx.motor, "archivo", tramite["id"]) == 0
 
 
-def test_rc_p08_inicio_fallido_deja_el_trabajo_pendiente_y_registrado(
+def test_inicio_fallido_deja_el_trabajo_pendiente_y_registrado(
     ctx: Contexto, aplicacion: Any, capsys: pytest.CaptureFixture[str]
 ) -> None:
     visibles: list[bool] = []
@@ -354,7 +352,7 @@ def test_rf_07_incorporar_crea_documento_con_version_inicial_vigente(ctx: Contex
     assert respuesta.status_code == 201
     documento = respuesta.json()
     assert documento["nombre"] == "Contrato C-v1"
-    assert documento["tipo"] is None  # P3: sin tipo hasta validar la clasificación
+    assert documento["tipo"] is None  # Sin tipo hasta validar la clasificación
     assert documento["version_vigente"]["numero"] == 1
     assert documento["version_vigente"]["archivo_id"] == archivo["id"]
 

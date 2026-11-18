@@ -1,6 +1,6 @@
-"""Evidencia de la decisión y línea de tiempo del trámite (RF-21, RF-22, PD-03, PD-06).
+"""Evidencia de la decisión y línea de tiempo del trámite (RF-21, RF-22).
 
-DO-2026-10-22-TAR, P11 y P12. La evidencia se reconstruye desde las relaciones de la
+La evidencia se reconstruye desde las relaciones de la
 Figura 5.4 sin duplicar información: las validaciones son las vigentes en el instante de
 la decisión (cadena de reemplazos y fecha), y los controles, los registrados en
 DECISION_CONTROL. Acceso: el responsable y quien tiene una tarea asignada en el ciclo.
@@ -30,7 +30,7 @@ from atlas.servicios.errores import NoEncontrado
 
 @dataclass(frozen=True)
 class ValidacionConsiderada:
-    """PD-03: valor sugerido, valor validado, actor, fecha, versión y fuente."""
+    """Valor sugerido, valor validado, actor, fecha, versión y fuente."""
 
     validacion: ValidacionHumana
     documento: Documento
@@ -160,7 +160,7 @@ def obtener(sesion: Session, decision_id: int, usuario_id: int, *, revisor: bool
     )
 
 
-# --- Línea de tiempo (RF-22, P11) --------------------------------------------------------
+# --- Línea de tiempo (RF-22) --------------------------------------------------------
 
 
 @dataclass(frozen=True)

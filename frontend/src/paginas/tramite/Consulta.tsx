@@ -1,7 +1,7 @@
 /**
  * Consulta asistida (Fig. 3.7, RF-13, RN-04): respuestas con cita a fragmentos de las
  * versiones autorizadas o abstención explícita cuando no hay evidencia suficiente. El
- * historial muestra las consultas propias (WEB F6).
+ * historial muestra las consultas propias.
  */
 import { Quote, Send } from "lucide-react";
 import { type FormEvent, useState } from "react";

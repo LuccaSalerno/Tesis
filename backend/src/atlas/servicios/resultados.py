@@ -1,4 +1,4 @@
-"""Persistencia de los resultados del procesamiento (§5.3.1, §5.3.3, RC-P08.6).
+"""Persistencia de los resultados del procesamiento (§5.3.1, §5.3.3).
 
 Solo el intento vigente de un trabajo en curso registra resultados: los de un intento
 anterior se descartan y se registra el descarte. Repetir la persistencia del mismo
@@ -137,7 +137,7 @@ def persistir(
         )
     sesion.flush()
     # RF-06: con los resultados ya registrados, se busca un documento del que el archivo
-    # pueda ser versión nueva (DO-2026-10-23-VER P1, P2).
+    # pueda ser versión nueva.
     versiones.detectar(sesion, trabajo.archivo_id, intento)
     trabajo.estado = EstadoTrabajo.COMPLETADO
     trabajo.codigo_error = None

@@ -1,8 +1,8 @@
-"""Escenarios EVD-01 de `cadena_evidencia.feature` (DO-2026-10-22-BDD, DO-2026-10-22-TAR).
+"""Escenarios EVD-01 de `cadena_evidencia.feature`.
 
 Los cuatro recorridos se ejecutan contra la API autenticada y PostgreSQL real. En EVD-A y
 EVD-B el cambio es una **versión nueva** sugerida por el sistema y confirmada por el
-responsable (RF-06, RF-07, DO-2026-10-23-VER); el procesamiento usa respuestas fijas. En
+responsable (RF-06, RF-07); el procesamiento usa respuestas fijas. En
 EVD-N12 es la incorporación de un documento nuevo, que RN-12 también contempla. Ejecutar
 un escenario no acredita por sí solo el cumplimiento de EVD-01: eso exige el oráculo
 congelado y la evidencia conservada (AGENTS.md §7).
@@ -41,7 +41,7 @@ def _versiones(e: Equipo, tramite_id: int) -> set[int]:
     return {d["version_vigente"]["id"] for d in tramite(e.responsable, tramite_id)["documentos"]}
 
 
-# --- EVD-A y EVD-B: versión nueva confirmada (RN-12, DO-2026-10-23-VER) -----------------
+# --- EVD-A y EVD-B: versión nueva confirmada (RN-12) -----------------
 
 F_V2 = {**F_COMPLETO, "importe_total": "1250000.00"}
 O_V2 = {**O_COMPLETO, "fecha": "2026-09-15"}

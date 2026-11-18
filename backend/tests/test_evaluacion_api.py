@@ -1,4 +1,4 @@
-"""Fase 2 del arnés: latencia IA-M08 y carga §6.3.4 contra la API (DO-2026-10-23-E90-API).
+"""Fase 2 del arnés: latencia IA-M08 y carga §6.3.4 contra la API.
 
 Sin AWS: una API simulada en memoria responde las rutas que usan el cargador, la latencia y
 la carga, con la forma de las respuestas reales. La instrumentación real de la API
@@ -132,7 +132,7 @@ def _cliente(api: ApiSimulada) -> ClienteApi:
 # --- Solicitud cronometrada ----------------------------------------------------------------
 
 
-def test_p4_server_timing_se_lee_por_componente() -> None:
+def test_server_timing_se_lee_por_componente() -> None:
     tiempos = http.leer_server_timing(
         'embeddings;dur=12.5, total;dur=40, arranque;desc="frio", vacio'
     )
@@ -140,7 +140,7 @@ def test_p4_server_timing_se_lee_por_componente() -> None:
     assert http.leer_server_timing(None) == {}
 
 
-def test_p3_medida_completa_error_de_red_y_cuerpo_invalido() -> None:
+def test_medida_completa_error_de_red_y_cuerpo_invalido() -> None:
     relojes = iter([1.0, 1.25])
     medida = http.medir(
         lambda *_: (201, {"server-timing": "total;dur=9"}, b'{"a": 1}'),
@@ -166,10 +166,10 @@ def test_p3_medida_completa_error_de_red_y_cuerpo_invalido() -> None:
         http.envio_urllib("GET", "http://ejemplo", {}, None)
 
 
-# --- Cargador del corpus (P2) --------------------------------------------------------------
+# --- Cargador del corpus --------------------------------------------------------------
 
 
-def test_p2_un_tramite_por_contexto_con_incorporacion(raiz: Path) -> None:
+def test_un_tramite_por_contexto_con_incorporacion(raiz: Path) -> None:
     oraculos = cargar(raiz)
     consultas = consultas_de(oraculos, Modo.OFICIAL)
     grupos = cargador.contextos(consultas)
@@ -186,7 +186,7 @@ def test_p2_un_tramite_por_contexto_con_incorporacion(raiz: Path) -> None:
     )
 
 
-def test_p2_espera_maxima(raiz: Path) -> None:
+def test_espera_maxima(raiz: Path) -> None:
     api = ApiSimulada()
     api.listados = {}
     tramite = _cliente(api).post("/tramites", "responsable", {"titulo": "x"})
@@ -198,10 +198,10 @@ def test_p2_espera_maxima(raiz: Path) -> None:
         )
 
 
-# --- Latencia (P3, P6, P7) -----------------------------------------------------------------
+# --- Latencia -----------------------------------------------------------------
 
 
-def test_p6_percentil_por_rango_mas_cercano() -> None:
+def test_percentil_por_rango_mas_cercano() -> None:
     valores = list(range(1, 91))  # 90 observaciones
     assert latencia.percentil_cercano(valores, 95) == 86
     assert (
@@ -210,7 +210,7 @@ def test_p6_percentil_por_rango_mas_cercano() -> None:
     assert latencia.resumen([1.0, 3.0, 2.0])["mediana_ms"] == 2.0
 
 
-def test_p3_bloques_verifican_perfil_y_no_se_repiten(raiz: Path) -> None:
+def test_bloques_verifican_perfil_y_no_se_repiten(raiz: Path) -> None:
     api = ApiSimulada(perfil="perfil-haiku")
     registro = Registro(raiz / "latencia.jsonl")
     latencia.linea_base_red(api.envio, URL, registro, muestras=3)
@@ -268,10 +268,10 @@ def test_p3_bloques_verifican_perfil_y_no_se_repiten(raiz: Path) -> None:
     assert latencia.metricas([])["modelos"] == {}
 
 
-# --- Carga (P8) ----------------------------------------------------------------------------
+# --- Carga ----------------------------------------------------------------------------
 
 
-def test_p8_niveles_interactivos_y_trabajos(raiz: Path) -> None:
+def test_niveles_interactivos_y_trabajos(raiz: Path) -> None:
     api = ApiSimulada()
     registro = Registro(raiz / "carga.jsonl")
     carga.interactiva(
@@ -287,7 +287,7 @@ def test_p8_niveles_interactivos_y_trabajos(raiz: Path) -> None:
     assert carga._segundos({"estado": "fallido"}) is None
 
 
-# --- Línea de comandos (P1, P11, P12) ------------------------------------------------------
+# --- Línea de comandos ------------------------------------------------------
 
 
 class EntornoSimulado(operacion.Entorno):
@@ -310,7 +310,7 @@ def _iniciar(modo: str, campana: str) -> list[str]:
     ]  # fmt: skip
 
 
-def test_p11_campana_de_ensayo_de_punta_a_punta(
+def test_campana_de_ensayo_de_punta_a_punta(
     raiz: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(cargador.time, "sleep", lambda _: None)
@@ -341,7 +341,7 @@ def test_p11_campana_de_ensayo_de_punta_a_punta(
     assert "corpus_ya_cargado" in capsys.readouterr().err
 
 
-def test_p2_campana_oficial_carga_contextos_y_tramite_de_carga(
+def test_campana_oficial_carga_contextos_y_tramite_de_carga(
     raiz: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(cargador.time, "sleep", lambda _: None)
@@ -364,7 +364,7 @@ def test_p2_campana_oficial_carga_contextos_y_tramite_de_carga(
     assert _main(["metricas", "--campana", "o1"], entorno, raiz) == 1  # oráculos cambiados
 
 
-def test_p1_validaciones_de_la_campana(raiz: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_validaciones_de_la_campana(raiz: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     entorno = EntornoSimulado(ApiSimulada())
     monkeypatch.setattr(cmp, "_commit", lambda _: {"commit": None, "cambios_sin_commit": None})
     assert _main(_iniciar("oficial", "o2"), entorno, raiz) == 1
@@ -374,7 +374,7 @@ def test_p1_validaciones_de_la_campana(raiz: Path, monkeypatch: pytest.MonkeyPat
     assert _main(["red", "--campana", "x"], entorno, raiz) == 1
 
 
-def test_p1_entorno_real_construye_clientes(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_entorno_real_construye_clientes(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         operacion,
         "tokens_cognito",
@@ -400,7 +400,7 @@ def _main(argumentos: list[str], entorno: operacion.Entorno, raiz: Path) -> int:
         monkey.undo()
 
 
-def test_p3_envio_real_contra_un_servidor_local() -> None:
+def test_envio_real_contra_un_servidor_local() -> None:
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
     class Manejador(BaseHTTPRequestHandler):

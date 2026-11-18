@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Paquete único arm64 de las funciones Lambda de ATLAS (DO-2026-10-22-OPS P6).
+# Paquete único arm64 de las funciones Lambda de ATLAS.
 #
 # Instala en un contenedor limpio las dependencias de ejecución del backend con las versiones
 # de backend/requisitos-bloqueados.txt (wheels manylinux aarch64, glibc ≤ 2.34 como el
@@ -14,7 +14,7 @@ set -euo pipefail
 
 raiz="$(git rev-parse --show-toplevel)"
 certificado="$raiz/infra/certificados/rds-global-bundle.pem"
-# RDS Proxy presenta un certificado de ACM: su cadena termina en Amazon Root CA (DIF-96).
+# RDS Proxy presenta un certificado de ACM: su cadena termina en Amazon Root CA.
 raices_amazon="$raiz/infra/certificados/amazon-trust-raices.pem"
 salida="$raiz/dist/atlas-lambda.zip"
 sin_certificados=0
@@ -41,7 +41,7 @@ PY
     --implementation cp --python-version 3.12 --only-binary=:all: \
     -c /backend/requisitos-bloqueados.txt -r /tmp/dependencias.txt
   cp -r /backend/src/atlas /paquete/atlas
-  # El arnés de §6.3 lo ejecuta el operador; no va a Lambda (DO-2026-10-23-E90-MEDICION P2).
+  # El arnés de §6.3 lo ejecuta el operador; no va a Lambda.
   rm -rf /paquete/atlas/evaluacion
   mkdir -p /paquete/migraciones
   cp -r /backend/migraciones/versions /backend/migraciones/env.py /backend/migraciones/script.py.mako /paquete/migraciones/

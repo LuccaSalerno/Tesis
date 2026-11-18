@@ -1,4 +1,4 @@
-# VPC privada en dos zonas, sin NAT ni salida a Internet (RC-P10-02, tesis §5.4).
+# VPC privada en dos zonas, sin NAT ni salida a Internet (tesis §5.4).
 
 data "aws_availability_zones" "disponibles" {
   state = "available"
@@ -57,7 +57,7 @@ resource "aws_vpc_endpoint" "s3" {
   tags              = { Name = "${local.prefijo}-s3" }
 }
 
-# --- Grupos de seguridad estables (RC-P10-07): reglas mínimas por puerto y origen --------
+# --- Grupos de seguridad estables: reglas mínimas por puerto y origen --------
 
 resource "aws_security_group" "lambda_aplicacion" {
   name        = "${local.prefijo}-lambda-aplicacion"

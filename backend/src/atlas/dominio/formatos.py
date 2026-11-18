@@ -1,6 +1,6 @@
-"""Formato canónico de los valores validados (DO-2026-10-22-VAL, P4).
+"""Formato canónico de los valores validados.
 
-Los valores validados alimentan las reglas de consistencia (R1 a R4, PD-01), así que
+Los valores validados alimentan las reglas de consistencia (R1 a R4), así que
 se exige una forma única. Un CUIT con dígito verificador inválido se acepta con una
 advertencia: la validación debe reflejar lo que dice el documento.
 """

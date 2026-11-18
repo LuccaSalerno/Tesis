@@ -1,4 +1,4 @@
-"""Informe legible de una campaña: criterio, umbral, serie, promedio y cumplimiento (P16).
+"""Informe legible de una campaña: criterio, umbral, serie, promedio y cumplimiento.
 
 No interpreta ni redacta conclusiones: presenta lo medido contra los umbrales congelados.
 Un ensayo se rotula como no reportable en el encabezado.

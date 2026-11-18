@@ -1,7 +1,7 @@
 """Funciones Lambda del procesamiento contra PostgreSQL real y S3 simulado (sin AWS).
 
 Se reemplaza solo la configuración del proceso; Textract y el modelo no se invocan
-(P1). Cubre el despacho de cada función, la transacción de la de persistencia y la
+. Cubre el despacho de cada función, la transacción de la de persistencia y la
 salida de errores sin contenido (regla 5 de AGENTS.md).
 """
 
@@ -61,7 +61,7 @@ def estado_trabajo(ctx: Contexto, trabajo_id: int) -> tuple[str, str | None]:
     return fila.estado, fila.codigo_error
 
 
-def test_dt_proc_lambdas_preparar_y_normalizar_docx(entorno: Contexto) -> None:
+def test_lambdas_preparar_y_normalizar_docx(entorno: Contexto) -> None:
     trabajo_id, _ = trabajo(entorno)
     base = {"trabajo_id": trabajo_id, "intento": 1}
     preparado = lambdas.manejar_persistencia({"etapa": "preparar", **base}, None)
@@ -73,7 +73,7 @@ def test_dt_proc_lambdas_preparar_y_normalizar_docx(entorno: Contexto) -> None:
     assert normalizado == {"contenido": f"resultados/{trabajo_id}/1/contenido.json"}
 
 
-def test_dt_proc_lambda_de_persistencia_registra_el_fallo_con_su_codigo(entorno: Contexto) -> None:
+def test_lambda_de_persistencia_registra_el_fallo_con_su_codigo(entorno: Contexto) -> None:
     trabajo_id, _ = trabajo(entorno, "pdf")
     respuesta = lambdas.manejar_persistencia(
         {
@@ -89,7 +89,7 @@ def test_dt_proc_lambda_de_persistencia_registra_el_fallo_con_su_codigo(entorno:
     assert estado_trabajo(entorno, trabajo_id) == ("fallido", "textract_fallido")
 
 
-def test_dt_proc_lambda_de_persistencia_revierte_ante_error(entorno: Contexto) -> None:
+def test_lambda_de_persistencia_revierte_ante_error(entorno: Contexto) -> None:
     """Si faltan los resultados en S3, la transacción se revierte y el error es reintentable."""
     trabajo_id, _ = trabajo(entorno)
     with pytest.raises(ErrorTransitorio, match="s3_lectura_fallida"):
@@ -107,7 +107,7 @@ def test_dt_proc_lambda_de_persistencia_revierte_ante_error(entorno: Contexto) -
     assert estado_trabajo(entorno, trabajo_id) == ("en_ejecucion", None)
 
 
-def test_dt_proc_lambda_de_procesamiento_rechaza_etapas_de_persistencia(entorno: Contexto) -> None:
+def test_lambda_de_procesamiento_rechaza_etapas_de_persistencia(entorno: Contexto) -> None:
     trabajo_id, _ = trabajo(entorno)
     with pytest.raises(ErrorPermanente, match="evento_invalido"):
         lambdas.manejar_procesamiento(
@@ -119,7 +119,7 @@ def test_dt_proc_lambda_de_procesamiento_rechaza_etapas_de_persistencia(entorno:
         )
 
 
-def test_dt_proc_despacho_coincide_con_las_etapas_declaradas(
+def test_despacho_coincide_con_las_etapas_declaradas(
     entorno: Contexto, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     vistas: dict[str, set[str]] = {}
@@ -135,7 +135,7 @@ def test_dt_proc_despacho_coincide_con_las_etapas_declaradas(
     assert vistas["ultima"] == lambdas.ETAPAS_PERSISTENCIA
 
 
-def test_dt_proc_consultar_textract_no_recibe_mas_que_el_identificador(
+def test_consultar_textract_no_recibe_mas_que_el_identificador(
     entorno: Contexto, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     class Analizador:

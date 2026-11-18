@@ -1,9 +1,9 @@
-"""Vínculos documentales y controles de consistencia (RF-14, RF-15, RF-16). Rutas: RC-P01-008.
+"""Vínculos documentales y controles de consistencia (RF-14, RF-15, RF-16).
 
 Permisos (Tabla 3.II): crear, confirmar, rechazar y eliminar vínculos requieren el rol de
 responsable del trámite y ser su responsable. Consultan vínculos y controles el responsable
 y el revisor/aprobador con una tarea asignada, limitado a las versiones de sus ciclos
-(DO-2026-10-22-TAR, P8).
+.
 """
 
 import uuid

@@ -1,4 +1,4 @@
-"""Validación del archivo recibido por su contenido, no por su extensión (RC-P04, RF-04).
+"""Validación del archivo recibido por su contenido, no por su extensión (RF-04).
 
 Los archivos son entradas no confiables (§5.4.3): se acotan tamaños antes de
 descomprimir o interpretar y cualquier error de lectura se trata como archivo

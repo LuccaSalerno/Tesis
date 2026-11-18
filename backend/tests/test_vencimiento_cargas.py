@@ -1,6 +1,6 @@
 """Vencimiento de cargas pendientes, traslado al prefijo definitivo y limpieza en S3.
 
-DO-2026-10-22-CARGAS (DT-CARGA-01), RF-04, RF-05, RF-07, RF-21. Contra PostgreSQL
+RF-04, RF-05, RF-07, RF-21. Contra PostgreSQL
 real y S3 versionado simulado con moto; sin AWS.
 """
 
@@ -94,7 +94,7 @@ def limpiar(configuracion: Configuracion, ahora: datetime) -> cargas.ResumenLimp
 # --- URL de 5 minutos y vigencia de 24 horas -----------------------------------------
 
 
-def test_do_2026_10_22_url_prefirmada_vence_a_los_5_minutos(entorno: Any) -> None:
+def test_url_prefirmada_vence_a_los_5_minutos(entorno: Any) -> None:
     _, ctx, _ = entorno
     tramite = crear_tramite(ctx)
     carga = autorizar(ctx, tramite["id"], archivos.pdf())
@@ -102,7 +102,7 @@ def test_do_2026_10_22_url_prefirmada_vence_a_los_5_minutos(entorno: Any) -> Non
     assert urlparse(carga["url"]).path.split("/", 2)[2].startswith(PREFIJO_CARGAS_TEMPORALES)
 
 
-def test_do_2026_10_22_carga_pendiente_informa_su_vencimiento(entorno: Any) -> None:
+def test_carga_pendiente_informa_su_vencimiento(entorno: Any) -> None:
     _, ctx, _ = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.pdf())
@@ -112,7 +112,7 @@ def test_do_2026_10_22_carga_pendiente_informa_su_vencimiento(entorno: Any) -> N
     assert vence == timedelta(hours=24)
 
 
-def test_do_2026_10_22_carga_vencida_no_se_incorpora(entorno: Any) -> None:
+def test_carga_vencida_no_se_incorpora(entorno: Any) -> None:
     aplicacion, ctx, _ = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.pdf())
@@ -126,7 +126,7 @@ def test_do_2026_10_22_carga_vencida_no_se_incorpora(entorno: Any) -> None:
 # --- Traslado al prefijo definitivo ---------------------------------------------------
 
 
-def test_do_2026_10_22_incorporacion_traslada_el_original_con_su_huella(entorno: Any) -> None:
+def test_incorporacion_traslada_el_original_con_su_huella(entorno: Any) -> None:
     _, ctx, s3 = entorno
     tramite = crear_tramite(ctx)
     datos = archivos.CONTRATO_PDF.read_bytes()
@@ -146,7 +146,7 @@ def test_do_2026_10_22_incorporacion_traslada_el_original_con_su_huella(entorno:
     assert listado["vence_en"] is None
 
 
-def test_do_2026_10_22_copia_inconsistente_no_incorpora(entorno: Any) -> None:
+def test_copia_inconsistente_no_incorpora(entorno: Any) -> None:
     aplicacion, ctx, _ = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.pdf())
@@ -188,7 +188,7 @@ def test_do_2026_10_22_copia_inconsistente_no_incorpora(entorno: Any) -> None:
     ],
     ids=["clave_sin_incorporar", "prefijo_no_definitivo", "huella", "fecha_de_carga"],
 )
-def test_do_2026_10_22_archivo_protegido_incluso_para_el_propietario(
+def test_archivo_protegido_incluso_para_el_propietario(
     entorno: Any, motor_migracion: Engine, sentencia: str, mensaje: str
 ) -> None:
     _, ctx, _ = entorno
@@ -198,7 +198,7 @@ def test_do_2026_10_22_archivo_protegido_incluso_para_el_propietario(
         conexion.execute(text(sentencia), {"a": archivo["id"]})
 
 
-def test_do_2026_10_22_estado_final_no_cambia(entorno: Any) -> None:
+def test_estado_final_no_cambia(entorno: Any) -> None:
     _, ctx, _ = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.pdf())
@@ -213,7 +213,7 @@ def test_do_2026_10_22_estado_final_no_cambia(entorno: Any) -> None:
 # --- Limpieza segura e idempotente ----------------------------------------------------
 
 
-def test_do_2026_10_22_limpieza_de_los_tres_casos_y_versiones_residuales(
+def test_limpieza_de_los_tres_casos_y_versiones_residuales(
     entorno: Any, base_reiniciada: Configuracion
 ) -> None:
     _, ctx, s3 = entorno
@@ -274,7 +274,7 @@ def test_do_2026_10_22_limpieza_de_los_tres_casos_y_versiones_residuales(
     assert (segunda.revisadas, segunda.vencidas, segunda.versiones_eliminadas) == (0, 0, 0)
 
 
-def test_do_2026_10_22_confirmacion_tardia_se_difiere_hasta_su_vencimiento(
+def test_confirmacion_tardia_se_difiere_hasta_su_vencimiento(
     entorno: Any, base_reiniciada: Configuracion, motor_migracion: Engine
 ) -> None:
     """Una carga confirmada cerca del límite de su autorización conserva sus 24 h
@@ -300,7 +300,7 @@ def test_do_2026_10_22_confirmacion_tardia_se_difiere_hasta_su_vencimiento(
     assert incorporar(ctx, tramite["id"], archivo["id"]).status_code == 201
 
 
-def test_do_2026_10_22_multipartes_incompletas_solo_del_prefijo_temporal(
+def test_multipartes_incompletas_solo_del_prefijo_temporal(
     entorno: Any, base_reiniciada: Configuracion
 ) -> None:
     _, _, s3 = entorno
@@ -322,7 +322,7 @@ def test_do_2026_10_22_multipartes_incompletas_solo_del_prefijo_temporal(
     )
 
 
-def test_do_2026_10_22_solo_se_liberan_claves_temporales(entorno: Any) -> None:
+def test_solo_se_liberan_claves_temporales(entorno: Any) -> None:
     aplicacion, _, _ = entorno
     with aplicacion.state.fabrica_sesiones() as sesion:
         assert cargas._clave_temporal_liberada(sesion, f"{PREFIJO_DOCUMENTOS}tramites/1/x") is False
@@ -333,7 +333,7 @@ def test_do_2026_10_22_solo_se_liberan_claves_temporales(entorno: Any) -> None:
 # --- Regla S3 Lifecycle de respaldo ---------------------------------------------------
 
 
-def test_do_2026_10_22_regla_lifecycle_de_2_dias_solo_sobre_cargas_temporales(
+def test_regla_lifecycle_de_2_dias_solo_sobre_cargas_temporales(
     entorno: Any,
 ) -> None:
     _, _, s3 = entorno
@@ -356,7 +356,7 @@ def _carga_de(motor: Engine, archivo_id: int) -> int:
     )
 
 
-def test_do_2026_10_22_herramienta_de_limpieza_es_idempotente(
+def test_herramienta_de_limpieza_es_idempotente(
     entorno: Any,
     base_reiniciada: Configuracion,
     monkeypatch: pytest.MonkeyPatch,
@@ -376,10 +376,10 @@ def test_do_2026_10_22_herramienta_de_limpieza_es_idempotente(
     assert "Revisadas 0" in capsys.readouterr().out
 
 
-def test_p3_resultados_intermedios_se_eliminan_con_la_carga_vencida(
+def test_resultados_intermedios_se_eliminan_con_la_carga_vencida(
     entorno: Any, base_reiniciada: Configuracion
 ) -> None:
-    """DO-2026-10-22-PROC (P3): se conservan mientras exista el archivo incorporado y se
+    """Se conservan mientras exista el archivo incorporado y se
     eliminan, con todas sus versiones, cuando la carga vence."""
     _, ctx, s3 = entorno
     tramite = crear_tramite(ctx)

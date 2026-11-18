@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Publicación de la aplicación web en S3 + CloudFront (DO-2026-10-23-WEB-HOST P4, P6).
+# Publicación de la aplicación web en S3 + CloudFront.
 #
 # Solo lo ejecuta el operador, con sus credenciales y después de aplicar la raíz `web`; nunca
-# la CI (DO-2026-10-21). Dos modos:
+# la CI. Dos modos:
 #
 #   infra/web/publicar.sh --aplicacion     # compila y sube los archivos estáticos
 #   infra/web/publicar.sh --configuracion  # sube configuracion.json de la sesión actual

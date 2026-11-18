@@ -1,4 +1,4 @@
-"""Definición de la máquina de estados (§5.3.1, RC-P08, regla 5 de AGENTS.md)."""
+"""Definición de la máquina de estados (§5.3.1, regla 5 de AGENTS.md)."""
 
 import json
 from importlib import resources
@@ -25,10 +25,10 @@ REFERENCIAS_PERMITIDAS = {
 }
 
 
-def test_rc_p08_limites_de_tiempo() -> None:
+def test_limites_de_tiempo() -> None:
     assert 1800 <= DEFINICION["TimeoutSeconds"] <= 2400
     espera = ESTADOS["EsperarTextract"]["Seconds"]
-    assert 10 <= espera <= 15  # RC-P08.2
+    assert 10 <= espera <= 15
     limite = next(
         c["NumericGreaterThanEquals"]
         for c in ESTADOS["EvaluarTextract"]["Choices"]
@@ -38,7 +38,7 @@ def test_rc_p08_limites_de_tiempo() -> None:
 
 
 @pytest.mark.parametrize("nombre", sorted(TAREAS))
-def test_rc_p08_1_reintentos_solo_ante_errores_transitorios(nombre: str) -> None:
+def test_reintentos_solo_ante_errores_transitorios(nombre: str) -> None:
     (reintento,) = TAREAS[nombre]["Retry"]
     assert (reintento["MaxAttempts"], reintento["IntervalSeconds"], reintento["BackoffRate"]) == (
         3,
@@ -51,7 +51,7 @@ def test_rc_p08_1_reintentos_solo_ante_errores_transitorios(nombre: str) -> None
 
 
 @pytest.mark.parametrize("nombre", sorted(set(TAREAS) - {"RegistrarFallo"}))
-def test_dt_proc_toda_falla_registra_el_fallo_tecnico(nombre: str) -> None:
+def test_toda_falla_registra_el_fallo_tecnico(nombre: str) -> None:
     (captura,) = TAREAS[nombre]["Catch"]
     assert captura == {
         "ErrorEquals": ["States.ALL"],
@@ -76,7 +76,7 @@ def test_regla_5_entradas_y_salidas_solo_con_identificadores(nombre: str) -> Non
 
 
 @pytest.mark.parametrize("nombre", sorted(TAREAS))
-def test_dt_proc_cada_etapa_existe_en_su_funcion(nombre: str) -> None:
+def test_cada_etapa_existe_en_su_funcion(nombre: str) -> None:
     parametros = TAREAS[nombre]["Parameters"]
     etapa = parametros["Payload"]["etapa"]
     funcion = parametros["FunctionName"]
@@ -87,7 +87,7 @@ def test_dt_proc_cada_etapa_existe_en_su_funcion(nombre: str) -> None:
         assert etapa in ETAPAS_PROCESAMIENTO
 
 
-def test_dt_proc_textract_fallido_o_incompleto_es_fallo_tecnico() -> None:
+def test_textract_fallido_o_incompleto_es_fallo_tecnico() -> None:
     destinos = {c.get("StringEquals"): c["Next"] for c in ESTADOS["EvaluarTextract"]["Choices"]}
     assert destinos["completado"] == "NormalizarTextract"
     assert destinos["fallido"] == "TextractFallido"
@@ -95,7 +95,7 @@ def test_dt_proc_textract_fallido_o_incompleto_es_fallo_tecnico() -> None:
     assert ESTADOS["ElegirLectura"]["Default"] == "NormalizarDocx"
 
 
-def test_dt_proc_definicion_aceptada_por_step_functions_simulado(moto_local: str) -> None:
+def test_definicion_aceptada_por_step_functions_simulado(moto_local: str) -> None:
     from atlas.integraciones.aws import crear_cliente
     from tests.conftest import configuracion_sin_base
 

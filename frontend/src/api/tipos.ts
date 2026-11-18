@@ -1,4 +1,4 @@
-/** Alias de los esquemas del contrato OpenAPI generado (DO-2026-10-22-WEB F2). */
+/** Alias de los esquemas del contrato OpenAPI generado. */
 import type { components } from "./esquema";
 
 type S = components["schemas"];

@@ -1,6 +1,6 @@
-"""Admisión de trabajos de procesamiento con límite de concurrencia (RC-P08.5, 8 a 11).
+"""Admisión de trabajos de procesamiento con límite de concurrencia (8 a 11).
 
-DO-2026-10-23-REC P1 y P2. Un *lock* transaccional de PostgreSQL serializa las admisiones:
+Un *lock* transaccional de PostgreSQL serializa las admisiones:
 dentro de la misma transacción se cuentan los trabajos en curso (`pendiente` y
 `en_ejecucion`) y el nuevo queda `pendiente` si hay cupo o `en_espera` si no. El lock se
 libera al confirmar la transacción, así que dos confirmaciones simultáneas nunca superan el

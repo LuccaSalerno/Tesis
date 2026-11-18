@@ -1,8 +1,8 @@
-"""Supresión de la cuenta en el proveedor de identidad (RF-25, §5.4.2, DO-2026-10-23-CIERRE P7).
+"""Supresión de la cuenta en el proveedor de identidad (RF-25, §5.4.2).
 
 La API no llama a Cognito: invoca la Lambda `cuentas`, fuera de la VPC, por el endpoint
 privado de Lambda. Fuera de AWS (desarrollo y CI) no hay Cognito y la supresión solo
-desvincula la cuenta en la base (P9, DIF).
+desvincula la cuenta en la base.
 """
 
 import json

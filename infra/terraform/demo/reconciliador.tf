@@ -1,6 +1,6 @@
-# EventBridge Scheduler invoca el reconciliador cada 5 minutos (RC-P08.3, DO-2026-10-23-REC P4).
+# EventBridge Scheduler invoca el reconciliador cada 5 minutos.
 # Con `reconciliador_habilitado = false` la programación queda pausada; la función misma no
-# actúa fuera de `active` (RC-P08.12).
+# actúa fuera de `active`.
 
 data "aws_iam_policy_document" "confianza_scheduler" {
   statement {

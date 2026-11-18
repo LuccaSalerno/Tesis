@@ -1,6 +1,6 @@
-"""Pasos de `revision_y_evidencia.feature`: punto de demo D (DO-2026-10-22-BDD, -TAR).
+"""Pasos de `revision_y_evidencia.feature`: punto de demo D.
 
-Contra la API autenticada y PostgreSQL real, con documentos y valores sintéticos (PD-07).
+Contra la API autenticada y PostgreSQL real, con documentos y valores sintéticos.
 """
 
 from collections.abc import Iterator

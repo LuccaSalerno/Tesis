@@ -1,4 +1,4 @@
-"""Detección de una posible versión nueva al procesar un archivo (RF-06, DO-2026-10-23-VER P1).
+"""Detección de una posible versión nueva al procesar un archivo (RF-06).
 
 Reglas explicables, sin IA adicional: un documento del trámite es candidato si el tipo
 validado de su versión vigente es igual al tipo sugerido del archivo y coincide el número

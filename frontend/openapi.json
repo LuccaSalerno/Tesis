@@ -23,7 +23,7 @@
         "type": "object"
       },
       "AlcancePlantilla": {
-        "description": "A qué trámites se sugiere una plantilla de flujo (RC-P03.1.4, DO-2026-10-22-TAR P2).",
+        "description": "A qué trámites se sugiere una plantilla de flujo.",
         "enum": [
           "contrato",
           "general"
@@ -120,7 +120,7 @@
                 "type": "null"
               }
             ],
-            "description": "Límite para incorporar una carga pendiente (DO-2026-10-22-CARGAS)",
+            "description": "Límite para incorporar una carga pendiente",
             "title": "Vence En"
           }
         },
@@ -609,7 +609,7 @@
         "type": "object"
       },
       "CriterioVersion": {
-        "description": "Por qué un archivo podría ser versión nueva de un documento (RF-06, DO-2026-10-23-VER P1).",
+        "description": "Por qué un archivo podría ser versión nueva de un documento (RF-06).",
         "enum": [
           "numero",
           "cuit"
@@ -721,7 +721,7 @@
             "type": "integer"
           },
           "controles_considerados": {
-            "description": "Ejecuciones de reglas registradas en DECISION_CONTROL (PD-02)",
+            "description": "Ejecuciones de reglas registradas en DECISION_CONTROL",
             "items": {
               "type": "integer"
             },
@@ -769,7 +769,7 @@
         "type": "object"
       },
       "DisparadorRegla": {
-        "description": "Qué provocó una ejecución de reglas (§5.3.5, DO-2026-10-22-REG P4).",
+        "description": "Qué provocó una ejecución de reglas (§5.3.5).",
         "enum": [
           "vinculo",
           "validacion"
@@ -910,7 +910,7 @@
         "type": "object"
       },
       "EstadoCiclo": {
-        "description": "Situación de un ciclo de revisión (RN-09, RN-12, DO-2026-10-22-TAR).",
+        "description": "Situación de un ciclo de revisión (RN-09, RN-12).",
         "enum": [
           "en_curso",
           "aprobado",
@@ -1017,7 +1017,7 @@
         "type": "string"
       },
       "EstadoTarea": {
-        "description": "Estado de una tarea; no es un estado del trámite (PD-05.4).",
+        "description": "Estado de una tarea; no es un estado del trámite.",
         "enum": [
           "en_espera",
           "pendiente",
@@ -1030,7 +1030,7 @@
         "type": "string"
       },
       "EstadoTrabajo": {
-        "description": "Estado técnico del procesamiento de un archivo (§5.3.1, RC-P08).\n\nEs independiente del estado funcional del trámite. «En espera» (RC-P08.8): registrado\nsin cupo de procesamiento; lo admite el reconciliador (DO-2026-10-23-REC).",
+        "description": "Estado técnico del procesamiento de un archivo (§5.3.1).\n\nEs independiente del estado funcional del trámite. «En espera»: registrado\nsin cupo de procesamiento; lo admite el reconciliador.",
         "enum": [
           "pendiente",
           "en_espera",
@@ -1066,7 +1066,7 @@
         "type": "string"
       },
       "EstadoVinculo": {
-        "description": "Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica (DO-2026-10-22-REG P2).",
+        "description": "Ciclo del vínculo (RF-14, RF-15). La eliminación es lógica.",
         "enum": [
           "pendiente",
           "confirmado",
@@ -1144,7 +1144,7 @@
         "type": "object"
       },
       "EvidenciaRespuesta": {
-        "description": "Cadena V1 a V4 desde una decisión. Mismo contrato para la vista, las pruebas EVD-01 y\nla demo (PD-03.4).",
+        "description": "Cadena V1 a V4 desde una decisión. Mismo contrato para la vista, las pruebas EVD-01 y\nla demo.",
         "properties": {
           "ciclo": {
             "$ref": "#/components/schemas/CicloResumen"
@@ -1373,7 +1373,7 @@
         "type": "object"
       },
       "FormatoArchivo": {
-        "description": "Formatos admitidos (RC-P04).",
+        "description": "Formatos admitidos.",
         "enum": [
           "pdf",
           "docx"
@@ -1622,7 +1622,7 @@
         "type": "object"
       },
       "MotivoAbstencion": {
-        "description": "Por qué una consulta asistida no responde (RF-13, DO-2026-10-22-RAG, P3).",
+        "description": "Por qué una consulta asistida no responde (RF-13).",
         "enum": [
           "evidencia_insuficiente",
           "sin_citas_validas",
@@ -1632,7 +1632,7 @@
         "type": "string"
       },
       "MotivoAusencia": {
-        "description": "Por qué un campo del esquema no tiene valor en la versión (DO-2026-10-22-WEB F10).",
+        "description": "Por qué un campo del esquema no tiene valor en la versión.",
         "enum": [
           "no_consta",
           "no_aplica"
@@ -2178,7 +2178,7 @@
         "type": "string"
       },
       "ResultadoRegla": {
-        "description": "Los cuatro resultados de una regla de consistencia (§5.3.5, PD-01).",
+        "description": "Los cuatro resultados de una regla de consistencia (§5.3.5).",
         "enum": [
           "cumplimiento",
           "advertencia",
@@ -2425,7 +2425,7 @@
             "type": "array"
           },
           "controles_pendientes": {
-            "description": "PD-02.3; las reglas se ejecutan de forma síncrona (DO-2026-10-22-REG P4)",
+            "description": "las reglas se ejecutan de forma síncrona",
             "title": "Controles Pendientes",
             "type": "boolean"
           },
@@ -2677,7 +2677,7 @@
         "type": "string"
       },
       "TipoDocumental": {
-        "description": "Tipos documentales admitidos (§3.3.3, RC-P04).",
+        "description": "Tipos documentales admitidos (§3.3.3).",
         "enum": [
           "contrato",
           "presupuesto",
@@ -2700,7 +2700,7 @@
         "type": "string"
       },
       "TipoVinculo": {
-        "description": "Qué justifica un vínculo entre documentos (RF-14, DO-2026-10-22-REG P1).",
+        "description": "Qué justifica un vínculo entre documentos (RF-14).",
         "enum": [
           "referencia",
           "campos"
@@ -2822,7 +2822,7 @@
         "type": "object"
       },
       "TramiteGeneral": {
-        "description": "Sin título ni descripción: pueden contener datos sensibles (P4).",
+        "description": "Sin título ni descripción: pueden contener datos sensibles.",
         "properties": {
           "actualizado_en": {
             "format": "date-time",
@@ -2952,7 +2952,7 @@
                 "type": "null"
               }
             ],
-            "description": "Nulo para el administrador operativo: solo ve el identificador (RF-24, DO-2026-10-23-DIF)",
+            "description": "Nulo para el administrador operativo: solo ve el identificador (RF-24)",
             "title": "Titulo"
           }
         },
@@ -3966,7 +3966,7 @@
     },
     "/tareas/sin-asignar": {
       "get": {
-        "description": "RC-P03.3.2: tareas abiertas señaladas al administrador; solo metadatos (RF-24).",
+        "description": "Tareas abiertas señaladas al administrador; solo metadatos (RF-24).",
         "operationId": "listar_tareas_sin_asignar_tareas_sin_asignar_get",
         "responses": {
           "200": {
@@ -4389,7 +4389,7 @@
     },
     "/tramites/{tramite_id}/archivos/{archivo_id}/incorporacion": {
       "post": {
-        "description": "RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.\n\nLa carga debe estar vigente (24 h, DO-2026-10-22-CARGAS); el original se traslada\nal prefijo definitivo de S3 antes de registrar la versión.",
+        "description": "RF-07: confirma el archivo como documento nuevo con su versión inicial vigente.\n\nLa carga debe estar vigente (24 h); el original se traslada\nal prefijo definitivo de S3 antes de registrar la versión.",
         "operationId": "incorporar_archivo_tramites__tramite_id__archivos__archivo_id__incorporacion_post",
         "parameters": [
           {
@@ -4463,7 +4463,7 @@
     },
     "/tramites/{tramite_id}/archivos/{archivo_id}/reintento": {
       "post": {
-        "description": "Intento nuevo tras un fallo definitivo (RNF-06, RC-P08.4; DO-2026-10-23-REC P6).",
+        "description": "Intento nuevo tras un fallo definitivo (RNF-06).",
         "operationId": "reintentar_procesamiento_tramites__tramite_id__archivos__archivo_id__reintento_post",
         "parameters": [
           {
@@ -4580,7 +4580,7 @@
     },
     "/tramites/{tramite_id}/archivos/{archivo_id}/version": {
       "post": {
-        "description": "RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la\nnueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción\n(DO-2026-10-23-VER P4). Rechazar la relación es incorporarlo como documento nuevo.",
+        "description": "RF-07: confirma la relación de versión sugerida (RF-06). El archivo pasa a ser la\n    nueva versión vigente del documento candidato y RN-12 se aplica en la misma transacción\n. Rechazar la relación es incorporarlo como documento nuevo.",
         "operationId": "incorporar_version_tramites__tramite_id__archivos__archivo_id__version_post",
         "parameters": [
           {
@@ -4637,7 +4637,7 @@
     },
     "/tramites/{tramite_id}/cancelacion": {
       "post": {
-        "description": "RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de\nadmitir decisiones (DO-2026-10-23-CIERRE P1 y P2).",
+        "description": "RF-26, RN-14: cancelación con motivo; el ciclo en curso y sus tareas abiertas dejan de\nadmitir decisiones.",
         "operationId": "cancelar_tramites__tramite_id__cancelacion_post",
         "parameters": [
           {
@@ -4919,7 +4919,7 @@
     },
     "/tramites/{tramite_id}/consultas": {
       "get": {
-        "description": "Historial de las consultas propias en el trámite (DO-2026-10-22-WEB F6).",
+        "description": "Historial de las consultas propias en el trámite.",
         "operationId": "listar_consultas_tramites__tramite_id__consultas_get",
         "parameters": [
           {
@@ -5563,7 +5563,7 @@
     },
     "/tramites/{tramite_id}/versiones/{version_id}/archivo": {
       "get": {
-        "description": "URL de lectura breve del original, con las mismas reglas de acceso que las demás\nconsultas: el responsable, o el revisor para las versiones de sus ciclos (P8).",
+        "description": "URL de lectura breve del original, con las mismas reglas de acceso que las demás\nconsultas: el responsable, o el revisor para las versiones de sus ciclos.",
         "operationId": "consultar_archivo_de_version_tramites__tramite_id__versiones__version_id__archivo_get",
         "parameters": [
           {
@@ -6221,7 +6221,7 @@
     },
     "/usuarios/{usuario_id}/nombre": {
       "put": {
-        "description": "DO-2026-10-22-WEB F5: nombre que muestra la interfaz; sin efectos de permisos.",
+        "description": "Nombre que muestra la interfaz; sin efectos de permisos.",
         "operationId": "cambiar_nombre_usuarios__usuario_id__nombre_put",
         "parameters": [
           {
@@ -6387,7 +6387,7 @@
     },
     "/usuarios/{usuario_id}/supresion": {
       "post": {
-        "description": "RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las\nintervenciones conservan el identificador interno. Irreversible; no sobre la propia\ncuenta (DO-2026-10-23-CIERRE P6).",
+        "description": "RF-25: elimina la cuenta de Cognito y desvincula sus datos identificatorios; las\nintervenciones conservan el identificador interno. Irreversible; no sobre la propia\ncuenta.",
         "operationId": "suprimir_cuenta_usuarios__usuario_id__supresion_post",
         "parameters": [
           {

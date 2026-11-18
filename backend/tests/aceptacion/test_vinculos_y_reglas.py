@@ -1,6 +1,7 @@
-"""Pasos de `vinculos_y_reglas.feature`: punto de demo C (DO-2026-10-22-BDD, DO-2026-10-22-REG).
+"""Pasos de `vinculos_y_reglas.feature`: punto de demo C.
 
-Contra la API autenticada y PostgreSQL real, con los valores del oráculo PD-07 validados
+Contra la API autenticada y PostgreSQL real, con los valores del oráculo de la
+cadena de evidencia validados
 por el responsable (las reglas nunca usan sugerencias, RN-02).
 """
 

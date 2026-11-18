@@ -1,7 +1,7 @@
-"""Pasos de `consulta_asistida.feature`: punto de demo B (DO-2026-10-22-BDD, DO-2026-10-22-RAG).
+"""Pasos de `consulta_asistida.feature`: punto de demo B.
 
 Contra la API y PostgreSQL con pgvector real; embeddings deterministas y respuesta fija
-del modelo (P1 de DO-2026-10-22-PROC). La calidad real se verifica en `tests/aws_real`.
+del modelo. La calidad real se verifica en `tests/aws_real`.
 """
 
 from collections.abc import Iterator

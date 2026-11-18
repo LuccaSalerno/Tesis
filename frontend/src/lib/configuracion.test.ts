@@ -17,7 +17,7 @@ function respuesta(cuerpo: unknown, tipo = "application/json", estado = 200): ty
     });
 }
 
-describe("configuración publicada (DO-2026-10-23-WEB-HOST P4)", () => {
+describe("configuración publicada", () => {
   it("aplica la configuración válida de configuracion.json", async () => {
     const anterior = { ...CONFIGURACION };
     expect(await cargarConfiguracion(respuesta(VALIDA))).toBe(true);

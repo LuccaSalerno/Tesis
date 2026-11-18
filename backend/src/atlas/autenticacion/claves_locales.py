@@ -1,6 +1,6 @@
 """Claves y tokens locales con la forma de los tokens de acceso de Cognito.
 
-Solo para desarrollo local y pruebas (DT-AUT-01): permiten ejercitar el mismo
+Solo para desarrollo local y pruebas: permiten ejercitar el mismo
 verificador que en AWS sin acceder a AWS. Las claves privadas nunca se versionan.
 """
 

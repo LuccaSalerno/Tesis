@@ -1,6 +1,6 @@
 data "aws_caller_identity" "actual" {}
 
-# --- RDS Proxy con autenticación IAM de extremo a extremo (RC-P10-04) --------------------
+# --- RDS Proxy con autenticación IAM de extremo a extremo --------------------
 
 data "aws_iam_policy_document" "proxy_confianza" {
   statement {
@@ -56,14 +56,14 @@ resource "aws_db_proxy_target" "principal" {
   db_instance_identifier = local.p.rds_identificador
 }
 
-# --- Endpoints de interfaz (sin NAT): solo los que se usan (P9) --------------------------
+# --- Endpoints de interfaz (sin NAT): solo los que se usan --------------------------
 
 locals {
   servicios = merge(
     {
       states          = "com.amazonaws.${var.region}.states"
       bedrock_runtime = "com.amazonaws.${var.region}.bedrock-runtime"
-      # La API invoca la Lambda `cuentas` (RF-25, §5.4.2; DO-2026-10-23-CIERRE P8).
+      # La API invoca la Lambda `cuentas` (RF-25, §5.4.2).
       lambda = "com.amazonaws.${var.region}.lambda"
     },
     var.endpoint_secrets_manager ? { secretsmanager = "com.amazonaws.${var.region}.secretsmanager" } : {},

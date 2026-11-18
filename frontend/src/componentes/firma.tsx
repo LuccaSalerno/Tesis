@@ -1,5 +1,5 @@
 /**
- * Firma digital simulada (RF-23, V11, DO-2026-10-23-VER P5 a P7). La interfaz la rotula
+ * Firma digital simulada (RF-23, V11). La interfaz la rotula
  * siempre como simulación sin validez jurídica y muestra lo necesario para recalcular la
  * referencia de integridad: el registro canónico y su SHA-256.
  */

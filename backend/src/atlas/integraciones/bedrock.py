@@ -1,6 +1,6 @@
-"""Adaptador de Amazon Bedrock Converse para el modelo generativo (DO-2026-10-22-PROC, P2).
+"""Adaptador de Amazon Bedrock Converse para el modelo generativo.
 
-Una única llamada con herramienta forzada y muestreo fijo (`temperature` 0, RC-P07.1).
+Una única llamada con herramienta forzada y muestreo fijo (`temperature` 0).
 El documento va como mensaje de usuario; las instrucciones, como mensaje de sistema.
 Los errores se traducen a códigos técnicos: nunca se propaga el texto de la respuesta.
 """
@@ -86,7 +86,7 @@ LOTE_MAXIMO: Final = 96  # textos por invocación admitidos por Cohere Embed v3
 
 
 class EmbeddingsCohereBedrock:
-    """Cohere Embed Multilingual v3 vía `InvokeModel` (RC-P07.3).
+    """Cohere Embed Multilingual v3 vía `InvokeModel`.
 
     `search_document` para los fragmentos y `search_query` para las consultas; sin
     truncado: un texto demasiado largo es un error, no se recorta en silencio.
@@ -115,9 +115,9 @@ class EmbeddingsCohereBedrock:
 
 class EmbeddingsTitanBedrock:
     """Amazon Titan Text Embeddings V2 vía `InvokeModel`, alternativa de comparación
-    (RC-P07.3, DO-2026-10-23-E90-MEDICION P12): 1024 dimensiones y normalización fijadas
-    explícitamente. Titan no distingue documentos de consultas: `tipo` no cambia la solicitud.
-    Un texto por invocación, como admite el modelo."""
+    : 1024 dimensiones y normalización fijadas
+        explícitamente. Titan no distingue documentos de consultas: `tipo` no cambia la solicitud.
+        Un texto por invocación, como admite el modelo."""
 
     def __init__(self, cliente: Any, modelo: str) -> None:
         self._cliente = cliente

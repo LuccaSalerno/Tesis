@@ -3,7 +3,7 @@ output "url_api" {
 }
 
 output "funcion_operaciones" {
-  description = "Nombre de la Lambda privada que invoca el operador (RC-P10-15)"
+  description = "Nombre de la Lambda privada que invoca el operador"
   value       = aws_lambda_function.funcion["operaciones"].function_name
 }
 

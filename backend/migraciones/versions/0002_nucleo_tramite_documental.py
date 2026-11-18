@@ -2,8 +2,7 @@
 
 Revisión: 0002
 Anterior: 0001
-Trazabilidad: PD-04 (incremento 1, docs/diseno/PD-04_Modelo_Fisico_Propuesta.md §2),
-RF-03, RF-04, RF-05, RF-07, RF-21, RF-25, RF-26, RN-10, RNF-04, RC-P03.2, RC-P04.
+Trazabilidad: RF-03, RF-04, RF-05, RF-07, RF-21, RF-25, RF-26, RN-10, RNF-04.
 
 El DDL se escribe literal para que la migración quede congelada; los catálogos
 replican `atlas.dominio.enumeraciones` y una prueba verifica que coincidan.
@@ -62,7 +61,7 @@ def upgrade() -> None:
         """
     )
 
-    # RF-25, RN-01, RC-P03.2
+    # RF-25, RN-01
     op.execute(
         """
         CREATE TABLE atlas.usuario (
@@ -122,7 +121,7 @@ def upgrade() -> None:
         """
     )
 
-    # RF-04, RF-07, RC-P04
+    # RF-04, RF-07
     op.execute(
         """
         CREATE TABLE atlas.archivo (
@@ -275,7 +274,7 @@ def upgrade() -> None:
         """
     )
 
-    # Privilegios de la aplicación (PD-04-002): sobre los por defecto (SELECT,
+    # Privilegios de la aplicación: sobre los por defecto (SELECT,
     # INSERT, UPDATE) se quitan o acotan los UPDATE y se concede el único DELETE.
     for tabla in ("version_documental", "evento_auditoria"):
         _por_cada_rol_con_acceso(tabla, f"REVOKE UPDATE ON atlas.{tabla} FROM %I")

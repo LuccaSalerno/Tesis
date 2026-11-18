@@ -3,7 +3,7 @@
 Revisión: 0005
 Anterior: 0004
 Trazabilidad: Figura 5.4 (REFERENCIA_FUENTE, VALOR_SUGERIDO), §5.3.3, RF-08, RF-10,
-RF-11, RN-02, RC-P08.6, DO-2026-10-22-PROC, PD-04 (PD-04-007).
+RF-11, RN-02.
 
 - Ambas tablas se asocian con el **archivo** (§5.2) y con el trabajo e intento que
   las produjo. Son inmutables: una nueva ejecución produce filas nuevas.

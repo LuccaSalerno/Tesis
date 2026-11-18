@@ -1,7 +1,7 @@
 """Hito 1.8: plantillas, ciclos de revisión, tareas, decisiones, línea de tiempo y evidencia.
 
-RF-17 a RF-22, RN-07, RN-08, RN-09, RN-12, RN-13, PD-02, PD-03, PD-05, RC-P03,
-DO-2026-10-22-TAR (P1 a P12). Contra la API autenticada y PostgreSQL real.
+RF-17 a RF-22, RN-07, RN-08, RN-09, RN-12, RN-13.
+Contra la API autenticada y PostgreSQL real.
 """
 
 from typing import Any
@@ -60,10 +60,10 @@ def tarea(e: Equipo, tarea_id: int, quien: Any = None) -> dict[str, Any]:
     return datos
 
 
-# --- Plantillas (RC-P03.1, P1) ----------------------------------------------------------
+# --- Plantillas ----------------------------------------------------------
 
 
-def test_rc_p03_1_plantilla_versionada_reemplaza_a_la_activa(e: Equipo) -> None:
+def test_plantilla_versionada_reemplaza_a_la_activa(e: Equipo) -> None:
     primera = plantilla(e.administrador, "general", [e.aprobador.usuario_id])
     segunda = plantilla(e.administrador, "general", [e.revisor.usuario_id, e.aprobador.usuario_id])
     assert segunda["version"] == primera["version"] + 1
@@ -75,7 +75,7 @@ def test_rc_p03_1_plantilla_versionada_reemplaza_a_la_activa(e: Equipo) -> None:
     assert listadas[segunda["id"]]["activa"] is True
 
 
-def test_rc_p03_1_desactivar_plantilla_una_sola_vez(e: Equipo) -> None:
+def test_desactivar_plantilla_una_sola_vez(e: Equipo) -> None:
     creada = plantilla(e.administrador, "general", [e.aprobador.usuario_id])
     ruta = f"/plantillas-flujo/{creada['id']}/desactivacion"
     primera = e.cliente.post(ruta, headers=e.administrador.encabezados)
@@ -87,7 +87,7 @@ def test_rc_p03_1_desactivar_plantilla_una_sola_vez(e: Equipo) -> None:
     assert inexistente.status_code == 404
 
 
-def test_rc_p03_2_5_el_ultimo_paso_exige_autorizacion_de_cierre(e: Equipo) -> None:
+def test_5_el_ultimo_paso_exige_autorizacion_de_cierre(e: Equipo) -> None:
     respuesta = crear_plantilla(e.administrador, "general", [e.revisor.usuario_id])
     assert respuesta.status_code == 422
     assert "autorización de cierre" in respuesta.json()["detalle"]
@@ -100,7 +100,7 @@ def test_rf_19_el_revisor_por_defecto_debe_ser_revisor_habilitado(e: Equipo, qui
     assert respuesta.status_code == 422
 
 
-def test_rc_p03_1_de_uno_a_tres_pasos(e: Equipo) -> None:
+def test_de_uno_a_tres_pasos(e: Equipo) -> None:
     revisores = [e.revisor.usuario_id] * 3 + [e.aprobador.usuario_id]
     assert crear_plantilla(e.administrador, "general", revisores).status_code == 422
     assert crear_plantilla(e.administrador, "general", []).status_code == 422
@@ -113,7 +113,7 @@ def test_rf_02_solo_el_administrador_configura_plantillas(e: Equipo, quien: str)
     assert e.cliente.get("/plantillas-flujo", headers=ctx.encabezados).status_code == 403
 
 
-# --- Envío a validación (Tabla 3.VI, P3) ------------------------------------------------
+# --- Envío a validación (Tabla 3.VI) ------------------------------------------------
 
 
 def test_tabla_3_vi_enviar_a_validacion_exige_un_documento(e: Equipo) -> None:
@@ -134,7 +134,7 @@ def test_rn_07_solo_el_responsable_envia_a_validacion(e: Equipo) -> None:
     assert enviar_a_validacion(otro, tramite_id).status_code == 404
 
 
-# --- Flujo sugerido y confirmación (RF-17, RF-18, P2, P4) -------------------------------
+# --- Flujo sugerido y confirmación (RF-17, RF-18) -------------------------------
 
 
 def test_rf_17_sugerencia_inactiva_hasta_confirmar(e: Equipo) -> None:
@@ -150,7 +150,7 @@ def test_rf_17_sugerencia_inactiva_hasta_confirmar(e: Equipo) -> None:
     assert e.cliente.get("/tareas", headers=e.revisor.encabezados).json() == []
 
 
-def test_rc_p03_1_4_sin_contrato_se_sugiere_la_plantilla_general(e: Equipo) -> None:
+def test_4_sin_contrato_se_sugiere_la_plantilla_general(e: Equipo) -> None:
     general = plantilla(e.administrador, "general", [e.aprobador.usuario_id])
     tramite_id = crear_tramite(e.responsable)["id"]
     documento(e.responsable, tramite_id, "Orden", "orden_compra")
@@ -231,7 +231,7 @@ def test_rf_17_confirmar_con_otra_plantilla_o_version_responde_409(e: Equipo) ->
     )
 
 
-def test_rc_p03_3_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) -> None:
+def test_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) -> None:
     doble = contexto(e.cliente, e.responsable.motor, "responsable_tramite", "revisor_aprobador")
     plantilla(e.administrador, "contrato", [doble.usuario_id, e.aprobador.usuario_id])
     tramite_id = crear_tramite(doble)["id"]
@@ -242,7 +242,7 @@ def test_rc_p03_3_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) 
     assert "tarea_sin_asignar" in acciones(doble.motor, tramite_id)
     sin_asignar = obtener(e.administrador, "/tareas/sin-asignar")
     assert primera["id"] in {t["id"] for t in sin_asignar}
-    # DO-2026-10-23-DIF (DIF-119): el administrador ve el identificador, no el título.
+    # El administrador ve el identificador, no el título.
     assert all(t["tramite"]["titulo"] is None for t in sin_asignar)
     assert e.cliente.get("/tareas/sin-asignar", headers=doble.encabezados).status_code == 403
     # El administrador asigna; el responsable nunca puede recibirla.
@@ -263,7 +263,7 @@ def test_rc_p03_3_tarea_del_responsable_queda_sin_asignar_y_senalada(e: Equipo) 
     assert decidir(e.revisor, primera["id"]).status_code == 201
 
 
-# --- Asignación (RF-19, P7) -------------------------------------------------------------
+# --- Asignación (RF-19) -------------------------------------------------------------
 
 
 def test_rf_19_reasignar_registra_cada_cambio(e: Equipo, en_aprobacion: dict[str, Any]) -> None:
@@ -284,7 +284,7 @@ def test_rf_19_reasignar_registra_cada_cambio(e: Equipo, en_aprobacion: dict[str
         (e.revisor.usuario_id, otro.usuario_id, e.administrador.usuario_id),
     ]
     assert acciones(e.responsable.motor, en_aprobacion["tramite"]).count("tarea_reasignada") == 1
-    # P8: quien deja de tener la tarea pierde el acceso al trámite.
+    # Quien deja de tener la tarea pierde el acceso al trámite.
     assert (
         e.cliente.get(
             f"/tramites/{en_aprobacion['tramite']}", headers=e.revisor.encabezados
@@ -326,7 +326,7 @@ def test_rf_19_rechazos_de_asignacion(e: Equipo, en_aprobacion: dict[str, Any]) 
     assert concluida.status_code == 409
 
 
-# --- Decisión (RF-20, RN-08, P5, P6) ----------------------------------------------------
+# --- Decisión (RF-20, RN-08) ----------------------------------------------------
 
 
 def test_rf_20_aprobar_todas_las_tareas_aprueba_el_tramite(
@@ -357,7 +357,7 @@ def test_rf_20_aprobar_todas_las_tareas_aprueba_el_tramite(
     ]
 
 
-def test_pd_02_la_decision_registra_los_controles_mostrados(
+def test_la_decision_registra_los_controles_mostrados(
     e: Equipo, en_aprobacion: dict[str, Any]
 ) -> None:
     tarea_id = en_aprobacion["tareas"][0]
@@ -372,7 +372,7 @@ def test_pd_02_la_decision_registra_los_controles_mostrados(
     assert despues["decision"]["id"] == dec["id"]
 
 
-def test_pd_02_4_sin_reglas_aplicables_decide_sin_controles(e: Equipo) -> None:
+def test_sin_reglas_aplicables_decide_sin_controles(e: Equipo) -> None:
     tramite_id = tramite_con_contrato(e)["tramite"]
     ciclo = iniciar_ciclo(e.responsable, tramite_id)
     dec = decidida(e.revisor, ciclo["tareas"][0]["id"])
@@ -431,10 +431,10 @@ def test_rf_18_mis_tareas_y_vista_de_tarea(e: Equipo, en_aprobacion: dict[str, A
     obtener(e.revisor, "/tareas/999999999", esperado=404)
 
 
-# --- Acceso del revisor (P8, V10) -------------------------------------------------------
+# --- Acceso del revisor (V10) -------------------------------------------------------
 
 
-def test_p8_el_revisor_consulta_las_versiones_de_su_ciclo(
+def test_el_revisor_consulta_las_versiones_de_su_ciclo(
     e: Equipo, en_aprobacion: dict[str, Any]
 ) -> None:
     tramite_id = en_aprobacion["tramite"]
@@ -457,7 +457,7 @@ def test_p8_el_revisor_consulta_las_versiones_de_su_ciclo(
     assert respuesta.status_code == 403
 
 
-def test_p8_el_revisor_no_ve_documentos_fuera_de_su_ciclo(
+def test_el_revisor_no_ve_documentos_fuera_de_su_ciclo(
     e: Equipo, en_aprobacion: dict[str, Any]
 ) -> None:
     tramite_id = en_aprobacion["tramite"]
@@ -499,7 +499,7 @@ def test_v10_sin_tarea_no_hay_acceso(e: Equipo, en_aprobacion: dict[str, Any]) -
     assert tramite_id not in {t["id"] for t in obtener(ajeno, "/tramites")}
 
 
-def test_p8_el_revisor_consulta_solo_sus_versiones(
+def test_el_revisor_consulta_solo_sus_versiones(
     e: Equipo, en_aprobacion: dict[str, Any], aplicacion: Any
 ) -> None:
     aplicacion.state.embeddings = EmbeddingsFijos()
@@ -513,7 +513,7 @@ def test_p8_el_revisor_consulta_solo_sus_versiones(
     assert respuesta.json()["motivo_abstencion"] == "sin_fragmentos"
 
 
-# --- Subsanación (RN-13, P9) y RN-12 con documento nuevo (P10) --------------------------
+# --- Subsanación (RN-13) y RN-12 con documento nuevo --------------------------
 
 
 def test_rn_13_subsanar_vuelve_a_validacion_sin_nueva_version(
@@ -574,10 +574,10 @@ def test_rn_12_un_ciclo_aprobado_conserva_su_estado(
     assert ciclos(e.responsable, tramite_id)[0]["estado"] == "aprobado"
 
 
-# --- Evidencia de la decisión (PD-03, P12, V1 a V4) -------------------------------------
+# --- Evidencia de la decisión (V1 a V4) -------------------------------------
 
 
-def test_pd_03_evidencia_reconstruye_la_cadena(e: Equipo, en_aprobacion: dict[str, Any]) -> None:
+def test_evidencia_reconstruye_la_cadena(e: Equipo, en_aprobacion: dict[str, Any]) -> None:
     tramite_id = en_aprobacion["tramite"]
     dec = decidida(e.revisor, en_aprobacion["tareas"][0], "observacion", "Revisar R3")
     datos = evidencia(e.responsable, dec["id"])
@@ -643,7 +643,7 @@ def test_v4_la_evidencia_conserva_los_controles_originales(
     assert "1250000.00" in importes
 
 
-def test_p8_sin_el_rol_de_revisor_se_pierde_el_acceso_derivado(
+def test_sin_el_rol_de_revisor_se_pierde_el_acceso_derivado(
     e: Equipo, en_aprobacion: dict[str, Any]
 ) -> None:
     dec = decidida(e.revisor, en_aprobacion["tareas"][0])
@@ -686,7 +686,7 @@ def test_rf_22_linea_de_tiempo_ordenada_con_versiones(
     )
 
 
-# --- Garantías en la base (RNF-04, RC-P03.3, PD-04-011) ---------------------------------
+# --- Garantías en la base (RNF-04) ---------------------------------
 
 
 def _ids(motor: Engine, tarea_id: int) -> dict[str, int]:

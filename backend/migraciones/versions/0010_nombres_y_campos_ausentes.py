@@ -1,9 +1,8 @@
-"""Nombre visible de las cuentas y validación de campos ausentes (DO-2026-10-22-WEB).
+"""Nombre visible de las cuentas y validación de campos ausentes.
 
 Revisión: 0010
 Anterior: 0009
-Trazabilidad: RF-12, RF-25, Tabla 3.VI, §6.3.1 («campos intencionalmente ausentes»),
-DO-2026-10-22-WEB (F5, F10), PD-04 (PD-04-012).
+Trazabilidad: RF-12, RF-25, Tabla 3.VI, §6.3.1 («campos intencionalmente ausentes»).
 
 - `usuario.nombre_visible`: nombre para mostrar en la interfaz y en la evidencia, cargado
   por el administrador. Opcional; no es un identificador.
@@ -53,7 +52,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye, DIF-44).
+    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye).
 
     Las validaciones `ausente` ya registradas son inmutables: las restricciones anteriores se
     restauran `NOT VALID` (rigen para filas nuevas) y las bajadas siguientes eliminan la tabla.

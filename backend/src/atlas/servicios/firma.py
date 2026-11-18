@@ -1,7 +1,7 @@
 """Firma digital simulada y cierre del trámite (RF-23, RN-11, RN-15, V11).
 
-DO-2026-10-23-VER, P5 y P6. Solo la aplica un revisor/aprobador con autorización de cierre
-(RC-P03.2) que tuvo una tarea asignada en el ciclo aprobado, sobre una versión vigente de
+Solo la aplica un revisor/aprobador con autorización de cierre
+ que tuvo una tarea asignada en el ciclo aprobado, sobre una versión vigente de
 ese ciclo. La referencia de integridad es el SHA-256 de un registro canónico (versión,
 huella del archivo, firmante e instante), visible y recalculable. Es una simulación: no
 tiene validez jurídica y así se rotula en la interfaz y en la API.
@@ -38,7 +38,7 @@ def registro_canonico(
     *, version_id: int, huella: str, firmante_id: int, firmada_en: datetime
 ) -> str:
     """JSON con claves ordenadas y sin espacios: quien tenga estos datos recalcula la
-    referencia (P6)."""
+    referencia."""
     return json.dumps(
         {
             "firmada_en": firmada_en.astimezone(UTC).isoformat(),
@@ -88,7 +88,7 @@ def firmar(
     autorizacion_cierre: bool,
     solicitud_id: uuid.UUID | None = None,
 ) -> FirmaSimulada:
-    """Aplica la firma simulada y cierra el trámite (bloqueado por el llamador, PD-05.2)."""
+    """Aplica la firma simulada y cierra el trámite (bloqueado por el llamador)."""
     if tramite.estado in ESTADOS_TERMINALES:
         raise Conflicto("El trámite está cerrado o cancelado y no admite una firma")
     if not autorizacion_cierre:

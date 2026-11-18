@@ -1,8 +1,8 @@
-"""Resultados brutos de una campaña: un JSON por línea, solo agregados (P16).
+"""Resultados brutos de una campaña: un JSON por línea, solo agregados.
 
 Cada llamada medida queda registrada con su salida estructurada, tokens, duración, errores
 e intentos. Una campaña interrumpida se retoma salteando lo ya registrado: no se repiten
-llamadas selectivamente (RC-P07.7).
+llamadas selectivamente.
 """
 
 import json

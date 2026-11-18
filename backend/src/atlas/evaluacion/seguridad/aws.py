@@ -1,6 +1,6 @@
 """Verificaciones de solo lectura en la cuenta: SEG-02 (configuración) y SEG-04 (registros).
 
-Solo las ejecuta el operador, con sus credenciales, en una sesión E90A (P8, P9). No crean,
+Solo las ejecuta el operador, con sus credenciales, en una sesión E90A. No crean,
 modifican ni borran recursos. El informe guarda nombres, banderas y conteos: nunca valores de
 variables de entorno, políticas completas ni mensajes de registro.
 """
@@ -14,7 +14,7 @@ from typing import Any, Final
 Cliente = Callable[[str], Any]
 
 FUNCIONES: Final = ("api", "procesamiento", "persistencia", "operaciones")
-# Un nombre que sugiere un secreto no debe estar en las variables de entorno (RC-P10, RNF-02).
+# Un nombre que sugiere un secreto no debe estar en las variables de entorno (RNF-02).
 NOMBRE_SECRETO: Final = re.compile(r"(CLAVE|SECRET|PASSWORD|TOKEN|PRIVATE)", re.IGNORECASE)
 NOMBRES_ADMITIDOS: Final = re.compile(r"_ARN$")  # un ARN identifica, no es un secreto
 

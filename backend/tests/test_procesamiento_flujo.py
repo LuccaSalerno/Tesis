@@ -1,8 +1,8 @@
 """Recorrido de las etapas contra PostgreSQL real y S3 simulado con moto (hito 1.4).
 
-Textract y el modelo se reemplazan por respuestas fijas (DO-2026-10-22-PROC, P1): se
+Textract y el modelo se reemplazan por respuestas fijas: se
 prueba la lógica propia, no la calidad de los servicios. RF-08, RF-10, RF-11, RN-02,
-RC-P08.6, §5.3.1, regla 5 de AGENTS.md.
+§5.3.1.
 """
 
 import json
@@ -121,7 +121,7 @@ def test_rf_11_pdf_localiza_por_pagina_y_seccion(entorno: Any) -> None:
     assert campos["contraparte"]["motivo_sin_fuente"] == "no_verificada"
 
 
-def test_p3_resultados_intermedios_en_s3_por_trabajo_e_intento(entorno: Any) -> None:
+def test_resultados_intermedios_en_s3_por_trabajo_e_intento(entorno: Any) -> None:
     aplicacion, ctx = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.CONTRATO_DOCX.read_bytes(), formato="docx")
@@ -140,10 +140,10 @@ def test_p3_resultados_intermedios_en_s3_por_trabajo_e_intento(entorno: Any) -> 
     }
 
 
-# --- Intentos, idempotencia y fallos (RC-P08) -------------------------------------------
+# --- Intentos, idempotencia y fallos -------------------------------------------
 
 
-def test_rc_p08_6_persistencia_idempotente_y_descarte_de_intentos_obsoletos(
+def test_persistencia_idempotente_y_descarte_de_intentos_obsoletos(
     entorno: Any, capsys: pytest.CaptureFixture[str]
 ) -> None:
     aplicacion, ctx = entorno
@@ -199,7 +199,7 @@ def test_rc_p08_6_persistencia_idempotente_y_descarte_de_intentos_obsoletos(
         en_sesion(aplicacion, etapas.preparar, trabajo_id=trabajo_id, intento=1)
 
 
-def test_dt_proc_fallo_tecnico_no_modifica_el_tramite(entorno: Any) -> None:
+def test_fallo_tecnico_no_modifica_el_tramite(entorno: Any) -> None:
     aplicacion, ctx = entorno
     tramite = crear_tramite(ctx)
     archivo = cargar(ctx, tramite["id"], archivos.pdf())
@@ -275,7 +275,7 @@ def test_regla_5_error_inesperado_sale_sin_mensaje_ni_causa(
     assert "30-96472518-3" not in capsys.readouterr().out
 
 
-def test_rc_p08_error_transitorio_conserva_su_tipo_para_reintentar() -> None:
+def test_error_transitorio_conserva_su_tipo_para_reintentar() -> None:
     def etapa(**_: Any) -> None:
         raise ErrorTransitorio("textract_ThrottlingException")
 
@@ -310,14 +310,12 @@ def test_regla_5_eventos_fuera_de_contrato_se_rechazan(evento: dict[str, Any]) -
         (None, "no es json", "error_desconocido"),
     ],
 )
-def test_dt_proc_codigo_de_falla_solo_tecnico(
-    error: str | None, causa: str | None, codigo: str
-) -> None:
+def test_codigo_de_falla_solo_tecnico(error: str | None, causa: str | None, codigo: str) -> None:
     assert lambdas.codigo_de_falla(error, causa) == codigo
 
 
 @pytest.mark.parametrize("operacion", ["leer", "escribir"])
-def test_rc_p08_falla_de_s3_en_una_etapa_es_reintentable(operacion: str) -> None:
+def test_falla_de_s3_en_una_etapa_es_reintentable(operacion: str) -> None:
     from atlas.integraciones.puertos import ErrorIntegracion
 
     class AlmacenCaido:

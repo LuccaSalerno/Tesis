@@ -3,13 +3,13 @@
 Revisión: 0007
 Anterior: 0006
 Trazabilidad: Figura 5.4 (FRAGMENTO), §5.2 (registro de consultas, estructura operativa),
-§5.3.4, RF-13, RN-04, RC-P07.3, DO-2026-10-22-RAG, PD-04 (PD-04-009).
+§5.3.4, RF-13, RN-04.
 
 - `fragmento` se asocia con el archivo y su localizador; agregados: trabajo, intento,
   orden, modelo de embeddings y versión de segmentación. Búsqueda exacta por coseno, sin
-  índice aproximado (RC-P07.3).
+  índice aproximado.
 - `consulta_asistida` y `consulta_fragmento` conservan cada consulta con su respuesta o
-  abstención y los fragmentos recuperados y citados (P2). Todas inmutables.
+  abstención y los fragmentos recuperados y citados. Todas inmutables.
 """
 
 from collections.abc import Sequence

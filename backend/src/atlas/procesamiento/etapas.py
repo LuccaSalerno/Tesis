@@ -1,8 +1,8 @@
-"""Etapas de la máquina de estados (§5.3.1, DO-2026-10-22-PROC).
+"""Etapas de la máquina de estados (§5.3.1).
 
 Cada etapa recibe y devuelve solo identificadores y claves de S3. El contenido y los
 resultados documentales se leen y escriben en `resultados/{trabajo}/{intento}/`
-(P3) y nunca forman parte de las entradas ni salidas de Step Functions.
+ y nunca forman parte de las entradas ni salidas de Step Functions.
 """
 
 import json
@@ -149,7 +149,7 @@ def indexar(
     trabajo_id: int,
     intento: int,
 ) -> dict[str, Any]:
-    """§5.3.1, DO-2026-10-22-RAG (P4): fragmentos y sus vectores para la consulta asistida."""
+    """§5.3.1: fragmentos y sus vectores para la consulta asistida."""
     fragmentos = segmentar(ContenidoNormalizado.desde_json(_leer(almacen, contenido)))
     vectores = embeddings.embeber([f.texto for f in fragmentos], "search_document")
     datos = {

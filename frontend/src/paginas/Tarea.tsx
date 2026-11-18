@@ -1,5 +1,5 @@
 /**
- * Revisión de una tarea (Fig. 3.8, RF-20, RN-08, PD-02). Reúne el contexto para decidir: las
+ * Revisión de una tarea (Fig. 3.8, RF-20, RN-08). Reúne el contexto para decidir: las
  * versiones del ciclo, los controles que se registrarán con la decisión y las advertencias,
  * presentadas como información de apoyo y separadas del panel de decisión. La observación
  * exige un motivo. El backend vuelve a verificar quién puede decidir.

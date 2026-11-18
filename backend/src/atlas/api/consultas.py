@@ -1,8 +1,8 @@
-"""Consulta asistida (RF-13, RN-04, DO-2026-10-22-RAG). Rutas: RC-P01-007.
+"""Consulta asistida (RF-13, RN-04).
 
 La consulta la realiza el responsable del trámite o el revisor/aprobador con una tarea
 asignada (Tabla 3.II); para este, el alcance son las versiones vigentes de sus ciclos
-(DO-2026-10-22-TAR, P8). El alcance documental lo calcula el backend: el cuerpo de la
+. El alcance documental lo calcula el backend: el cuerpo de la
 solicitud solo trae la pregunta.
 """
 
@@ -107,7 +107,7 @@ def _acceso(sesion: Session, tramite_id: int, usuario: UsuarioActual) -> tramite
 def listar_consultas(
     tramite_id: int, usuario: Autenticado, sesion: Sesion
 ) -> list[ConsultaRespuesta]:
-    """Historial de las consultas propias en el trámite (DO-2026-10-22-WEB F6)."""
+    """Historial de las consultas propias en el trámite."""
     acceso = _acceso(sesion, tramite_id, usuario)
     return [
         _respuesta(r.consulta, r.afirmaciones, r.recuperados)
@@ -150,6 +150,6 @@ def consultar(
 
 
 def server_timing(tiempos: dict[str, int], total_ms: int) -> str:
-    """Solo duraciones y la marca de arranque (DO-2026-10-23-E90-API P4): sin contenido."""
+    """Solo duraciones y la marca de arranque: sin contenido."""
     partes = [f"{nombre};dur={ms}" for nombre, ms in tiempos.items()]
     return ", ".join([*partes, f"total;dur={total_ms}", f'arranque;desc="{arranque.estado()}"'])

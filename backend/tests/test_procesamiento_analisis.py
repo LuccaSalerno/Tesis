@@ -1,6 +1,6 @@
 """Clasificación y extracción: validación de respuestas y verificación de procedencia.
 
-RF-08, RF-10, RF-11, RN-02, §5.3.3, §5.4.3. Respuestas fijas del modelo (P1).
+RF-08, RF-10, RF-11, RN-02, §5.3.3, §5.4.3. Respuestas fijas del modelo.
 """
 
 from typing import Any
@@ -76,7 +76,7 @@ def test_rnf_seg_instrucciones_separadas_del_contenido() -> None:
     )
 
 
-def test_dt_proc_documento_que_excede_el_limite_no_se_trunca() -> None:
+def test_documento_que_excede_el_limite_no_se_trunca() -> None:
     modelo = clasificacion("contrato")
     with pytest.raises(ErrorPermanente, match="contenido_excede_limite"):
         clasificar(CONTRATO_PDF, modelo, max_tokens=512, caracteres_maximos=10)
@@ -214,7 +214,7 @@ def test_rf_10_extraccion_usa_el_esquema_del_tipo_sugerido() -> None:
 
 
 @pytest.mark.parametrize("tipo", list(TipoDocumental))
-def test_rc_p04_campos_por_tipo_incluyen_los_criticos(tipo: TipoDocumental) -> None:
+def test_campos_por_tipo_incluyen_los_criticos(tipo: TipoDocumental) -> None:
     """§6.3.1: importe, fecha, número/identificación y CUIT de la contraparte en los 5 tipos."""
     nombres = {c.nombre for c in esquemas.CAMPOS[tipo]}
     assert any(n.startswith("cuit_") for n in nombres)
@@ -224,7 +224,7 @@ def test_rc_p04_campos_por_tipo_incluyen_los_criticos(tipo: TipoDocumental) -> N
 
 
 @pytest.mark.parametrize("version", sorted(esquemas.HUELLAS_INSTRUCCIONES))
-def test_dt_proc_instrucciones_versionadas_no_cambian_sin_version_nueva(version: str) -> None:
+def test_instrucciones_versionadas_no_cambian_sin_version_nueva(version: str) -> None:
     """§5.3.3: cada sugerencia registra la versión de instrucciones que la produjo."""
     assert (
         esquemas.huella(esquemas.instrucciones(version)) == esquemas.HUELLAS_INSTRUCCIONES[version]

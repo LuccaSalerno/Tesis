@@ -1,5 +1,5 @@
 {
-  "Comment": "ATLAS — procesamiento documental (§5.3.1, RC-P08, DO-2026-10-22-PROC). Entradas y salidas: solo identificadores y claves de S3.",
+  "Comment": "ATLAS — procesamiento documental (§5.3.1). Entradas y salidas: solo identificadores y claves de S3.",
   "TimeoutSeconds": 2400,
   "StartAt": "Preparar",
   "States": {

@@ -1,4 +1,4 @@
-"""Exporta el contrato OpenAPI de la API para la aplicación web (DO-2026-10-22-WEB F2).
+"""Exporta el contrato OpenAPI de la API para la aplicación web.
 
 Uso: `python -m atlas.herramientas.exportar_openapi ../frontend/openapi.json`
 

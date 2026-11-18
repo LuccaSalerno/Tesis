@@ -1,5 +1,5 @@
 /**
- * Sesión de la persona (DO-2026-10-22-WEB F3). El token de acceso vive en memoria; con
+ * Sesión de la persona. El token de acceso vive en memoria; con
  * Cognito, el de renovación se guarda en `sessionStorage` (se borra al cerrar la pestaña).
  * Los permisos efectivos los decide siempre el backend: aquí solo se ocultan acciones.
  */
@@ -14,7 +14,7 @@ import { CONFIGURACION } from "./configuracion";
 import { cargaDelToken } from "./jwt";
 
 const CLAVE_REFRESCO = "atlas.refresco";
-// Solo en desarrollo local (WEB F3): el token pegado sobrevive a una recarga de la pestaña.
+// Solo en desarrollo local: el token pegado sobrevive a una recarga de la pestaña.
 const CLAVE_TOKEN_LOCAL = "atlas.token_local";
 
 interface Tokens {

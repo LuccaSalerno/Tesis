@@ -1,4 +1,4 @@
-/** Presentación de fechas, importes y valores canónicos (DO-2026-10-22-VAL P4). */
+/** Presentación de fechas, importes y valores canónicos. */
 import type { TipoDocumental } from "@/api/tipos";
 import { TIPO_DOCUMENTAL } from "@/lib/dominio";
 

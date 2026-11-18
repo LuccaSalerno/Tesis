@@ -3,7 +3,7 @@ responsable (RF-03, RF-02, §5.2, Tabla 3.VI).
 
 El acceso a un trámite no se registra por separado: se deriva de ser su responsable o
 de tener una tarea asignada en él. En este último caso es de solo lectura y se limita a
-las versiones de los ciclos de esas tareas (DO-2026-10-22-TAR, P8).
+las versiones de los ciclos de esas tareas.
 """
 
 import uuid
@@ -183,7 +183,7 @@ def subsanar(
     sesion: Session, tramite: Tramite, usuario_id: int, solicitud_id: uuid.UUID | None = None
 ) -> Tramite:
     """RN-13: Observado → Pendiente de validación sin crear versiones. Las decisiones del
-    ciclo observado quedan en el historial y no habilitan la continuidad (P9)."""
+    ciclo observado quedan en el historial y no habilitan la continuidad."""
     if tramite.estado != EstadoTramite.OBSERVADO:
         raise Conflicto("Solo un trámite Observado admite la subsanación")
     return _cambiar_estado(

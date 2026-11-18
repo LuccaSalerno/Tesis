@@ -1,4 +1,4 @@
-"""Adaptadores de Bedrock Converse y Textract (DO-2026-10-22-PROC, P1, P2, P4).
+"""Adaptadores de Bedrock Converse y Textract.
 
 `botocore.stub.Stubber` valida cada solicitud contra el modelo de servicio de AWS que
 trae botocore y devuelve respuestas fijas: comprueba la forma de las llamadas sin
@@ -51,7 +51,7 @@ def respuesta_converse(entrada: Any, *, motivo: str = "tool_use") -> dict[str, A
     }
 
 
-def test_rc_p07_converse_con_herramienta_forzada_y_muestreo_fijo() -> None:
+def test_converse_con_herramienta_forzada_y_muestreo_fijo() -> None:
     bedrock = cliente("bedrock-runtime")
     herramienta = esquemas.herramienta_clasificacion()
     esperado = {
@@ -130,7 +130,7 @@ def test_rc_p07_converse_con_herramienta_forzada_y_muestreo_fijo() -> None:
     ],
     ids=["limitacion", "validacion", "acceso", "truncada", "texto_libre"],
 )
-def test_rc_p08_errores_de_bedrock_se_clasifican_sin_contenido(
+def test_errores_de_bedrock_se_clasifican_sin_contenido(
     configurar: Any, error: type[Exception], codigo: str
 ) -> None:
     bedrock = cliente("bedrock-runtime")
@@ -149,7 +149,7 @@ def test_rc_p08_errores_de_bedrock_se_clasifican_sin_contenido(
     assert excepcion.value.__context__ is None or excepcion.value.__suppress_context__
 
 
-def test_rc_p08_7_textract_con_tables_layout_y_token_estable() -> None:
+def test_textract_con_tables_layout_y_token_estable() -> None:
     textract = cliente("textract")
     with Stubber(textract) as stub:
         stub.add_response(
@@ -169,7 +169,7 @@ def test_rc_p08_7_textract_con_tables_layout_y_token_estable() -> None:
     assert re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", token)
 
 
-def test_rc_p08_7_token_distinto_entre_sesiones_con_el_mismo_trabajo() -> None:
+def test_token_distinto_entre_sesiones_con_el_mismo_trabajo() -> None:
     """Sesión E90A del 24/10: el trabajo 4 de una base nueva repetía el token de una sesión
     anterior en la misma cuenta y Textract respondía IdempotentParameterMismatchException."""
     anterior = token_solicitud(4, 1, "atlas-demo-documentos-e90-2026-10-21-5566", "documentos/4")
@@ -187,7 +187,7 @@ def test_rc_p08_7_token_distinto_entre_sesiones_con_el_mismo_trabajo() -> None:
         ("PARTIAL_SUCCESS", "fallido"),
     ],
 )
-def test_dt_proc_estado_del_analisis(estado: str, esperado: str) -> None:
+def test_estado_del_analisis(estado: str, esperado: str) -> None:
     textract = cliente("textract")
     with Stubber(textract) as stub:
         stub.add_response(
@@ -196,7 +196,7 @@ def test_dt_proc_estado_del_analisis(estado: str, esperado: str) -> None:
         assert AnalizadorTextract(textract, "atlas-bucket").estado("j") == esperado
 
 
-def test_dt_proc_resultado_paginado_completo() -> None:
+def test_resultado_paginado_completo() -> None:
     textract = cliente("textract")
     bloque = {"BlockType": "PAGE", "Id": "p1", "Page": 1}
     with Stubber(textract) as stub:
@@ -214,7 +214,7 @@ def test_dt_proc_resultado_paginado_completo() -> None:
     assert [b["Id"] for p in paginas for b in p["Blocks"]] == ["p1", "p2"]
 
 
-def test_rc_p08_textract_limitado_es_transitorio() -> None:
+def test_textract_limitado_es_transitorio() -> None:
     textract = cliente("textract")
     with Stubber(textract) as stub:
         stub.add_client_error("start_document_analysis", "ProvisionedThroughputExceededException")
@@ -224,7 +224,7 @@ def test_rc_p08_textract_limitado_es_transitorio() -> None:
             AnalizadorTextract(textract, "atlas-bucket").iniciar("k", 1, 1)
 
 
-def test_rc_p08_parametros_invalidos_son_fallo_permanente() -> None:
+def test_parametros_invalidos_son_fallo_permanente() -> None:
     textract = cliente("textract")
     with Stubber(textract) as stub:
         stub.add_response("start_document_analysis", {"JobId": "j"})

@@ -1,7 +1,7 @@
 """Configuración del servidor, leída exclusivamente del entorno del proceso.
 
 La separación entre entornos (desarrollo, tests, demo) se fija por despliegue y
-configuración del servidor, nunca por un parámetro de la petición (RC-P10).
+configuración del servidor, nunca por un parámetro de la petición.
 No hay valores secretos por defecto: las claves solo llegan por variables de
 entorno o por un archivo `.env` local que no se versiona.
 """
@@ -18,9 +18,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 Entorno = Literal["desarrollo", "tests", "demo"]
-# DO-2026-10-22-OPS P4: clave en local y CI; token IAM de RDS en AWS (RC-P10-04).
+# Clave en local y CI; token IAM de RDS en AWS.
 AutenticacionBd = Literal["clave", "iam"]
-# DO-2026-10-22-OPS P2: estado operativo leído de S3 o fijo en `active` fuera de AWS.
+# Estado operativo leído de S3 o fijo en `active` fuera de AWS.
 FuenteMantenimiento = Literal["s3", "fija_active"]
 
 
@@ -49,56 +49,56 @@ class Configuracion(BaseSettings):
     bd_clave: SecretStr | None = None
     bd_usuario_migracion: str | None = None
     bd_clave_migracion: SecretStr | None = None
-    # Las migraciones y la administración se conectan directo a RDS, no al proxy (RC-P10).
+    # Las migraciones y la administración se conectan directo a RDS, no al proxy.
     bd_host_migracion: str | None = None
     bd_autenticacion: AutenticacionBd = "clave"
     # Paquete de certificados de RDS: TLS verify-full (obligatorio con IAM).
     bd_ca_certificados: Path | None = None
 
-    # Verificación de tokens de acceso (DT-AUT-01). El JWKS llega por configuración:
+    # Verificación de tokens de acceso. El JWKS llega por configuración:
     # en AWS lo provee el despliegue (sin salida a Internet); en local, claves locales.
     jwt_emisor: str | None = None
     jwt_cliente: str | None = None
     jwt_jwks: str | None = None
     jwt_jwks_archivo: Path | None = None
 
-    # Servicios AWS (DT-AWS-01). Sin endpoint: AWS real con la identidad del despliegue.
+    # Servicios AWS. Sin endpoint: AWS real con la identidad del despliegue.
     # Con endpoint: simulación local (moto), prohibida en demo y solo en hosts locales.
     aws_region: str = "us-east-1"
     aws_endpoint_url: str | None = None
     s3_bucket_documentos: str | None = None
     sfn_maquina_procesamiento_arn: str | None = None
     # Lambda `cuentas` (RF-25, §5.4.2): supresión en Cognito. Sin ella (local y CI), la
-    # supresión solo desvincula la cuenta en la base (DO-2026-10-23-CIERRE P9).
+    # supresión solo desvincula la cuenta en la base.
     cuentas_funcion: str | None = None
 
-    # Lambda privada de operaciones (RC-P10-15, DO-2026-10-22-OPS P3): credencial maestra
+    # Lambda privada de operaciones: credencial maestra
     # administrada por RDS en Secrets Manager, solo para la inicialización privilegiada.
     ops_secreto_maestro_arn: str | None = None
     ops_directorio_migraciones: Path = Path(__file__).resolve().parents[2] / "migraciones"
 
-    # Modo mantenimiento (RC-P10-09, DO-2026-10-22-OPS P2).
+    # Modo mantenimiento.
     mantenimiento_fuente: FuenteMantenimiento = "fija_active"
     mantenimiento_cache_s: float = 15.0
     mantenimiento_reintentar_s: int = 300
 
-    # Límites de carga (RC-P04), configurables sin modificar el código.
+    # Límites de carga, configurables sin modificar el código.
     carga_tamano_maximo_bytes: int = 20 * 1024 * 1024
     carga_paginas_maximas_pdf: int = 50
     carga_caracteres_maximos_docx: int = 150_000
-    # DO-2026-10-22-CARGAS: URL prefirmada de 5 minutos; 24 horas para confirmar la carga.
+    # URL prefirmada de 5 minutos; 24 horas para confirmar la carga.
     carga_vigencia_url_s: int = 300
     carga_vigencia_pendiente_s: int = 24 * 60 * 60
 
-    # Procesamiento (hito 1.4, DO-2026-10-22-PROC). Perfil geográfico de EE. UU. (RC-P09).
+    # Procesamiento (hito 1.4). Perfil geográfico de EE. UU.
     bedrock_perfil_generativo: str = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
     procesamiento_max_tokens_clasificacion: int = 256
     procesamiento_max_tokens_extraccion: int = 2048
     procesamiento_caracteres_maximos: int = 400_000
-    # RC-P08.5: trabajos completos simultáneos por despliegue (demo 10; el entorno AWS
+    # Trabajos completos simultáneos por despliegue (demo 10; el entorno AWS
     # `tests` fija 5 con su variable de Terraform).
     procesamiento_limite_concurrencia: int = Field(default=10, ge=1)
-    # Consulta asistida (hito 1.6, DO-2026-10-22-RAG, RC-P07.3).
+    # Consulta asistida (hito 1.6).
     bedrock_modelo_embeddings: str = "cohere.embed-multilingual-v3"
     consulta_fragmentos_recuperados: int = 5
     consulta_max_tokens: int = 1024
@@ -116,7 +116,7 @@ class Configuracion(BaseSettings):
             raise ErrorConfiguracion("ATLAS_AWS_ENDPOINT_URL solo admite hosts locales")
 
     def validar_despliegue(self) -> None:
-        """Demo exige base con IAM y TLS verificado, y mantenimiento leído de S3 (RC-P10)."""
+        """Demo exige base con IAM y TLS verificado, y mantenimiento leído de S3."""
         if self.bd_autenticacion == "iam" and self.bd_ca_certificados is None:
             raise ErrorConfiguracion(
                 "Con ATLAS_BD_AUTENTICACION=iam falta ATLAS_BD_CA_CERTIFICADOS"

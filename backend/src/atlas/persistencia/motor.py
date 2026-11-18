@@ -1,6 +1,6 @@
 """Creación del motor y de las sesiones de base de datos.
 
-Con `bd_autenticacion=iam` (RC-P10-04, DO-2026-10-22-OPS P4) cada conexión nueva usa un
+Con `bd_autenticacion=iam` cada conexión nueva usa un
 token de autenticación de RDS firmado con la identidad del proceso: no hay claves de base
 en la configuración. El token dura 15 minutos y solo sirve para abrir la conexión.
 """

@@ -1,4 +1,4 @@
-"""Segmentación del contenido normalizado para la indexación (§5.3.4, DO-2026-10-22-RAG).
+"""Segmentación del contenido normalizado para la indexación (§5.3.4).
 
 Los fragmentos respetan los límites de página y de sección y agrupan bloques
 consecutivos hasta un máximo de caracteres por debajo del límite de 512 tokens de

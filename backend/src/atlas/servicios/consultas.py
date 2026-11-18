@@ -1,11 +1,11 @@
-"""Consulta asistida con recuperación autorizada (RF-13, RN-04, §5.3.4, DO-2026-10-22-RAG).
+"""Consulta asistida con recuperación autorizada (RF-13, RN-04, §5.3.4).
 
 1. El alcance lo fija el backend: fragmentos del intento vigente de archivos incorporados
-   que son la versión vigente de un documento del trámite (P1). Nada del cliente lo amplía.
-2. Búsqueda exacta por distancia coseno (RC-P07.3) de los k fragmentos más cercanos.
-3. El modelo responde con afirmaciones y sus citas, o se abstiene (P3). El backend descarta
+   que son la versión vigente de un documento del trámite. Nada del cliente lo amplía.
+2. Búsqueda exacta por distancia coseno de los k fragmentos más cercanos.
+3. El modelo responde con afirmaciones y sus citas, o se abstiene. El backend descarta
    las afirmaciones sin cita válida; si no queda ninguna, la respuesta es una abstención.
-4. Cada consulta se conserva con su evidencia (P2); los registros técnicos solo llevan
+4. Cada consulta se conserva con su evidencia; los registros técnicos solo llevan
    identificadores, duración y códigos.
 """
 
@@ -89,7 +89,7 @@ class Resultado:
     consulta: ConsultaAsistida
     afirmaciones: tuple[Afirmacion, ...]
     recuperados: tuple[FragmentoRecuperado, ...]
-    # Duración en ms de cada componente (IA-M08, DO-2026-10-23-E90-API P4).
+    # Duración en ms de cada componente (IA-M08).
     tiempos: dict[str, int] = field(default_factory=dict)
 
 
@@ -100,7 +100,7 @@ def recuperar(
     limite: int,
     versiones: frozenset[int] | None = None,
 ) -> list[FragmentoRecuperado]:
-    """`versiones`: None para el responsable; para el revisor, las de sus ciclos (P8)."""
+    """`versiones`: None para el responsable; para el revisor, las de sus ciclos."""
     filas = sesion.execute(
         _ALCANCE,
         {
@@ -144,7 +144,7 @@ def generar(
     max_tokens: int,
 ) -> Generada:
     """Pasos 3 de la consulta, sin base: lo usan la API y el arnés de §6.3.1
-    (DO-2026-10-23-E90-MEDICION P6), para medir exactamente la lógica de producción."""
+    , para medir exactamente la lógica de producción."""
     if not recuperados:
         # Sin evidencia autorizada no se invoca el modelo.
         return Generada((), MotivoAbstencion.SIN_FRAGMENTOS, (None, None, None, None))
@@ -167,7 +167,7 @@ def generar(
     afirmaciones = []
     for texto_afirmacion, etiquetas in propuestas:
         citas = tuple(dict.fromkeys(por_etiqueta[e] for e in etiquetas if e in por_etiqueta))
-        if texto_afirmacion and citas:  # P3: sin cita válida, se descarta
+        if texto_afirmacion and citas:  # Sin cita válida, se descarta
             afirmaciones.append(Afirmacion(texto_afirmacion, citas))
     motivo = None if afirmaciones else MotivoAbstencion.SIN_CITAS_VALIDAS
     return Generada(tuple(afirmaciones), motivo, uso)
@@ -266,7 +266,7 @@ def consultar(
     )
 
 
-# --- Historial propio (DO-2026-10-22-WEB F6) --------------------------------------------
+# --- Historial propio --------------------------------------------
 
 _CITADOS = text(
     """
@@ -295,7 +295,7 @@ class ConsultaRegistrada:
 
 def historial(sesion: Session, tramite_id: int, usuario_id: int) -> list[ConsultaRegistrada]:
     """Consultas propias del trámite, de la más reciente a la más antigua, con las citas
-    reconstruidas desde los fragmentos guardados (DO-2026-10-22-RAG P2)."""
+    reconstruidas desde los fragmentos guardados."""
     consultas = list(
         sesion.scalars(
             select(ConsultaAsistida)

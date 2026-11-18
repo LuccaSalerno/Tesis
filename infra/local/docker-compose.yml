@@ -1,4 +1,4 @@
-# PostgreSQL + pgvector y moto para desarrollo local (RC-P02). Solo escuchan en 127.0.0.1.
+# PostgreSQL + pgvector y moto para desarrollo local. Solo escuchan en 127.0.0.1.
 # No es infraestructura AWS ni la sustituye. Uso: ver backend/README.md.
 name: atlas-local
 
@@ -21,7 +21,7 @@ services:
       timeout: 3s
       retries: 30
 
-  # Simulación de S3 y Step Functions para desarrollo (DT-AWS-01). Sin credenciales reales.
+  # Simulación de S3 y Step Functions para desarrollo. Sin credenciales reales.
   moto:
     image: motoserver/moto:5.2.4
     ports:

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { claseDeCampo, errorDeFormato } from "./validacion";
 
-describe("formatos canónicos (DO-2026-10-22-VAL P4)", () => {
-  it("clasifica los campos de RC-P04", () => {
+describe("formatos canónicos", () => {
+  it("clasifica los campos por tipo documental", () => {
     expect(claseDeCampo("vigencia_hasta")).toBe("fecha");
     expect(claseDeCampo("fecha_emision")).toBe("fecha");
     expect(claseDeCampo("monto_total")).toBe("importe");

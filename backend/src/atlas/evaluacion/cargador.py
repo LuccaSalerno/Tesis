@@ -1,4 +1,4 @@
-"""Carga del corpus en ATLAS desplegado, por la API (DO-2026-10-23-E90-API P2, P11).
+"""Carga del corpus en ATLAS desplegado, por la API.
 
 Un trámite por contexto autorizado de las preguntas: carga prefirmada, confirmación, espera
 del procesamiento real e incorporación, como lo haría el responsable. No valida campos: la
@@ -16,7 +16,7 @@ from atlas.herramientas.cliente_api import ClienteApi
 ROL: Final = "responsable"
 ESPERA_MAXIMA_S: Final = 1800.0
 
-# P11: preguntas fijas del ensayo y de la carga; no son del oráculo ni se miden en §6.3.1.
+# Preguntas fijas del ensayo y de la carga; no son del oráculo ni se miden en §6.3.1.
 PREGUNTAS_GENERICAS: Final = (
     "¿Cuál es el importe total del documento?",
     "¿Quién es el proveedor o la contraparte y cuál es su CUIT?",

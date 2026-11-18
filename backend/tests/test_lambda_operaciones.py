@@ -1,4 +1,4 @@
-"""Lambda privada de operaciones (RC-P10-15, V-DB, V-MT, DO-2026-10-22-OPS P3).
+"""Lambda privada de operaciones (V-DB, V-MT).
 
 Sin AWS: Secrets Manager y Step Functions simulados con moto, PostgreSQL real. La
 inicialización privilegiada se prueba contra un superusuario solo si la CI lo ofrece
@@ -32,7 +32,7 @@ def test_v_db_sentencias_sin_delete_y_con_rds_iam() -> None:
     servidor = [s.as_string() for s in ops.sentencias_servidor(n)]
     base = [s.as_string() for s in ops.sentencias_base(n)]
     assert 'REVOKE ALL ON DATABASE "pfi_demo" FROM PUBLIC' in servidor
-    # DIF-95: rds_iam al final, cuando ya no se abre otra conexión maestra.
+    # Rds_iam al final, cuando ya no se abre otra conexión maestra.
     assert not any("rds_iam" in s for s in servidor)
     assert base[-2:] == [
         'REVOKE "atlas_demo_migracion" FROM CURRENT_USER',
@@ -85,7 +85,7 @@ def test_v_db_inicializar_ejecuta_servidor_y_base_en_orden() -> None:
 
     resultado = ops.inicializar_base(_configuracion_ops(), conectar)
     assert bases == ["postgres", "sin_base"]
-    # DIF-95: después de rds_iam no hay más sentencias ni conexiones con el maestro.
+    # Después de rds_iam no hay más sentencias ni conexiones con el maestro.
     assert "rds_iam" in ejecutadas[-1][0]
     assert sum("rds_iam" in sentencia for sentencia, _ in ejecutadas) == 1
     assert resultado == {"base": "sin_base", "usuarios": ["atlas_demo_migracion", "nadie"]}
@@ -98,7 +98,7 @@ def test_v_db_nombres_exigen_usuario_de_migracion() -> None:
         ops.nombres(configuracion_sin_base())
 
 
-def test_rc_p10_15_credencial_maestra_desde_secrets_manager(
+def test_credencial_maestra_desde_secrets_manager(
     moto_local: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     configuracion = _configuracion_ops(
@@ -149,7 +149,7 @@ def test_v_db_inicializacion_real_en_postgresql_16() -> None:
             publico = conexion.execute(
                 "SELECT has_database_privilege('public', %s, 'CONNECT')", (n.base,)
             ).fetchone()
-            # DIF-95: el maestro no conserva la pertenencia explícita al usuario de migración.
+            # El maestro no conserva la pertenencia explícita al usuario de migración.
             pertenece = conexion.execute(
                 "SELECT count(*) FROM pg_auth_members WHERE roleid = %s::regrole"
                 " AND member = current_user::regrole",
@@ -175,7 +175,7 @@ def test_v_db_inicializacion_real_en_postgresql_16() -> None:
 
 
 @pytest.mark.integracion
-def test_rc_p10_15_estado_y_migracion_idempotente(base_migrada: Configuracion) -> None:
+def test_estado_y_migracion_idempotente(base_migrada: Configuracion) -> None:
     cabeza = ScriptDirectory.from_config(ops.configuracion_alembic(base_migrada)).get_current_head()
     estado = ops.estado_migraciones(base_migrada)
     assert estado["al_dia"] is True and estado["revision_actual"] == cabeza
@@ -184,7 +184,7 @@ def test_rc_p10_15_estado_y_migracion_idempotente(base_migrada: Configuracion) -
 
 
 @pytest.mark.integracion
-def test_dt_aut_02_crear_administrador_una_sola_vez(base_reiniciada: Configuracion) -> None:
+def test_crear_administrador_una_sola_vez(base_reiniciada: Configuracion) -> None:
     sub = f"sub-{uuid.uuid4()}"
     primero = ops.ejecutar(
         {"accion": "crear_administrador", "identificador_externo": sub}, base_reiniciada
@@ -207,7 +207,7 @@ def test_v_mt_verificar_drenaje_cuenta_lo_pendiente(base_migrada: Configuracion)
 
 
 @pytest.mark.integracion
-def test_rc_p10_15_ejecutar_despacha_las_acciones(base_migrada: Configuracion) -> None:
+def test_ejecutar_despacha_las_acciones(base_migrada: Configuracion) -> None:
     assert ops.ejecutar({"accion": "estado_migraciones"}, base_migrada)["al_dia"] is True
     assert ops.ejecutar({"accion": "migrar"}, base_migrada)["al_dia"] is True
     with pytest.raises(ops.ErrorOperacion, match="base_ya_inicializada"):
@@ -242,7 +242,7 @@ def test_rnf_09_manejar_no_filtra_mensajes(
     assert {"operacion_rechazada", "operacion_fallida", "operacion_completada"} <= eventos
 
 
-# --- Fotos de la base para la demo (DO-2026-11-09-ESTADOS-DEMO, temporal) -------------------
+# --- Fotos de la base para la demo (temporal) -------------------
 
 
 def _offline(_: Configuracion) -> ops.EstadoOperativo:

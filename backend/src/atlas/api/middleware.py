@@ -73,7 +73,7 @@ class MiddlewareVerificacionPrevia:
     """Responde 204, sin cuerpo ni datos, a las verificaciones previas de CORS del navegador.
 
     En AWS la ruta `OPTIONS /{proxy+}` no tiene autorizador y llega aquí; API Gateway agrega
-    los encabezados de CORS según su configuración (DO-2026-10-22-WEB F7, DIF-98). Va antes
+    los encabezados de CORS según su configuración. Va antes
     del modo de mantenimiento para que el navegador vea el 503 real de la solicitud.
     """
 

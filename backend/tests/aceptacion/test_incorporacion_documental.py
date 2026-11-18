@@ -1,7 +1,7 @@
-"""Pasos de `incorporacion_documental.feature` (DO-2026-10-22-BDD).
+"""Pasos de `incorporacion_documental.feature`.
 
 Cada paso opera por la API autenticada y autorizada, con PostgreSQL real y S3 y
-Step Functions simulados con moto. RF-04, RF-05, RF-07, RNF-01, DO-2026-10-22-CARGAS.
+Step Functions simulados con moto. RF-04, RF-05, RF-07, RNF-01.
 """
 
 import hashlib

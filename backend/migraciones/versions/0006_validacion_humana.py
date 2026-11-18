@@ -2,7 +2,7 @@
 
 Revisión: 0006
 Anterior: 0005
-Trazabilidad: RF-09, RF-12, RN-02, RN-03, RN-09, §5.3.3, DO-2026-10-22-VAL, PD-04 (PD-04-008).
+Trazabilidad: RF-09, RF-12, RN-02, RN-03, RN-09, §5.3.3.
 
 - Cada validación es una fila nueva e inmutable; una corrección posterior referencia la
   que reemplaza. El valor aplicable de un dato es el de la validación no reemplazada.

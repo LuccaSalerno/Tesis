@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // En desarrollo, /api se reenvía al backend local (uvicorn): sin CORS ni servicios nuevos.
-// En la demo, VITE_ATLAS_API_URL apunta a API Gateway (DO-2026-10-22-WEB F7).
+// En la demo, VITE_ATLAS_API_URL apunta a API Gateway.
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(__dirname, "src") } },

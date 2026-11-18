@@ -1,4 +1,4 @@
-"""Ramas de error de los adaptadores AWS, sin contactar AWS (DT-AWS-01, RC-P08).
+"""Ramas de error de los adaptadores AWS, sin contactar AWS.
 
 Un cliente sustituto lanza las excepciones de botocore; se verifica que cada una se
 traduzca a un código técnico y que los errores de red o de servicio sean reintentables.
@@ -123,7 +123,7 @@ class ClienteS3Sustituto:
         "borrado_parcial_prefijo",
     ],
 )
-def test_dt_aws_01_errores_de_s3_son_codigos_tecnicos(
+def test_errores_de_s3_son_codigos_tecnicos(
     comportamiento: dict[str, Any], llamada: Any, codigo: str
 ) -> None:
     almacen = AlmacenS3(ClienteS3Sustituto(**comportamiento), "atlas-bucket")
@@ -133,7 +133,7 @@ def test_dt_aws_01_errores_de_s3_son_codigos_tecnicos(
     assert "detalle del servicio" not in str(error.value)
 
 
-def test_dt_aws_01_eliminar_solo_la_clave_exacta_del_prefijo() -> None:
+def test_eliminar_solo_la_clave_exacta_del_prefijo() -> None:
     borrados: list[Any] = []
 
     class Cliente(ClienteS3Sustituto):
@@ -160,15 +160,13 @@ def test_dt_aws_01_eliminar_solo_la_clave_exacta_del_prefijo() -> None:
         (RED, "sfn_inicio_incierto"),
     ],
 )
-def test_rc_p08_3_inicio_incierto_queda_para_el_reconciliador(
-    excepcion: Exception, codigo: str
-) -> None:
+def test_inicio_incierto_queda_para_el_reconciliador(excepcion: Exception, codigo: str) -> None:
     orquestador = OrquestadorStepFunctions(ClienteS3Sustituto(start_execution=excepcion), "arn")
     with pytest.raises(ErrorIntegracion, match=codigo):
         orquestador.iniciar(1, 1)
 
 
-def test_dt_aws_01_sin_endpoint_usa_la_cadena_de_credenciales_del_despliegue() -> None:
+def test_sin_endpoint_usa_la_cadena_de_credenciales_del_despliegue() -> None:
     configuracion = configuracion_sin_base(entorno="demo", aws_endpoint_url=None)
     s3 = crear_cliente(configuracion, "s3")
     assert s3.meta.endpoint_url == "https://s3.amazonaws.com"
@@ -190,7 +188,7 @@ def test_dt_aws_01_sin_endpoint_usa_la_cadena_de_credenciales_del_despliegue() -
         ),
     ],
 )
-def test_rc_p08_errores_locales_de_bedrock(
+def test_errores_locales_de_bedrock(
     excepcion: Exception, error: type[Exception], codigo: str
 ) -> None:
     modelo = ModeloBedrockConverse(ClienteS3Sustituto(converse=excepcion), "perfil")
@@ -218,9 +216,7 @@ def test_rc_p08_errores_locales_de_bedrock(
         ),
     ],
 )
-def test_rc_p08_errores_de_textract(
-    excepcion: Exception, error: type[Exception], codigo: str
-) -> None:
+def test_errores_de_textract(excepcion: Exception, error: type[Exception], codigo: str) -> None:
     analizador = AnalizadorTextract(
         ClienteS3Sustituto(start_document_analysis=excepcion), "atlas-bucket"
     )
@@ -228,7 +224,7 @@ def test_rc_p08_errores_de_textract(
         analizador.iniciar("k", 1, 1)
 
 
-def test_dt_proc_resultado_de_textract_incompleto_es_fallo_permanente() -> None:
+def test_resultado_de_textract_incompleto_es_fallo_permanente() -> None:
     textract = cliente("textract")
     with Stubber(textract) as stub:
         stub.add_response(

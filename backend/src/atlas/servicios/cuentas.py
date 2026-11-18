@@ -1,4 +1,4 @@
-"""Cuentas de usuario, roles y autorización de cierre (RF-25, RC-P03.2, RF-21).
+"""Cuentas de usuario, roles y autorización de cierre (RF-25, RF-21).
 
 Las cuentas se dan de alta por su identificador externo (sub de Cognito); el alta
 no concede acceso a trámites. Solo los cambios efectivos generan eventos.
@@ -140,7 +140,7 @@ def suprimir(
     usuario_id: int,
     solicitud_id: uuid.UUID | None = None,
 ) -> Cuenta:
-    """RF-25, §5.4.3 (DO-2026-10-23-CIERRE P6, P7): elimina la cuenta del proveedor de
+    """RF-25, §5.4.3: elimina la cuenta del proveedor de
     identidad y desvincula sus datos identificatorios; las intervenciones conservan el
     identificador interno. Irreversible. Primero el proveedor: si la base falla después, un
     nuevo intento completa la supresión (el proveedor es idempotente)."""
@@ -204,7 +204,7 @@ def cambiar_autorizacion_cierre(
     otorgada: bool,
     solicitud_id: uuid.UUID | None = None,
 ) -> Cuenta:
-    """RC-P03.2: permiso adicional de la cuenta; no da acceso a ningún trámite."""
+    """Permiso adicional de la cuenta; no da acceso a ningún trámite."""
     usuario = _obtener_modificable(sesion, usuario_id)
     if usuario.autorizacion_cierre != otorgada:
         usuario.autorizacion_cierre = otorgada
@@ -231,7 +231,7 @@ def existe_administrador(sesion: Session) -> bool:
 
 
 def crear_administrador_inicial(sesion: Session, identificador_externo: str) -> Cuenta:
-    """Operación manual del operador (DT-AUT-02): solo si todavía no hay administradores.
+    """Operación manual del operador: solo si todavía no hay administradores.
 
     Se atribuye al sistema; nunca se expone por HTTP.
     """
@@ -253,7 +253,7 @@ def cambiar_nombre(
     nombre_visible: str | None,
     solicitud_id: uuid.UUID | None = None,
 ) -> Cuenta:
-    """DO-2026-10-22-WEB F5: el administrador carga el nombre que muestra la interfaz."""
+    """El administrador carga el nombre que muestra la interfaz."""
     usuario = _obtener_modificable(sesion, usuario_id)
     if usuario.nombre_visible != nombre_visible:
         usuario.nombre_visible = nombre_visible
@@ -271,7 +271,7 @@ def cambiar_nombre(
 
 def directorio(sesion: Session, ids: list[int]) -> dict[int, tuple[str | None, bool]]:
     """Id, nombre visible y si la cuenta fue suprimida: lo necesario para mostrar quién
-    actuó (F5, RF-25)."""
+    actuó (RF-25)."""
     filas = sesion.execute(
         select(Usuario.id, Usuario.nombre_visible, Usuario.estado).where(Usuario.id.in_(ids))
     ).all()

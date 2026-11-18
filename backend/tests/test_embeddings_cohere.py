@@ -1,4 +1,4 @@
-"""Adaptador de Cohere Embed Multilingual v3 en Bedrock (DO-2026-10-22-RAG, P1 de PROC).
+"""Adaptador de Cohere Embed Multilingual v3 en Bedrock.
 
 Stubber valida cada `InvokeModel` contra el modelo de servicio; no contacta AWS.
 """
@@ -35,7 +35,7 @@ def esperado(textos: list[str], tipo: str) -> dict[str, Any]:
     }
 
 
-def test_rc_p07_3_documentos_y_consultas_con_su_tipo_y_sin_truncado() -> None:
+def test_documentos_y_consultas_con_su_tipo_y_sin_truncado() -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_response(
@@ -56,7 +56,7 @@ def test_rc_p07_3_documentos_y_consultas_con_su_tipo_y_sin_truncado() -> None:
     assert consulta[0][0] == pytest.approx(0.2)
 
 
-def test_dt_rag_lotes_de_hasta_96_textos() -> None:
+def test_lotes_de_hasta_96_textos() -> None:
     bedrock = cliente("bedrock-runtime")
     textos = [f"t{i}" for i in range(100)]
     with Stubber(bedrock) as stub:
@@ -80,7 +80,7 @@ def test_dt_rag_lotes_de_hasta_96_textos() -> None:
     [([[0.1] * 512], "embeddings_respuesta_invalida"), ([], "embeddings_respuesta_invalida")],
     ids=["dimensiones", "cantidad"],
 )
-def test_dt_rag_respuesta_fuera_de_contrato(vectores: list[list[float]], codigo: str) -> None:
+def test_respuesta_fuera_de_contrato(vectores: list[list[float]], codigo: str) -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_response(
@@ -90,7 +90,7 @@ def test_dt_rag_respuesta_fuera_de_contrato(vectores: list[list[float]], codigo:
             EmbeddingsCohereBedrock(bedrock, MODELO).embeber(["a"], "search_document")
 
 
-def test_dt_rag_cuerpo_no_json() -> None:
+def test_cuerpo_no_json() -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_response(
@@ -108,7 +108,7 @@ def test_dt_rag_cuerpo_no_json() -> None:
         ("ValidationException", ErrorPermanente, "embeddings_ValidationException"),
     ],
 )
-def test_rc_p08_errores_de_cohere(excepcion: str, error: type[Exception], codigo: str) -> None:
+def test_errores_de_cohere(excepcion: str, error: type[Exception], codigo: str) -> None:
     bedrock = cliente("bedrock-runtime")
     with Stubber(bedrock) as stub:
         stub.add_client_error("invoke_model", excepcion)
@@ -116,7 +116,7 @@ def test_rc_p08_errores_de_cohere(excepcion: str, error: type[Exception], codigo
             EmbeddingsCohereBedrock(bedrock, MODELO).embeber(["a"], "search_document")
 
 
-def test_rc_p08_errores_locales_de_cohere() -> None:
+def test_errores_locales_de_cohere() -> None:
     from botocore.exceptions import EndpointConnectionError, ParamValidationError
 
     for excepcion, error, codigo in (

@@ -1,9 +1,10 @@
-"""Acreditación de EVD-01: los criterios V1 a V11 contra el oráculo PD-07 congelado.
+"""Acreditación de EVD-01: los criterios V1 a V11 contra el oráculo congelado de la
+cadena de evidencia.
 
 Requisito de aceptación de la reconstrucción («automatización de EVD-01», EVD-01 §1): los
 cuatro recorridos EVD-A, EVD-B, EVD-C y EVD-N12 por la API autenticada, con datos y
 resultados esperados fijados **antes** de ejecutar en `demo/cadena_evidencia/oraculo_PD07_v2.json`
-(congelado, DO-2026-10-23-DIF). Cada comprobación registra esperado y observado; un criterio
+(congelado). Cada comprobación registra esperado y observado; un criterio
 cumple solo si cumplen todas las suyas. Con `ATLAS_EVIDENCIA_EVD01=<carpeta>` se escribe el
 paquete probatorio (EVD-01 §2): resultado por caso y criterio, versión del código, entorno,
 fecha, huella del oráculo e identificadores correlacionables.
@@ -56,7 +57,7 @@ ESENCIALES = ("V1", "V2", "V3", "V4", "V7", "V9")
 
 
 def _valores() -> dict[str, dict[str, str]]:
-    """Valores esperados por documento del oráculo, con los nombres del esquema (PD-07)."""
+    """Valores esperados por documento del oráculo, con los nombres del esquema."""
     valores = sembrar_demo.escenario(ORACULO)
     f1 = ORACULO["documentos"]["F-v1"]
     valores["F-v1"] = {
@@ -158,8 +159,8 @@ def _validar(
     ctx: Contexto, tramite_id: int, documento_id: int, codigo: str
 ) -> dict[str, dict[str, Any]]:
     """Valida como una persona: confirma la sugerencia que coincide con el oráculo y corrige
-    la que no. La clasificación primero: los campos del esquema dependen del tipo
-    (DO-2026-10-22-VAL P3). Devuelve las validaciones registradas por campo."""
+        la que no. La clasificación primero: los campos del esquema dependen del tipo
+    . Devuelve las validaciones registradas por campo."""
     registradas: dict[str, dict[str, Any]] = {}
 
     def registrar(campo: str, dato: dict[str, Any]) -> None:

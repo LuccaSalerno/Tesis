@@ -16,7 +16,7 @@ from atlas.procesamiento.valores import ClaseValor, cuit_valido, normalizar
         ("01/03/2026", ClaseValor.FECHA, "2026-03-01"),
         ("2027-02-28", ClaseValor.FECHA, "2027-02-28"),
         ("31/02/2026", ClaseValor.FECHA, "31/02/2026"),  # fecha imposible: sin normalizar
-        # DIF-124: año de dos dígitos, siglo XXI (las 10 fechas críticas de e90-oficial-1).
+        # Año de dos dígitos, siglo XXI (las 10 fechas críticas de e90-oficial-1).
         ("22/07/26", ClaseValor.FECHA, "2026-07-22"),
         ("01/05/26", ClaseValor.FECHA, "2026-05-01"),
         ("3-9-26", ClaseValor.FECHA, "2026-09-03"),
@@ -30,7 +30,7 @@ from atlas.procesamiento.valores import ClaseValor, cuit_valido, normalizar
         ("un millón", ClaseValor.IMPORTE, "un millón"),
         ("pesos argentinos", ClaseValor.MONEDA, "ARS"),
         ("U$S", ClaseValor.MONEDA, "USD"),
-        ("euros", ClaseValor.MONEDA, "EUR"),  # ISO 4217 (DIF-109)
+        ("euros", ClaseValor.MONEDA, "EUR"),  # ISO 4217
         ("€", ClaseValor.MONEDA, "EUR"),
         ("reales", ClaseValor.MONEDA, "reales"),  # moneda no reconocida: sin normalizar
         ("€ 2.242,86", ClaseValor.IMPORTE, "2242.86"),

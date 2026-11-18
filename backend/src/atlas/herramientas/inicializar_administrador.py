@@ -1,4 +1,4 @@
-"""Crea el primer administrador operativo (DT-AUT-02). Operación manual del operador.
+"""Crea el primer administrador operativo. Operación manual del operador.
 
 Uso: `python -m atlas.herramientas.inicializar_administrador --identificador-externo <sub>`
 

@@ -2,7 +2,7 @@
 
 Solo se aceptan bases de prueba: ATLAS_ENTORNO=tests y nombre terminado en
 `_tests`, para que una configuración equivocada nunca migre ni modifique la
-base de desarrollo o de demo (RC-P10, regla 8 de AGENTS.md).
+base de desarrollo o de demo (regla 8 de AGENTS.md).
 """
 
 import json
@@ -39,7 +39,7 @@ CONFIGURACION_JWT: dict[str, Any] = {
     "jwt_cliente": CLIENTE_LOCAL,
     "jwt_jwks": json.dumps(CLAVES_PRUEBA.jwks()),
     "jwt_jwks_archivo": None,
-    # Servicios AWS simulados (DT-AWS-01). Las pruebas unitarias no los contactan.
+    # Servicios AWS simulados. Las pruebas unitarias no los contactan.
     "aws_region": "us-east-1",
     "aws_endpoint_url": "http://127.0.0.1:9",
     "s3_bucket_documentos": BUCKET_PRUEBA,
@@ -71,7 +71,7 @@ def configuracion_sin_base(**campos: Any) -> Configuracion:
 
 def cargar_configuracion_tests() -> Configuracion:
     configuracion = Configuracion(_env_file=RAIZ_BACKEND / ".env.tests")  # type: ignore[call-arg]
-    # La base de pruebas es compartida y acumula trabajos: la admisión (RC-P08.5) se prueba
+    # La base de pruebas es compartida y acumula trabajos: la admisión se prueba
     # con límites explícitos en test_reconciliador, no con el límite del despliegue.
     configuracion = configuracion.model_copy(update={"procesamiento_limite_concurrencia": 10_000})
     if configuracion.entorno != "tests" or not configuracion.bd_nombre.endswith("_tests"):
@@ -93,7 +93,7 @@ def lineas_registro(salida: str) -> list[dict[str, Any]]:
 
 @pytest.fixture(scope="session")
 def moto_local() -> Iterator[str]:
-    """Servidor moto efímero dentro de pytest (DT-AWS-01): S3 y Step Functions sin AWS.
+    """Servidor moto efímero dentro de pytest: S3 y Step Functions sin AWS.
 
     Atiende las URL prefirmadas por HTTP, como lo haría S3 con el navegador.
     """

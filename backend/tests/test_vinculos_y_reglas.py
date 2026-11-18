@@ -1,7 +1,8 @@
 """Hito 1.7: vínculos documentales y reglas de consistencia R1 a R4.
 
-RF-14, RF-15, RF-16, RN-02, RN-05, RN-06, PD-01, PD-07, DO-2026-10-22-REG (P1 a P7).
-Contra PostgreSQL real; los documentos son PDF sintéticos con valores del oráculo PD-07
+RF-14, RF-15, RF-16, RN-02, RN-05, RN-06.
+Contra PostgreSQL real; los documentos son PDF sintéticos con valores del oráculo de
+la cadena de evidencia
 registrados por una persona (las reglas solo usan valores validados).
 """
 
@@ -254,7 +255,7 @@ def test_rf_15_rechazar_la_sugerencia_no_tiene_efecto_ni_se_repite(ctx: Contexto
     assert respuesta.status_code == 200 and respuesta.json()["estado"] == "rechazado"
     assert vinculos(ctx, tramite)["sugeridos"] == []
     assert controles(ctx, tramite, historial=True)["historial"] == []
-    # Revalidar el CUIT no vuelve a sugerir un par rechazado (P3).
+    # Revalidar el CUIT no vuelve a sugerir un par rechazado.
     vigente = ctx.cliente.get(
         f"/tramites/{tramite}/documentos/{orden}/validaciones", headers=ctx.encabezados
     ).json()
@@ -494,7 +495,7 @@ def test_rf_21_ejecuciones_auditadas_como_acciones_del_sistema(ctx: Contexto) ->
 
 
 @pytest.mark.parametrize("estado", ["pendiente_aprobacion", "observado", "aprobado", "cerrado"])
-def test_p7_estados_que_no_admiten_cambiar_vinculos(
+def test_estados_que_no_admiten_cambiar_vinculos(
     ctx: Contexto, par: dict[str, int], estado: str
 ) -> None:
     vinculo = vincular(ctx, par["tramite"], par["orden"], par["contrato"]).json()
@@ -507,7 +508,7 @@ def test_p7_estados_que_no_admiten_cambiar_vinculos(
     assert controles(ctx, par["tramite"])["vigentes"]
 
 
-def test_p7_pendiente_de_validacion_admite_vincular(ctx: Contexto, par: dict[str, int]) -> None:
+def test_pendiente_de_validacion_admite_vincular(ctx: Contexto, par: dict[str, int]) -> None:
     cambiar_estado(ctx.motor, par["tramite"], "pendiente_validacion")
     assert vincular(ctx, par["tramite"], par["orden"], par["contrato"]).status_code == 201
 
@@ -552,7 +553,7 @@ def test_rf_01_sin_token_no_se_vincula(ctx: Contexto, par: dict[str, int]) -> No
     assert respuesta.status_code == 401
 
 
-# --- Integridad en la base (PD-04-010) ------------------------------------------------
+# --- Integridad en la base ------------------------------------------------
 
 
 def _vinculo_en_base(ctx: Contexto, par: dict[str, int]) -> int:

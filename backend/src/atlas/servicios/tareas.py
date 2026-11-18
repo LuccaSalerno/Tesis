@@ -1,7 +1,6 @@
 """Tareas: listado, vista, asignación y decisión del revisor/aprobador.
 
-RF-19, RF-20, RN-07, RN-08, RN-09, PD-02, PD-05, RC-P03.3, RF-24,
-DO-2026-10-22-TAR (P5, P6 y P7).
+RF-19, RF-20, RN-07, RN-08, RN-09, RF-24.
 """
 
 import uuid
@@ -30,7 +29,7 @@ from atlas.servicios import ciclos, plantillas, reglas
 from atlas.servicios.auditoria import registrar_evento_auditoria
 from atlas.servicios.errores import Conflicto, ErrorDominio, NoEncontrado, NoPermitido
 
-# PD-05.3: mensaje fijo para la decisión sobre una tarea de un ciclo desplazado.
+# Mensaje fijo para la decisión sobre una tarea de un ciclo desplazado.
 TAREA_DESACTUALIZADA = "La documentación del trámite cambió; esta tarea ya no admite decisiones"
 # RN-14: mensaje fijo para la decisión sobre una tarea de un trámite cancelado.
 TRAMITE_CANCELADO = "El trámite fue cancelado; sus tareas ya no admiten decisiones"
@@ -57,7 +56,7 @@ def obtener_visible(
     sesion: Session, tarea_id: int, usuario_id: int, *, revisor: bool
 ) -> TareaConContexto:
     """El responsable del trámite y el revisor/aprobador con una tarea asignada en el mismo
-    ciclo (P8)."""
+    ciclo."""
     tarea = sesion.get(Tarea, tarea_id)
     if tarea is None:
         raise _no_encontrada()
@@ -80,7 +79,7 @@ def listar_asignadas(sesion: Session, usuario_id: int) -> list[TareaConContexto]
 
 
 def listar_sin_asignar(sesion: Session) -> list[TareaConContexto]:
-    """Para el administrador (RC-P03.3.2): solo metadatos, sin contenido documental (RF-24)."""
+    """Para el administrador: solo metadatos, sin contenido documental (RF-24)."""
     return [
         _contexto(sesion, t)
         for t in sesion.scalars(
@@ -108,7 +107,7 @@ def controles_de_la_decision(sesion: Session, decision_id: int) -> list[reglas.D
     )
 
 
-# --- Asignación (RF-19, P7) -------------------------------------------------------------
+# --- Asignación (RF-19) -------------------------------------------------------------
 
 
 def asignar(
@@ -120,11 +119,11 @@ def asignar(
     solicitud_id: uuid.UUID | None = None,
 ) -> TareaConContexto:
     """Asigna o reasigna una tarea abierta a un revisor/aprobador habilitado que no sea el
-    responsable del trámite (RC-P03.3)."""
+    responsable del trámite."""
     tarea = sesion.get(Tarea, tarea_id)
     if tarea is None:
         raise _no_encontrada()
-    contexto = _contexto(sesion, tarea, bloquear=True)  # PD-05.2
+    contexto = _contexto(sesion, tarea, bloquear=True)
     sesion.refresh(tarea)
     if tarea.estado not in ciclos.ABIERTAS:
         raise Conflicto("Solo se asigna una tarea abierta")
@@ -170,7 +169,7 @@ def asignaciones(sesion: Session, tarea_id: int) -> list[AsignacionTarea]:
     )
 
 
-# --- Decisión (RF-20, RN-08, P5, P6) ----------------------------------------------------
+# --- Decisión (RF-20, RN-08) ----------------------------------------------------
 
 
 def _auditar(
@@ -205,7 +204,7 @@ def decidir(
     tarea = sesion.get(Tarea, tarea_id)
     if tarea is None:
         raise _no_encontrada()
-    # PD-05.2: bloquea el trámite; una incorporación simultánea espera o ya terminó.
+    # Bloquea el trámite; una incorporación simultánea espera o ya terminó.
     contexto = _contexto(sesion, tarea, bloquear=True)
     sesion.refresh(tarea)
     sesion.refresh(contexto.ciclo)
@@ -226,7 +225,7 @@ def decidir(
     motivo = motivo.strip() if motivo else None
     if tipo == TipoDecision.OBSERVACION and not motivo:
         raise ErrorDominio("La observación exige un motivo")
-    # P6: los controles que se mostraban en la tarea, por identificador de ejecución.
+    # Los controles que se mostraban en la tarea, por identificador de ejecución.
     considerados = [
         c.detalle.ejecucion.id
         for c in ciclos.controles(sesion, contexto.ciclo)

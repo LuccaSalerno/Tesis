@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Inicialización privilegiada local de PostgreSQL: equivalente local de RC-P10-15.
+# Inicialización privilegiada local de PostgreSQL.
 #
 # Crea, por cada base lógica, un usuario de migración (propietario del esquema
 # `atlas`) y un usuario de aplicación que solo puede conectarse a su propia base

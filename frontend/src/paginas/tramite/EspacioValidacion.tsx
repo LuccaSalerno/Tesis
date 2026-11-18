@@ -2,7 +2,7 @@
  * Espacio de validación (Fig. 3.6, RF-09 a RF-12): el documento a la izquierda y la
  * clasificación y los campos a la derecha. Cada dato muestra la sugerencia de la IA (punteada)
  * separada del valor validado (sólido), con su fuente en el documento. Nunca se valida sin
- * una acción explícita de la persona; un dato ausente se declara, no se inventa (WEB F10).
+ * una acción explícita de la persona; un dato ausente se declara, no se inventa.
  */
 import { ArrowLeft, Check, ChevronDown, History, PencilLine, Plus } from "lucide-react";
 import { type FormEvent, useState } from "react";
