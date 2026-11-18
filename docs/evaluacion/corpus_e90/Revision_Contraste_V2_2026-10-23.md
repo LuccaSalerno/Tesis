@@ -2,7 +2,7 @@
 
 **Fecha:** 23/10/2026 (Argentina). **Dictamen: APTO PARA REVISIÓN DE AUTORES, CON OBSERVACIONES.** La v2 presenta una mejora sustantiva y verificable frente a la v1. Los pendientes nuevos REV-E90-16 a REV-E90-19 son acotados y pueden tratarse en esa revisión; deben quedar resueltos o justificados antes de congelar. Este dictamen habilita pasar a la revisión humana prevista, no la reemplaza ni autoriza medir o congelar.
 
-Pedido: [Pedido_Revision_Contraste_V2.md](Pedido_Revision_Contraste_V2.md), P0 de DO-2026-10-22-CORPUS-REVISION. Base inspeccionada: `f121f68`; código y datos `2082a6e`, documentación `d5f20ba`, rama `codex/corpus-e90`. **Revisor: Codex; constructor de la v2: Claude Code.** Codex construyó la v1 y realizó su autorrevisión; no participó en la implementación de esta v2. La independencia aquí declarada es respecto de la construcción de la v2, no respecto de toda la historia del corpus ni una revisión de los autores de la tesis.
+Pedido: [Pedido_Revision_Contraste_V2.md](Pedido_Revision_Contraste_V2.md), P0 de DO-2026-10-22-CORPUS-REVISION. Base inspeccionada: `ec0b030`; código y datos `004b9c5`, documentación `da627f8`, rama `codex/corpus-e90`. **Revisor: Codex; constructor de la v2: Claude Code.** Codex construyó la v1 y realizó su autorrevisión; no participó en la implementación de esta v2. La independencia aquí declarada es respecto de la construcción de la v2, no respecto de toda la historia del corpus ni una revisión de los autores de la tesis.
 
 ## Verificación reproducida
 

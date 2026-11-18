@@ -1,6 +1,6 @@
 # Revisión de los autores por muestreo — candidata v3 del corpus E90
 
-**Decisión:** DO-2026-10-23-E90-MUESTREO. **Datos:** candidata v3 (commit `5388569` y verificaciones manuales en `83ac903`). La revisión la hacen los autores: el agente no marca ninguna casilla.
+**Decisión:** DO-2026-10-23-E90-MUESTREO. **Datos:** candidata v3 (commit `32a8076` y verificaciones manuales en `5199449`). La revisión la hacen los autores: el agente no marca ninguna casilla.
 
 Cómo trabajar: abrí cada cuaderno, buscá la sección indicada (por ejemplo «## Q07» o «## E90-M-PRE-05») y abrí el archivo enlazado. Marcá las casillas del cuaderno («Autor 1» o «Autor 2») y anotá cualquier observación ahí mismo. Al final, completá la sección «Cierre» de este documento.
 

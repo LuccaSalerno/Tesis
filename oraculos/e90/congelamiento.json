@@ -20,7 +20,7 @@
       "E90-M-OC-07",
       "E90-M-FAC-08"
     ],
-    "commit_datos": "5388569",
+    "commit_datos": "32a8076",
     "consultas": [
       "Q01",
       "Q02",
@@ -268,10 +268,10 @@
     "corpus/e90/pdf_referencia/medicion/doc-ff4307be.pdf": "e3482eb2f0cd6ce3b6ccc41149caaa783a91ff2f3586007886fb68e546ee95c2",
     "corpus/e90/registros_fuente.json": "1d04230d1a2a8ade09361a3d7d749deea8c7ddd9405d518a7391b9c26b85cdf0",
     "oraculos/e90/artefactos_candidatos.json": "77bbe5787163162220dc765f5c8d9fd87f05b8ef1df37b57fa917f3007cb81e8",
-    "oraculos/e90/campos_candidatos.json": "89f1c77b2c22ee312a2d25ee22b434e0456347baabb4d124d88f9efde60fa78d",
-    "oraculos/e90/consultas_candidatas.json": "e669d3bb2335e1a43a33f63a6f342ecafbcf0d4d915c17bc3826d49c2b07a7b6",
+    "oraculos/e90/campos_candidatos.json": "043ed3effadb2871f56613a957399e6548b2af43afee7220db7dd25c79b8b2e5",
+    "oraculos/e90/consultas_candidatas.json": "3c78a708e7a9395aa3a238b0c955a67116ddb2f5fb2c385c43c0bc0b7d8fa055",
     "oraculos/e90/cuit_candidatos.json": "4d68aa1e1050a074a98ae75d7ecb279b0dcf0c9d3781a676b74c63107be0d0eb",
-    "oraculos/e90/fragmentos_candidatos.json": "588994aeb35ab3b57b768e3817dc7c400a6457960e3571b5bedec67682b4ffd7",
+    "oraculos/e90/fragmentos_candidatos.json": "07dae0e35e23d2da51418975c8b79ce98d01353b5668385196500ec6c5e08033",
     "oraculos/e90/inventario_candidato.csv": "f41c05032b435b283bd0428242dca173f1ce991e6eb1157d89962abe5a157fc8"
   },
   "version": "e90-candidato-v3"

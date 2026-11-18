@@ -1,6 +1,6 @@
 # Acta de verificación EVD-01 — cadena de evidencia documental
 
-**Fecha:** 2026-10-24. **Código:** `e0faadf` (sin cambios sin commitear). **Oráculo:** `oraculos/oraculo_PD07_v2.json` (PD-07-ATLAS-V2-CONGELADO-2026-10-23, CONGELADO, SHA-256 `3991b9e17df21555…`). **Ejecutor:** `backend/tests/aceptacion/test_evd01_acreditacion.py` (también corre en cada CI). **Paquete probatorio:** `evd01.json` (esperado y observado de cada comprobación, con identificadores).
+**Fecha:** 2026-10-24. **Código:** `d461b6a` (sin cambios sin commitear). **Oráculo:** `oraculos/oraculo_PD07_v2.json` (PD-07-ATLAS-V2-CONGELADO-2026-10-23, CONGELADO, SHA-256 `3991b9e17df21555…`). **Ejecutor:** `backend/tests/aceptacion/test_evd01_acreditacion.py` (también corre en cada CI). **Paquete probatorio:** `evd01.json` (esperado y observado de cada comprobación, con identificadores).
 
 **Entorno:** local: API FastAPI (TestClient) + PostgreSQL 16 con pgvector; procesamiento con dobles controlados (EVD-01 §1, condición 6).
 

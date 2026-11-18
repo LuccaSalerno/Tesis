@@ -1,6 +1,6 @@
 # Cierre de la sesión e90-2026-10-24 (antes del retiro)
 
-**Código desplegado:** `6232839`. **Cuenta:** 014574285566, us-east-1.
+**Código desplegado:** `fd6b3ef`. **Cuenta:** 014574285566, us-east-1.
 
 ## Drenaje
 

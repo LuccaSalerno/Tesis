@@ -10,36 +10,36 @@
 - **Aplicación:** RF-01 a RF-26 implementados, con backend y frontend.
 - **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Para reconstruirla: `operaciones/aws/Guia_Sesion_Seccion6.md`, desde la Parte 1.
 - **Corpus E90:** congelado (DO-2026-10-23-E90-CONGELACION).
-- **Evidencia del capítulo 6:** `evaluacion/campanas/`. Incluye la campaña `e90-oficial-1`, medida en `b872e0c`.
-- **EVD-01:** V1 a V11 verificados en `e0faadf` contra el oráculo PD-07 v2 (`evaluacion/campanas/evd01-2026-10-24/acta.md`). El código posterior no hereda esa verificación.
+- **Evidencia del capítulo 6:** `evaluacion/campanas/`. Incluye la campaña `e90-oficial-1`, medida en `20cf2d0`.
+- **EVD-01:** V1 a V11 verificados en `d461b6a` contra el oráculo PD-07 v2 (`evaluacion/campanas/evd01-2026-10-24/acta.md`). El código posterior no hereda esa verificación.
 - **Último ensayo de CI limpio:** 842 pruebas aprobadas y 2 omitidas; herramientas del corpus, 71 aprobadas y 1 omitida; cobertura 98 % y los 110 módulos ≥ 90 %.
 
 ## Hitos de la Etapa 1
 
 | Hito | Estado | Commit | Decisiones aprobadas | Punto de demo |
 |---|---|---|---|---|
-| Fundación local | Hecho | `b6df546`, `43cef95` | RC-P02, PD-04 (núcleo, migraciones 0001–0002) | — |
+| Fundación local | Hecho | `87d162b`, `efd38da` | RC-P02, PD-04 (núcleo, migraciones 0001–0002) | — |
 | 1.0 Preparación del despliegue manual | Hecho, solo local (Terraform validado sin AWS) | commit del hito 1.0 (`RC-P10…`) | DO-2026-10-22-OPS | — |
 | Aplicación web (A a D) | Hecho, solo local (E2E contra el stack local) | commit de la aplicación web | DO-2026-10-22-WEB | **A a D** en la interfaz |
 | 1.1 Primer ciclo en AWS | Hecho por el operador: sesiones e90-ensayo-1, e90-ensayo-2 y e90-2026-10-24; infraestructura retirada después | — | DO-2026-10-21, DO-2026-10-21-E90A, DO-2026-10-24-RETIRO-TOTAL | — |
-| 1.2 Autenticación, roles y cuentas | Hecho, solo local | `32b00af` | DT-AUT-01, DT-AUT-02 | — |
-| 1.3 Trámite, carga e incorporación | Hecho, solo local | `a954137`, `6cc7afa` | DT-AWS-01, DO-2026-10-22-CARGAS | — |
-| 1.4 Procesamiento (Textract y Haiku 4.5) | Hecho, solo local; nivel B sin ejecutar | `b1a7207` | DO-2026-10-22-PROC | — |
-| 1.5 Validación humana | Hecho, solo local | `10e9f5f` | DO-2026-10-22-VAL | **A** (BDD) |
-| 1.6 Consulta asistida | Hecho, solo local; nivel B sin ejecutar | `494986a` | DO-2026-10-22-RAG | **B** (BDD) |
-| 1.7 Vínculos y reglas R1 a R4 | Hecho, solo local | `c71b66b` | DO-2026-10-22-REG | **C** (BDD) |
+| 1.2 Autenticación, roles y cuentas | Hecho, solo local | `3922069` | DT-AUT-01, DT-AUT-02 | — |
+| 1.3 Trámite, carga e incorporación | Hecho, solo local | `16da2dd`, `7c3ee0f` | DT-AWS-01, DO-2026-10-22-CARGAS | — |
+| 1.4 Procesamiento (Textract y Haiku 4.5) | Hecho, solo local; nivel B sin ejecutar | `96b3add` | DO-2026-10-22-PROC | — |
+| 1.5 Validación humana | Hecho, solo local | `fa65c13` | DO-2026-10-22-VAL | **A** (BDD) |
+| 1.6 Consulta asistida | Hecho, solo local; nivel B sin ejecutar | `0123161` | DO-2026-10-22-RAG | **B** (BDD) |
+| 1.7 Vínculos y reglas R1 a R4 | Hecho, solo local | `3a497cd` | DO-2026-10-22-REG | **C** (BDD) |
 | 1.8 Tareas, decisiones y evidencia | Hecho, solo local | commit del hito 1.8 (`RF-17 a RF-22…`) | DO-2026-10-22-TAR | **D** (BDD) |
 
 «Solo local» significa que el hito se verificó sin AWS, con PostgreSQL real, moto y respuestas fijas (DIF-40 a DIF-43).
 
 ## Simplificación del 04/11/2026
 
-Sin cambios de reglas ni del contrato de la API: `5a007aa` (interfaz sin referencias a requisitos y frontend), `68f800b` (backend), `ecf301f` (pruebas y documentación de entrada) y la limpieza de documentación que sigue a esos commits.
+Sin cambios de reglas ni del contrato de la API: `248dc95` (interfaz sin referencias a requisitos y frontend), `b6a7494` (backend), `2f7a3f7` (pruebas y documentación de entrada) y la limpieza de documentación que sigue a esos commits.
 
 **Documentos retirados:** informes de preparación, revisiones intermedias del corpus, cuadernos generados, borradores para redactar la tesis y este estado en su versión detallada. Algunas decisiones y registros históricos todavía los citan. Se recuperan con:
 
 ```bash
-git show ecf301f:docs/plan/Estado_Implementacion.md
+git show 2f7a3f7:docs/plan/Estado_Implementacion.md
 ```
 
 La lista completa de archivos retirados se obtiene con `git log --diff-filter=D --name-only`.

@@ -12,6 +12,6 @@ Contenido de la v3 (misma estructura que la v2):
 - Cuatro trámites coherentes (mismo proveedor y moneda, importes relacionados, referencias por número); T3 tiene una diferencia deliberada entre orden y factura.
 - Cuatro casos de ambigüedad de contenido con justificación previa y tres adversariales con objetivos que contradicen el oráculo.
 
-Registros previos: `registros_fuente.json`. Herramientas y comandos: `herramientas/corpus_e90/README.md`. La v1 queda en Git (`e871a59`) y su manifiesto en `docs/evaluacion/corpus_e90/v1/`. No usar esta muestra como inventario de PD-07 ni como evidencia de validación operativa real.
+Registros previos: `registros_fuente.json`. Herramientas y comandos: `herramientas/corpus_e90/README.md`. La v1 queda en Git (`f68da7c`) y su manifiesto en `docs/evaluacion/corpus_e90/v1/`. No usar esta muestra como inventario de PD-07 ni como evidencia de validación operativa real.
 
 ARG_A (E90-M-CTR-03) y sus extractos se distribuyen bajo CC BY-NC-SA 4.0 para uso no comercial: ver `ATRIBUCIONES.md`.

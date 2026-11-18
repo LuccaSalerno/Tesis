@@ -2,7 +2,7 @@
   "campana": "e90-seguridad-2",
   "tipo": "seguridad",
   "creada_en": "2026-10-24T18:48:39.487566+00:00",
-  "commit": "3aed24443aed44a21616c1e4d5dc1709b8bd70db",
+  "commit": "359d87b9c08cfdd8fbfd81a59fa6e1f93bc291c7",
   "cambios_sin_commit": false,
   "url_api": "https://hbs5d0xsb2.execute-api.us-east-1.amazonaws.com/",
   "cliente_cognito": "6k0ubplu6j4d6vt8h0ou8js86g",

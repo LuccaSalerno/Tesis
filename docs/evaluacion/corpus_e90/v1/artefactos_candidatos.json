@@ -1287,7 +1287,7 @@
   "plantillas_sha256": "f25d0bb1c95996206e7d23e4467bcd5b9b950c138150f58962b1f16e4e7463fc",
   "registros_sha256": "744f52b22db381e94ac428d32118e54a2b40fcabc53bba6933d7f94d476e8eac",
   "revision_parcial": {
-    "base_commit": "ec67dbf",
+    "base_commit": "98e60f3",
     "codigo_sha256": {
       "__init__.py": "40a6664c9b0bc3346dcea29b4c00309e3a87c7430f687e5a26ef72398decdbc2",
       "comun.py": "cd827cce8cfedf76a77129d6d080cb0ca8e22b6f32405c9e1ee6feeb4893e762",

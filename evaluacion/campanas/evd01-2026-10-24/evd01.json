@@ -1,7 +1,7 @@
 {
   "verificacion": "EVD-01 — cadena de evidencia documental",
   "ejecutada_en": "2026-10-24T22:29:35.033418+00:00",
-  "commit": "e0faadf73ec5508ce0601d86c3303e209d04f228",
+  "commit": "d461b6ab19cb4bb7640979948db71c988d8070cb",
   "cambios_sin_commit": false,
   "entorno": "local: API FastAPI (TestClient) + PostgreSQL 16 con pgvector; procesamiento con dobles controlados (EVD-01 §1, condición 6)",
   "oraculo": {

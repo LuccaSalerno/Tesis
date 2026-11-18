@@ -844,7 +844,7 @@ Cambios a evaluar en lotes separados, sin modificar requisitos:
 
 ## DO-2026-10-22-CORPUS-CONSTRUCCION — Construcción aislada del corpus candidato
 
-**Fecha:** 22/10/2026. **Aprobada expresamente por el equipo en esta conversación**, incluidas las ampliaciones sobre fuentes contractuales. **Rama:** `codex/corpus-e90`, base `1e2a6c6`. Alcance: preparación de Etapa 4 y auditoría PD-07 en lectura; no modifica RF/RN/RNF, umbrales, aplicación ni arquitectura. Los IDs DIF-E90-* son provisionales y se renumeran al integrar con otras ramas.
+**Fecha:** 22/10/2026. **Aprobada expresamente por el equipo en esta conversación**, incluidas las ampliaciones sobre fuentes contractuales. **Rama:** `codex/corpus-e90`, base `3b86143`. Alcance: preparación de Etapa 4 y auditoría PD-07 en lectura; no modifica RF/RN/RNF, umbrales, aplicación ni arquitectura. Los IDs DIF-E90-* son provisionales y se renumeran al integrar con otras ramas.
 
 1. **P1:** auditoría PD-07 en solo lectura. Se conservan sus cinco PDF/DOCX, generador, datos, inconsistencias y oráculo. La auditoría identifica faltantes, no cierra DIF-84 ni acredita EVD-01. La historia principal de demo sigue siendo el contrato sintético de mantenimiento entre empresas ficticias argentinas previsto por PD-07.
 2. **P2:** 50 documentos de medición y 15 de ajuste (tres por tipo). No mezclar corpus funcional, ajuste, medición y validación operativa real. No agregar los antiguos 16 extra ni un conjunto público de contraste.
@@ -872,8 +872,8 @@ Se preservan los otros 64 documentos y 128 auxiliares por hash; se actualizan la
 
 **Fecha:** 22/10/2026. **Aprobada expresamente por el equipo en esta conversación** («ambas sí»), en respuesta a las dos preguntas de `docs/evaluacion/corpus_e90/Revision_Tecnica_Contraste_2026-10-22.md`.
 
-1. La revisión técnica de contraste (`0e52089`), realizada por un agente que no construyó el incremento, **cuenta como la revisión técnica independiente de P6** de DO-2026-10-22-CORPUS-CONSTRUCCION. No reemplaza la revisión de ambos autores ni la congelación.
+1. La revisión técnica de contraste (`569c79e`), realizada por un agente que no construyó el incremento, **cuenta como la revisión técnica independiente de P6** de DO-2026-10-22-CORPUS-CONSTRUCCION. No reemplaza la revisión de ambos autores ni la congelación.
 2. Se aprueba **en principio** una revisión candidata **v2** del corpus que resuelva en conjunto REV-E90-01 a REV-E90-15, sin cambiar cantidades (50 + 15), particiones, tipos, formatos, plantillas aprobadas, tres adversariales, reparto 10/8/6/6 ni umbrales. Ninguna clasificación esperada se cambia por conveniencia. El diseño detallado (decisiones P1…Pn de `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md`) **requiere aprobación antes de regenerar**; se registrará como adenda de esta decisión.
-3. La v1 (`e871a59`) se conserva como evidencia histórica de la revisión; no se reescribe su historial ni sus hashes registrados.
+3. La v1 (`f68da7c`) se conserva como evidencia histórica de la revisión; no se reescribe su historial ni sus hashes registrados.
 
 **Adenda — diseño v2 aprobado (22/10/2026):** el equipo aprobó P0–P16 de `docs/evaluacion/corpus_e90/Propuesta_Corpus_V2.md` con las opciones recomendadas («Apruebo P0–P16 con las opciones recomendadas»). Según P0, la v2 la construye Claude Code y la revisión de contraste queda a cargo del otro agente. Las razones sociales (P2) y los seis CUIT nuevos de ajuste (P3) se generan como candidatos; el equipo los verifica a mano antes de congelar y, si alguno coincide con uno real, se reemplaza y se regenera.

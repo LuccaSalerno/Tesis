@@ -2,7 +2,7 @@
 
 **Qué es:** las **mismas salidas de los modelos** registradas en la campaña oficial
 (`../clasificacion_extraccion.jsonl`, `../respuestas.jsonl`) puntuadas de nuevo después de
-corregir el normalizador de fechas con año de dos dígitos (DIF-124, commit `538ccab`). No se
+corregir el normalizador de fechas con año de dos dígitos (DIF-124, commit `08eb0b8`). No se
 volvió a llamar a Textract ni a los modelos; la métrica normaliza al comparar, por eso el
 recálculo es determinista. En la campaña oficial las tres repeticiones de cada modelo dieron
 salidas idénticas en extracción.

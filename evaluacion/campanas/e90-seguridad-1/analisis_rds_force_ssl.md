@@ -22,6 +22,6 @@ valor predeterminado y RDS lo informa con origen `system` aunque Terraform lo fi
 filtro `Source="user"` no lo encontró. La aplicación, además, se conecta con TLS `verify-full`
 (DIF-82).
 
-**Conclusión:** falso negativo del método de verificación. Corregido en `cb6c032` (valor
+**Conclusión:** falso negativo del método de verificación. Corregido en `f5f3a0b` (valor
 efectivo, todas las páginas, grupo `in-sync`) y vuelto a medir en `e90-seguridad-2`, que solo
 repite la verificación de configuración.
