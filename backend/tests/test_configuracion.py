@@ -1,4 +1,4 @@
-"""Configuración del servidor (: separación de entornos por configuración)."""
+"""Configuración del servidor (separación de entornos por configuración)."""
 
 import pytest
 from pydantic import ValidationError

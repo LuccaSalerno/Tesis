@@ -106,7 +106,7 @@ La versión de defensa se fija por commit y artefactos identificables; un push o
 
 ---
 
-**E90A — nueva decisión posterior del equipo (21/10/2026):** la demo es descartable. Cada encendido implica crear recursos nuevos y poblarlos con datos sintéticos, y cada apagado implica eliminación manual selectiva de los recursos propios de la sesión, incluida RDS. La persistencia entre sesiones no aplica al hito E90. [Decisión completa](../decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) y [guía de sesión](../../operaciones/aws/Guia_Sesion_Seccion6.md).
+**E90A — nueva decisión posterior del equipo (21/10/2026):** la demo es descartable. Cada encendido implica crear recursos nuevos y poblarlos con datos sintéticos, y cada apagado implica eliminación manual selectiva de los recursos propios de la sesión, incluida RDS. La persistencia entre sesiones no aplica al hito E90. [Decisión completa](../decisiones/Decisiones_Tecnicas_Reconstruccion_PFI_2026.md) y [procedimiento de Terraform](../../infra/terraform/README.md).
 
 ## 3. Terraform
 
@@ -190,7 +190,7 @@ La versión de defensa se fija por commit y artefactos identificables; un push o
 
 La semilla está implementada en `atlas.herramientas.sembrar_demo`. Las pruebas RNF-04/RN-10 siguen obligando a preservar la auditoría **mientras existe el trámite en una sesión**. La eliminación administrativa del entorno descarta también su base; la nueva sesión genera otro conjunto de identidades y registros. **Esto no demuestra la antigua verificación B (recuperar la misma evidencia tras apagar).** Si E90 exige esa demostración, debe constar como pendiente o realizarse un ensayo alternativo con backup/restauración aprobado para un hito posterior.
 
-La destrucción de RDS no acarrea una tarifa directa de eliminación, pero la creación/uso, almacenamiento mientras exista, mínimos de facturación, backups retenidos y cargos residuales sí pueden costar dinero. Consultar la [guía de sesión](../../operaciones/aws/Guia_Sesion_Seccion6.md) antes de intentar cualquier ciclo.
+La destrucción de RDS no acarrea una tarifa directa de eliminación, pero la creación/uso, almacenamiento mientras exista, mínimos de facturación, backups retenidos y cargos residuales sí pueden costar dinero. Consultar la [procedimiento de Terraform](../../infra/terraform/README.md) antes de intentar cualquier ciclo.
 
 ---
 

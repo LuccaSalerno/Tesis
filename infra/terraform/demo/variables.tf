@@ -23,7 +23,7 @@ variable "paquete_lambda" {
 }
 
 variable "version_codigo" {
-  description = "Commit desplegado (: versión identificable)"
+  description = "Commit desplegado (versión identificable)"
   type        = string
 }
 
@@ -87,7 +87,7 @@ variable "retencion_registros_dias" {
 }
 
 variable "limite_concurrencia" {
-  description = "Trabajos de procesamiento simultáneos (: 10 en demo, 5 en tests)"
+  description = "Trabajos de procesamiento simultáneos (10 en demo, 5 en tests)"
   type        = number
   default     = 10
 }

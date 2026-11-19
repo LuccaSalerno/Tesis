@@ -314,7 +314,7 @@ def historial(sesion: Session, tramite_id: int) -> list[DetalleEjecucion]:
 
 def vigentes(sesion: Session, tramite_id: int) -> list[Control]:
     """Última ejecución de cada regla pertinente por vínculo confirmado, más las reglas sin
-    vínculo pertinente como no aplicables (: calculado, no se guarda)."""
+    vínculo pertinente como no aplicables (calculado, no se guarda)."""
     controles: list[Control] = []
     con_vinculo: set[str] = set()
     vinculos = sesion.scalars(
