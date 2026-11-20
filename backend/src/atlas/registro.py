@@ -1,4 +1,4 @@
-"""Registro estructurado sin contenido documental (RNF-03).
+"""Registro estructurado sin contenido documental (RNF-09).
 
 Los registros solo contienen un código de evento fijo y metadatos técnicos de
 una lista cerrada. Cualquier otra clave se descarta y se informa su nombre,

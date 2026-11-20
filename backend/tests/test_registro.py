@@ -1,4 +1,4 @@
-"""Los registros no contienen contenido documental (RNF-03)."""
+"""Los registros no contienen contenido documental (RNF-09)."""
 
 import io
 import logging
@@ -12,7 +12,7 @@ from tests.conftest import lineas_registro
 VALOR_DOCUMENTAL = "CUIT 30-71234567-8 importe 10500"
 
 
-def test_rnf_03_metadatos_fuera_de_lista_se_descartan_sin_su_valor(
+def test_rnf_09_metadatos_fuera_de_lista_se_descartan_sin_su_valor(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     configurar_registro()
@@ -26,7 +26,7 @@ def test_rnf_03_metadatos_fuera_de_lista_se_descartan_sin_su_valor(
     assert VALOR_DOCUMENTAL not in str(linea)
 
 
-def test_rnf_03_mensaje_de_excepcion_no_se_registra() -> None:
+def test_rnf_09_mensaje_de_excepcion_no_se_registra() -> None:
     registrador = logging.getLogger("prueba")
     try:
         raise ValueError(VALOR_DOCUMENTAL)
@@ -39,7 +39,7 @@ def test_rnf_03_mensaje_de_excepcion_no_se_registra() -> None:
     assert VALOR_DOCUMENTAL not in salida
 
 
-def test_rnf_03_argumentos_de_bibliotecas_no_se_interpolan() -> None:
+def test_rnf_09_argumentos_de_bibliotecas_no_se_interpolan() -> None:
     registro = logging.LogRecord(
         "biblioteca", logging.INFO, __file__, 1, "parametros %s", (VALOR_DOCUMENTAL,), None
     )
@@ -48,7 +48,7 @@ def test_rnf_03_argumentos_de_bibliotecas_no_se_interpolan() -> None:
     assert VALOR_DOCUMENTAL not in salida
 
 
-def test_rnf_03_cada_registro_se_vacia_inmediatamente(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_rnf_09_cada_registro_se_vacia_inmediatamente(monkeypatch: pytest.MonkeyPatch) -> None:
     class SalidaConBufer(io.StringIO):
         vaciados = 0
 

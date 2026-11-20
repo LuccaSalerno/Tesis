@@ -64,7 +64,7 @@ def test_rf_01_sin_token_valido_responde_401(
     assert respuesta.headers["www-authenticate"] == "Bearer"
 
 
-def test_rnf_03_rechazo_registra_motivo_sin_el_token(
+def test_rnf_09_rechazo_registra_motivo_sin_el_token(
     cliente: TestClient, capsys: pytest.CaptureFixture[str]
 ) -> None:
     token = CLAVES_PRUEBA.emitir("sub-vencido", vigencia_s=-5)

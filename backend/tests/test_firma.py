@@ -223,7 +223,7 @@ def test_rn_11_la_firma_es_inmutable(
         )  # una sola firma por trámite
 
 
-def test_regla_5_la_firma_no_registra_contenido(
+def test_rnf_09_la_firma_no_registra_contenido(
     e: Equipo, aprobado: dict[str, Any], capsys: pytest.CaptureFixture[str]
 ) -> None:
     from tests.conftest import lineas_registro

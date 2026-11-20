@@ -10,6 +10,7 @@ Prototipo de la tesis «Arquitectura para la gestión inteligente de documentos 
 
 ## Reglas
 
+- **Destinos y retención (RNF-03):** cada servicio que recibe contenido documental figura en [infra/Destinos_y_Retencion.md](infra/Destinos_y_Retencion.md), que se actualiza en el mismo cambio que lo modifica.
 - **Solo datos sintéticos** en el repositorio, la CI y la demo. Nunca documentos reales, ni anonimizados.
 - **El contenido documental nunca va a los registros:** logs, errores y salidas de Step Functions llevan solo identificadores y metadatos técnicos.
 - **No hay borrado funcional** de trámites, versiones ni eventos de auditoría (RN-10, RNF-04).
@@ -27,7 +28,6 @@ Prototipo de la tesis «Arquitectura para la gestión inteligente de documentos 
 | `infra/` | Terraform, base local con Docker y empaquetado ([README](infra/terraform/README.md)) |
 | `demo/` | Documentos sintéticos y oráculos de las dos demos (cadena de evidencia y SurDelta): no se modifican |
 | `tests/acceptance/` | Escenarios BDD (Gherkin) |
-| `docs/tesis/` | La tesis (`main.pdf`): requisitos, modelo de datos y arquitectura |
 
 ## Levantar el entorno local
 

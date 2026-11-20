@@ -37,7 +37,7 @@ def _archivo(ctx: Contexto, tramite_id: int, archivo_id: int) -> dict[str, Any]:
     return next(a for a in respuesta.json() if a["id"] == archivo_id)
 
 
-def test_f9_simula_el_corpus_y_rotula_las_sugerencias(
+def test_simula_el_corpus_y_rotula_las_sugerencias(
     ctx: Contexto, base_migrada: Configuracion
 ) -> None:
     tramite_id = crear_tramite(ctx)["id"]
@@ -60,7 +60,7 @@ def test_f9_simula_el_corpus_y_rotula_las_sugerencias(
     assert vigencia["localizador"]["pagina"] is not None  # fragmento ubicado en el PDF
 
 
-def test_f9_se_niega_en_demo_o_sin_moto(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_se_niega_en_demo_o_sin_moto(monkeypatch: pytest.MonkeyPatch) -> None:
     for configuracion in (
         configuracion_sin_base(entorno="demo"),
         configuracion_sin_base(aws_endpoint_url=None),
@@ -73,7 +73,7 @@ def test_f9_se_niega_en_demo_o_sin_moto(monkeypatch: pytest.MonkeyPatch) -> None
     assert procesar_simulado.main([]) == 1
 
 
-def test_f9_main_procesa_los_pendientes(
+def test_main_procesa_los_pendientes(
     ctx: Contexto, base_migrada: Configuracion, monkeypatch: pytest.MonkeyPatch, capsys: Any
 ) -> None:
     tramite_id = crear_tramite(ctx)["id"]
@@ -84,7 +84,7 @@ def test_f9_main_procesa_los_pendientes(
     assert _archivo(ctx, tramite_id, archivo["id"])["trabajo"]["estado"] == "completado"
 
 
-def test_f9_formas_impresas_de_los_valores() -> None:
+def test_formas_impresas_de_los_valores() -> None:
     assert procesar_simulado._formas("2027-02-28") == ["2027-02-28", "28/02/2027"]
     assert procesar_simulado._formas("1250000.00") == ["1250000.00", "1.250.000,00"]
     assert procesar_simulado.ubicar([["Sin datos"]], "ARS") == (None, None)

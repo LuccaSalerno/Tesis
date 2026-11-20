@@ -61,7 +61,7 @@ def test_toda_falla_registra_el_fallo_tecnico(nombre: str) -> None:
 
 
 @pytest.mark.parametrize("nombre", sorted(TAREAS))
-def test_regla_5_entradas_y_salidas_solo_con_identificadores(nombre: str) -> None:
+def test_rnf_09_entradas_y_salidas_solo_con_identificadores(nombre: str) -> None:
     tarea = TAREAS[nombre]
     carga = tarea["Parameters"]["Payload"]
     assert {k.removesuffix(".$") for k in carga} <= CLAVES_EVENTO

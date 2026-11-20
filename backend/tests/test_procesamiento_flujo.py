@@ -262,7 +262,7 @@ def test_rnf_01_sugerencias_solo_con_acceso_al_tramite(entorno: Any) -> None:
 # --- Funciones Lambda: errores sin contenido --------------------------------------------
 
 
-def test_regla_5_error_inesperado_sale_sin_mensaje_ni_causa(
+def test_rnf_09_error_inesperado_sale_sin_mensaje_ni_causa(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     def etapa_rota(**_: Any) -> None:
@@ -288,7 +288,7 @@ def test_error_transitorio_conserva_su_tipo_para_reintentar() -> None:
     [{"etapa": "inexistente"}, {"etapa": "e", "texto_documento": "x"}],
     ids=["etapa_desconocida", "clave_no_permitida"],
 )
-def test_regla_5_eventos_fuera_de_contrato_se_rechazan(evento: dict[str, Any]) -> None:
+def test_rnf_09_eventos_fuera_de_contrato_se_rechazan(evento: dict[str, Any]) -> None:
     with pytest.raises(ErrorPermanente, match="evento_invalido"):
         lambdas.ejecutar(evento, {"e": lambda **_: None})
 

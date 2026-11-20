@@ -1,4 +1,4 @@
-"""API: estado del proceso y registro de solicitudes (RNF-03)."""
+"""API: estado del proceso y registro de solicitudes (RNF-09)."""
 
 import pytest
 from fastapi import FastAPI
@@ -31,7 +31,7 @@ def test_entorno_no_se_elige_por_peticion() -> None:
     assert respuesta.json()["entorno"] == "tests"
 
 
-def test_rnf_03_registro_usa_plantilla_de_ruta_sin_valores(
+def test_rnf_09_registro_usa_plantilla_de_ruta_sin_valores(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     aplicacion = nueva_aplicacion()

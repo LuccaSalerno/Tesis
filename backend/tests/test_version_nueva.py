@@ -285,7 +285,7 @@ def test_rn_12_la_version_desplaza_el_ciclo_y_renueva_los_controles(
     assert r3["resultado"] == "cumplimiento"
 
 
-def test_regla_5_sin_contenido_documental_en_los_registros(
+def test_rnf_09_sin_contenido_documental_en_los_registros(
     aplicacion: Any, e: Equipo, capsys: pytest.CaptureFixture[str]
 ) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]

@@ -1,6 +1,6 @@
 """Admisión, reconciliador e intento manual: §6.3.2 nivel A.
 
-AS-01 a AS-04 con fallos inyectados: un orquestador simulado da el estado «real» de cada
+Fallos inyectados: un orquestador simulado da el estado «real» de cada
 ejecución, salvo donde se usa moto. La base de pruebas es compartida, así que el
 reconciliador corre con `alcance` (solo los trabajos de cada prueba) y el cupo se fija
 sobre el conteo global del momento.
@@ -147,10 +147,10 @@ def test_doce_confirmaciones_simultaneas_con_cupo_de_diez(
     assert estados.count(EstadoTrabajo.EN_ESPERA) == 2
 
 
-# --- AS-01: trabajo demorado o en espera, consultable y admitido por antigüedad --------------
+# --- trabajo demorado o en espera, consultable y admitido por antigüedad --------------
 
 
-def test_as_01_en_espera_se_admite_por_antiguedad_cuando_hay_cupo(
+def test_en_espera_se_admite_por_antiguedad_cuando_hay_cupo(
     fabrica: Any, motor_migracion: Engine
 ) -> None:
     primero, segundo = _trabajos(motor_migracion, "en_espera", "en_espera")
@@ -163,12 +163,10 @@ def test_as_01_en_espera_se_admite_por_antiguedad_cuando_hay_cupo(
     assert _estado(motor_migracion, segundo)[0] == "en_espera"
 
 
-# --- AS-02: inicio fallido o incierto, recuperado una sola vez -------------------------------
+# --- inicio fallido o incierto, recuperado una sola vez -------------------------------
 
 
-def test_as_02_inicio_incierto_se_recupera_sin_duplicar(
-    fabrica: Any, motor_migracion: Engine
-) -> None:
+def test_inicio_incierto_se_recupera_sin_duplicar(fabrica: Any, motor_migracion: Engine) -> None:
     sin_ejecucion, aceptada = _trabajos(motor_migracion, "pendiente", "pendiente")
     orquestador = OrquestadorSimulado(estados={aceptada: "RUNNING"})
     reciente = _reconciliar(fabrica, orquestador, [sin_ejecucion, aceptada], minutos=0)
@@ -182,7 +180,7 @@ def test_as_02_inicio_incierto_se_recupera_sin_duplicar(
     assert {_estado(motor_migracion, t)[0] for t in (sin_ejecucion, aceptada)} == {"en_ejecucion"}
 
 
-def test_as_02_si_el_inicio_vuelve_a_fallar_queda_pendiente(
+def test_si_el_inicio_vuelve_a_fallar_queda_pendiente(
     fabrica: Any, motor_migracion: Engine
 ) -> None:
     (trabajo,) = _trabajos(motor_migracion, "pendiente")
@@ -192,7 +190,7 @@ def test_as_02_si_el_inicio_vuelve_a_fallar_queda_pendiente(
     assert consulta.sin_resolver == [trabajo]
 
 
-def test_as_02_estado_real_con_step_functions(moto_local: str) -> None:
+def test_estado_real_con_step_functions(moto_local: str) -> None:
     configuracion = configuracion_sin_base(aws_endpoint_url=moto_local)
     orquestador = OrquestadorStepFunctions(
         crear_cliente(configuracion, "stepfunctions"), ARN_MAQUINA_PRUEBA
@@ -208,10 +206,10 @@ def test_as_02_estado_real_con_step_functions(moto_local: str) -> None:
         ajena.estado(trabajo, 1)
 
 
-# --- AS-03: fallo definitivo, sin reintentos indefinidos ni cambio del trámite --------------
+# --- fallo definitivo, sin reintentos indefinidos ni cambio del trámite --------------
 
 
-def test_as_03_ejecucion_terminada_o_vencida_pasa_a_fallido(
+def test_ejecucion_terminada_o_vencida_pasa_a_fallido(
     fabrica: Any, motor_migracion: Engine
 ) -> None:
     terminada, vencida, en_curso, pendiente_terminada = _trabajos(
@@ -236,10 +234,10 @@ def test_as_03_ejecucion_terminada_o_vencida_pasa_a_fallido(
     assert consulta.sin_resolver == [en_curso] and orquestador.iniciados == []
 
 
-# --- RNF-06 y AS-04: intento manual, sin huérfanos y con descarte del intento anterior ------
+# --- RNF-06: intento manual, sin huérfanos y con descarte del intento anterior ------
 
 
-def test_rnf_06_as_04_intento_manual_tras_fallo(
+def test_rnf_06_intento_manual_tras_fallo(
     cliente: TestClient, motor_aplicacion: Engine, motor_migracion: Engine, fabrica: Any
 ) -> None:
     usuario_id, sub = crear_cuenta(motor_aplicacion, "responsable_tramite")
@@ -286,7 +284,7 @@ def test_rnf_06_as_04_intento_manual_tras_fallo(
             {"a": archivo["id"]},
         ).scalar_one()
     assert eventos == 1 and trabajos == 1  # sin trabajos huérfanos ni duplicados
-    # AS-04: un resultado tardío del intento 1 se descarta.
+    # Un resultado tardío del intento 1 se descarta.
     with fabrica() as sesion:
         estado = resultados.persistir(
             sesion,

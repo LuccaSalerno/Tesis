@@ -1,8 +1,8 @@
-"""Lambda privada de operaciones (V-DB, V-MT).
+"""Lambda privada de operaciones.
 
 Sin AWS: Secrets Manager y Step Functions simulados con moto, PostgreSQL real. La
 inicialización privilegiada se prueba contra un superusuario solo si la CI lo ofrece
-(`ATLAS_PRUEBAS_PG_SUPERUSUARIO`); en RDS se verifica en la sesión autorizada (V-DB).
+(`ATLAS_PRUEBAS_PG_SUPERUSUARIO`); en RDS se verifica en la sesión autorizada.
 """
 
 import json
@@ -23,7 +23,7 @@ from tests.conftest import configuracion_sin_base, lineas_registro
 SUPERUSUARIO = os.environ.get("ATLAS_PRUEBAS_PG_SUPERUSUARIO")
 
 
-def test_v_db_sentencias_sin_delete_y_con_rds_iam() -> None:
+def test_sentencias_sin_delete_y_con_rds_iam() -> None:
     n = ops.Nombres(base="pfi_demo", app="atlas_demo_app", migracion="atlas_demo_migracion")
     servidor = [s.as_string() for s in ops.sentencias_servidor(n)]
     base = [s.as_string() for s in ops.sentencias_base(n)]
@@ -64,14 +64,14 @@ def _configuracion_ops(**campos: Any) -> Configuracion:
     return configuracion_sin_base(bd_usuario_migracion="atlas_demo_migracion", **campos)
 
 
-def test_v_db_inicializar_se_niega_si_la_base_existe() -> None:
+def test_inicializar_se_niega_si_la_base_existe() -> None:
     ejecutadas: list[tuple[str, Any]] = []
     with pytest.raises(ops.ErrorOperacion, match="base_ya_inicializada"):
         ops.inicializar_base(_configuracion_ops(), lambda _: ConexionFalsa(True, ejecutadas))
     assert len(ejecutadas) == 1  # solo la comprobación
 
 
-def test_v_db_inicializar_ejecuta_servidor_y_base_en_orden() -> None:
+def test_inicializar_ejecuta_servidor_y_base_en_orden() -> None:
     ejecutadas: list[tuple[str, Any]] = []
     bases: list[str] = []
 
@@ -89,7 +89,7 @@ def test_v_db_inicializar_ejecuta_servidor_y_base_en_orden() -> None:
     assert len(ejecutadas) == 1 + len(ops.sentencias_servidor(n)) + len(ops.sentencias_base(n))
 
 
-def test_v_db_nombres_exigen_usuario_de_migracion() -> None:
+def test_nombres_exigen_usuario_de_migracion() -> None:
     with pytest.raises(ErrorConfiguracion):
         ops.nombres(configuracion_sin_base())
 
@@ -118,7 +118,7 @@ def test_credencial_maestra_desde_secrets_manager(
 
 @pytest.mark.integracion
 @pytest.mark.skipif(SUPERUSUARIO is None, reason="Requiere un superusuario de PostgreSQL (CI)")
-def test_v_db_inicializacion_real_en_postgresql_16() -> None:
+def test_inicializacion_real_en_postgresql_16() -> None:
     nombre = f"ops_{uuid.uuid4().hex[:8]}"
     n = ops.Nombres(base=nombre, app=f"{nombre}_app", migracion=f"{nombre}_migracion")
     configuracion = configuracion_sin_base(
@@ -195,7 +195,7 @@ def test_crear_administrador_una_sola_vez(base_reiniciada: Configuracion) -> Non
 
 
 @pytest.mark.integracion
-def test_v_mt_verificar_drenaje_cuenta_lo_pendiente(base_migrada: Configuracion) -> None:
+def test_verificar_drenaje_cuenta_lo_pendiente(base_migrada: Configuracion) -> None:
     resultado = ops.ejecutar({"accion": "verificar_drenaje"}, base_migrada)
     claves = ("urls_vigentes", "cargas_pendientes", "trabajos_abiertos", "ejecuciones_activas")
     assert all(isinstance(resultado[c], int) for c in claves)

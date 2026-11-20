@@ -597,7 +597,7 @@ def test_se_niega_fuera_de_la_demo_y_con_el_estado_remoto(
 
 
 @pytest.mark.integracion
-def test_f9_semilla_local_con_procesamiento_simulado(
+def test_semilla_local_con_procesamiento_simulado(
     base_migrada: Configuracion, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     from atlas.herramientas import sembrar_local
@@ -647,7 +647,7 @@ def test_demo_surdelta_semilla_local_simulada(base_migrada: Configuracion) -> No
 
 
 @pytest.mark.integracion
-def test_f9_semilla_local_usa_o_crea_el_administrador(base_reiniciada: Configuracion) -> None:
+def test_semilla_local_usa_o_crea_el_administrador(base_reiniciada: Configuracion) -> None:
     from atlas.herramientas import sembrar_local
 
     assert sembrar_local.sub_administrador(base_reiniciada) == sembrar_local.SUBS["administrador"]
@@ -655,7 +655,7 @@ def test_f9_semilla_local_usa_o_crea_el_administrador(base_reiniciada: Configura
     assert sembrar_local.sub_administrador(base_reiniciada) == sembrar_local.SUBS["administrador"]
 
 
-def test_f9_main_de_la_semilla_local_guarda_el_manifiesto(
+def test_main_de_la_semilla_local_guarda_el_manifiesto(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     from atlas.herramientas import sembrar_local

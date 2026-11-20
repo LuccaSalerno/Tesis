@@ -61,10 +61,10 @@ def ausentar(
     )
 
 
-# --- F10: campos ausentes -------------------------------------------------------
+# --- Campos ausentes -------------------------------------------------------
 
 
-def test_f10_un_campo_ausente_no_inventa_valor_y_resuelve_el_flujo(e: Equipo) -> None:
+def test_un_campo_ausente_no_inventa_valor_y_resuelve_el_flujo(e: Equipo) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]
     sin_fecha = {k: v for k, v in C_COMPLETO.items() if k != "fecha_celebracion"}
     contrato = documento(e.responsable, tramite_id, "Contrato", "contrato", sin_fecha)
@@ -112,7 +112,7 @@ def test_f10_un_campo_ausente_no_inventa_valor_y_resuelve_el_flujo(e: Equipo) ->
         ),
     ],
 )
-def test_f10_rechazos_de_ausencia(e: Equipo, cuerpo: dict[str, Any], mensaje: str) -> None:
+def test_rechazos_de_ausencia(e: Equipo, cuerpo: dict[str, Any], mensaje: str) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]
     contrato = documento(e.responsable, tramite_id, "Contrato", "contrato")
     respuesta = e.cliente.post(
@@ -124,7 +124,7 @@ def test_f10_rechazos_de_ausencia(e: Equipo, cuerpo: dict[str, Any], mensaje: st
     assert mensaje in respuesta.json()["detalle"]
 
 
-def test_f10_las_reglas_explican_la_ausencia_declarada(e: Equipo) -> None:
+def test_las_reglas_explican_la_ausencia_declarada(e: Equipo) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]
     contrato = documento(e.responsable, tramite_id, "Contrato", "contrato", C_COMPLETO)
     sin_fecha = {k: v for k, v in O_COMPLETO.items() if k != "fecha"}
@@ -144,7 +144,7 @@ def test_f10_las_reglas_explican_la_ausencia_declarada(e: Equipo) -> None:
     assert (entrada["tipo"], entrada["valor_validado"]) == ("ausente", None)
 
 
-def test_f10_la_ausencia_puede_descartar_una_sugerencia(
+def test_la_ausencia_puede_descartar_una_sugerencia(
     aplicacion: Any, motor_aplicacion: Engine
 ) -> None:
     usuario_id, sub = crear_cuenta(motor_aplicacion, "responsable_tramite")
@@ -169,7 +169,7 @@ def test_f10_la_ausencia_puede_descartar_una_sugerencia(
         assert respuesta.json()["localizador"] is None  # una ausencia no tiene fuente
 
 
-def test_f10_la_base_impide_ausencias_en_la_clasificacion_o_sin_motivo(
+def test_la_base_impide_ausencias_en_la_clasificacion_o_sin_motivo(
     e: Equipo, conexion_aplicacion: Connection
 ) -> None:
     tramite_id = crear_tramite(e.responsable)["id"]
@@ -189,7 +189,7 @@ def test_f10_la_base_impide_ausencias_en_la_clasificacion_o_sin_motivo(
             )
 
 
-# --- F4: original de una versión ---------------------------------------------------------
+# --- original de una versión ---------------------------------------------------------
 
 
 def test_f4_url_de_lectura_con_las_reglas_de_acceso(e: Equipo) -> None:
@@ -214,7 +214,7 @@ def test_f4_url_de_lectura_con_las_reglas_de_acceso(e: Equipo) -> None:
     obtener(e.responsable, ruta_nueva)
 
 
-# --- F5: nombres visibles ----------------------------------------------------------------
+# --- nombres visibles ----------------------------------------------------------------
 
 
 def test_f5_nombre_visible_y_directorio(e: Equipo) -> None:
@@ -262,7 +262,7 @@ def test_f5_nombre_visible_y_directorio(e: Equipo) -> None:
     )
 
 
-# --- F6: historial de consultas propias --------------------------------------------------
+# --- historial de consultas propias --------------------------------------------------
 
 
 def test_f6_historial_de_consultas_propias(aplicacion: Any, motor_aplicacion: Engine) -> None:

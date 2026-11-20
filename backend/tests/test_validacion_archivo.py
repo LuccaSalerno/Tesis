@@ -93,7 +93,7 @@ def test_tamano_recibido_debe_coincidir_con_el_autorizado() -> None:
     validar_tamano(1000, 1000, LIMITES)
 
 
-def test_rnf_03_el_rechazo_no_incluye_contenido_del_archivo() -> None:
+def test_rnf_09_el_rechazo_no_incluye_contenido_del_archivo() -> None:
     with pytest.raises(ArchivoRechazado) as rechazo:
         validar_contenido(b"CUIT 30-71234567-8 importe 10500", PDF, LIMITES)
     assert "30-71234567-8" not in rechazo.value.mensaje

@@ -328,7 +328,7 @@ def test_inicio_fallido_deja_el_trabajo_pendiente_y_registrado(
     assert estado_trabajo(repetida.json()) == {"estado": "en_ejecucion", "intento": 1}
 
 
-def test_rnf_03_registros_de_la_carga_sin_contenido_ni_urls(
+def test_rnf_09_registros_de_la_carga_sin_contenido_ni_urls(
     ctx: Contexto, capsys: pytest.CaptureFixture[str]
 ) -> None:
     tramite = crear_tramite(ctx, titulo="Título que no debe registrarse")

@@ -1,4 +1,4 @@
-"""Modo mantenimiento (V-MT) y despliegue en Lambda.
+"""Modo mantenimiento y despliegue en Lambda.
 
 Sin AWS: el objeto de control vive en el S3 simulado por moto.
 """
@@ -102,7 +102,7 @@ def control_s3(moto_local: str) -> Iterator[Any]:
     s3.delete_object(Bucket=BUCKET_PRUEBA, Key=CLAVE_CONTROL)
 
 
-def test_v_mt_draining_admite_consultas_y_rechaza_cambios(control_s3: Any) -> None:
+def test_draining_admite_consultas_y_rechaza_cambios(control_s3: Any) -> None:
     cliente = control_s3("draining")
     salud = cliente.get("/salud")
     assert salud.json()["estado"] == "mantenimiento" and salud.json()["operacion"] == "draining"
@@ -113,7 +113,7 @@ def test_v_mt_draining_admite_consultas_y_rechaza_cambios(control_s3: Any) -> No
     assert rechazo.json()["detalle"].startswith("ATLAS está en mantenimiento")
 
 
-def test_v_mt_offline_y_control_ausente_responden_503(control_s3: Any) -> None:
+def test_offline_y_control_ausente_responden_503(control_s3: Any) -> None:
     for estado in ("offline", None):
         cliente = control_s3(estado)
         assert cliente.get("/tramites").status_code == 503
@@ -122,7 +122,7 @@ def test_v_mt_offline_y_control_ausente_responden_503(control_s3: Any) -> None:
         assert salud["operacion"] == ("offline" if estado else "desconocido")
 
 
-def test_v_mt_active_opera_normalmente(control_s3: Any) -> None:
+def test_active_opera_normalmente(control_s3: Any) -> None:
     cliente = control_s3("active")
     assert cliente.get("/salud").json() == {
         "estado": "ok",
