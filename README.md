@@ -6,8 +6,8 @@ Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las regla
 
 ## Estado
 
-- **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React). Detalle y próximos pasos en [Estado_Implementacion.md](docs/plan/Estado_Implementacion.md).
-- **Evaluación:** la evidencia del capítulo 6 está en [evaluacion/campanas](evaluacion/campanas).
+- **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React).
+- **Evaluación:** la evidencia del capítulo 6 está en [evaluacion/campanas](evaluacion/campanas). La campaña oficial `e90-oficial-1` se midió en `20cf2d0`; EVD-01 (V1 a V11) se verificó en `d461b6a` (`evaluacion/campanas/evd01-2026-10-24/acta.md`), y el código posterior no hereda esa verificación.
 - **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Las operaciones las ejecuta solo un integrante autorizado, de forma manual; la CI de GitHub no tiene acceso a AWS.
 - **Datos:** el agente, la CI y la demo usan exclusivamente datos sintéticos.
 

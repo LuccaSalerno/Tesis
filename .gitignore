@@ -52,3 +52,6 @@ coverage.xml
 infra/terraform/backend.hcl
 dist/
 operaciones/sesiones/
+
+# Configuración personal de Claude Code
+.claude/

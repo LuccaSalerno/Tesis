@@ -5,7 +5,7 @@
 DO-2026-10-21, DO-2026-10-21-E90A y DO-2026-10-22-OPS.
 
 **Quién ejecuta:** solo el operador humano autorizado, después de aprobar el plan exacto, el
-impacto y la cotización de la sesión ([cotización](../../docs/operacion/RC-P10-13_Cotizacion_Sesion_E90A.md)).
+impacto y el costo de la sesión.
 Ningún agente, push ni GitHub Action ejecuta estos pasos.
 
 ## Raíces y orden

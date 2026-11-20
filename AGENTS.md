@@ -17,8 +17,7 @@ Leelos en este orden. Ante una contradicción, prevalece el de número menor.
 | 3 | Contrato de aceptación integral (v1.1) | `docs/aceptacion/` | Cómo se verifica cada RF, RN y RNF |
 | 4 | Criterios EVD-01 y correspondencia BDD | `docs/aceptacion/` | Cadena de evidencia: V1–V11 y recorridos EVD-A, EVD-B, EVD-C, EVD-N12; la tesis lo presenta como «Verificación de la cadena de evidencia documental» |
 | 5 | Diseño de infraestructura RC-P10 | `docs/diseno/RC-P10_Diseno_Infraestructura.md` | Detalle de la infraestructura AWS aprobada |
-| 6 | Plan por etapas | `docs/plan/Plan_Implementacion_por_Etapas.md` | Qué se construye primero y qué entra en cada etapa |
-| 7 | Protocolo E90 y plan de corpus | `docs/evaluacion/` | Particiones aprobadas, plan no construido y separación de validación operativa |
+| 6 | Protocolo E90 y plan de corpus | `docs/evaluacion/` | Particiones aprobadas, plan no construido y separación de validación operativa |
 
 Si un documento de esta lista no está en el repositorio, **detenete y avisá**. No lo reemplaces con suposiciones.
 
@@ -94,7 +93,7 @@ Convenciones:
 
 ## 6. Cómo trabajar cada tarea
 
-1. **Ubicá la tarea** en `docs/plan/Plan_Implementacion_por_Etapas.md` y en los requisitos que cubre. Para saber dónde quedó el trabajo, leé `docs/plan/Estado_Implementacion.md`.
+1. **Ubicá la tarea** en los requisitos que cubre.
 2. **Leé** los RF, RN y RNF involucrados y las decisiones técnicas relacionadas.
 3. **Proponé un plan corto** antes de escribir código si la tarea toca infraestructura, el modelo de datos o más de un módulo. Para un hito del plan: diseño con decisiones numeradas (P1…Pn, cada una con opción recomendada y alternativa), modelo físico, rutas y pruebas. **Esperá la aprobación** y registrala después como `DO-AAAA-MM-DD-<TEMA>` en el documento de decisiones técnicas.
 4. **Implementá en incrementos chicos**, con sus pruebas en el mismo cambio.
@@ -107,8 +106,7 @@ Convenciones:
    - **hace distinto en local o en la CI** que en AWS.
 
    También lo que la tesis da por existente y todavía no está implementado. Cada entrada indica la sección de la tesis, qué se implementó, la decisión que la respalda y una acción sugerida. Registrar no autoriza contradecir RF, RN o RNF: eso se consulta antes (§2.3).
-7. **Actualizá `docs/plan/Estado_Implementacion.md`** al cerrar un hito: estado, commit, decisiones, próximo paso y preguntas abiertas. Es el punto de partida para retomar el trabajo sin el historial de la conversación.
-8. **Informá** con este formato:
+7. **Informá** con este formato:
 
 ```
 Tarea: <hito del plan>
@@ -132,7 +130,6 @@ Una tarea está terminada cuando:
 - no registra contenido documental en logs;
 - las decisiones delegadas están documentadas;
 - las diferencias con la tesis están registradas en `docs/tesis/Registro_Diferencias_con_la_Tesis.md`;
-- `docs/plan/Estado_Implementacion.md` refleja el nuevo estado;
 - el informe de §6 está completo.
 
 **Una verificación de los contratos de aceptación solo puede marcarse como `Cumple` si se ejecutó contra su oráculo y se conservó la evidencia.** Que el código exista no la cumple.

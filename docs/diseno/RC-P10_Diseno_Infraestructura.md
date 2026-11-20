@@ -255,7 +255,7 @@ Mitigación: limitar la concurrencia de tests (RC-P08) y, antes de la defensa, c
 
 ## 10. Costos (RC-P10-13, pendiente)
 
-**Cotización:** [por sesión E90A](../operacion/RC-P10-13_Cotizacion_Sesion_E90A.md), preliminar. No cierra RC-P10-13 ni autoriza despliegue.
+**Cotización:** por sesión E90A, preliminar (retirada del repositorio; queda en el historial de git). No cierra RC-P10-13 ni autoriza despliegue.
 
 
 - `db.t4g.medium` Multi-AZ es la **hipótesis inicial** de dimensionamiento, sujeta a pruebas. Las instancias T4g funcionan en modo ilimitado: monitorear `CPUCreditBalance`, `CPUSurplusCreditBalance` y `CPUSurplusCreditsCharged`.

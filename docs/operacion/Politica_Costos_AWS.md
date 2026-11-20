@@ -8,7 +8,7 @@
 
 ### Cotización por sesión E90A (22/10/2026, preliminar)
 
-[RC-P10-13_Cotizacion_Sesion_E90A.md](RC-P10-13_Cotizacion_Sesion_E90A.md) lista los recursos facturables que crea el Terraform preparado y la fórmula por hora y por sesión (≈ USD 0,21/h de base con tarifas de referencia). Textract `AnalyzeDocument` y Bedrock siguen sin cotizar. **No es la cotización oficial ni autoriza gasto.**
+La cotización preliminar (retirada del repositorio; queda en el historial de git) listaba los recursos facturables que crea el Terraform preparado y la fórmula por hora y por sesión (≈ USD 0,21/h de base con tarifas de referencia). Textract `AnalyzeDocument` y Bedrock siguen sin cotizar. **No es la cotización oficial ni autoriza gasto.**
 
 ### Referencia de costos investigados (no aprobados)
 
