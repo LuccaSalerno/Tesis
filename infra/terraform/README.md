@@ -1,8 +1,7 @@
-# Terraform de ATLAS — procedimiento manual de una sesión E90A
+# Terraform de ATLAS — procedimiento manual de una sesión
 
-**Estado:** código preparado y validado sin AWS (`terraform validate -backend=false`,
-22/10/2026). **Nunca se aplicó ni se planificó contra una cuenta.** Base: RC-P10,
-DO-2026-10-21, DO-2026-10-21-E90A y DO-2026-10-22-OPS.
+La infraestructura es descartable: se crea para cada sesión (demo o medición) y se retira al
+terminar, sin persistencia de datos entre sesiones.
 
 **Quién ejecuta:** solo el operador humano autorizado, después de aprobar el plan exacto, el
 impacto y el costo de la sesión.
@@ -16,8 +15,7 @@ Ningún agente, push ni GitHub Action ejecuta estos pasos.
 | `persistent` | VPC sin NAT, subredes, grupos de seguridad, gateway S3, RDS Multi-AZ, bucket documental con el objeto de control (`offline`), Cognito | Por sesión |
 | `runtime` | RDS Proxy con IAM de extremo a extremo, su rol, endpoints Step Functions, Bedrock Runtime y Secrets Manager (temporal) | Por sesión |
 | `demo` | Bucket de artefactos y paquete, cinco Lambda (incluido el reconciliador), roles mínimos, Step Functions, EventBridge Scheduler del reconciliador, API Gateway con JWT | Por sesión |
-| `tests` | Solo documentación: no se despliega en E90 | — |
-| `web` | Aplicación web: bucket privado y CloudFront con OAC y encabezados de seguridad (DO-2026-10-23-WEB-HOST) | **Persistente entre sesiones** (URL estable); se retira al cerrar el proyecto |
+| `web` | Aplicación web: bucket privado y CloudFront con OAC y encabezados de seguridad | **Persistente entre sesiones** (URL estable); se retira al cerrar el proyecto |
 
 Creación: `persistent → runtime → demo` (`web` se crea una sola vez, antes). Retiro: `demo → runtime → persistent` (`web` queda).
 Versiones fijas: Terraform ≥ 1.10 (validado con 1.16.5), proveedor AWS 6.67.0, http 3.6.2.
@@ -42,7 +40,7 @@ El valor de `origen` va en `origenes_cors` (`persistent`) y `origenes_web` (`dem
 
 ## A. Encendido
 
-Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, región
+Antes de empezar: identidad humana con MFA, región
 `us-east-1`, `terraform`, AWS CLI y Docker. Anotar la hora de inicio (comienza la facturación).
 
 1. **Bootstrap (una sola vez por cuenta).**
@@ -68,9 +66,9 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    terraform apply persistent.tfplan
    ```
 4. **runtime** y **demo**: igual, cada una con su `terraform.tfvars` (`version_codigo` = commit
-   del paquete). Si `runtime` se recrea, **reaplicar `demo`** antes de habilitar (RC-P10-04).
+   del paquete). Si `runtime` se recrea, **reaplicar `demo`** antes de habilitar.
 
-5. **Base de datos** (Lambda privada de operaciones, RC-P10-15):
+5. **Base de datos** (Lambda privada de operaciones):
    ```bash
    FN=$(terraform -chdir=infra/terraform/demo output -raw funcion_operaciones)
    aws lambda invoke --function-name "$FN" --cli-binary-format raw-in-base64-out \
@@ -81,12 +79,12 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
      --payload '{"accion":"estado_migraciones"}' /dev/stdout   # al_dia: true
    ```
    El CLI corta a los 60 s: agregar `--cli-read-timeout 320` (la Lambda admite 300 s).
-   `inicializar_base` es de **un solo uso**: al terminar, RDS exige IAM al maestro (DIF-95) y la
+   `inicializar_base` es de **un solo uso**: al terminar, RDS exige IAM al maestro y la
    credencial maestra deja de servir con contraseña. Si falla a mitad de camino, no reintentar:
-   revisar el log de RDS (`aws rds download-db-log-file-portion`) y decidir con el equipo.
+   revisar el log de RDS (`aws rds download-db-log-file-portion`) antes de seguir.
    Luego retirar el endpoint temporal: en `runtime`, `endpoint_secrets_manager = false`, plan y apply.
 
-6. **Cuentas ficticias** (P10). Por cada usuario (`atlas-admin`, `atlas-responsable`,
+6. **Cuentas ficticias.** Por cada usuario (`atlas-admin`, `atlas-responsable`,
    `atlas-revisor`, `atlas-aprobador`), con la contraseña leída en la terminal (`read -s`):
    ```bash
    POOL=$(terraform -chdir=infra/terraform/persistent output -raw cognito_user_pool_id)
@@ -100,9 +98,9 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    ```
    Las demás cuentas las da de alta la semilla por la API.
 
-   **Aplicación web (DO-2026-10-22-WEB F7):** corre en la máquina del presentador
-   (`frontend/README.md`, sección «Demo»). Su origen (`http://localhost:4173`) va en
-   `origenes_cors` (`persistent`) y en `origenes_web` (`demo`) antes de aplicar esas raíces.
+   **Aplicación web:** se sirve desde CloudFront (raíz `web`) o en la máquina del presentador
+   (`frontend/README.md`, sección «Demo»). Los dos orígenes van en `origenes_cors`
+   (`persistent`) y en `origenes_web` (`demo`) antes de aplicar esas raíces.
 
 7. **Pasar a `active`** solo con cuentas ficticias (la demo todavía no se abre):
    ```bash
@@ -117,9 +115,9 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
      --usuarios administrador=atlas-admin responsable=atlas-responsable revisor=atlas-revisor aprobador=atlas-aprobador \
      --manifiesto ../operaciones/sesiones/<sesion>/manifiesto_seed.json
    ```
+   Con `--escenario surdelta` siembra la cartera SurDelta en lugar de la cadena de evidencia.
    Si falla: volver a `offline`, revisar el manifiesto y no repetir sobre datos sin auditar.
-9. Humo del recorrido, pruebas negativas y verificaciones de RC-P10 (A, B-E90, IAM, V-DB…).
-   Recién entonces abrir la demo.
+9. Humo del recorrido y pruebas negativas. Recién entonces abrir la demo.
 
 ## B. Cierre y retiro selectivo
 
@@ -153,7 +151,7 @@ Antes de empezar: checklist bloqueante del runbook, identidad humana con MFA, re
    aws secretsmanager list-secrets --include-planned-deletion
    aws s3api list-buckets --query "Buckets[?starts_with(Name,'atlas-demo')]"
    ```
-   Solo debe quedar `bootstrap`. Cerrar el acta y revisar Billing en los días siguientes.
+   Solo deben quedar `bootstrap` y `web`. Revisar Billing en los días siguientes.
 
 ## Protecciones
 

@@ -5,7 +5,7 @@ EVD-B el cambio es una **versión nueva** sugerida por el sistema y confirmada p
 responsable (RF-06, RF-07); el procesamiento usa respuestas fijas. En
 EVD-N12 es la incorporación de un documento nuevo, que RN-12 también contempla. Ejecutar
 un escenario no acredita por sí solo el cumplimiento de EVD-01: eso exige el oráculo
-congelado y la evidencia conservada (AGENTS.md §7).
+congelado y la evidencia conservada.
 """
 
 from typing import Any

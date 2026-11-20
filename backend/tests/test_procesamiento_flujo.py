@@ -1,4 +1,4 @@
-"""Recorrido de las etapas contra PostgreSQL real y S3 simulado con moto (hito 1.4).
+"""Recorrido de las etapas contra PostgreSQL real y S3 simulado con moto.
 
 Textract y el modelo se reemplazan por respuestas fijas: se
 prueba la lógica propia, no la calidad de los servicios. RF-08, RF-10, RF-11, RN-02,

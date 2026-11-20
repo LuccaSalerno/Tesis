@@ -41,8 +41,6 @@ PY
     --implementation cp --python-version 3.12 --only-binary=:all: \
     -c /backend/requisitos-bloqueados.txt -r /tmp/dependencias.txt
   cp -r /backend/src/atlas /paquete/atlas
-  # El arnés de §6.3 lo ejecuta el operador; no va a Lambda.
-  rm -rf /paquete/atlas/evaluacion
   mkdir -p /paquete/migraciones
   cp -r /backend/migraciones/versions /backend/migraciones/env.py /backend/migraciones/script.py.mako /paquete/migraciones/
   find /paquete -name "__pycache__" -type d -prune -exec rm -rf {} +

@@ -1,5 +1,5 @@
 # Raíz demo: API Gateway, Lambda, Step Functions, roles y artefactos del
-# entorno demo. Se crea y se retira por sesión (E90A). Sin frontend, Scheduler ni Lambda
+# entorno demo. Se crea y se retira por sesión. Sin frontend, Scheduler ni Lambda
 # de Cognito en el primer despliegue.
 terraform {
   required_version = ">= 1.10.0"

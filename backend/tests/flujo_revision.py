@@ -1,6 +1,6 @@
-"""Flujo de revisión por la API, compartido por las pruebas y los escenarios BDD del hito 1.8.
+"""Flujo de revisión por la API, compartido por las pruebas y los escenarios BDD
 
-Cuentas, documentos y valores sintéticos (AGENTS.md §2.4).
+Cuentas, documentos y valores sintéticos.
 """
 
 from dataclasses import dataclass

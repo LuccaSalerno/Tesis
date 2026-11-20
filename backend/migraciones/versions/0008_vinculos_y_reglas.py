@@ -1,4 +1,4 @@
-"""Vínculos documentales y ejecuciones de reglas de consistencia (hito 1.7).
+"""Vínculos documentales y ejecuciones de reglas de consistencia.
 
 Revisión: 0008
 Anterior: 0007
@@ -203,7 +203,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye)."""
+    """Solo para recrear bases locales y de pruebas (en AWS la demo se destruye)."""
     op.execute(
         """
         DROP TABLE atlas.ejecucion_regla_version;

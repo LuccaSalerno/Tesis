@@ -1,3 +1,0 @@
-cuenta_id     = "000000000000"
-campana       = "e90-ensayo-ajuste-1"
-nombre_bucket = "atlas-evaluacion-<campana>-<sufijo-unico>"

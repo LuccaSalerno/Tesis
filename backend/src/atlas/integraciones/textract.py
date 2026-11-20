@@ -2,7 +2,7 @@
 
 `StartDocumentAnalysis` con TABLES y LAYOUT y un `ClientRequestToken` estable por
 trabajo e intento: un reintento no inicia un segundo análisis. El token incluye
-la huella del objeto: los identificadores de trabajo se repiten entre sesiones E90A de una
+la huella del objeto: los identificadores de trabajo se repiten entre sesiones de una
 misma cuenta, y Textract rechaza un token conocido con otro documento
 (`IdempotentParameterMismatchException`).
 """

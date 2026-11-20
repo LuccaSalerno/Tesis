@@ -170,7 +170,7 @@ def test_textract_con_tables_layout_y_token_estable() -> None:
 
 
 def test_token_distinto_entre_sesiones_con_el_mismo_trabajo() -> None:
-    """Sesión E90A del 24/10: el trabajo 4 de una base nueva repetía el token de una sesión
+    """Sesión AWS del 24/10: el trabajo 4 de una base nueva repetía el token de una sesión
     anterior en la misma cuenta y Textract respondía IdempotentParameterMismatchException."""
     anterior = token_solicitud(4, 1, "atlas-demo-documentos-e90-2026-10-21-5566", "documentos/4")
     actual = token_solicitud(4, 1, "atlas-demo-documentos-e90-2026-10-24-5566", "documentos/4")

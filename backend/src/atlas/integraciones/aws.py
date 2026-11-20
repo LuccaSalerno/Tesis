@@ -173,7 +173,7 @@ class OrquestadorStepFunctions:
         self._maquina_arn = maquina_arn
 
     def iniciar(self, trabajo_id: int, intento: int) -> None:
-        # Regla 5 de AGENTS.md: la entrada lleva solo identificadores técnicos.
+        # La entrada lleva solo identificadores técnicos.
         entrada = json.dumps({"trabajo_id": trabajo_id, "intento": intento})
         try:
             self._cliente.start_execution(

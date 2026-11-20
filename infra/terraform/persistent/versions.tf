@@ -1,4 +1,4 @@
-# Raíz persistent. En E90A se crea y se retira en cada sesión: el nombre es
+# Raíz persistent. Se crea y se retira en cada sesión: el nombre es
 # histórico y no implica conservación de datos.
 terraform {
   required_version = ">= 1.10.0"

@@ -91,7 +91,7 @@ def sembrar(
     url_api: str,
     claves: ClavesLocales,
     transporte: Transporte = transporte_urllib,
-    escenario: str = "pd07",
+    escenario: str = "cadena",
 ) -> tuple[Manifiesto, dict[str, str]]:
     procesar_simulado.verificar_entorno(configuracion)
     tokens = tokens_locales(claves, sub_administrador(configuracion))
@@ -119,9 +119,9 @@ def main(argumentos: list[str] | None = None) -> int:
     analizador.add_argument("--claves", type=Path, default=Path(".claves_locales"))
     analizador.add_argument(
         "--escenario",
-        choices=("pd07", "surdelta"),
-        default="pd07",
-        help="pd07 (predeterminado) o la cartera SurDelta",
+        choices=("cadena", "surdelta"),
+        default="cadena",
+        help="cadena de evidencia (predeterminado) o la cartera SurDelta",
     )
     opciones = analizador.parse_args(argumentos)
     try:

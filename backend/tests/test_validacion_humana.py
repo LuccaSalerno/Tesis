@@ -1,4 +1,4 @@
-"""Hito 1.5: validación humana de clasificación y campos (RF-09, RF-10, RF-12, RN-02, RN-03).
+"""Validación humana de clasificación y campos (RF-09, RF-10, RF-12, RN-02, RN-03).
 
 Versión vigente, Borrador o Pendiente de validación, campos
 después de la clasificación según el esquema del tipo validado, formatos canónicos

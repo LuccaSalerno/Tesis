@@ -2,7 +2,7 @@
 
 Se reemplaza solo la configuración del proceso; Textract y el modelo no se invocan
 . Cubre el despacho de cada función, la transacción de la de persistencia y la
-salida de errores sin contenido (regla 5 de AGENTS.md).
+salida de errores sin contenido.
 """
 
 from collections.abc import Iterator

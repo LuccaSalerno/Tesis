@@ -90,7 +90,7 @@ class Configuracion(BaseSettings):
     carga_vigencia_url_s: int = 300
     carga_vigencia_pendiente_s: int = 24 * 60 * 60
 
-    # Procesamiento (hito 1.4). Perfil geográfico de EE. UU.
+    # Procesamiento. Perfil geográfico de EE. UU.
     bedrock_perfil_generativo: str = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
     procesamiento_max_tokens_clasificacion: int = 256
     procesamiento_max_tokens_extraccion: int = 2048
@@ -98,7 +98,7 @@ class Configuracion(BaseSettings):
     # Trabajos completos simultáneos por despliegue (demo 10; el entorno AWS
     # `tests` fija 5 con su variable de Terraform).
     procesamiento_limite_concurrencia: int = Field(default=10, ge=1)
-    # Consulta asistida (hito 1.6).
+    # Consulta asistida.
     bedrock_modelo_embeddings: str = "cohere.embed-multilingual-v3"
     consulta_fragmentos_recuperados: int = 5
     consulta_max_tokens: int = 1024

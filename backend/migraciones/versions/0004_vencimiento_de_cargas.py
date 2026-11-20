@@ -92,7 +92,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas: en E90A la demo no baja migraciones,
+    """Solo para recrear bases locales y de pruebas: en AWS la demo no baja migraciones,
     se destruye. El estado `vencido` no existe en 0003 y pasa a `descartado`."""
     op.execute(
         """

@@ -557,7 +557,7 @@ def descartar(
 
 @dataclass
 class ResumenLimpieza:
-    """Solo conteos: nada de claves, nombres ni contenido (regla 5 de AGENTS.md)."""
+    """Solo conteos: nada de claves, nombres ni contenido."""
 
     revisadas: int = 0
     vencidas: int = 0

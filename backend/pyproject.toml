@@ -47,14 +47,13 @@ addopts = "-ra --strict-markers"
 bdd_features_base_dir = "../tests/acceptance/features"
 markers = [
     "integracion: requiere PostgreSQL con pgvector real (base atlas_tests)",
-    "aws_real: nivel B, servicios AWS reales en una sesión autorizada (nunca en la CI)",
     # Etiquetas de los .feature (pytest-bdd las convierte en marcadores): trazabilidad.
     "evd_01", "cadena_evidencia", "evd_a", "evd_b", "evd_c", "evd_n12",
     "rf_04", "rf_05", "rf_07", "rn_08", "rn_09", "rn_12", "rn_13", "rnf_01",
-    "do_2026_10_22_cargas", "rf_09", "rf_12", "rn_02", "rn_03", "punto_demo_a",
+    "rf_09", "rf_12", "rn_02", "rn_03", "punto_demo_a",
     "rf_13", "rn_04", "punto_demo_b",
     "rf_14", "rf_15", "rf_16", "rn_05", "rn_06", "punto_demo_c",
-    "rf_17", "rf_18", "rf_19", "rf_20", "rf_22", "pd_02", "pd_03", "punto_demo_d",
+    "rf_17", "rf_18", "rf_19", "rf_20", "rf_22", "punto_demo_d",
 ]
 
 [tool.coverage.run]

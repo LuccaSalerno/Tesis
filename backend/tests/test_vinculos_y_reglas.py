@@ -1,4 +1,4 @@
-"""Hito 1.7: vínculos documentales y reglas de consistencia R1 a R4.
+"""Vínculos documentales y reglas de consistencia R1 a R4.
 
 RF-14, RF-15, RF-16, RN-02, RN-05, RN-06.
 Contra PostgreSQL real; los documentos son PDF sintéticos con valores del oráculo de
@@ -305,7 +305,7 @@ def test_rf_15_no_se_sugiere_un_par_ya_vinculado(ctx: Contexto) -> None:
     ],
     ids=["C-v1+O-v1+F-v2", "C-v1+O-v2+F-v1", "C-v1+O-v2+F-v2"],
 )
-def test_rf_16_pd_07_resultados_del_oraculo_por_la_api(
+def test_rf_16_resultados_del_oraculo_por_la_api(
     ctx: Contexto, orden: dict[str, str], factura: dict[str, str], esperado: list[str]
 ) -> None:
     tramite = crear_tramite(ctx)["id"]
@@ -541,7 +541,7 @@ def test_tabla_3_ii_solo_el_responsable_del_tramite_vincula(
 def test_tabla_3_ii_vinculos_y_controles_solo_los_consulta_el_responsable(
     ctx: Contexto, par: dict[str, int], roles: tuple[str, ...]
 ) -> None:
-    """El revisor con tarea asignada se incorpora en el hito 1.8."""
+    """El revisor con tarea asignada se incorpora con los ciclos de revisión."""
     _, sub = crear_cuenta(ctx.motor, *roles)
     for ruta in ("vinculos", "controles", "controles/1"):
         url = f"/tramites/{par['tramite']}/{ruta}"

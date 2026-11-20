@@ -1,11 +1,11 @@
-# Certificados de RDS (DO-2026-10-22-OPS P4)
+# Certificados de RDS
 
 Las funciones se conectan a RDS Proxy y a la instancia con TLS `verify-full`. Para eso el
 paquete Lambda incluye un solo archivo de CA (`certificados/ca-bd.pem`) que une:
 
 - el paquete global de Amazon RDS, para la instancia;
 - las raíces de Amazon Trust Services (Amazon Root CA 1 a 4), porque RDS Proxy presenta un
-  certificado de ACM que no encadena con el paquete de RDS (DIF-96).
+  certificado de ACM que no encadena con el paquete de RDS.
 
 **Lo descarga el equipo** desde la documentación oficial de Amazon RDS («Using SSL/TLS to
 encrypt a connection to a DB instance», paquete `global-bundle.pem`) y lo guarda como:

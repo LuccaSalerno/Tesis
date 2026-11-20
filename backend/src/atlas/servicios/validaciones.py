@@ -8,7 +8,7 @@ Cada validación es una fila nueva: una corrección posterior referencia la que
 reemplaza, y quien valida debe indicar cuál es la vigente (si otra persona validó antes,
 la operación se rechaza sin efectos). Solo los valores validados alimentan reglas y
 decisiones (RN-02); la IA no interviene aquí. Cada validación vuelve a ejecutar las
-reglas de consistencia pertinentes y puede sugerir vínculos (hito 1.7).
+reglas de consistencia pertinentes y puede sugerir vínculos.
 """
 
 import uuid

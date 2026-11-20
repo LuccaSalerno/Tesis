@@ -1,5 +1,5 @@
 # language: es
-@rf_17 @rf_18 @rf_19 @rf_20 @rf_22 @rn_08 @pd_02 @pd_03 @punto_demo_d
+@rf_17 @rf_18 @rf_19 @rf_20 @rf_22 @rn_08 @punto_demo_d
 Característica: Flujo de revisión, decisión y evidencia de la decisión
   Como responsable del trámite y como revisores/aprobadores asignados
   Queremos revisar el conjunto documental con un flujo confirmado

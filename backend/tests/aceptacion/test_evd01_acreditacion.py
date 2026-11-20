@@ -3,7 +3,7 @@ cadena de evidencia.
 
 Requisito de aceptación de la reconstrucción («automatización de EVD-01», EVD-01 §1): los
 cuatro recorridos EVD-A, EVD-B, EVD-C y EVD-N12 por la API autenticada, con datos y
-resultados esperados fijados **antes** de ejecutar en `demo/cadena_evidencia/oraculo_PD07_v2.json`
+resultados esperados fijados **antes** de ejecutar en `demo/cadena_evidencia/oraculo.json`
 (congelado). Cada comprobación registra esperado y observado; un criterio
 cumple solo si cumplen todas las suyas. Con `ATLAS_EVIDENCIA_EVD01=<carpeta>` se escribe el
 paquete probatorio (EVD-01 §2): resultado por caso y criterio, versión del código, entorno,
@@ -17,6 +17,7 @@ precondición. No reemplaza las mediciones de §6.3.1.
 import hashlib
 import json
 import os
+import subprocess
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -28,7 +29,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine
 
 from atlas.configuracion import Configuracion
-from atlas.evaluacion import campana as cmp
 from atlas.herramientas import sembrar_demo
 from atlas.principal import crear_aplicacion
 from atlas.servicios.tareas import TAREA_DESACTUALIZADA
@@ -930,15 +930,38 @@ def _v11(
 # --- Ejecución y paquete probatorio ----------------------------------------------------------
 
 
+def _commit() -> dict[str, Any]:
+    """Commit del repositorio y si hay cambios sin registrar; sin git, ambos desconocidos."""
+    raiz = Path(__file__).resolve().parents[3]
+
+    def git(*args: str) -> str | None:
+        try:
+            resultado = subprocess.run(  # noqa: S603
+                ["git", "-C", str(raiz), *args],  # noqa: S607
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        except FileNotFoundError:
+            return None
+        return resultado.stdout.strip() if resultado.returncode == 0 else None
+
+    estado = git("status", "--porcelain")
+    return {
+        "commit": git("rev-parse", "HEAD"),
+        "cambios_sin_commit": None if estado is None else bool(estado),
+    }
+
+
 def _paquete(reg: Registro, inicio: datetime) -> dict[str, Any]:
     return {
         "verificacion": "EVD-01 — cadena de evidencia documental",
         "ejecutada_en": inicio.isoformat(),
-        **cmp._commit(cmp.RAIZ_REPOSITORIO),
+        **_commit(),
         "entorno": "local: API FastAPI (TestClient) + PostgreSQL 16 con pgvector; "
         "procesamiento con dobles controlados (EVD-01 §1, condición 6)",
         "oraculo": {
-            "archivo": "demo/cadena_evidencia/oraculo_PD07_v2.json",
+            "archivo": "demo/cadena_evidencia/oraculo.json",
             "id": ORACULO["id"],
             "estado": ORACULO["estado"],
             "sha256": HUELLA_ORACULO,
@@ -965,7 +988,7 @@ def _json(valor: Any) -> Any:
     return str(valor)
 
 
-def test_evd01_v1_a_v11_contra_el_oraculo_pd07(aplicacion: Any, e: Equipo) -> None:
+def test_evd01_v1_a_v11_contra_el_oraculo(aplicacion: Any, e: Equipo) -> None:
     inicio = datetime.now(UTC)
     reg = Registro()
     for recorrido in (_evd_a, _evd_b, _evd_c, _evd_n12):

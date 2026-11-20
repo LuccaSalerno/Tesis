@@ -1,7 +1,7 @@
 # Aplicación web de ATLAS
 
 React 19 + TypeScript + Vite, Tailwind CSS 4 y componentes al estilo shadcn/ui sobre Radix.
-Decisión: **DO-2026-10-22-WEB**. Reglas del repositorio: [AGENTS.md](../AGENTS.md).
+Reglas del repositorio: [README](../README.md#reglas).
 
 La aplicación usa y muestra solo lo que el backend implementa.
 
@@ -36,7 +36,7 @@ cp .env.example .env.local
 npm run dev            # http://localhost:5173 (la API se reenvía por /api)
 ```
 
-Para tener datos, la **semilla local** recorre el escenario PD-07 por la API con el
+Para tener datos, la **semilla local** recorre el escenario de la cadena de evidencia por la API con el
 **procesamiento simulado** (las sugerencias quedan rotuladas «Simulación local»; no es IA real):
 
 ```bash
@@ -58,7 +58,7 @@ npm run build && npm run preview     # http://localhost:4173
 El origen `http://localhost:4173` debe estar en `origenes_web` (raíz `demo`) y en
 `origenes_cors` (raíz `persistent`) del Terraform que aplica el operador.
 
-## Hospedaje en S3 + CloudFront (DO-2026-10-23-WEB-HOST)
+## Hospedaje en S3 + CloudFront
 
 La raíz Terraform `web` sirve la aplicación en `https://<id>.cloudfront.net`, con el bucket
 privado (OAC), rutas de React resueltas a `index.html` y encabezados de seguridad (CSP, HSTS).

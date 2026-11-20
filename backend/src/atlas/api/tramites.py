@@ -586,7 +586,7 @@ def _sugerencia(valor: ValorSugerido, fuente: ReferenciaFuente | None) -> Sugere
     )
 
 
-# --- Validación humana (hito 1.5, RF-09, RF-12) --------------------
+# --- Validación humana (RF-09, RF-12) --------------------
 
 
 class FuenteEntrada(BaseModel):

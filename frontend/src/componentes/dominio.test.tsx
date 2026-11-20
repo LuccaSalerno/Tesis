@@ -19,7 +19,7 @@ describe("sugerencia de la IA frente a valor validado (RF-12)", () => {
     expect(screen.getByText("Sugerido")).toBeInTheDocument();
     expect(screen.queryByText("Simulación local")).not.toBeInTheDocument();
     expect(screen.getByText("28 feb 2027")).toBeInTheDocument();
-    rerender(<ValorSugerido campo="vigencia_hasta" valor="2027-02-28" modelo="simulacion-local-oraculo-PD07" />);
+    rerender(<ValorSugerido campo="vigencia_hasta" valor="2027-02-28" modelo="simulacion-local-oraculo-cadena" />);
     expect(screen.getByText("Simulación local")).toBeInTheDocument();
   });
 

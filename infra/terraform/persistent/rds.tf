@@ -1,4 +1,4 @@
-# PostgreSQL Multi-AZ (instancia primaria + reserva), E90A.
+# PostgreSQL Multi-AZ (instancia primaria + reserva).
 # Credencial maestra administrada por RDS en Secrets Manager: solo inicialización.
 
 resource "aws_db_subnet_group" "datos" {
@@ -39,7 +39,7 @@ resource "aws_db_instance" "principal" {
   performance_insights_enabled        = false
   apply_immediately                   = true
 
-  # E90A: el retiro aprobado borra la instancia sin snapshot final ni backups retenidos.
+  # El retiro aprobado borra la instancia sin snapshot final ni backups retenidos.
   # Mientras retiro_autorizado sea false, la protección impide cualquier borrado.
   deletion_protection      = !var.retiro_autorizado
   skip_final_snapshot      = true

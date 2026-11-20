@@ -1,5 +1,5 @@
 """Documentos validados, vínculos y controles por la API, compartidos por las pruebas y los
-escenarios BDD del hito 1.7. Valores sintéticos del oráculo de la cadena de evidencia."""
+escenarios BDD Valores sintéticos del oráculo de la cadena de evidencia."""
 
 from typing import Any
 

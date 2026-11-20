@@ -1,7 +1,7 @@
 """Pasos de `consulta_asistida.feature`: punto de demo B.
 
 Contra la API y PostgreSQL con pgvector real; embeddings deterministas y respuesta fija
-del modelo. La calidad real se verifica en `tests/aws_real`.
+del modelo. La calidad real se midió en la evaluación de §6.3.
 """
 
 from collections.abc import Iterator

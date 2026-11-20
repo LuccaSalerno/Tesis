@@ -43,7 +43,7 @@ from atlas.procesamiento import esquemas, etapas
 from atlas.procesamiento.modelo import RespuestaHerramienta
 
 PREFIJO_MODELO: Final = "simulacion-local"
-MODELO_SIMULADO: Final = f"{PREFIJO_MODELO}-oraculo-PD07"
+MODELO_SIMULADO: Final = f"{PREFIJO_MODELO}-oraculo-cadena"
 MODELO_SIMULADO_SURDELTA: Final = f"{PREFIJO_MODELO}-oraculo-surdelta"
 EMBEDDINGS_SIMULADOS: Final = f"{PREFIJO_MODELO}-embeddings"
 
@@ -94,12 +94,12 @@ def codigo_por_huella(oraculo: dict[str, Any], huella: str) -> str | None:
 
 def simulables() -> dict[str, tuple[dict[str, str], str]]:
     """Por huella del PDF: los valores que «sugiere» la simulación y el modelo que la rotula."""
-    pd07 = json.loads(ORACULO.read_text(encoding="utf-8"))
-    escenario = escenario_completo(pd07)
+    cadena = json.loads(ORACULO.read_text(encoding="utf-8"))
+    escenario = escenario_completo(cadena)
     por_huella = {
         datos["sha256"]: (escenario[codigo], MODELO_SIMULADO)
-        for datos in pd07["archivos_pdf"].values()
-        if (codigo := codigo_por_huella(pd07, datos["sha256"])) in escenario
+        for datos in cadena["archivos_pdf"].values()
+        if (codigo := codigo_por_huella(cadena, datos["sha256"])) in escenario
     }
     surdelta = json.loads(ORACULO_SURDELTA.read_text(encoding="utf-8"))
     valores = escenario_surdelta(surdelta)

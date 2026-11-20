@@ -1,4 +1,4 @@
-# Roles de ejecución mínimos por función (AGENTS.md §3). Ninguno administra
+# Roles de ejecución mínimos por función. Ninguno administra
 # infraestructura: solo el procesamiento funcional de la tesis.
 
 data "aws_iam_policy_document" "confianza_lambda" {
@@ -141,11 +141,6 @@ data "aws_iam_policy_document" "operaciones" {
   statement {
     actions   = ["states:ListExecutions"]
     resources = [local.arn_maquina]
-  }
-  statement {
-    sid       = "LeerMantenimiento" # fotos de la demo solo en `offline`
-    actions   = ["s3:GetObject"]
-    resources = ["${local.bucket_arn}/control/mantenimiento.json"]
   }
 }
 

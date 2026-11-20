@@ -1,5 +1,5 @@
 # language: es
-@rf_04 @rf_07 @do_2026_10_22_cargas
+@rf_04 @rf_07
 Característica: Incorporación documental de un archivo cargado
   Como responsable del trámite
   Quiero cargar un archivo y confirmar su incorporación como documento nuevo
@@ -22,7 +22,6 @@ Característica: Incorporación documental de un archivo cargado
     Entonces el trámite tiene un documento cuya versión vigente es la número 1
     Y la incorporación queda registrada en la auditoría con su versión
 
-  @do_2026_10_22_cargas
   Escenario: Una carga pendiente vencida no puede incorporarse
     Dado que cargó el documento sintético "C-v1_Contrato_Mantenimiento_ATLAS.pdf"
     Y pasaron más de 24 horas sin incorporarlo

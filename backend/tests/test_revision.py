@@ -1,4 +1,4 @@
-"""Hito 1.8: plantillas, ciclos de revisión, tareas, decisiones, línea de tiempo y evidencia.
+"""Plantillas, ciclos de revisión, tareas, decisiones, línea de tiempo y evidencia.
 
 RF-17 a RF-22, RN-07, RN-08, RN-09, RN-12, RN-13.
 Contra la API autenticada y PostgreSQL real.

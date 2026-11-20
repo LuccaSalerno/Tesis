@@ -1,4 +1,4 @@
-"""Hito 1.2: autenticación, autorización por rol y cuentas con auditoría, contra PostgreSQL real.
+"""Autenticación, autorización por rol y cuentas con auditoría, contra PostgreSQL real.
 
 RF-01, RF-02, RF-21, RF-25, RN-01, RNF-01.
 """

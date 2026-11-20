@@ -52,7 +52,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye).
+    """Solo para recrear bases locales y de pruebas (en AWS la demo se destruye).
 
     Las validaciones `ausente` ya registradas son inmutables: las restricciones anteriores se
     restauran `NOT VALID` (rigen para filas nuevas) y las bajadas siguientes eliminan la tabla.

@@ -1,4 +1,4 @@
-"""Plantillas de flujo, ciclos de revisión, tareas y decisiones (hito 1.8).
+"""Plantillas de flujo, ciclos de revisión, tareas y decisiones.
 
 Revisión: 0009
 Anterior: 0008
@@ -345,7 +345,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye)."""
+    """Solo para recrear bases locales y de pruebas (en AWS la demo se destruye)."""
     op.execute(
         """
         DROP TABLE atlas.decision_control;

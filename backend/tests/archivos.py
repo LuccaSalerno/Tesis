@@ -1,4 +1,4 @@
-"""Archivos sintéticos para las pruebas de carga (sin contenido real; AGENTS.md §2.4)."""
+"""Archivos sintéticos para las pruebas de carga (sin contenido real)."""
 
 import io
 import zipfile

@@ -14,14 +14,10 @@ import psycopg
 import pytest
 from alembic.script import ScriptDirectory
 from psycopg import sql
-from sqlalchemy import text
-from sqlalchemy.pool import NullPool
 
 from atlas.configuracion import Configuracion, ErrorConfiguracion
 from atlas.integraciones.aws import crear_cliente
 from atlas.operacion import lambda_operaciones as ops
-from atlas.persistencia.motor import crear_motor
-from tests import datos
 from tests.conftest import configuracion_sin_base, lineas_registro
 
 SUPERUSUARIO = os.environ.get("ATLAS_PRUEBAS_PG_SUPERUSUARIO")
@@ -240,126 +236,3 @@ def test_rnf_09_manejar_no_filtra_mensajes(
     assert "secreta" not in salida
     eventos = {r["evento"] for r in lineas_registro(salida)}
     assert {"operacion_rechazada", "operacion_fallida", "operacion_completada"} <= eventos
-
-
-# --- Fotos de la base para la demo (temporal) -------------------
-
-
-def _offline(_: Configuracion) -> ops.EstadoOperativo:
-    return ops.EstadoOperativo.OFFLINE
-
-
-DRENADO = {
-    "urls_vigentes": 0,
-    "cargas_pendientes": 0,
-    "trabajos_abiertos": 0,
-    "ejecuciones_activas": 0,
-    "drenado": True,
-}
-
-
-@pytest.fixture
-def drenado(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
-    """Moto conserva ejecuciones de otras pruebas: el drenaje se simula por prueba."""
-    estado = dict(DRENADO)
-    monkeypatch.setattr(ops, "verificar_drenaje", lambda _: estado)
-    return estado
-
-
-def _foto(configuracion: Configuracion, accion: str, nombre: str = "semilla", **extra: Any) -> Any:
-    evento = {"accion": accion, "nombre": nombre, "confirmar": configuracion.bd_nombre, **extra}
-    return ops.ejecutar(evento, configuracion, leer_estado=_offline)
-
-
-def _conteo(motor: Any, tabla: str) -> int:
-    with motor.connect() as conexion:
-        consulta = text(f"SELECT count(*) FROM atlas.{tabla}")  # noqa: S608 (tabla fija)
-        return int(conexion.execute(consulta).scalar_one())
-
-
-@pytest.mark.integracion
-def test_demo_restablecer_vuelve_a_la_foto_y_reactiva_las_protecciones(
-    base_reiniciada: Configuracion, drenado: dict[str, Any]
-) -> None:
-    motor = crear_motor(base_reiniciada, migracion=True, poolclass=NullPool)
-    _foto(base_reiniciada, "guardar_estado", nombre="vacia")
-    try:
-        with motor.begin() as conexion:
-            escenario = datos.escenario_documento(conexion)
-        guardada = _foto(base_reiniciada, "guardar_estado")
-        assert guardada["filas"] >= 4 and guardada["estado"] == "semilla"
-
-        # La demo agrega un trámite; restablecer lo quita y conserva el documento con su
-        # versión vigente (clave foránea circular y diferible).
-        with motor.begin() as conexion:
-            extra = datos.crear_tramite(conexion, escenario["usuario"], "Intento de grabación")
-        assert _conteo(motor, "tramite") == 2
-        assert _foto(base_reiniciada, "restablecer_estado")["filas"] == guardada["filas"]
-        assert _conteo(motor, "tramite") == 1 and _conteo(motor, "documento") == 1
-
-        with motor.begin() as conexion:
-            # Las identidades no retroceden: el próximo trámite no repite el del intento.
-            assert datos.crear_tramite(conexion, escenario["usuario"]) > extra
-            # Las protecciones de RNF-04 vuelven a regir después de restablecer.
-            deshabilitados = conexion.execute(
-                text(
-                    "SELECT count(*) FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid"
-                    " JOIN pg_namespace n ON n.oid = c.relnamespace"
-                    " WHERE n.nspname = 'atlas' AND NOT t.tgisinternal AND t.tgenabled = 'D'"
-                )
-            ).scalar_one()
-            assert deshabilitados == 0
-        with pytest.raises(Exception, match="es inmutable: TRUNCATE"), motor.begin() as conexion:
-            conexion.execute(text("TRUNCATE atlas.validacion_humana CASCADE"))
-    finally:
-        # La base de pruebas queda como la dejó `base_reiniciada`.
-        _foto(base_reiniciada, "restablecer_estado", nombre="vacia")
-        with motor.begin() as conexion:
-            conexion.execute(text("DROP SCHEMA IF EXISTS atlas_estado_semilla CASCADE"))
-            conexion.execute(text("DROP SCHEMA IF EXISTS atlas_estado_vacia CASCADE"))
-        motor.dispose()
-
-
-@pytest.mark.integracion
-def test_demo_fotos_rechazan_sin_resguardos(
-    base_reiniciada: Configuracion, drenado: dict[str, Any]
-) -> None:
-    def rechaza(
-        codigo: str,
-        evento: dict[str, Any],
-        configuracion: Configuracion = base_reiniciada,
-        leer_estado: Any = _offline,
-    ) -> None:
-        with pytest.raises(ops.ErrorOperacion, match=codigo):
-            ops.ejecutar(evento, configuracion, leer_estado=leer_estado)
-
-    base = {
-        "accion": "restablecer_estado",
-        "nombre": "semilla",
-        "confirmar": base_reiniciada.bd_nombre,
-    }
-    rechaza("confirmacion_invalida", {**base, "confirmar": "otra_base"})
-    rechaza("falta_nombre", {**base, "nombre": None})
-    rechaza("operacion_no_offline", base, leer_estado=lambda _: ops.EstadoOperativo.ACTIVE)
-    # Un despliegue AWS (sin endpoint local) que no es demo nunca admite fotos.
-    rechaza("solo_en_demo", base, base_reiniciada.model_copy(update={"aws_endpoint_url": None}))
-    rechaza("nombre_de_estado_invalido", {**base, "nombre": "Semilla; DROP"})
-    rechaza("estado_inexistente", {**base, "nombre": "nunca_guardado"})
-    # Con un procesamiento en curso no se restablece; para guardar, la base tiene que estar
-    # drenada del todo.
-    drenado.update(ejecuciones_activas=1, drenado=False)
-    rechaza("operacion_no_drenada", base)
-    drenado.update(ejecuciones_activas=0, cargas_pendientes=1)
-    rechaza("operacion_no_drenada", {**base, "accion": "guardar_estado"})
-    drenado.update(DRENADO)
-
-    motor = crear_motor(base_reiniciada, migracion=True, poolclass=NullPool)
-    try:
-        _foto(base_reiniciada, "guardar_estado", nombre="vieja")
-        with motor.begin() as conexion:
-            conexion.execute(text("ALTER TABLE atlas_estado_vieja.tramite DROP COLUMN titulo"))
-        rechaza("estado_incompatible_con_el_esquema", {**base, "nombre": "vieja"})
-    finally:
-        with motor.begin() as conexion:
-            conexion.execute(text("DROP SCHEMA IF EXISTS atlas_estado_vieja CASCADE"))
-        motor.dispose()

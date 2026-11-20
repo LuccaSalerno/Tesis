@@ -1,4 +1,4 @@
-"""Semilla sintética de una sesión E90A, solo por la API.
+"""Semilla sintética de una sesión AWS, solo por la API.
 
 Uso (operador, con la API en `active` y solo cuentas ficticias):
 
@@ -61,7 +61,7 @@ from atlas.herramientas.cliente_api import ClienteApi, ErrorApi, sub_del_token, 
 RAIZ_REPOSITORIO: Final = Path(__file__).resolve().parents[4]
 CORPUS: Final = RAIZ_REPOSITORIO / "demo" / "cadena_evidencia" / "documentos"
 # Oráculo de la cadena de evidencia, congelado: número estable en O y F.
-ORACULO: Final = CORPUS.parent / "oraculo_PD07_v2.json"
+ORACULO: Final = CORPUS.parent / "oraculo.json"
 ROLES: Final = ("administrador", "responsable", "revisor", "aprobador")
 
 ARCHIVOS: Final = {
@@ -784,9 +784,9 @@ def main(argumentos: list[str] | None = None) -> int:
     )
     analizador.add_argument(
         "--escenario",
-        choices=("pd07", "surdelta"),
-        default="pd07",
-        help="pd07 (predeterminado) o la cartera SurDelta",
+        choices=("cadena", "surdelta"),
+        default="cadena",
+        help="cadena de evidencia (predeterminado) o la cartera SurDelta",
     )
     opciones = analizador.parse_args(argumentos)
     usuarios = dict(u.split("=", 1) for u in opciones.usuarios)

@@ -1,4 +1,4 @@
-"""Definición de la máquina de estados (§5.3.1, regla 5 de AGENTS.md)."""
+"""Definición de la máquina de estados (§5.3.1)."""
 
 import json
 from importlib import resources

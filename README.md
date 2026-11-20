@@ -2,14 +2,21 @@
 
 Prototipo de la tesis «Arquitectura para la gestión inteligente de documentos y contratos con extracción automática de información, trazabilidad y firma digital».
 
-Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las reglas y el orden de los documentos que gobiernan el proyecto.
-
 ## Estado
 
 - **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React).
-- **Evaluación:** la evidencia del capítulo 6 está en [evaluacion/campanas](evaluacion/campanas). La campaña oficial `e90-oficial-1` se midió en `20cf2d0`; EVD-01 (V1 a V11) se verificó en `d461b6a` (`evaluacion/campanas/evd01-2026-10-24/acta.md`), y el código posterior no hereda esa verificación.
-- **AWS:** sin infraestructura activa hasta la exposición final (DO-2026-10-24-RETIRO-TOTAL). Las operaciones las ejecuta solo un integrante autorizado, de forma manual; la CI de GitHub no tiene acceso a AWS.
-- **Datos:** el agente, la CI y la demo usan exclusivamente datos sintéticos.
+- **Evaluación:** los resultados del capítulo 6 están en la tesis. El arnés de medición y sus campañas quedan en el tag `evaluacion-e90`; el corpus y sus generadores, en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets).
+- **AWS:** sin infraestructura activa. Se levanta por sesión, de forma manual ([infra/terraform/README.md](infra/terraform/README.md)).
+
+## Reglas
+
+- **Solo datos sintéticos** en el repositorio, la CI y la demo. Nunca documentos reales, ni anonimizados.
+- **El contenido documental nunca va a los registros:** logs, errores y salidas de Step Functions llevan solo identificadores y metadatos técnicos.
+- **No hay borrado funcional** de trámites, versiones ni eventos de auditoría (RN-10, RNF-04).
+- **La IA sugiere y una persona valida:** las reglas de consistencia usan solo valores validados y la IA nunca aprueba, observa ni cambia el estado de un trámite (RN-02, RN-06).
+- **AWS se opera a mano:** ningún push, merge ni GitHub Action despliega u opera infraestructura. La CI corre sin credenciales de AWS.
+- **Sin secretos** en el repositorio.
+- Cada prueba, migración y endpoint se traza a un RF, RN o RNF de la tesis.
 
 ## Estructura
 
@@ -18,13 +25,9 @@ Antes de trabajar en el repositorio, leé [AGENTS.md](AGENTS.md): fija las regla
 | `backend/` | API, servicios, procesamiento, migraciones y pruebas ([README](backend/README.md)) |
 | `frontend/` | Aplicación web ([README](frontend/README.md)) |
 | `infra/` | Terraform, base local con Docker y empaquetado ([README](infra/terraform/README.md)) |
-| `operaciones/` | Guías de operación manual en AWS y guion de la demo |
 | `demo/` | Documentos sintéticos y oráculos de las dos demos (cadena de evidencia y SurDelta): no se modifican |
-| `evaluacion/` | Campañas y evidencia de la sección 6 |
 | `tests/acceptance/` | Escenarios BDD (Gherkin) |
-| `docs/` | Tesis, decisiones, contratos de aceptación, diseño, plan y operación |
-
-El corpus de evaluación de la sección 6.3, sus oráculos y los generadores de todos los documentos están en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets).
+| `docs/tesis/` | La tesis (`main.pdf`): requisitos, modelo de datos y arquitectura |
 
 ## Levantar el entorno local
 
@@ -54,7 +57,7 @@ La semilla imprime un token por rol para ingresar en <http://localhost:5173>. mo
 
 ## Verificar
 
-Antes de commitear un hito, desde la raíz del repositorio:
+Antes de commitear, desde la raíz del repositorio:
 
 ```bash
 backend/herramientas_ci/ensayo_ci_limpio.sh

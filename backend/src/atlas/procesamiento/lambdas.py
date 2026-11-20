@@ -5,7 +5,7 @@
 
 Toda falla sale como `ErrorTransitorio` o `ErrorPermanente` con un código técnico como
 único mensaje y sin encadenar la excepción original: lo que llega a Step Functions y a
-los registros no puede contener contenido documental (AGENTS.md §2.5, RNF-09).
+los registros no puede contener contenido documental (RNF-09).
 """
 
 import json

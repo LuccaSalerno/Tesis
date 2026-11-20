@@ -2,7 +2,7 @@
 
 Construyen estructuras con la forma documentada de Textract y respuestas de herramienta
 del modelo, con texto sintético. No juzgan la calidad de los servicios reales: eso se
-verifica en las pruebas `aws_real` (nivel B).
+midió en la evaluación de §6.3.
 """
 
 from dataclasses import dataclass, field

@@ -1,4 +1,4 @@
-"""Hito 1.3: trámite, carga prefirmada, confirmación, trabajo y versión inicial.
+"""Trámite, carga prefirmada, confirmación, trabajo y versión inicial.
 
 Contra PostgreSQL real y S3/Step Functions simulados con moto.
 RF-02, RF-03, RF-04, RF-05, RF-07, RF-21, RN-15

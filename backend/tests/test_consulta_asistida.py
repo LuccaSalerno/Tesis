@@ -1,4 +1,4 @@
-"""Hito 1.6: consulta asistida con recuperación autorizada (RF-13, RN-04, §5.3.4).
+"""Consulta asistida con recuperación autorizada (RF-13, RN-04, §5.3.4).
 
 Versiones vigentes, consulta conservada, abstención del
 modelo y descarte de afirmaciones sin cita válida. PostgreSQL con pgvector real;

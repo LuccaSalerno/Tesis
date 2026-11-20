@@ -1,4 +1,4 @@
-"""Los registros no contienen contenido documental (AGENTS.md §2.5, RNF-03)."""
+"""Los registros no contienen contenido documental (RNF-03)."""
 
 import io
 import logging

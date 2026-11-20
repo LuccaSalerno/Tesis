@@ -2,7 +2,7 @@
 
 Solo se aceptan bases de prueba: ATLAS_ENTORNO=tests y nombre terminado en
 `_tests`, para que una configuración equivocada nunca migre ni modifique la
-base de desarrollo o de demo (regla 8 de AGENTS.md).
+base de desarrollo o de demo.
 """
 
 import json

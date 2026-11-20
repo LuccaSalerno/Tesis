@@ -9,17 +9,17 @@ variable "cuenta_id" {
 }
 
 variable "entorno" {
-  description = "Solo demo en E90 (tests requiere aprobación separada)"
+  description = "Solo se despliega demo"
   type        = string
   default     = "demo"
   validation {
     condition     = var.entorno == "demo"
-    error_message = "En E90 solo se despliega demo."
+    error_message = "Solo se despliega demo."
   }
 }
 
 variable "sesion" {
-  description = "Identificador de la sesión E90A (etiqueta de inventario), p. ej. e90-2026-10-24"
+  description = "Identificador de la sesión (etiqueta de inventario), p. ej. e90-2026-10-24"
   type        = string
 }
 

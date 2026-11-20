@@ -1,4 +1,4 @@
-"""Fragmentos indexados y registro de consultas asistidas (hito 1.6).
+"""Fragmentos indexados y registro de consultas asistidas.
 
 Revisión: 0007
 Anterior: 0006
@@ -128,7 +128,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye)."""
+    """Solo para recrear bases locales y de pruebas (en AWS la demo se destruye)."""
     op.execute(
         """
         DROP TABLE atlas.consulta_fragmento;

@@ -106,7 +106,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Solo para recrear bases locales y de pruebas (en E90A la demo se destruye)."""
+    """Solo para recrear bases locales y de pruebas (en AWS la demo se destruye)."""
     op.execute(
         """
         DROP TABLE atlas.firma_simulada;

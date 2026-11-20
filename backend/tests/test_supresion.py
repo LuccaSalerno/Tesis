@@ -1,7 +1,7 @@
 """Supresión de cuentas (RF-25, §5.4.2, §5.4.3).
 
 La API contra PostgreSQL real con un proveedor de identidad sustituto; la Lambda `cuentas`
-contra Cognito simulado por moto. Cuentas ficticias (AGENTS.md §2.4).
+contra Cognito simulado por moto. Cuentas ficticias.
 """
 
 import io

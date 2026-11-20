@@ -203,7 +203,7 @@ class TipoDecision(StrEnum):
 
 
 class AccionAuditoria(StrEnum):
-    """Catálogo de acciones auditadas (RF-21). Se amplía con cada hito."""
+    """Catálogo de acciones auditadas (RF-21)."""
 
     CUENTA_ALTA = "cuenta_alta"
     CUENTA_HABILITADA = "cuenta_habilitada"

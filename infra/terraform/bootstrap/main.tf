@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "estado" {
   bucket = var.nombre_bucket_estado
 
-  # Nunca se destruye: ni siquiera en el retiro de una sesión E90A.
+  # Nunca se destruye: ni siquiera en el retiro de una sesión.
   lifecycle {
     prevent_destroy = true
   }
