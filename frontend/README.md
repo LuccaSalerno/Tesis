@@ -45,7 +45,7 @@ cd ../backend && .venv/bin/python -m atlas.herramientas.sembrar_local
 
 Imprime un token por rol para ingresar en modo local (se pega en la pantalla de ingreso).
 
-## Demo (F7)
+## Demo
 
 La aplicación corre en la máquina del presentador contra API Gateway; no se crean recursos
 AWS para el frontend. En `.env.local`: `VITE_ATLAS_API_URL` (salida `url_api` de Terraform),

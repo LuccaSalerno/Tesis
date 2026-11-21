@@ -5,7 +5,7 @@ Prototipo de la tesis «Arquitectura para la gestión inteligente de documentos 
 ## Estado
 
 - **Aplicación:** RF-01 a RF-26 implementados (backend FastAPI, frontend React).
-- **Evaluación:** los resultados del capítulo 6 están en la tesis. El arnés de medición y sus campañas quedan en el tag `evaluacion-e90`; el corpus y sus generadores, en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets).
+- **Evaluación:** los resultados del capítulo 6 están en la tesis; el corpus y sus generadores, en [atlas-tesis-datasets](https://github.com/LuccaSalerno/atlas-tesis-datasets).
 - **AWS:** sin infraestructura activa. Se levanta por sesión, de forma manual ([infra/terraform/README.md](infra/terraform/README.md)).
 
 ## Reglas

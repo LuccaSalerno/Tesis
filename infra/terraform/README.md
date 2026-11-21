@@ -1,6 +1,6 @@
 # Terraform de ATLAS — procedimiento manual de una sesión
 
-La infraestructura es descartable: se crea para cada sesión (demo o medición) y se retira al
+La infraestructura es descartable: se crea para cada sesión (demo) y se retira al
 terminar, sin persistencia de datos entre sesiones.
 
 **Quién ejecuta:** solo el operador humano autorizado, después de aprobar el plan exacto, el
